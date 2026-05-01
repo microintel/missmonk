@@ -2,10 +2,8 @@
   "diploma": {
     "sem1": {
       "engineering mathematics": {
-        "matrix and types": {
-          "what is matrix?": "A matrix is a rectangular arrangement of numbers\norganized in rows and columns.\n\nRows are horizontal.\nColumns are vertical.\n\nMatrix = table of numbers",
-          "matrix example": "⎡ 1   2   3 ⎤\n⎣ 4   5   6 ⎦",
-          "types": "Row Matrix:\nA matrix with only one row.\n[ 1  2  3 ]\n\nColumn Matrix:\nA matrix with only one column.\n[ 1 ]\n[ 2 ]\n[ 3 ]\n\nSquare Matrix:\nA matrix where rows = columns.\n[ 1  2 ]\n[ 3  4 ]\n\nZero Matrix:\nA matrix where all elements are zero.\n[ 0  0 ]\n[ 0  0 ]\n\nIdentity Matrix:\nA matrix with 1s on the diagonal and 0s elsewhere.\n[ 1  0 ]\n[ 0  1 ]\n\nDiagonal Matrix:\nA matrix where only diagonal elements are non-zero.\n[ 5  0  0 ]\n[ 0  3  0 ]\n[ 0  0  1 ]\n\nScalar Matrix:\nA diagonal matrix where all diagonal elements are equal.\n[ 2  0 ]\n[ 0  2 ]\n\nUpper Triangular Matrix:\nA matrix where elements below the diagonal are zero.\n[ 1  2  3 ]\n[ 0  4  5 ]\n[ 0  0  6 ]\n\nLower Triangular Matrix:\nA matrix where elements above the diagonal are zero.\n[ 1  0  0 ]\n[ 2  3  0 ]\n[ 4  5  6 ]"
+        "matrix and determinants ": {
+          "matrix & types": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/maths/matrix/matrix&types.html\"> Matrix & Types </a>"
         }
       },
       "STRAIGHT LINES": {

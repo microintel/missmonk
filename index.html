@@ -126,6 +126,11 @@ i{
 color:var(--ink);
 font-size:1.7rem;
 }
+
+a{
+
+text-decoration:none;
+}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
@@ -138,7 +143,6 @@ font-size:1.7rem;
   Missmonk
   </font>
   <button id="themeToggle">🌙</button>
-  <button id="aiBtn" title="Ask ChatGPT"><i class="bi bi-openai"></i></button>
 </header>
 
 <hr>
@@ -251,40 +255,6 @@ function goBack(path) {
 
 
 
-document.getElementById("aiBtn").addEventListener("click", () => {
-  if (!currentPath) return;
-
-  let keys = currentPath.split("|||");
-  let current = data;
-
-  keys.forEach(k => {
-    current = current[k];
-  });
-
-  // ❌ not deep enough (only root or first level)
-  if (keys.length < 2) {
-    alert("Go inside topic level to use AI");
-    return;
-  }
-
-  // ❌ still a category, not final topic
-  if (current && typeof current === "object") {
-    alert("Please select a final topic");
-    return;
-  }
-
-  // last 2 nodes only
-  let lastTwo = keys.slice(-2).join(" > ");
-
-  let prompt = `Explain this clearly:
-
-Topic Path: ${lastTwo}
-Answer: ${JSON.stringify(current, null, 2)}
-`;
-
-  let url = "https://chat.openai.com/?q=" + encodeURIComponent(prompt);
-  window.open(url, "_blank");
-});
 
 const toggleBtn = document.getElementById("themeToggle");
 
