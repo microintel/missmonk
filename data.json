@@ -1,0 +1,41 @@
+{
+  "diploma": {
+    "sem1": {
+      "engineering mathematics": {
+        "MATRICES AND DETERMINANTS": {
+          "Matrix and types": "",
+          "Algebra of Matrices (addition, subtraction, scalar multiplication and multiplication)": "",
+          "Evaluation of determinants of a square matrix of order 2 and 3. Singular matrices": "",
+          "Cramer's rule for solving system of linear equations involving 2 and 3 variables": "",
+          "Adjoint and Inverse of the non-singular matrices of order 2 and 3": "",
+          "Characteristic equation and Eigen values of a square matrix of order 2": ""
+        },
+        "STRAIGHT LINES": {
+          "Slope of a straight line": "",
+          "Intercepts of a straight line": "",
+          "Intercept form of a straight line": "",
+          "Slope-intercept form of a straight line": "",
+          "Slope-point form of a straight line": "",
+          "Two-point form of a straight line": "",
+          "General form of a straight line": "",
+          "Angle between two lines and conditions \rfor lines to be parallel and perpendicular": "",
+          "Equation of a straight line parallel to the \rgiven line": "",
+          "Equation of a straight line perpendicular \rto the given line": ""
+        },
+        "TRIGONOMETRY": {},
+        "DIFFERENTIAL CALCULUS AND APPLICATIONS": {},
+        "INTEGRAL CALCULUS AND APPLICATION": {}
+      },
+      "Fundamentals of Computer": {},
+      "Fundamentals of Electrical and electronics engineering": {},
+      "IT Skills": {},
+      "Environmental Sustainability": {}
+    },
+    "sem2": {},
+    "sem3": {},
+    "sem4": {},
+    "sem5": {},
+    "sem6": {}
+  },
+  "engineering": {}
+}
