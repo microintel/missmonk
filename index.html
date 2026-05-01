@@ -261,21 +261,30 @@ document.getElementById("aiBtn").addEventListener("click", () => {
     current = current[k];
   });
 
-  let lastKey = keys[keys.length - 1];
+  // ❌ not deep enough (only root or first level)
+  if (keys.length < 2) {
+    alert("Go inside topic level to use AI");
+    return;
+  }
+
+  // ❌ still a category, not final topic
+  if (current && typeof current === "object") {
+    alert("Please select a final topic");
+    return;
+  }
+
+  // last 2 nodes only
+  let lastTwo = keys.slice(-2).join(" > ");
 
   let prompt = `Explain this clearly:
 
-Topic: ${lastKey}
+Topic Path: ${lastTwo}
 Answer: ${JSON.stringify(current, null, 2)}
 `;
 
   let url = "https://chat.openai.com/?q=" + encodeURIComponent(prompt);
-
   window.open(url, "_blank");
 });
-
-
-
 
 const toggleBtn = document.getElementById("themeToggle");
 
