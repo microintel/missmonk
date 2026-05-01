@@ -16,13 +16,12 @@
   --card:#ffffff;
 }
 
-/* DARK MODE */
 .dark{
-  --bg:#0f172a;
+  --bg:#000000;
   --ink:#e2e8f0;
   --muted:#94a3b8;
-  --accent:#60a5fa;
-  --card:#1e293b;
+  --accent:#000;
+  --card:#000;
 }
 
 *{box-sizing:border-box}
@@ -37,6 +36,9 @@ body{
 }
 
 header{
+display:flex;
+justify-content:space-around;
+align-items:center;
   max-width:1100px;
   margin:0 auto;
   padding:28px 20px 0;
@@ -114,15 +116,23 @@ background-color:var(--ink);
 color:var(--bg);
 
 }
+#aiBtn{
+font-size:2rem;background:none;border:none;
+}
 
 </style>
+<link rel="stylesheet" href="https://jsdelivr.net">
+
 </head>
 
 <body>
 
 <header>
+<font>
   Missmonk
+  </font>
   <button id="themeToggle">🌙</button>
+  <button id="aiBtn" title="Ask ChatGPT"><i class="bi bi-openai"></i></button>
 </header>
 
 <hr>
@@ -148,7 +158,7 @@ developed by Microintel
 </p>
 
 <script>
-
+let currentPath = "";
 let parent= document.getElementById("par");
 let data;
 async function fetchData() {
@@ -176,7 +186,7 @@ fetchData();
 function exchange(path) {
   let keys = path.split("|||");
   let current = data;
-
+currentPath = path;
   keys.forEach(k => {
     current = current[k];
   });
@@ -235,7 +245,28 @@ function goBack(path) {
 
 
 
+document.getElementById("aiBtn").addEventListener("click", () => {
+  if (!currentPath) return;
 
+  let keys = currentPath.split("|||");
+  let current = data;
+
+  keys.forEach(k => {
+    current = current[k];
+  });
+
+  let lastKey = keys[keys.length - 1];
+
+  let prompt = `Explain this clearly:
+
+Topic: ${lastKey}
+Answer: ${JSON.stringify(current, null, 2)}
+`;
+
+  let url = "https://chat.openai.com/?q=" + encodeURIComponent(prompt);
+
+  window.open(url, "_blank");
+});
 
 
 
