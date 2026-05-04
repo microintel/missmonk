@@ -32,5 +32,22 @@
     "sem5": {},
     "sem6": {}
   },
-  "engineering": {}
+  "engineering": {},
+  "Financial": {
+    "Stock Market": {
+      "Stock Market": {
+        "Basics of Stock Market": {
+          "Role of Stock Market": {}
+        },
+        "How Stock Prices Move?": {},
+        "Set-up yourTrading System": {}
+      },
+      "Stock Research": {},
+      "Evaluating Companies": {},
+      "Valuation of Stocks": {},
+      "When to Buy & When to Sell?": {},
+      "Managing a Portfolio": {},
+      "How to Grow your Money?": {}
+    }
+  }
 }
