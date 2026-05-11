@@ -6,22 +6,19 @@
           "matrix & types": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/maths/matrix/matrix&types.html\"> Matrix & Types </a>"
         }
       },
-      "STRAIGHT LINES": {
-        "Slope of a straight line": "",
-        "Intercepts of a straight line": "",
-        "Intercept forml of a straight line": "",
-        "Slope-intercept form of a straight line": "",
-        "Slope-point form of a straight line": "",
-        "Two-point form of a straight line": "",
-        "General form of a straight line": "",
-        "Angle between two lines and conditions \rfor lines to be parallel and perpendicular": "",
-        "Equation of a straight line parallel to the given line": "",
-        "Equation of a straight line perpendicular to the given line": ""
+      "Fundamentals of Computer": {
+        "BASICS\tOF\tLOGIC\tDESIGN": {
+          "Introduction\tto\tnumber\tsystem.": {
+            "Binary, Octal, Decimal, Hexadecimal": {
+              "binary, octal hexadecimal decimal": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/foc/u1/binary-octal-decimal-hexadecimal.html\"/>"
+            }
+          }
+        },
+        "LOGIC\tCIRCUITS": {},
+        "INTRODUCTION\tTO\tCOMPUTER\tCONCEPTS": {},
+        "INTRODUCTION\tTO\tCOMPUTER\tORGANIZATION\t&\tOPERATING\tSYSTEM": {},
+        "INTRODUCTION\tTO\tCOMPUTER\tPROGRAMMING": {}
       },
-      "TRIGONOMETRY": {},
-      "DIFFERENTIAL CALCULUS AND APPLICATIONS": {},
-      "INTEGRAL CALCULUS AND APPLICATION": {},
-      "Fundamentals of Computer": {},
       "Fundamentals of Electrical and electronics engineering": {},
       "IT Skills": {},
       "Environmental Sustainability": {}
