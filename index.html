@@ -1,284 +1,2235 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MissMonk</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>missmonk</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --bg:#ffffff;
-  --ink:#0f172a;
-  --muted:#64748b;
-  --accent:#3b82f6;
-  --card:#ffffff;
+/* ════════════════════════════════════════════
+   THEME TOKENS
+════════════════════════════════════════════ */
+:root {
+  /* Dark theme (default) */
+  --bg:        #06090f;
+  --bg2:       #0d1117;
+  --surface:   #111820;
+  --surface2:  #18202c;
+  --surface3:  #1e2a38;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --blue:      #3b82f6;
+  --blue-glow: rgba(59,130,246,0.25);
+  --teal:      #2dd4bf;
+  --amber:     #f59e0b;
+  --rose:      #f43f5e;
+  --green:     #22c55e;
+  --text:      #f1f5f9;
+  --text2:     #94a3b8;
+  --text3:     #475569;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --shadow:    0 8px 32px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+  --nav-bg:    rgba(6,9,15,0.88);
+  --topnav-h:  60px;
 }
 
-.dark{
-  --bg:#000000;
-  --ink:#e2e8f0;
-  --muted:#94a3b8;
-  --accent:#000;
-  --card:#000;
+/* Light theme */
+[data-theme="light"] {
+  --bg:        #f0f4f8;
+  --bg2:       #e8edf3;
+  --surface:   #ffffff;
+  --surface2:  #f8fafc;
+  --surface3:  #e2e8f0;
+  --border:    rgba(0,0,0,0.08);
+  --border2:   rgba(0,0,0,0.13);
+  --blue:      #2563eb;
+  --blue-glow: rgba(37,99,235,0.2);
+  --teal:      #0d9488;
+  --amber:     #d97706;
+  --rose:      #e11d48;
+  --green:     #16a34a;
+  --text:      #0f172a;
+  --text2:     #475569;
+  --text3:     #94a3b8;
+  --shadow:    0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.15);
+  --nav-bg:    rgba(240,244,248,0.92);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+/* Midnight theme */
+[data-theme="midnight"] {
+  --bg:        #020408;
+  --bg2:       #080c14;
+  --surface:   #0c1220;
+  --surface2:  #111828;
+  --surface3:  #162032;
+  --border:    rgba(120,150,255,0.1);
+  --border2:   rgba(120,150,255,0.18);
+  --blue:      #818cf8;
+  --blue-glow: rgba(129,140,248,0.3);
+  --teal:      #34d399;
+  --amber:     #fbbf24;
+  --rose:      #fb7185;
+  --green:     #4ade80;
+  --text:      #e8eeff;
+  --text2:     #8890a8;
+  --text3:     #3a4060;
+  --nav-bg:    rgba(2,4,8,0.9);
+}
 
-body{
-  margin:0;
-  font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,Helvetica,sans-serif;
-  color:var(--ink);
+/* Forest theme */
+[data-theme="forest"] {
+  --bg:        #0a1208;
+  --bg2:       #0f1a0c;
+  --surface:   #132010;
+  --surface2:  #182a14;
+  --surface3:  #1e3518;
+  --border:    rgba(100,200,100,0.1);
+  --border2:   rgba(100,200,100,0.18);
+  --blue:      #4ade80;
+  --blue-glow: rgba(74,222,128,0.25);
+  --teal:      #34d399;
+  --amber:     #fde68a;
+  --rose:      #fca5a5;
+  --green:     #86efac;
+  --text:      #ecfdf5;
+  --text2:     #6ee7b7;
+  --text3:     #2a5a30;
+  --nav-bg:    rgba(10,18,8,0.9);
+}
+
+/* Sunset theme */
+[data-theme="sunset"] {
+  --bg:        #130508;
+  --bg2:       #1a0a10;
+  --surface:   #220e16;
+  --surface2:  #2a1220;
+  --surface3:  #36182a;
+  --border:    rgba(255,100,100,0.1);
+  --border2:   rgba(255,100,100,0.18);
+  --blue:      #fb923c;
+  --blue-glow: rgba(251,146,60,0.28);
+  --teal:      #f472b6;
+  --amber:     #fde68a;
+  --rose:      #f87171;
+  --green:     #4ade80;
+  --text:      #fff1f2;
+  --text2:     #fca5a5;
+  --text3:     #5a2030;
+  --nav-bg:    rgba(19,5,8,0.9);
+}
+
+/* ════════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Satoshi',sans-serif;
   background:var(--bg);
-  transition:0.3s ease;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+  transition:background .3s, color .3s;
+}
+button { cursor:pointer; font-family:inherit; }
+input  { font-family:inherit; }
+a { color:inherit; text-decoration:none; }
+
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:4px; }
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(59,130,246,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(45,212,191,0.05) 0%, transparent 60%);
+  pointer-events:none; z-index:0;
 }
 
-header{
-display:flex;
-justify-content:space-around;
-align-items:center;
-  max-width:1100px;
-  margin:0 auto;
-  padding:28px 20px 0;
-  letter-spacing:.6rem;
-  font-weight:400;
-  font-size:42px;
-  color:var(--ink);
+/* ════════════════════════════════════════════
+   AUTH SCREEN (Login + Signup tabs)
+════════════════════════════════════════════ */
+#authScreen {
+  position:fixed; inset:0; z-index:200;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  padding:1rem;
+  overflow-y:auto;
 }
-body{
-  transition: background-color 0.6s ease, color 0.6s ease;
+#authScreen.hidden { display:none; }
+
+.auth-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:28px;
+  padding:2.2rem 2rem;
+  width:100%; max-width:420px;
+  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(59,130,246,0.08);
+  position:relative; overflow:hidden;
+  animation:fadeScaleIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  margin:auto;
+}
+.auth-card::before {
+  content:'';
+  position:absolute; top:-80px; right:-80px;
+  width:220px; height:220px;
+  background:radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+  pointer-events:none;
 }
 
+.auth-logo {
+  display:flex; align-items:center; gap:.75rem; margin-bottom:1.6rem;
+}
+.auth-logo-icon {
+  width:46px; height:46px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  border-radius:14px;
+  display:grid; place-items:center;
+  font-size:1.4rem;
+  box-shadow:0 0 24px var(--blue-glow);
+  flex-shrink:0;
+}
+.auth-logo-text {
+  font-family:'Clash Display',sans-serif;
+  font-size:1.5rem; font-weight:700;
+  background:linear-gradient(90deg,var(--text),var(--teal));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
 
-/* Toggle Button */
-#themeToggle{
-  float:right;
-  padding:8px 14px;
-  border-radius:20px;
-  border:none;
+/* Tabs */
+.auth-tabs {
+  display:flex; background:var(--surface2);
+  border-radius:var(--radius); padding:3px;
+  margin-bottom:1.6rem; border:1px solid var(--border);
+}
+.auth-tab {
+  flex:1; padding:.5rem; text-align:center;
+  font-size:.85rem; font-weight:600;
+  border-radius:11px; border:none;
+  background:transparent; color:var(--text3);
+  transition:background .2s, color .2s;
+}
+.auth-tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 6px rgba(0,0,0,0.25); }
+
+.auth-panel { display:none; }
+.auth-panel.active { display:block; }
+
+.auth-headline {
+  font-family:'Clash Display',sans-serif;
+  font-size:1.5rem; font-weight:700;
+  line-height:1.2; margin-bottom:.3rem;
+}
+.auth-sub { font-size:.85rem; color:var(--text2); margin-bottom:1.5rem; font-weight:300; }
+
+.form-group { margin-bottom:.95rem; }
+.form-label {
+  display:block; font-size:.73rem; font-weight:600;
+  letter-spacing:.06em; text-transform:uppercase;
+  color:var(--text2); margin-bottom:.45rem;
+}
+.form-input {
+  width:100%; padding:.75rem 1rem;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text); font-size:.93rem;
+  transition:border-color .2s, box-shadow .2s;
+  outline:none;
+}
+.form-input:focus {
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px var(--blue-glow);
+}
+.form-input::placeholder { color:var(--text3); }
+
+.input-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+
+.btn-primary {
+  width:100%; padding:.82rem;
+  background:linear-gradient(135deg,var(--blue),#6366f1);
+  border:none; border-radius:var(--radius);
+  color:#fff; font-size:.97rem; font-weight:700;
+  letter-spacing:.01em;
+  transition:transform .15s, box-shadow .15s, opacity .15s;
+  box-shadow:0 4px 20px var(--blue-glow);
+  margin-top:.4rem;
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px var(--blue-glow); }
+.btn-primary:active { transform:translateY(0); opacity:.9; }
+.btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+.auth-error {
+  background:rgba(244,63,94,0.12);
+  border:1px solid rgba(244,63,94,0.3);
+  border-radius:var(--radius);
+  padding:.6rem 1rem;
+  font-size:.82rem; color:var(--rose);
+  margin-bottom:.9rem; display:none;
+}
+.auth-error.show { display:block; }
+
+.auth-success {
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:var(--radius);
+  padding:.6rem 1rem;
+  font-size:.82rem; color:var(--green);
+  margin-bottom:.9rem; display:none;
+}
+.auth-success.show { display:block; }
+
+.auth-switch {
+  text-align:center; margin-top:1.2rem;
+  font-size:.8rem; color:var(--text3);
+}
+.auth-switch a {
+  color:var(--blue); font-weight:600; cursor:pointer;
+  text-decoration:underline; text-underline-offset:2px;
+}
+
+.pw-strength {
+  height:3px; border-radius:2px;
+  background:var(--surface3); margin-top:.4rem;
+  overflow:hidden;
+}
+.pw-fill {
+  height:100%; border-radius:2px;
+  transition:width .3s, background .3s;
+}
+
+/* URL Data Source Panel in auth */
+.url-source-hint {
+  font-size:.75rem; color:var(--text3);
+  margin-top:.4rem; display:flex; align-items:center; gap:.3rem;
+}
+
+/* ════════════════════════════════════════════
+   APP SHELL
+════════════════════════════════════════════ */
+#appShell { display:none; flex-direction:column; min-height:100vh; position:relative; z-index:1; }
+#appShell.visible { display:flex; }
+
+/* ── TOP NAV ── */
+.topnav {
+  position:sticky; top:0; z-index:50;
+  background:var(--nav-bg);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 1rem;
+  height:var(--topnav-h);
+  display:flex; align-items:center; gap:.75rem;
+}
+
+.nav-logo {
+  display:flex; align-items:center; gap:.55rem;
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem; font-weight:700;
+  flex-shrink:0;
+  color:var(--text);
+}
+.nav-logo-icon {
+  width:30px; height:30px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  border-radius:9px;
+  display:grid; place-items:center;
+  font-size:.9rem; flex-shrink:0;
+}
+
+.nav-spacer { flex:1; }
+
+/* Search */
+.nav-search {
+  position:relative; display:flex; align-items:center;
+  flex:1; max-width:340px; min-width:0;
+}
+.nav-search-input {
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:30px;
+  padding:.4rem .9rem .4rem 2.2rem;
+  color:var(--text); font-size:.83rem;
+  width:100%; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+.nav-search-input:focus {
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px var(--blue-glow);
+}
+.nav-search-input::placeholder { color:var(--text3); }
+.nav-search-icon {
+  position:absolute; left:.72rem;
+  color:var(--text3); font-size:.85rem; pointer-events:none;
+}
+.search-clear {
+  position:absolute; right:.65rem;
+  background:none; border:none; color:var(--text3);
+  font-size:.9rem; padding:.1rem; display:none;
+  line-height:1;
+}
+.search-clear.show { display:block; }
+
+/* Nav icon buttons */
+.nav-icon-btn {
+  background:none; border:none;
+  color:var(--text2); font-size:1.1rem;
+  padding:.35rem; border-radius:8px;
+  transition:background .15s, color .15s;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.nav-icon-btn:hover { background:var(--surface2); color:var(--text); }
+
+/* User pill */
+.user-pill {
+  display:flex; align-items:center; gap:.5rem;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:30px;
+  padding:.3rem .65rem .3rem .35rem;
+  font-size:.82rem; cursor:pointer;
+  transition:border-color .2s;
+  position:relative; flex-shrink:0;
+}
+.user-pill:hover { border-color:var(--border2); }
+.user-avatar {
+  width:26px; height:26px; border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:grid; place-items:center;
+  font-size:.75rem; font-weight:700; flex-shrink:0;
+  color:#fff;
+}
+.user-name { font-weight:500; color:var(--text); max-width:70px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Dropdown */
+.user-dropdown {
+  position:absolute; top:calc(100% + 8px); right:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  min-width:180px;
+  box-shadow:var(--shadow);
+  padding:.4rem 0;
+  display:none; z-index:60;
+  animation:fadeDown .2s ease;
+}
+.user-dropdown.open { display:block; }
+.dd-item {
+  padding:.6rem 1rem;
+  font-size:.85rem; color:var(--text2);
+  display:flex; align-items:center; gap:.6rem;
+  transition:background .15s, color .15s;
   cursor:pointer;
-  font-size:1.6rem;
-  background:var(--card);
-  color:var(--ink);
+}
+.dd-item:hover { background:var(--surface2); color:var(--text); }
+.dd-item.danger { color:var(--rose); }
+.dd-sep { height:1px; background:var(--border); margin:.3rem 0; }
+.dd-label {
+  padding:.3rem 1rem .1rem;
+  font-size:.68rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text3);
 }
 
-.section{
-  max-width:1100px;
-  margin:10px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
+/* Hamburger */
+.nav-burger {
+  display:none; background:none; border:none;
+  color:var(--text2); font-size:1.2rem; padding:.35rem;
+  border-radius:8px; flex-shrink:0;
+  transition:background .15s;
+}
+.nav-burger:hover { background:var(--surface2); }
+
+/* ── THEME PICKER PANEL ── */
+.theme-panel {
+  position:fixed; top:0; right:0; bottom:0; z-index:150;
+  width:280px; background:var(--surface);
+  border-left:1px solid var(--border2);
+  box-shadow:-8px 0 40px rgba(0,0,0,0.4);
+  padding:1.5rem;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+}
+.theme-panel.open { transform:translateX(0); }
+.theme-panel-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem; font-weight:700; margin-bottom:1.2rem;
+  display:flex; align-items:center; justify-content:space-between;
+  color:var(--text);
+}
+.theme-close {
+  background:none; border:none; color:var(--text3);
+  font-size:1.1rem; cursor:pointer; padding:.2rem; border-radius:6px;
+}
+.theme-close:hover { color:var(--text); background:var(--surface2); }
+
+.theme-options { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-bottom:1.4rem; }
+.theme-opt {
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  padding:.75rem .6rem;
+  cursor:pointer; text-align:center;
+  transition:border-color .2s, transform .15s;
+  background:var(--surface2);
+}
+.theme-opt:hover { transform:translateY(-2px); border-color:var(--border2); }
+.theme-opt.active { border-color:var(--blue); }
+.theme-opt-swatch {
+  display:flex; gap:3px; justify-content:center;
+  margin-bottom:.4rem;
+}
+.swatch-dot {
+  width:14px; height:14px; border-radius:50%;
+}
+.theme-opt-name {
+  font-size:.73rem; font-weight:600; color:var(--text2);
 }
 
-.section div{
-  flex-grow:1;
+.theme-divider { border:none; border-top:1px solid var(--border); margin:.8rem 0; }
+.theme-section-lbl {
+  font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--text3); margin-bottom:.6rem;
 }
 
-h1{
-  margin:0 0 8px;
-  font-size:56px;
+/* URL Data Source inside theme panel */
+.url-form { display:flex; flex-direction:column; gap:.55rem; }
+.url-input {
+  width:100%; padding:.6rem .85rem;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text); font-size:.8rem;
+  outline:none; font-family:inherit;
+  transition:border-color .2s;
+}
+.url-input:focus { border-color:var(--blue); }
+.url-input::placeholder { color:var(--text3); }
+.btn-sm {
+  padding:.5rem .85rem;
+  background:var(--blue);
+  border:none; border-radius:10px;
+  color:#fff; font-size:.8rem; font-weight:700;
+  cursor:pointer; transition:opacity .15s, transform .15s;
+}
+.btn-sm:hover { opacity:.85; transform:translateY(-1px); }
+.btn-sm.secondary {
+  background:var(--surface3); color:var(--text2);
+}
+.btn-sm.secondary:hover { color:var(--text); }
+.url-status {
+  font-size:.75rem; padding:.4rem .65rem;
+  border-radius:8px; display:none;
+}
+.url-status.ok { display:block; background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,.25); }
+.url-status.err { display:block; background:rgba(244,63,94,0.12); color:var(--rose); border:1px solid rgba(244,63,94,.25); }
+.url-status.loading { display:block; background:rgba(59,130,246,0.1); color:var(--blue); border:1px solid rgba(59,130,246,.2); }
+
+/* ── MAIN LAYOUT ── */
+.shell-body {
+  display:flex; flex:1; overflow:hidden;
 }
 
-p{margin:0}
-
-@media (max-width:640px){
-  header{font-size:34px; letter-spacing:.5rem}
-  h1{font-size:40px}
+/* ── SIDEBAR ── */
+.sidebar {
+  width:256px; flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-inner { flex:1; overflow-y:auto; padding:1rem .75rem; }
+.sidebar-section-label {
+  font-size:.65rem; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text3); padding:.3rem .7rem .6rem;
 }
 
-.cd{
-  min-width:70px;
-  border-radius:1rem;
-  box-shadow:0 4px 8px rgba(0,0,0,.15);
-  text-align:center;
-  padding:10px;
-  background:var(--card);
-  color:var(--ink);
-  transition:.3s;
-  border:1px solid var(--muted);
+.course-item {
+  display:flex; align-items:center; gap:.7rem;
+  padding:.6rem .7rem;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:background .15s, color .15s;
+  color:var(--text2); font-size:.88rem; font-weight:500;
+  margin-bottom:.15rem;
+  border:1.5px solid transparent;
+}
+.course-item:hover { background:var(--surface); color:var(--text); }
+.course-item.active {
+  background:linear-gradient(90deg,rgba(59,130,246,.18),rgba(59,130,246,.06));
+  border-color:rgba(59,130,246,.3);
+  color:var(--blue);
+}
+.course-emoji {
+  width:32px; height:32px; border-radius:9px;
+  background:var(--surface2);
+  display:grid; place-items:center;
+  font-size:.95rem; flex-shrink:0;
+  transition:background .15s;
+}
+.course-item.active .course-emoji { background:rgba(59,130,246,.15); }
+.course-info { flex:1; min-width:0; }
+.course-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:.87rem; }
+.course-count { font-size:.68rem; color:var(--text3); font-weight:400; margin-top:1px; }
+
+/* Sidebar footer */
+.sidebar-footer {
+  padding:.9rem;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.prog-label { font-size:.7rem; color:var(--text3); font-weight:500; margin-bottom:.4rem; display:flex; justify-content:space-between; }
+.prog-bar { height:5px; background:var(--surface3); border-radius:3px; overflow:hidden; }
+.prog-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--teal));
+  border-radius:3px;
+  transition:width .5s ease;
+}
+.prog-stats { margin-top:.55rem; display:flex; gap:.6rem; }
+.prog-stat { text-align:center; flex:1; }
+.prog-stat-val {
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem; font-weight:700;
+  color:var(--text);
+}
+.prog-stat-key { font-size:.62rem; color:var(--text3); margin-top:1px; }
+
+/* Mobile overlay */
+.sidebar-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.6); z-index:39;
+  backdrop-filter:blur(3px);
 }
 
-.cd:hover{
-  transform:scale(1.05);
+/* ── CONTENT AREA ── */
+.content {
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding:1.8rem 1.8rem 3rem;
+  min-width:0;
 }
 
-.lg{
-  font-size:3rem;
+/* ── WELCOME HERO ── */
+.welcome-hero {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; min-height:60vh;
+  text-align:center; gap:1rem;
+  animation:fadeUp .5s ease both;
+}
+.hero-glow {
+  width:88px; height:88px; border-radius:28px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:grid; place-items:center; font-size:2.2rem;
+  box-shadow:0 0 60px var(--blue-glow), 0 0 120px rgba(45,212,191,.1);
+  margin-bottom:.5rem;
+}
+.hero-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:2rem; font-weight:700;
+  background:linear-gradient(90deg,var(--text) 0%,var(--teal) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub { color:var(--text2); font-size:.93rem; max-width:360px; line-height:1.7; font-weight:300; }
+
+.hero-stats {
+  display:flex; gap:1.2rem; margin-top:.5rem; flex-wrap:wrap; justify-content:center;
+}
+.hero-stat {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:.65rem 1.1rem;
+  text-align:center; min-width:85px;
+}
+.hero-stat-val {
+  font-family:'Clash Display',sans-serif;
+  font-size:1.35rem; font-weight:700; color:var(--blue);
+}
+.hero-stat-key { font-size:.68rem; color:var(--text3); margin-top:1px; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display:flex; align-items:center; gap:.25rem;
+  flex-wrap:wrap; margin-bottom:1.3rem;
+  font-size:.78rem;
+}
+.crumb {
+  color:var(--text3); cursor:pointer;
+  padding:.18rem .38rem; border-radius:6px;
+  transition:color .15s, background .15s; font-weight:400;
+}
+.crumb:hover { color:var(--blue); background:rgba(59,130,246,.08); }
+.crumb.active { color:var(--text); cursor:default; font-weight:500; }
+.crumb-sep { color:var(--text3); font-size:.7rem; }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom:1.5rem; }
+.page-tag {
+  display:inline-flex; align-items:center; gap:.35rem;
+  font-size:.67rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:.26rem .62rem; border-radius:6px;
+  background:rgba(59,130,246,.12); color:var(--blue);
+  margin-bottom:.55rem;
+}
+.page-tag.teal { background:rgba(45,212,191,.12); color:var(--teal); }
+.page-tag.amber { background:rgba(245,158,11,.12); color:var(--amber); }
+.page-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:1.65rem; font-weight:700; line-height:1.2; margin-bottom:.25rem;
+  color:var(--text);
+}
+.page-meta { font-size:.8rem; color:var(--text2); font-weight:300; }
+.page-header-row {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;
+}
+.share-btn {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:.45rem .8rem;
+  font-size:.78rem; color:var(--text2);
+  display:flex; align-items:center; gap:.4rem;
+  transition:background .15s, color .15s, border-color .15s;
+  flex-shrink:0;
+}
+.share-btn:hover { background:var(--surface3); color:var(--text); border-color:var(--border2); }
+
+/* depth progress */
+.depth-prog { height:2px; background:var(--border); border-radius:1px; margin-bottom:1.5rem; overflow:hidden; }
+.depth-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal)); border-radius:1px; transition:width .4s ease; }
+
+/* ── CARD GRID ── */
+.card-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:.9rem;
 }
 
-a{
-  text-decoration:none;
-  color:inherit;
+/* ── CARD ── */
+.card {
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.2rem 1.1rem 1rem;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:transform .22s cubic-bezier(.4,0,.2,1),
+             border-color .22s, box-shadow .22s;
+  animation:fadeUp .35s ease both;
+  display:flex; flex-direction:column; gap:.45rem;
+}
+.card::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(59,130,246,.06) 0%,transparent 60%);
+  opacity:0; transition:opacity .22s;
+}
+.card:hover { transform:translateY(-3px); border-color:rgba(59,130,246,.4); box-shadow:0 10px 30px rgba(59,130,246,.12); }
+.card:hover::after { opacity:1; }
+.card.empty { opacity:.5; cursor:default; }
+.card.empty:hover { transform:none; border-color:var(--border); box-shadow:none; }
+.card.empty:hover::after { opacity:0; }
+.card.done { border-color:rgba(34,197,94,.3); }
+.card.done::after { background:linear-gradient(135deg,rgba(34,197,94,.06) 0%,transparent 60%); }
+.card.done:hover { border-color:rgba(34,197,94,.5); box-shadow:0 10px 30px rgba(34,197,94,.1); }
+
+.done-badge {
+  position:absolute; top:.7rem; right:.7rem;
+  width:20px; height:20px; border-radius:50%;
+  background:rgba(34,197,94,.2); border:1px solid rgba(34,197,94,.4);
+  display:grid; place-items:center;
+  font-size:.65rem; color:var(--green);
 }
 
-.cdback{
-
-background-color:var(--ink);
-color:var(--bg);
-
+.card-type-badge {
+  display:inline-flex; align-items:center; gap:.3rem;
+  font-size:.62rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:.2rem .52rem; border-radius:5px;
+  background:rgba(59,130,246,.12); color:var(--blue);
+  width:fit-content;
 }
-#aiBtn{
-font-size:2rem;background:none;border:none;
+.card-type-badge.teal { background:rgba(45,212,191,.12); color:var(--teal); }
+.card-type-badge.amber { background:rgba(245,158,11,.12); color:var(--amber); }
+.card-type-badge.muted { background:var(--surface3); color:var(--text3); }
+
+.card-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:.94rem; font-weight:600;
+  line-height:1.35; color:var(--text);
 }
-i{
-color:var(--ink);
-font-size:1.7rem;
+.card-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:auto; padding-top:.25rem;
+}
+.card-count { font-size:.71rem; color:var(--text3); font-weight:400; }
+.card-arrow { color:var(--text3); font-size:1rem; transition:transform .2s, color .2s; }
+.card:not(.empty):hover .card-arrow { color:var(--blue); transform:translate(2px,-2px); }
+
+.card.link-card {
+  border-color:rgba(45,212,191,.25);
+  background:linear-gradient(135deg,rgba(45,212,191,.05) 0%,var(--surface) 60%);
+}
+.card.link-card:hover { border-color:rgba(45,212,191,.5); box-shadow:0 10px 30px rgba(45,212,191,.1); }
+
+/* Search highlight */
+.highlight { background:rgba(59,130,246,.25); border-radius:3px; padding:0 2px; color:var(--blue); font-weight:600; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; padding:4rem 2rem; text-align:center; gap:.7rem;
+  color:var(--text3);
+}
+.empty-state .ei { font-size:2.5rem; opacity:.35; }
+.empty-state h3 { font-family:'Clash Display',sans-serif; font-size:1rem; color:var(--text2); }
+.empty-state p { font-size:.8rem; max-width:260px; line-height:1.6; }
+
+/* ── MODAL ── */
+.modal-backdrop {
+  display:none; position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,.85); backdrop-filter:blur(8px);
+  align-items:center; justify-content:center; padding:1rem;
+}
+.modal-backdrop.open { display:flex; }
+.modal-box {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  width:100%; max-width:900px;
+  height:85vh; max-height:720px;
+  display:flex; flex-direction:column; overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  animation:fadeScaleIn .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+.modal-head {
+  display:flex; align-items:center; gap:.65rem;
+  padding:.85rem 1.1rem;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.modal-head-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:.92rem; font-weight:600; flex:1;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:var(--text);
+}
+.modal-btn {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; color:var(--text2);
+  padding:.32rem .68rem; font-size:.8rem;
+  transition:background .15s, color .15s; flex-shrink:0;
+}
+.modal-btn:hover { background:var(--surface3); color:var(--text); }
+.modal-btn.done-btn {
+  background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.3);
+  color:var(--green);
+}
+.modal-btn.done-btn:hover { background:rgba(34,197,94,.22); }
+.modal-btn.share-modal-btn {
+  background:rgba(59,130,246,.1); border-color:rgba(59,130,246,.25);
+  color:var(--blue);
+}
+.modal-btn.share-modal-btn:hover { background:rgba(59,130,246,.2); }
+.modal-iframe { flex:1; border:none; background:#fff; }
+
+/* ── SEARCH RESULTS ── */
+.search-results {
+  display:none; position:absolute; top:calc(100% + 6px); left:0; right:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  max-height:320px; overflow-y:auto;
+  z-index:80; padding:.35rem 0;
+  animation:fadeDown .2s ease;
+}
+.search-results.open { display:block; }
+.sr-item {
+  padding:.52rem .9rem;
+  font-size:.83rem; cursor:pointer;
+  display:flex; align-items:flex-start; gap:.6rem;
+  transition:background .15s;
+}
+.sr-item:hover { background:var(--surface2); }
+.sr-item-icon { font-size:.9rem; flex-shrink:0; margin-top:1px; }
+.sr-item-body { flex:1; min-width:0; }
+.sr-item-label { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--text); }
+.sr-path { font-size:.7rem; color:var(--text3); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sr-empty { padding:1.1rem; text-align:center; color:var(--text3); font-size:.82rem; }
+.sr-section { padding:.35rem .9rem .1rem; font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); }
+.sr-divider { height:1px; background:var(--border); margin:.25rem 0; }
+
+/* ── SHARE POPUP ── */
+.share-popup {
+  position:fixed; inset:0; z-index:200;
+  display:none; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.7); backdrop-filter:blur(6px);
+}
+.share-popup.open { display:flex; }
+.share-box {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:22px;
+  padding:1.8rem 1.6rem;
+  width:100%; max-width:380px;
+  box-shadow:var(--shadow-lg);
+  animation:fadeScaleIn .3s cubic-bezier(.34,1.56,.64,1) both;
+  margin:1rem;
+}
+.share-box-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem; font-weight:700; margin-bottom:.3rem; color:var(--text);
+}
+.share-box-sub { font-size:.8rem; color:var(--text2); margin-bottom:1.2rem; }
+.share-url-row {
+  display:flex; gap:.5rem; margin-bottom:1.1rem;
+}
+.share-url-input {
+  flex:1; padding:.6rem .8rem;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  color:var(--text); font-size:.78rem;
+  outline:none; min-width:0;
+  font-family:monospace;
+}
+.share-methods {
+  display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1rem;
+}
+.share-method-btn {
+  padding:.65rem .6rem;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:12px; color:var(--text2);
+  font-size:.82rem; font-weight:500;
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.share-method-btn:hover { background:var(--surface3); color:var(--text); border-color:var(--border2); }
+.share-close-btn {
+  width:100%; padding:.6rem;
+  background:none; border:1px solid var(--border);
+  border-radius:10px; color:var(--text3); font-size:.82rem;
+  transition:background .15s;
+}
+.share-close-btn:hover { background:var(--surface2); color:var(--text2); }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:1.2rem; right:1.2rem; z-index:300;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  padding:.65rem 1rem;
+  font-size:.83rem; color:var(--text);
+  box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:.5rem;
+  transform:translateY(100px); opacity:0;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  pointer-events:none; max-width:300px;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* ── LOADER ── */
+.loader-ring {
+  width:18px; height:18px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top-color:currentColor;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:inline-block;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeScaleIn {
+  from { opacity:0; transform:scale(.92); }
+  to   { opacity:1; transform:scale(1); }
+}
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-8px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 
-a{
+.card:nth-child(1){animation-delay:.03s}
+.card:nth-child(2){animation-delay:.07s}
+.card:nth-child(3){animation-delay:.11s}
+.card:nth-child(4){animation-delay:.15s}
+.card:nth-child(5){animation-delay:.19s}
+.card:nth-child(6){animation-delay:.23s}
+.card:nth-child(7){animation-delay:.27s}
+.card:nth-child(8){animation-delay:.31s}
+.card:nth-child(9){animation-delay:.35s}
 
-text-decoration:none;
+/* ══════════════════════
+   RESPONSIVE — MOBILE
+══════════════════════ */
+@media (max-width:768px) {
+  .sidebar {
+    position:fixed; top:var(--topnav-h); left:0; bottom:0; z-index:40;
+    transform:translateX(-100%);
+    width:82vw; max-width:300px;
+    box-shadow:8px 0 30px rgba(0,0,0,.4);
+  }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-overlay.open { display:block; }
+  .nav-burger { display:flex; }
+  .nav-logo span { display:none; }
+  .nav-search { max-width:none; }
+  .content { padding:1.1rem .85rem 2rem; }
+  .card-grid { grid-template-columns:repeat(2,1fr); gap:.65rem; }
+  .page-title { font-size:1.3rem; }
+  .hero-title { font-size:1.55rem; }
+  .modal-box { height:92vh; max-height:none; border-radius:16px; }
+  .user-name { display:none; }
+  .toast { bottom:.8rem; right:.8rem; left:.8rem; max-width:none; }
+  .share-btn span { display:none; }
+  .theme-panel { width:92vw; max-width:340px; }
+}
+@media (max-width:480px) {
+  .topnav { padding:0 .75rem; gap:.5rem; }
+  .card-grid { grid-template-columns:1fr 1fr; gap:.55rem; }
+  .card-title { font-size:.88rem; }
+  .card { padding:1rem .9rem .9rem; }
+  .hero-stats { gap:.7rem; }
+  .hero-stat { padding:.55rem .8rem; min-width:78px; }
+  .input-row { grid-template-columns:1fr; }
+  .share-methods { grid-template-columns:1fr; }
+  .modal-head { padding:.7rem .9rem; gap:.5rem; }
+}
+@media (max-width:360px) {
+  .card-grid { grid-template-columns:1fr; }
+  .nav-search { display:none; }
 }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-
 </head>
-
 <body>
 
-<header>
-<font>
-  Missmonk
-  </font>
-  <button id="themeToggle">🌙</button>
-</header>
+<!-- ══════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════ -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🎓</div>
+      <span class="auth-logo-text">Missmonk</span>
+    </div>
 
-<hr>
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
 
-<h2 id="currentTitle" style="text-align:center; margin:10px; color:var(--muted);">
-  Home
-</h2>
+    <!-- LOGIN PANEL -->
+    <div class="auth-panel active" id="panelLogin">
+      <h2 class="auth-headline">Welcome back 👋</h2>
+      <p class="auth-sub">Sign in to track your learning progress</p>
 
+      <div class="auth-error" id="loginError"></div>
 
-<section id="par" class="section">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="loginUser" type="text" placeholder="Enter username" autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
 
-nkn...
+      <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In →</button>
+      <p class="auth-switch">Don't have an account? <a onclick="switchTab('signup')">Create one</a></p>
+    </div>
 
+    <!-- SIGNUP PANEL -->
+    <div class="auth-panel" id="panelSignup">
+      <h2 class="auth-headline">Create account ✨</h2>
+      <p class="auth-sub">Join LearnPath and start your journey</p>
+
+      <div class="auth-error" id="signupError"></div>
+      <div class="auth-success" id="signupSuccess"></div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" id="signupFirst" type="text" placeholder="Jane" autocomplete="given-name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" id="signupLast" type="text" placeholder="Doe" autocomplete="family-name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="signupUser" type="text" placeholder="janedoe" autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="signupEmail" type="email" placeholder="jane@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="signupPass" type="password" placeholder="Min 6 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)"/>
+        <div class="pw-strength"><div class="pw-fill" id="pwFill" style="width:0%;background:var(--rose)"></div></div>
+      </div>
+
+      <button class="btn-primary" id="signupBtn" onclick="doSignup()">Create Account →</button>
+      <p class="auth-switch">Already have an account? <a onclick="switchTab('login')">Sign in</a></p>
+    </div>
+  </div>
 </div>
 
+<!-- ══════════════════════════════════
+     APP SHELL
+══════════════════════════════════ -->
+<div id="appShell">
 
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <button class="nav-burger" id="burgerBtn" onclick="toggleSidebar()">☰</button>
 
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🎓</div>
+      <span>LearnPath</span>
+    </div>
 
-</section>
+    <div class="nav-spacer"></div>
 
-<p style="text-align:center; margin-top:20px; font-size:14px; color:var(--muted);">
-developed by Microintel
-</p>
+    <!-- Search -->
+    <div class="nav-search" id="searchWrapper">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" class="nav-search-input" placeholder="Search topics, lessons…" id="searchInput"
+             oninput="onSearch()" onfocus="showSearch()" autocomplete="off"/>
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <div class="search-results" id="searchResults"></div>
+    </div>
 
-<script>
-let currentPath = "";
-let parent= document.getElementById("par");
-let data;
-async function fetchData() {
-  try {
-    let response = await fetch("https://microintel.github.io/missmonk/data.json");
-    data = await response.json(); 
-    parent.innerHTML="";
-    Object.keys(data).forEach((x)=>{
-    let xx= document.createElement("div");
-    xx.innerHTML=`
-    <div onclick="exchange('${x}')" class="cd">
-    <h3>${x}</h3>
-    </div>`;
-    parent.appendChild(xx);
-    
-    });
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
+    <!-- Theme button -->
+    <button class="nav-icon-btn" onclick="toggleThemePanel()" title="Themes & Settings">🎨</button>
 
-fetchData();
+    <!-- User pill -->
+    <div class="user-pill" id="userPill" onclick="toggleDropdown()">
+      <div class="user-avatar" id="userAvatarNav">?</div>
+      <span class="user-name" id="userNameNav">User</span>
+      <span style="color:var(--text3);font-size:.7rem;margin-left:2px;">▾</span>
 
-
-function exchange(path) {
-  let keys = path.split("|||");
-  let current = data;
-currentPath = path;
-  keys.forEach(k => {
-    current = current[k];
-  });
-
-  let title = document.getElementById("currentTitle");
-  title.textContent = keys[keys.length - 1];
-
-  parent.innerHTML = "";
-
-  if (keys.length > 0) {
-    let backBtn = document.createElement("div");
-    backBtn.innerHTML = `
-      <div onclick="goBack('${path}')" class="cd cdback">
-        <h3>⬅ Back</h3>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="dd-label">Account</div>
+        <div class="dd-item" id="ddInfo">👤 <span id="ddName">User</span></div>
+        <div class="dd-sep"></div>
+        <div class="dd-label">Data</div>
+        <div class="dd-item" onclick="openThemePanel()">⚙️ Settings & Themes</div>
+        <div class="dd-item" onclick="resetProgress()">🔄 Reset Progress</div>
+        <div class="dd-sep"></div>
+        <div class="dd-item danger" onclick="doLogout()">🚪 Log Out</div>
       </div>
-    `;
-    parent.appendChild(backBtn);
-  }
+    </div>
+  </nav>
 
-  if (typeof current === "object") {
-    Object.keys(current).forEach((key) => {
-      let div = document.createElement("div");
+  <!-- BODY -->
+  <div class="shell-body">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-      div.innerHTML = `
-        <div onclick="exchange('${path}|||${key}')" class="cd">
-          <h3>${key}</h3>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner" id="sidebarInner"></div>
+      <div class="sidebar-footer">
+        <div class="prog-label">
+          <span>Overall Progress</span>
+          <span id="progPct">0%</span>
         </div>
-      `;
-
-      parent.appendChild(div);
-    });
-  } else {
-    parent.innerHTML += `
-      <div class="cd">
-        <h3>Final Value</h3>
-        <p>${current}</p>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="prog-stats">
+          <div class="prog-stat">
+            <div class="prog-stat-val" id="statDone">0</div>
+            <div class="prog-stat-key">Done</div>
+          </div>
+          <div class="prog-stat">
+            <div class="prog-stat-val" id="statTotal">0</div>
+            <div class="prog-stat-key">Total</div>
+          </div>
+          <div class="prog-stat">
+            <div class="prog-stat-val" id="statPct">0%</div>
+            <div class="prog-stat-key">Score</div>
+          </div>
+        </div>
       </div>
-    `;
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<!-- LESSON MODAL -->
+<div class="modal-backdrop" id="modalBg">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-head-title" id="modalTitle">Loading…</span>
+      <button class="modal-btn share-modal-btn" onclick="shareLesson()">⬆ Share</button>
+      <button class="modal-btn done-btn" id="modalDoneBtn" onclick="markDone()">✓ Mark Done</button>
+      <button class="modal-btn" onclick="closeModal()">✕</button>
+    </div>
+    <iframe class="modal-iframe" id="modalFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+  </div>
+</div>
+
+<!-- THEME / SETTINGS PANEL -->
+<div class="theme-panel" id="themePanel">
+  <div class="theme-panel-title">
+    🎨 Themes & Settings
+    <button class="theme-close" onclick="closeThemePanel()">✕</button>
+  </div>
+
+  <div class="theme-section-lbl">Color Theme</div>
+  <div class="theme-options" id="themeOptions">
+    <div class="theme-opt active" data-theme="dark" onclick="applyTheme('dark')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#06090f;border:1px solid #333"></div>
+        <div class="swatch-dot" style="background:#3b82f6"></div>
+        <div class="swatch-dot" style="background:#2dd4bf"></div>
+      </div>
+      <div class="theme-opt-name">Dark</div>
+    </div>
+    <div class="theme-opt" data-theme="light" onclick="applyTheme('light')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#f0f4f8;border:1px solid #ccc"></div>
+        <div class="swatch-dot" style="background:#2563eb"></div>
+        <div class="swatch-dot" style="background:#0d9488"></div>
+      </div>
+      <div class="theme-opt-name">Light</div>
+    </div>
+    <div class="theme-opt" data-theme="midnight" onclick="applyTheme('midnight')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#020408;border:1px solid #222"></div>
+        <div class="swatch-dot" style="background:#818cf8"></div>
+        <div class="swatch-dot" style="background:#34d399"></div>
+      </div>
+      <div class="theme-opt-name">Midnight</div>
+    </div>
+    <div class="theme-opt" data-theme="forest" onclick="applyTheme('forest')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#0a1208;border:1px solid #1a3a10"></div>
+        <div class="swatch-dot" style="background:#4ade80"></div>
+        <div class="swatch-dot" style="background:#34d399"></div>
+      </div>
+      <div class="theme-opt-name">Forest</div>
+    </div>
+    <div class="theme-opt" data-theme="sunset" onclick="applyTheme('sunset')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#130508;border:1px solid #3a1020"></div>
+        <div class="swatch-dot" style="background:#fb923c"></div>
+        <div class="swatch-dot" style="background:#f472b6"></div>
+      </div>
+      <div class="theme-opt-name">Sunset</div>
+    </div>
+  </div>
+
+  <hr class="theme-divider"/>
+  <div class="theme-section-lbl">Load Curriculum from URL</div>
+  <div class="url-form">
+    <input class="url-input" id="urlInput" type="url" value="https://microintel.github.io/missmonk/data.json" placeholder="https://example.com/curriculum.json"/>
+    <div style="display:flex;gap:.5rem;">
+      <button class="btn-sm" onclick="fetchFromUrl()" style="flex:1;">↓ Fetch & Load</button>
+      <button class="btn-sm secondary" onclick="resetToBuiltIn()">Reset</button>
+    </div>
+    <div class="url-status" id="urlStatus"></div>
+    <p style="font-size:.72rem;color:var(--text3);line-height:1.5;">
+      JSON must be an object matching the curriculum format. Arrays of <code style="font-size:.7rem;background:var(--surface3);padding:1px 4px;border-radius:4px;">{name, url}</code> also supported.
+    </p>
+  </div>
+</div>
+
+<!-- SHARE POPUP -->
+<div class="share-popup" id="sharePopup" onclick="handleShareOverlayClick(event)">
+  <div class="share-box">
+    <div class="share-box-title">⬆ Share</div>
+    <div class="share-box-sub" id="shareSubtitle">Share this topic with others</div>
+    <div class="share-url-row">
+      <input class="share-url-input" id="shareUrlInput" readonly/>
+      <button class="btn-sm" onclick="copyShareUrl()">Copy</button>
+    </div>
+    <div class="share-methods">
+      <button class="share-method-btn" onclick="shareVia('whatsapp')">💬 WhatsApp</button>
+      <button class="share-method-btn" onclick="shareVia('telegram')">✈ Telegram</button>
+      <button class="share-method-btn" onclick="shareVia('twitter')">🐦 X / Twitter</button>
+      <button class="share-method-btn" onclick="shareVia('email')">✉ Email</button>
+    </div>
+    <button class="share-close-btn" onclick="closeSharePopup()">Close</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+/* ══════════════════════════════
+   BUILT-IN CURRICULUM DATA
+══════════════════════════════ */
+const BUILT_IN_CURRICULUM = {
+  "diploma": {
+    "sem1": {
+      "engineering mathematics": {
+        "matrix and determinants": {
+          "matrix & types": '<a href="https://microintel.github.io/missmonk/diploma/sem1/maths/matrix/matrix&types.html">Matrix & Types</a>'
+        }
+      },
+      "Fundamentals of Computer": {
+        "BASICS OF LOGIC DESIGN": {
+          "Introduction to number system": {
+            "Binary, Octal, Decimal, Hexadecimal": {}
+          }
+        },
+        "LOGIC CIRCUITS": {},
+        "INTRODUCTION TO COMPUTER CONCEPTS": {},
+        "INTRODUCTION TO COMPUTER ORGANIZATION & OPERATING SYSTEM": {},
+        "INTRODUCTION TO COMPUTER PROGRAMMING": {}
+      },
+      "Fundamentals of Electrical and Electronics Engineering": {},
+      "IT Skills": {},
+      "Environmental Sustainability": {}
+    },
+    "sem2": {}, "sem3": {}, "sem4": {}, "sem5": {}, "sem6": {}
+  },
+  "engineering": {},
+  "Financial": {
+    "Stock Market": {
+      "Stock Market": {
+        "Basics of Stock Market": { "Role of Stock Market": {} },
+        "How Stock Prices Move?": {},
+        "Set-up your Trading System": {}
+      },
+      "Stock Research": {},
+      "Evaluating Companies": {},
+      "Valuation of Stocks": {},
+      "When to Buy & When to Sell?": {},
+      "Managing a Portfolio": {},
+      "How to Grow your Money?": {}
+    }
+  }
+};
+
+const COURSE_META = {
+  diploma:     { icon:'📐', color:'blue',  label:'Diploma' },
+  engineering: { icon:'⚙️', color:'amber', label:'Engineering' },
+  Financial:   { icon:'📈', color:'teal',  label:'Financial' },
+};
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let CURRICULUM      = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
+let currentUser     = null;
+let currentUserData = null;
+let pathStack       = [];
+let currentCourse   = null;
+let modalLessonKey  = null;
+let modalLessonHref = null;
+let modalLessonLabel= null;
+let allLessons      = [];
+
+/* ══════════════════════════════
+   INDEXED DB
+══════════════════════════════ */
+const DB_NAME    = 'learnpath_db';
+const DB_VERSION = 1;
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('users')) {
+        const store = d.createObjectStore('users', { keyPath: 'username' });
+        store.createIndex('email', 'email', { unique: true });
+      }
+      if (!d.objectStoreNames.contains('progress')) {
+        d.createObjectStore('progress', { keyPath: 'key' });
+      }
+      if (!d.objectStoreNames.contains('settings')) {
+        d.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+
+function dbGet(store, key) {
+  return new Promise((res, rej) => {
+    const tx  = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => res(req.result);
+    req.onerror   = () => rej(req.error);
+  });
+}
+
+function dbPut(store, value) {
+  return new Promise((res, rej) => {
+    const tx  = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(value);
+    req.onsuccess = () => res(req.result);
+    req.onerror   = () => rej(req.error);
+  });
+}
+
+function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx  = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => res();
+    req.onerror   = () => rej(req.error);
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx  = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror   = () => rej(req.error);
+  });
+}
+
+// Simple password hash (SHA-256 via subtle crypto)
+async function hashPassword(pw) {
+  const enc  = new TextEncoder().encode(pw);
+  const buf  = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ══════════════════════════════
+   AUTH — TAB SWITCH
+══════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('panelLogin').classList.toggle('active', tab==='login');
+  document.getElementById('panelSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('signupError').classList.remove('show');
+  document.getElementById('signupSuccess').classList.remove('show');
+}
+
+/* ══════════════════════════════
+   SIGNUP
+══════════════════════════════ */
+async function doSignup() {
+  const first = document.getElementById('signupFirst').value.trim();
+  const last  = document.getElementById('signupLast').value.trim();
+  const uname = document.getElementById('signupUser').value.trim().toLowerCase();
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('signupPass').value;
+  const errEl = document.getElementById('signupError');
+  const sucEl = document.getElementById('signupSuccess');
+  const btn   = document.getElementById('signupBtn');
+
+  errEl.classList.remove('show');
+  sucEl.classList.remove('show');
+
+  if (!first)         { showAuthError(errEl, 'Please enter your first name.'); return; }
+  if (!uname)         { showAuthError(errEl, 'Please choose a username.'); return; }
+  if (uname.length < 3){ showAuthError(errEl, 'Username must be at least 3 characters.'); return; }
+  if (!/^[a-z0-9_]+$/.test(uname)) { showAuthError(errEl, 'Username: only letters, numbers, underscores.'); return; }
+  if (!email || !email.includes('@')) { showAuthError(errEl, 'Please enter a valid email.'); return; }
+  if (pw.length < 6)  { showAuthError(errEl, 'Password must be at least 6 characters.'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="loader-ring"></span> Creating…`;
+
+  try {
+    const existing = await dbGet('users', uname);
+    if (existing) { showAuthError(errEl, 'Username already taken. Try another.'); return; }
+
+    const hash = await hashPassword(pw);
+    await dbPut('users', {
+      username: uname,
+      firstName: first,
+      lastName: last,
+      email,
+      passwordHash: hash,
+      createdAt: Date.now()
+    });
+
+    sucEl.textContent = `✓ Account created! Signing you in…`;
+    sucEl.classList.add('show');
+
+    setTimeout(() => {
+      switchTab('login');
+      document.getElementById('loginUser').value = uname;
+      document.getElementById('loginPass').value = '';
+      document.getElementById('loginPass').focus();
+    }, 1200);
+  } catch(e) {
+    showAuthError(errEl, 'Error creating account: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Create Account →';
   }
 }
 
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
+async function doLogin() {
+  const uname = document.getElementById('loginUser').value.trim().toLowerCase();
+  const pw    = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
 
+  errEl.classList.remove('show');
 
-function goBack(path) {
-  let arr = path.split("|||");
-  arr.pop();
+  if (!uname) { showAuthError(errEl, 'Please enter your username.'); return; }
+  if (!pw)    { showAuthError(errEl, 'Please enter your password.'); return; }
 
-  if (arr.length === 0) {
-    document.getElementById("currentTitle").textContent = "Home";
-    fetchData();
+  btn.disabled = true;
+  btn.innerHTML = `<span class="loader-ring"></span> Signing in…`;
+
+  try {
+    const user = await dbGet('users', uname);
+    if (!user) {
+      // Legacy: allow any username/pass (auto-creates account)
+      const hash = await hashPassword(pw);
+      await dbPut('users', {
+        username: uname, firstName: uname, lastName: '',
+        email: '', passwordHash: hash, createdAt: Date.now()
+      });
+      await loginSuccess(uname, { username: uname, firstName: uname, lastName: '', email: '' });
+      return;
+    }
+    const hash = await hashPassword(pw);
+    if (hash !== user.passwordHash) {
+      showAuthError(errEl, 'Incorrect password.');
+      return;
+    }
+    await loginSuccess(uname, user);
+  } catch(e) {
+    showAuthError(errEl, 'Login error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In →';
+  }
+}
+
+async function loginSuccess(uname, user) {
+  currentUser     = uname;
+  currentUserData = user;
+
+  // Save session
+  await dbPut('settings', { key: 'session_user', value: uname });
+
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appShell').classList.add('visible');
+
+  const displayName = user.firstName || uname;
+  const initial     = displayName[0].toUpperCase();
+  document.getElementById('userAvatarNav').textContent = initial;
+  document.getElementById('userNameNav').textContent   = displayName;
+  document.getElementById('ddName').textContent        = displayName + (user.lastName ? ' ' + user.lastName : '');
+
+  buildAll();
+  showWelcome();
+}
+
+function showAuthError(el, msg) {
+  el.textContent = msg;
+  el.classList.add('show');
+  const btn = el.nextElementSibling?.tagName === 'BUTTON' ? el.nextElementSibling : null;
+  if (btn) { btn.disabled = false; btn.innerHTML = btn.id === 'loginBtn' ? 'Sign In →' : 'Create Account →'; }
+}
+
+/* ══════════════════════════════
+   LOGOUT / RESET
+══════════════════════════════ */
+async function doLogout() {
+  currentUser     = null;
+  currentUserData = null;
+  pathStack       = [];
+  currentCourse   = null;
+
+  await dbDelete('settings', 'session_user');
+
+  document.getElementById('appShell').classList.remove('visible');
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('userDropdown').classList.remove('open');
+  switchTab('login');
+}
+
+async function resetProgress() {
+  if (!confirm('Reset all your progress for all courses?')) return;
+  // Delete all progress keys for user
+  const all = await dbGetAll('progress');
+  const userKeys = all.filter(r => r.key.startsWith('prog_' + currentUser + '_'));
+  for (const r of userKeys) await dbDelete('progress', r.key);
+  updateProgressUI();
+  renderContent();
+  showToast('🔄 Progress reset!');
+  document.getElementById('userDropdown').classList.remove('open');
+}
+
+/* ══════════════════════════════
+   PROGRESS HELPERS (IndexedDB)
+══════════════════════════════ */
+function progKey(lessonKey) { return 'prog_' + currentUser + '_' + lessonKey; }
+
+async function isDone(lessonKey) {
+  try {
+    const r = await dbGet('progress', progKey(lessonKey));
+    return !!r?.value;
+  } catch { return false; }
+}
+
+async function markLesson(lessonKey, val) {
+  if (val) {
+    await dbPut('progress', { key: progKey(lessonKey), value: true });
   } else {
-    exchange(arr.join("|||"));
+    await dbDelete('progress', progKey(lessonKey));
+  }
+  updateProgressUI();
+}
+
+async function getProgressCount() {
+  const all = await dbGetAll('progress');
+  return all.filter(r => r.key.startsWith('prog_' + currentUser + '_') && r.value).length;
+}
+
+/* ══════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════ */
+function checkPwStrength(pw) {
+  const fill = document.getElementById('pwFill');
+  let score  = 0;
+  if (pw.length >= 6)  score++;
+  if (pw.length >= 10) score++;
+  if (/[A-Z]/.test(pw) || /[0-9]/.test(pw)) score++;
+  if (/[^a-zA-Z0-9]/.test(pw)) score++;
+  const pcts   = ['0%','30%','55%','78%','100%'];
+  const colors = ['var(--rose)','var(--amber)','var(--amber)','var(--blue)','var(--green)'];
+  fill.style.width      = pcts[score];
+  fill.style.background = colors[score];
+}
+
+/* ══════════════════════════════
+   THEME
+══════════════════════════════ */
+const THEMES = ['dark','light','midnight','forest','sunset'];
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme === 'dark' ? '' : theme);
+  if (theme === 'dark') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', theme);
+
+  document.querySelectorAll('.theme-opt').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === theme);
+  });
+  localStorage.setItem('lp_theme', theme);
+}
+
+function toggleThemePanel() {
+  document.getElementById('themePanel').classList.toggle('open');
+}
+function openThemePanel() {
+  document.getElementById('themePanel').classList.add('open');
+  document.getElementById('userDropdown').classList.remove('open');
+}
+function closeThemePanel() {
+  document.getElementById('themePanel').classList.remove('open');
+}
+
+/* ══════════════════════════════
+   URL FETCH
+══════════════════════════════ */
+async function fetchFromUrl() {
+  const url    = document.getElementById('urlInput').value.trim();
+  const status = document.getElementById('urlStatus');
+  if (!url) { setUrlStatus('err', 'Please enter a URL.'); return; }
+
+  setUrlStatus('loading', '⏳ Fetching…');
+  try {
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const parsed = parseCurriculumData(data);
+    if (!parsed) throw new Error('Invalid curriculum format');
+    CURRICULUM = parsed;
+    allLessons = [];
+    buildLessonIndex(CURRICULUM, []);
+    buildAll();
+    if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
+    if (currentCourse) renderContent(); else showWelcome();
+    setUrlStatus('ok', `✓ Loaded ${Object.keys(CURRICULUM).length} course(s) from URL`);
+    showToast('✓ Curriculum loaded from URL!');
+  } catch(e) {
+    setUrlStatus('err', '✗ ' + e.message);
   }
 }
 
-
-
-
-
-const toggleBtn = document.getElementById("themeToggle");
-
-// Load saved theme
-const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-  toggleBtn.textContent = "☀️";
+function parseCurriculumData(data) {
+  if (!data || typeof data !== 'object') return null;
+  // Array format: [{name, url, children}]
+  if (Array.isArray(data)) {
+    const result = {};
+    for (const item of data) {
+      if (!item.name) continue;
+      if (item.url) result[item.name] = `<a href="${item.url}">${item.name}</a>`;
+      else if (item.children) result[item.name] = parseCurriculumData(item.children) || {};
+      else result[item.name] = {};
+    }
+    return result;
+  }
+  // Plain object format (direct curriculum)
+  return data;
 }
 
-// Toggle theme
-toggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
+function setUrlStatus(type, msg) {
+  const el = document.getElementById('urlStatus');
+  el.className = 'url-status ' + type;
+  el.textContent = msg;
+}
 
-  if (document.body.classList.contains("dark")) {
-    localStorage.setItem("theme", "dark");
-    toggleBtn.textContent = "☀️";
-  } else {
-    localStorage.setItem("theme", "light");
-    toggleBtn.textContent = "🌙";
+function resetToBuiltIn() {
+  CURRICULUM = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
+  allLessons = [];
+  buildLessonIndex(CURRICULUM, []);
+  buildAll();
+  currentCourse = null; pathStack = [];
+  showWelcome();
+  document.getElementById('urlInput').value = '';
+  setUrlStatus('', '');
+  showToast('↩ Reset to built-in curriculum');
+}
+
+/* ══════════════════════════════
+   AUTO-INIT
+══════════════════════════════ */
+window.addEventListener('DOMContentLoaded', async () => {
+  await openDB();
+  buildLessonIndex(CURRICULUM, []);
+
+  // Restore theme
+  const savedTheme = localStorage.getItem('lp_theme') || 'dark';
+  applyTheme(savedTheme);
+
+  // Auto-login from session
+  const sessionRec = await dbGet('settings', 'session_user').catch(() => null);
+  if (sessionRec?.value) {
+    const user = await dbGet('users', sessionRec.value).catch(() => null);
+    if (user) {
+      await loginSuccess(user.username, user);
+      return;
+    }
   }
+
+  // Pre-fill username
+  const loginInput = document.getElementById('loginUser');
+  const allUsers   = await dbGetAll('users').catch(() => []);
+  if (allUsers.length > 0) loginInput.value = allUsers[allUsers.length-1].username;
+
+  // Enter key handlers
+  document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+  document.getElementById('signupPass').addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+  document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') clearSearch(); });
 });
-</script>
 
+/* ══════════════════════════════
+   LESSON INDEX
+══════════════════════════════ */
+function buildLessonIndex(obj, path) {
+  if (typeof obj !== 'object' || obj === null) return;
+  for (const key of Object.keys(obj)) {
+    const val = obj[key];
+    const p   = [...path, key];
+    if (typeof val === 'string' && extractHref(val)) {
+      allLessons.push({
+        key, label: extractText(val) || cleanKey(key),
+        href: extractHref(val), path: p.join(' › '),
+        pathArr: p
+      });
+    } else {
+      buildLessonIndex(val, p);
+    }
+  }
+}
+
+/* ══════════════════════════════
+   UTILS
+══════════════════════════════ */
+function extractHref(s) {
+  if (typeof s !== 'string') return null;
+  const m = s.match(/href="([^"]+)"/);
+  return m ? m[1] : (s.startsWith('http') ? s : null);
+}
+function extractText(s) {
+  if (typeof s !== 'string') return null;
+  const m = s.match(/>([^<]+)</);
+  return m ? m[1].trim() : null;
+}
+function countDeep(obj) {
+  if (!obj || typeof obj !== 'object') return 0;
+  const ks = Object.keys(obj);
+  return ks.length + ks.reduce((a, k) => a + countDeep(obj[k]), 0);
+}
+function countLessons(obj) {
+  if (typeof obj === 'string') return extractHref(obj) ? 1 : 0;
+  if (!obj || typeof obj !== 'object') return 0;
+  return Object.values(obj).reduce((a, v) => a + countLessons(v), 0);
+}
+function cleanKey(k) { return String(k).replace(/\t/g,' ').replace(/\s+/g,' ').trim(); }
+function lessonId(path, key) { return btoa(encodeURIComponent([...path, key].join('|'))).replace(/=/g,''); }
+function highlightQuery(text, q) {
+  if (!q) return text;
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + esc + ')', 'gi'), '<span class="highlight">$1</span>');
+}
+
+/* ══════════════════════════════
+   BUILD SIDEBAR
+══════════════════════════════ */
+function buildAll() {
+  buildSidebar();
+  updateProgressUI();
+}
+
+function buildSidebar() {
+  const inner = document.getElementById('sidebarInner');
+  inner.innerHTML = `<div class="sidebar-section-label">Courses</div>`;
+  Object.keys(CURRICULUM).forEach(course => {
+    const meta  = COURSE_META[course] || { icon:'📚', color:'blue', label: cleanKey(course) };
+    const total = countLessons(CURRICULUM[course]);
+    const div   = document.createElement('div');
+    div.className = 'course-item';
+    div.id = 'si-' + CSS.escape(course);
+    div.innerHTML = `
+      <div class="course-emoji">${meta.icon}</div>
+      <div class="course-info">
+        <div class="course-name">${cleanKey(course)}</div>
+        <div class="course-count">${total} lesson${total!==1?'s':''}</div>
+      </div>`;
+    div.onclick = () => selectCourse(course);
+    inner.appendChild(div);
+  });
+}
+
+async function updateProgressUI() {
+  const done  = await getProgressCount();
+  const total = allLessons.length;
+  const pct   = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent  = pct + '%';
+  document.getElementById('statDone').textContent  = done;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPct').textContent   = pct + '%';
+}
+
+/* ══════════════════════════════
+   NAVIGATION
+══════════════════════════════ */
+function selectCourse(course) {
+  currentCourse = course;
+  pathStack     = [{ key: cleanKey(course), obj: CURRICULUM[course] }];
+  document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById('si-' + CSS.escape(course));
+  if (si) si.classList.add('active');
+  renderContent();
+  closeSidebarMobile();
+}
+
+function navPush(key, obj) {
+  pathStack.push({ key: cleanKey(key), obj });
+  renderContent();
+}
+
+function navTo(idx) {
+  pathStack = pathStack.slice(0, idx + 1);
+  renderContent();
+}
+
+/* ══════════════════════════════
+   RENDER CONTENT
+══════════════════════════════ */
+async function renderContent() {
+  if (!currentCourse) { showWelcome(); return; }
+  const cur       = pathStack[pathStack.length - 1];
+  const obj       = cur.obj;
+  const depth     = pathStack.length - 1;
+  const depthLabels = ['', 'Semester', 'Subject', 'Chapter', 'Topic', 'Subtopic'];
+  const childLabel  = depthLabels[depth] || 'Item';
+  const meta        = COURSE_META[currentCourse] || { color:'blue' };
+
+  // Breadcrumb
+  const crumbs = pathStack.map((p, i) => {
+    const isLast = i === pathStack.length - 1;
+    return `<span class="crumb${isLast?' active':''}" ${!isLast?`onclick="navTo(${i})"`:''} >${p.key}</span>`;
+  }).join('<span class="crumb-sep"> › </span>');
+
+  const childCount = typeof obj === 'object' && obj !== null ? Object.keys(obj).length : 0;
+  const pct = Math.min((depth / 5) * 100, 100);
+
+  const topicPath    = pathStack.map(p => p.key).join(' › ');
+  const sharePathEnc = encodeURIComponent(topicPath);
+
+  let html = `
+    <div class="breadcrumb">${crumbs}</div>
+    <div class="depth-prog"><div class="depth-fill" style="width:${pct}%"></div></div>
+    <div class="page-header">
+      <div class="page-header-row">
+        <div>
+          <div class="page-tag ${meta.color}">${COURSE_META[currentCourse]?.icon||'📚'} ${childLabel||'Course'}</div>
+          <div class="page-title">${cur.key}</div>
+          <div class="page-meta">${childCount} item${childCount!==1?'s':''} · ${countDeep(obj)} total · ${countLessons(obj)} lesson${countLessons(obj)!==1?'s':''}</div>
+        </div>
+        <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${window.location.href}')">⬆ <span>Share</span></button>
+      </div>
+    </div>`;
+
+  // String leaf (link)
+  if (typeof obj === 'string') {
+    const href  = extractHref(obj);
+    const label = extractText(obj) || cur.key;
+    const lid   = lessonId(pathStack.slice(0,-1).map(p=>p.key), cur.key);
+    const done  = await isDone(lid);
+    html += `
+      <div class="card-grid">
+        <div class="card link-card${done?' done':''}" onclick="openLesson('${href}','${label}','${lid}')">
+          ${done?'<div class="done-badge">✓</div>':''}
+          <div class="card-type-badge teal">📄 Lesson</div>
+          <div class="card-title">${label}</div>
+          <div class="card-footer"><span class="card-count">Click to study</span><span class="card-arrow">↗</span></div>
+        </div>
+      </div>`;
+    document.getElementById('content').innerHTML = html;
+    return;
+  }
+
+  if (!obj || typeof obj !== 'object') {
+    html += `<div class="empty-state"><div class="ei">🚧</div><h3>Coming Soon</h3><p>Content will be added soon.</p></div>`;
+    document.getElementById('content').innerHTML = html;
+    return;
+  }
+
+  const keys = Object.keys(obj);
+  if (keys.length === 0) {
+    html += `<div class="empty-state"><div class="ei">🚧</div><h3>Content Coming Soon</h3><p>This section is being built. Check back later!</p></div>`;
+    document.getElementById('content').innerHTML = html;
+    return;
+  }
+
+  html += `<div class="card-grid" id="cardGrid">`;
+  // Use placeholders, will async-fill done status
+  const cardData = [];
+  for (const key of keys) {
+    const val    = obj[key];
+    const ck     = cleanKey(key);
+    const isLink = typeof val === 'string' && extractHref(val);
+    const href   = isLink ? extractHref(val) : null;
+    const lbl    = isLink ? (extractText(val)||ck) : ck;
+    const isEmpty= !isLink && (typeof val !== 'object' || val === null || Object.keys(val).length === 0);
+    const deep   = countDeep(val);
+    const lcount = countLessons(val);
+    const lid    = isLink ? lessonId(pathStack.map(p=>p.key), key) : null;
+    const done   = isLink ? await isDone(lid) : false;
+
+    const tagColor = depth === 0 ? 'blue' : depth === 1 ? 'amber' : 'teal';
+    const tagIcon  = depth === 0 ? '🗓️' : depth === 1 ? '📚' : depth === 2 ? '📖' : '🔹';
+    const subLbl   = depth === 0 ? 'Semester' : depth === 1 ? 'Subject' : depth === 2 ? 'Chapter' : 'Topic';
+
+    if (isLink) {
+      html += `<div class="card link-card${done?' done':''}" data-a="link" data-href="${href}" data-label="${lbl.replace(/"/g,'&quot;')}" data-lid="${lid}">
+        ${done?'<div class="done-badge">✓</div>':''}
+        <div class="card-type-badge teal">📄 Lesson</div>
+        <div class="card-title">${lbl}</div>
+        <div class="card-footer"><span class="card-count">Study now</span><span class="card-arrow">↗</span></div>
+      </div>`;
+    } else if (isEmpty) {
+      html += `<div class="card empty">
+        <div class="card-type-badge muted">🚧 Soon</div>
+        <div class="card-title">${ck}</div>
+        <div class="card-footer"><span class="card-count">Coming soon</span></div>
+      </div>`;
+    } else {
+      html += `<div class="card" data-a="nav" data-key="${key.replace(/"/g,'&quot;')}">
+        <div class="card-type-badge ${tagColor}">${tagIcon} ${subLbl}</div>
+        <div class="card-title">${ck}</div>
+        <div class="card-footer">
+          <span class="card-count">${Object.keys(val).length} item${Object.keys(val).length!==1?'s':''} · ${lcount} lesson${lcount!==1?'s':''}</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>`;
+    }
+  }
+  html += `</div>`;
+  document.getElementById('content').innerHTML = html;
+
+  // Attach events
+  document.querySelectorAll('#cardGrid .card[data-a="nav"]').forEach(card => {
+    card.onclick = () => {
+      const k = card.dataset.key;
+      navPush(k, pathStack[pathStack.length-1].obj[k]);
+    };
+  });
+  document.querySelectorAll('#cardGrid .card[data-a="link"]').forEach(card => {
+    card.onclick = () => openLesson(card.dataset.href, card.dataset.label, card.dataset.lid);
+  });
+}
+
+async function showWelcome() {
+  const total   = allLessons.length;
+  const done    = await getProgressCount();
+  const courses = Object.keys(CURRICULUM).length;
+  const displayName = currentUserData?.firstName || currentUser || 'Learner';
+  document.getElementById('content').innerHTML = `
+    <div class="welcome-hero">
+      <div class="hero-glow">🎓</div>
+      <h1 class="hero-title">Welcome, ${displayName}!</h1>
+      <p class="hero-sub">Pick a course from the sidebar and start exploring chapters, topics, and lessons.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">${courses}</div><div class="hero-stat-key">Courses</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">${total}</div><div class="hero-stat-key">Lessons</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">${done}</div><div class="hero-stat-key">Completed</div></div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════
+   LESSON MODAL
+══════════════════════════════ */
+async function openLesson(href, label, lid) {
+  modalLessonKey   = lid;
+  modalLessonHref  = href;
+  modalLessonLabel = label;
+  document.getElementById('modalTitle').textContent = label;
+  document.getElementById('modalFrame').src = href;
+  document.getElementById('modalBg').classList.add('open');
+  const btn  = document.getElementById('modalDoneBtn');
+  const done = await isDone(lid);
+  if (done) { btn.textContent = '✓ Completed'; btn.style.opacity = '.6'; }
+  else       { btn.textContent = '✓ Mark Done'; btn.style.opacity = '1'; }
+}
+
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+  document.getElementById('modalFrame').src = 'about:blank';
+  modalLessonKey = null;
+}
+
+async function markDone() {
+  if (!modalLessonKey) return;
+  const already = await isDone(modalLessonKey);
+  await markLesson(modalLessonKey, !already);
+  const btn = document.getElementById('modalDoneBtn');
+  if (!already) {
+    btn.textContent = '✓ Completed'; btn.style.opacity = '.6';
+    showToast('🎉 Lesson marked as complete!');
+  } else {
+    btn.textContent = '✓ Mark Done'; btn.style.opacity = '1';
+    showToast('↩ Marked as incomplete');
+  }
+  renderContent();
+}
+
+function shareLesson() {
+  if (!modalLessonLabel || !modalLessonHref) return;
+  openSharePopup(modalLessonLabel, modalLessonHref, true);
+}
+
+document.getElementById('modalBg').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+/* ══════════════════════════════
+   SIDEBAR MOBILE
+══════════════════════════════ */
+function toggleSidebar() {
+  const sb   = document.getElementById('sidebar');
+  const ov   = document.getElementById('sidebarOverlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('open', open);
+}
+function closeSidebarMobile() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+/* ══════════════════════════════
+   DROPDOWN
+══════════════════════════════ */
+function toggleDropdown() {
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('userPill')?.contains(e.target))
+    document.getElementById('userDropdown').classList.remove('open');
+  if (!document.getElementById('searchWrapper')?.contains(e.target))
+    document.getElementById('searchResults').classList.remove('open');
+  if (!document.getElementById('themePanel')?.contains(e.target) && !e.target.closest('.nav-icon-btn'))
+    document.getElementById('themePanel')?.classList.remove('open');
+});
+
+/* ══════════════════════════════
+   SEARCH — ENHANCED
+══════════════════════════════ */
+let searchDebounce = null;
+
+function onSearch() {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => performSearch(), 120);
+  const val = document.getElementById('searchInput').value;
+  document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+}
+
+function performSearch() {
+  const q   = document.getElementById('searchInput').value.trim();
+  const box = document.getElementById('searchResults');
+  if (!q) { box.classList.remove('open'); return; }
+
+  const ql = q.toLowerCase();
+
+  // Score: label starts with > label includes > path includes
+  const scored = allLessons.map(l => {
+    const ll = l.label.toLowerCase();
+    const pl = l.path.toLowerCase();
+    let score = 0;
+    if (ll === ql)            score = 100;
+    else if (ll.startsWith(ql)) score = 80;
+    else if (ll.includes(ql)) score = 60;
+    else if (pl.includes(ql)) score = 30;
+    return { ...l, score };
+  }).filter(l => l.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+
+  // Section groups
+  const exact   = scored.filter(l => l.score >= 80);
+  const partial = scored.filter(l => l.score < 80);
+
+  if (scored.length === 0) {
+    box.innerHTML = `<div class="sr-empty">No results for "<strong>${q}</strong>"</div>`;
+  } else {
+    let html = '';
+    if (exact.length) {
+      html += `<div class="sr-section">Best Match</div>`;
+      html += exact.map(l => srItem(l, q)).join('');
+    }
+    if (partial.length) {
+      if (exact.length) html += `<div class="sr-divider"></div>`;
+      html += `<div class="sr-section">Related</div>`;
+      html += partial.map(l => srItem(l, q)).join('');
+    }
+    box.innerHTML = html;
+    box.querySelectorAll('.sr-item').forEach(el => {
+      el.onclick = () => {
+        openLesson(el.dataset.href, el.dataset.label, el.dataset.lid);
+        box.classList.remove('open');
+        clearSearch();
+      };
+    });
+  }
+  box.classList.add('open');
+}
+
+function srItem(l, q) {
+  const lid = lessonId(l.pathArr.slice(0,-1), l.key);
+  const labelHl = highlightQuery(l.label, q);
+  const pathHl  = highlightQuery(l.path, q);
+  return `<div class="sr-item" data-href="${l.href}" data-label="${l.label}" data-lid="${lid}">
+    <span class="sr-item-icon">📄</span>
+    <div class="sr-item-body">
+      <div class="sr-item-label">${labelHl}</div>
+      <div class="sr-path">${pathHl}</div>
+    </div>
+  </div>`;
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').classList.remove('open');
+  document.getElementById('searchClear').classList.remove('show');
+}
+
+function showSearch() {
+  if (document.getElementById('searchInput').value.trim()) performSearch();
+}
+
+/* ══════════════════════════════
+   SHARE
+══════════════════════════════ */
+let shareContext = { title:'', url:'' };
+
+function openSharePopup(title, url, isLesson=false) {
+  shareContext = { title, url };
+  document.getElementById('shareSubtitle').textContent = isLesson
+    ? `Share this lesson with others`
+    : `Share "${title}" with others`;
+  document.getElementById('shareUrlInput').value = url;
+  document.getElementById('sharePopup').classList.add('open');
+}
+
+function closeSharePopup() {
+  document.getElementById('sharePopup').classList.remove('open');
+}
+
+function handleShareOverlayClick(e) {
+  if (e.target === e.currentTarget) closeSharePopup();
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  navigator.clipboard.writeText(input.value).then(() => {
+    showToast('📋 Link copied to clipboard!');
+    closeSharePopup();
+  }).catch(() => {
+    input.select();
+    document.execCommand('copy');
+    showToast('📋 Link copied!');
+    closeSharePopup();
+  });
+}
+
+function shareVia(method) {
+  const url   = encodeURIComponent(shareContext.url);
+  const title = encodeURIComponent('LearnPath — ' + shareContext.title);
+  const text  = encodeURIComponent('Check this out on LearnPath: ' + shareContext.title);
+  const links = {
+    whatsapp: `https://wa.me/?text=${text}%20${url}`,
+    telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+    twitter:  `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
+    email:    `mailto:?subject=${title}&body=${text}%20${url}`
+  };
+  if (links[method]) window.open(links[method], '_blank', 'noopener');
+  closeSharePopup();
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
 </body>
 </html>
