@@ -1,1 +1,186 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Systems Tutorial</title>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:0;
+  background:#f4f6f9;
+  color:#222;
+}
+header{
+  background:#2c3e50;
+  color:white;
+  padding:20px;
+  text-align:center;
+}
+section{
+  padding:20px;
+  margin:10px;
+  background:white;
+  border-radius:10px;
+}
+h2{
+  color:#2c3e50;
+}
+code{
+  background:#eee;
+  padding:2px 5px;
+  border-radius:5px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:10px;
+  text-align:center;
+}
+.converter{
+  background:#ecf0f1;
+  padding:15px;
+  border-radius:10px;
+}
+input, select{
+  padding:10px;
+  margin:5px;
+}
+button{
+  padding:10px 15px;
+  background:#2c3e50;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+button:hover{
+  background:#34495e;
+}
+</style>
+</head>
+<body><header>
+<h1>Number Systems Tutorial</h1>
+<p>Decimal, Binary, Octal, Hexadecimal & Conversions</p>
+</header><section>
+<h2>1. Introduction to Number Systems</h2>
+<p>A number system is a way to represent numbers using symbols and rules. The most common number systems are:</p>
+<ul>
+<li><b>Decimal (Base 10)</b></li>
+<li><b>Binary (Base 2)</b></li>
+<li><b>Octal (Base 8)</b></li>
+<li><b>Hexadecimal (Base 16)</b></li>
+</ul>
+</section><section>
+<h2>2. Decimal Number System (Base 10)</h2>
+<p>Uses digits 0 to 9. It is the standard system used in daily life.</p>
+<p>Example: 245₁₀ = 2×10² + 4×10¹ + 5×10⁰</p>
+<p><b>Solved Problem:</b> Convert 156₁₀ into binary</p>
+<p>156 ÷ 2 = 78 r0<br>
+78 ÷ 2 = 39 r0<br>
+39 ÷ 2 = 19 r1<br>
+19 ÷ 2 = 9 r1<br>
+9 ÷ 2 = 4 r1<br>
+4 ÷ 2 = 2 r0<br>
+2 ÷ 2 = 1 r0<br>
+1 ÷ 2 = 0 r1</p>
+<p><b>Answer:</b> 10011100₂</p>
+</section><section>
+<h2>3. Binary Number System (Base 2)</h2>
+<p>Uses only 0 and 1. Used in computers.</p>
+<p>Example: 1011₂ = 11₁₀</p>
+<p><b>Solved Problem:</b> Convert 1101₂ to decimal</p>
+<p>= 1×2³ + 1×2² + 0×2¹ + 1×2⁰<br>
+= 8 + 4 + 0 + 1 = 13₁₀</p>
+</section><section>
+<h2>4. Octal Number System (Base 8)</h2>
+<p>Uses digits 0 to 7.</p>
+<p>Example: 17₈ = 15₁₀</p>
+<p><b>Solved Problem:</b> Convert 25₈ to decimal</p>
+<p>= 2×8¹ + 5×8⁰ = 16 + 5 = 21₁₀</p>
+</section><section>
+<h2>5. Hexadecimal Number System (Base 16)</h2>
+<p>Uses digits 0–9 and A–F.</p>
+<p>Example: A5₁₆ = 165₁₀</p>
+<p><b>Solved Problem:</b> Convert 2F₁₆ to decimal</p>
+<p>= 2×16¹ + 15×16⁰ = 32 + 15 = 47₁₀</p>
+</section><section>
+<h2>6. Conversion Methods</h2>
+<table>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Method</th>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>Binary</td>
+<td>Repeated division by 2</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>Octal</td>
+<td>Repeated division by 8</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>Hexadecimal</td>
+<td>Repeated division by 16</td>
+</tr>
+<tr>
+<td>Binary</td>
+<td>Decimal</td>
+<td>Sum of powers of 2</td>
+</tr>
+<tr>
+<td>Binary</td>
+<td>Octal</td>
+<td>Group bits in 3</td>
+</tr>
+<tr>
+<td>Binary</td>
+<td>Hex</td>
+<td>Group bits in 4</td>
+</tr>
+</table>
+</section><section>
+<h2>7. Quick Conversion Tool</h2>
+<div class="converter">
+<input type="text" id="inputValue" placeholder="Enter number">
+<select id="fromBase">
+<option value="10">Decimal</option>
+<option value="2">Binary</option>
+<option value="8">Octal</option>
+<option value="16">Hexadecimal</option>
+</select>
+<select id="toBase">
+<option value="10">Decimal</option>
+<option value="2">Binary</option>
+<option value="8">Octal</option>
+<option value="16">Hexadecimal</option>
+</select>
+<button onclick="convert()">Convert</button>
+<p id="result"></p>
+</div>
+</section><script>
+function convert(){
+  let value = document.getElementById('inputValue').value;
+  let from = parseInt(document.getElementById('fromBase').value);
+  let to = parseInt(document.getElementById('toBase').value);
 
+  try{
+    let decimal = parseInt(value, from);
+    let result = decimal.toString(to).toUpperCase();
+    document.getElementById('result').innerText = "Result: " + result;
+  }catch(e){
+    document.getElementById('result').innerText = "Invalid Input";
+  }
+}
+</script><section>
+<h2>8. Summary</h2>
+<p>Number systems are essential in computing and mathematics. Binary is used in computers, while decimal is used in daily life. Octal and hexadecimal help simplify binary representation.</p>
+</section></body>
+</html>
