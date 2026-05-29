@@ -34,7 +34,11 @@
     "Stock Market": {
       "Stock Market": {
         "Basics of Stock Market": {
-          "Role of Stock Market": {}
+          "Role of Stock Market": {},
+          "what is stock market & market cap": {},
+          "size of companies": {},
+          "what is sensex & nifty": {},
+          "Chapter 1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c1.html"
         },
         "How Stock Prices Move?": {},
         "Set-up yourTrading System": {}
