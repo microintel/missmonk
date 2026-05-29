@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Investing — How Prices Move</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5C518;
+    --dark: #111108;
+    --charcoal: #1E1E18;
+    --card: #242420;
+    --card2: #2E2E28;
+    --text: #F0EDDA;
+    --muted: #9A9880;
+    --green: #4CAF7D;
+    --red: #E05A5A;
+    --blue: #5AABCC;
+    --accent: #F5C518;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(17,17,8,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,197,24,0.15);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 56px;
+    overflow-x: auto;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0 1rem;
+    height: 56px;
+    display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover, nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--gold);
+    margin-right: 1.5rem;
+    border-bottom: none !important;
+    padding-left: 0;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 2rem 4rem;
+    background: radial-gradient(ellipse at 50% 60%, rgba(245,197,24,0.06) 0%, transparent 70%);
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(245,197,24,0.03) 39px, rgba(245,197,24,0.03) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(245,197,24,0.03) 39px, rgba(245,197,24,0.03) 40px);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 720px; position: relative; }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(245,197,24,0.3);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero p {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+  }
+  .hero-pills {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .pill {
+    background: rgba(245,197,24,0.08);
+    border: 1px solid rgba(245,197,24,0.2);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .pill:hover { background: rgba(245,197,24,0.18); }
+
+  /* SECTIONS */
+  section {
+    padding: 5rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .lead { color: var(--muted); font-size: 16px; margin-bottom: 3rem; max-width: 640px; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.8rem;
+  }
+  .card-gold { border-color: rgba(245,197,24,0.2); }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .card p { color: var(--muted); font-size: 14px; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; }
+
+  /* CONCEPT TAG */
+  .ctag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 0.7rem;
+  }
+  .ctag-gold { background: rgba(245,197,24,0.15); color: var(--gold); }
+  .ctag-green { background: rgba(76,175,125,0.15); color: var(--green); }
+  .ctag-red { background: rgba(224,90,90,0.15); color: var(--red); }
+  .ctag-blue { background: rgba(90,171,204,0.15); color: var(--blue); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245,197,24,0.2), transparent);
+    margin: 4rem 0;
+  }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--charcoal);
+    border: 1px solid rgba(245,197,24,0.25);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    margin: 1.5rem 0;
+  }
+
+  /* CHART */
+  .chart-wrap {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  canvas { width: 100% !important; display: block; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .flow-node {
+    background: var(--card2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 100px;
+  }
+  .flow-arrow {
+    color: var(--gold);
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  /* CALCULATOR */
+  .calc-box {
+    background: var(--card);
+    border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 14px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .calc-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--gold);
+  }
+  .input-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .input-group label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .input-group input, .input-group select {
+    background: var(--charcoal);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .input-group input:focus, .input-group select:focus { border-color: var(--gold); }
+  .input-group select option { background: var(--charcoal); }
+  .btn {
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border: none; border-radius: 8px;
+    padding: 0.8rem 1.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn:hover { background: #e6b800; transform: translateY(-1px); }
+  .result-box {
+    background: var(--charcoal);
+    border: 1px solid rgba(245,197,24,0.15);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.2rem;
+    display: none;
+  }
+  .result-box.show { display: block; }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .result-row .val { font-weight: 600; font-family: 'DM Mono', monospace; }
+  .val-green { color: var(--green); }
+  .val-red { color: var(--red); }
+  .val-gold { color: var(--gold); }
+
+  /* QUOTE */
+  blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.5rem;
+    background: rgba(245,197,24,0.05);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--muted);
+    margin: 2rem 0;
+  }
+  blockquote cite {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+  }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+  .compare-table th {
+    background: rgba(245,197,24,0.1);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(245,197,24,0.2);
+  }
+  .compare-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* VERDICT BADGE */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+  .badge-buy { background: rgba(76,175,125,0.2); color: var(--green); }
+  .badge-sell { background: rgba(224,90,90,0.2); color: var(--red); }
+  .badge-hold { background: rgba(245,197,24,0.15); color: var(--gold); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; }
+  .tab {
+    padding: 0.7rem 1.4rem;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* RISK METER */
+  .risk-meter { margin: 1.5rem 0; }
+  .risk-label {
+    display: flex; justify-content: space-between;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    margin-bottom: 0.4rem;
+  }
+  .risk-bar {
+    height: 8px; background: var(--charcoal); border-radius: 4px; overflow: hidden;
+  }
+  .risk-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+
+  /* PROGRESS / SCENARIO */
+  .scenario-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .scenario-card .sc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .sc-title { font-weight: 600; font-size: 14px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    nav { gap: 0; padding: 0 1rem; }
+    section { padding: 3.5rem 1.2rem; }
+    .hero h1 { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">StockIQ</span>
+  <a href="#earnings">Earnings</a>
+  <a href="#truevalue">True Value</a>
+  <a href="#markets">Bull & Bear</a>
+  <a href="#opportunities">Opportunities</a>
+  <a href="#value-creation">Value Creation</a>
+  <a href="#calculators">Calculators</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Chapter 2 — Stock Investing Mastermind</div>
+    <h1>How Stock<br><em>Prices Move</em></h1>
+    <p>A complete visual guide to earnings, true value, market sentiment, and value creation — with interactive calculators.</p>
+    <div class="hero-pills">
+      <a href="#earnings" class="pill">📊 Earnings</a>
+      <a href="#truevalue" class="pill">🎯 True Value</a>
+      <a href="#markets" class="pill">🐂 Bull & Bear</a>
+      <a href="#opportunities" class="pill">💡 Opportunities</a>
+      <a href="#calculators" class="pill">🧮 Calculators</a>
+    </div>
+  </div>
+</div>
+
+<!-- EARNINGS -->
+<section id="earnings">
+  <div class="section-label">2.1 — Understanding Earnings</div>
+  <h2>What Are <em style="color:var(--gold)">Earnings</em>?</h2>
+  <p class="lead">When you buy a share, you're buying a small ownership of a company's <strong>earnings</strong>. As the company grows and earns more, the share price rises too.</p>
+
+  <div class="grid2 reveal">
+    <div class="card card-gold">
+      <div class="ctag ctag-blue">Size of Earnings</div>
+      <h3>How Much They Earn</h3>
+      <p>The total profit a company makes in a quarter or fiscal year. Infosys earning ₹200 cr has a larger size of earnings than Wipro at ₹100 cr.</p>
+      <div class="formula">Earnings Size = Revenue − Costs</div>
+    </div>
+    <div class="card card-gold">
+      <div class="ctag ctag-green">Quality of Earnings</div>
+      <h3>How Good the Earnings Are</h3>
+      <p>Two companies earning the same ₹50 cr can have very different quality. A govt-backed EV company growing 20% y/y has far higher quality than a flat, high-competition firm.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Size of Earnings</div>
+  <h2>Two Ways to <em style="color:var(--gold)">Grow</em> Earnings</h2>
+
+  <div class="grid2 reveal" style="margin-top:1.5rem">
+    <div class="card">
+      <div class="ctag ctag-gold">Volume Increase</div>
+      <h3>Sell More Units</h3>
+      <p>Cadbury selling 100 units → 150 units at the same price of ₹10 each:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="background:var(--charcoal);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px">
+          <span style="color:var(--muted)">Before:</span> 100 × ₹10 = <span style="color:var(--text)">₹1,000</span>
+        </div>
+        <div style="background:rgba(76,175,125,0.1);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px;border:1px solid rgba(76,175,125,0.2)">
+          <span style="color:var(--muted)">After:</span> 150 × ₹10 = <span style="color:var(--green)">₹1,500 ↑</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctag ctag-gold">Price Increase</div>
+      <h3>Charge More Per Unit</h3>
+      <p>Maggie raising price from ₹10 to ₹11 per pack (needs <strong>Pricing Power</strong>):</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="background:var(--charcoal);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px">
+          <span style="color:var(--muted)">Before:</span> 1000 × ₹10 = <span style="color:var(--text)">₹10,000</span>
+        </div>
+        <div style="background:rgba(76,175,125,0.1);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px;border:1px solid rgba(76,175,125,0.2)">
+          <span style="color:var(--muted)">After:</span> 1000 × ₹11 = <span style="color:var(--green)">₹11,000 ↑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Pricing Power</div>
+  <h2>The Secret <em style="color:var(--gold)">Weapon</em></h2>
+  <p class="lead">Pricing power is the ability to raise prices without losing customers. Companies with unique or loved products have it. Commodity businesses don't.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">High Pricing Power</div>
+      <h3>Rare / Unique Product</h3>
+      <p style="margin-bottom:1rem">Characteristics that create pricing power:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:13px;color:var(--muted)">✅ Few rivals in the market</li>
+        <li style="font-size:13px;color:var(--muted)">✅ No cheaper alternatives</li>
+        <li style="font-size:13px;color:var(--muted)">✅ Scarcity of resources</li>
+        <li style="font-size:13px;color:var(--muted)">✅ Strong brand (Maggi, Parle-G)</li>
+      </ul>
+      <div style="margin-top:1rem;padding:10px;background:rgba(76,175,125,0.08);border-radius:6px;font-size:13px">
+        <strong style="color:var(--green)">Parle-G:</strong> <span style="color:var(--muted)">Price rose from ₹2 → ₹5 (2.5x) faster than inflation. People still buy it.</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Low Pricing Power</div>
+      <h3>Widely Available Product</h3>
+      <p style="margin-bottom:1rem">Signs of weak pricing power:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:13px;color:var(--muted)">❌ Many competitors</li>
+        <li style="font-size:13px;color:var(--muted)">❌ Cheap alternatives exist</li>
+        <li style="font-size:13px;color:var(--muted)">❌ No brand strength</li>
+        <li style="font-size:13px;color:var(--muted)">❌ Abundant supply</li>
+      </ul>
+      <div style="margin-top:1rem;padding:10px;background:rgba(224,90,90,0.08);border-radius:6px;font-size:13px">
+        <strong style="color:var(--red)">Aviation:</strong> <span style="color:var(--muted)">SpiceJet raises fares 10% → customers switch to IndiGo immediately.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Quality of Earnings</div>
+  <h2>Same Profits, <em style="color:var(--gold)">Different Quality</em></h2>
+  <p class="lead">Two companies can both earn ₹50 cr profit, but have very different investment quality based on their industry and business outlook.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">Company A — High Quality</div>
+      <h3>EV Power Sector</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> Government subsidised</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> Growing 20% y/y</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> Low competition</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> No substitutes</div>
+      </div>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">→ Future looks bright. Quality is HIGH.</div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Company B — Low Quality</div>
+      <h3>Petrol Power Sector</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> In abundance, declining</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> Flat for 3 years</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> High competition</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> EV threat looming</div>
+      </div>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--red)">→ Declining outlook. Quality is LOW.</div>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">When Analyzing Quality — Ask These Questions</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'ind')">Industry</div>
+      <div class="tab" onclick="switchTab(this,'biz')">Business</div>
+      <div class="tab" onclick="switchTab(this,'fin')">Financials</div>
+    </div>
+    <div id="tab-ind" class="tab-content active">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">📦 Is the industry large enough to grow in?</li>
+        <li style="font-size:14px;color:var(--muted)">📈 Is the industry growing or depleting?</li>
+        <li style="font-size:14px;color:var(--muted)">⚔️ Is the industry too competitive?</li>
+        <li style="font-size:14px;color:var(--muted)">⚠️ Is there any existential risk to the industry?</li>
+      </ul>
+    </div>
+    <div id="tab-biz" class="tab-content">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">🏆 Is the company competitively strong and well positioned?</li>
+        <li style="font-size:14px;color:var(--muted)">🔄 Is the company's sales sustainable?</li>
+        <li style="font-size:14px;color:var(--muted)">🚨 Is there any major survival risk?</li>
+        <li style="font-size:14px;color:var(--muted)">👨‍💼 Is the business run by able managers?</li>
+      </ul>
+    </div>
+    <div id="tab-fin" class="tab-content">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">💰 Does the company generate strong profitability?</li>
+        <li style="font-size:14px;color:var(--muted)">📊 Is sales growing year over year?</li>
+        <li style="font-size:14px;color:var(--muted)">💳 Does the company have too much debt?</li>
+        <li style="font-size:14px;color:var(--muted)">⚖️ Is there any major liability coming up?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRUE VALUE -->
+<section id="truevalue" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.2 — True Value & Market Value</div>
+  <h2>What Is a Stock <em style="color:var(--gold)">Really Worth?</em></h2>
+  <p class="lead">Every stock has two values. One you can see on a screen. One you have to figure out yourself.</p>
+
+  <div class="grid2 reveal">
+    <div class="card card-gold">
+      <div class="ctag ctag-gold">True Value (Intrinsic)</div>
+      <h3>What It's Actually Worth</h3>
+      <p>Based on company fundamentals — strengths, growth potential, earnings quality. This number is <strong>not quoted anywhere</strong> and is subjective. Different analysts will give different estimates for the same stock.</p>
+    </div>
+    <div class="card">
+      <div class="ctag ctag-blue">Market Value</div>
+      <h3>What It's Trading At</h3>
+      <p>The current price shown on BSE/NSE and apps like Zerodha or Groww. This fluctuates constantly based on supply, demand, and most importantly — <strong>sentiment</strong>.</p>
+    </div>
+  </div>
+
+  <div class="formula reveal" style="margin-top:2rem">
+    Market Value = True Value + Sentimental Value
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Worked Example — TATA Company</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+      <div style="background:var(--charcoal);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:6px">TRUE VALUE</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--text);font-family:'Playfair Display',serif">₹100</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Fundamental estimate</div>
+      </div>
+      <div style="background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green);margin-bottom:6px">SENTIMENTAL VALUE (+)</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--green);font-family:'Playfair Display',serif">+₹50</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Positive market buzz</div>
+      </div>
+      <div style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:6px">MARKET VALUE</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">₹150</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">What you see on screen</div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;padding:1rem;background:rgba(224,90,90,0.08);border:1px solid rgba(224,90,90,0.15);border-radius:8px;font-size:13px;color:var(--muted)">
+      <strong style="color:var(--red)">Bearish scenario:</strong> If the market is scared about TATA, the same ₹100 true value stock might trade at ₹50. Sentimental value becomes <strong style="color:var(--red)">−₹50</strong>. That's a buying opportunity!
+    </div>
+  </div>
+
+  <div class="chart-wrap reveal" style="margin-top:2rem">
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:1rem">MARKET PRICE vs INTRINSIC VALUE — Over Time</div>
+    <canvas id="priceChart" height="260"></canvas>
+    <div style="display:flex;gap:1.5rem;margin-top:1rem;font-family:'DM Mono',monospace;font-size:12px">
+      <span><span style="display:inline-block;width:24px;height:3px;background:var(--green);margin-right:6px;vertical-align:middle;border-radius:2px"></span>Market Price</span>
+      <span><span style="display:inline-block;width:24px;height:3px;background:var(--red);margin-right:6px;vertical-align:middle;border-radius:2px;border-top:2px dashed var(--red)"></span>Intrinsic Value</span>
+    </div>
+  </div>
+
+  <div class="grid3 reveal" style="margin-top:1.5rem">
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 1 — Fair Value</div>
+        <span class="badge badge-hold">HOLD</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Market price ≈ intrinsic value. No big gap. Stock is fairly priced.</p>
+    </div>
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 2 — Overvalued</div>
+        <span class="badge badge-sell">SELL</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Market price far above intrinsic value due to positive sentiment. Bubble risk.</p>
+    </div>
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 3 — Undervalued</div>
+        <span class="badge badge-buy">BUY</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Market price below intrinsic value. Negative sentiment. Best opportunity!</p>
+    </div>
+  </div>
+
+  <blockquote class="reveal">
+    When we compare the intrinsic value with market prices, we observe that the former is significantly more stable than the latter. However, in the long run, the market price might always follow the intrinsic value.
+  </blockquote>
+</section>
+
+<!-- BULL & BEAR -->
+<section id="markets" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.3 — Market Sentiments</div>
+  <h2><em style="color:var(--green)">Bull</em> vs <em style="color:var(--red)">Bear</em> Markets</h2>
+  <p class="lead">Both bull and bear markets affect sentiment and prices — but not intrinsic value. This is the key insight.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">🐂 Bull Market</div>
+      <h3 style="color:var(--green)">Rising Prices</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="font-size:13px;color:var(--muted)">✅ High investor confidence</div>
+        <div style="font-size:13px;color:var(--muted)">✅ Positive economic sentiment</div>
+        <div style="font-size:13px;color:var(--muted)">✅ Fear of missing out (FOMO) drives buying</div>
+        <div style="font-size:13px;color:var(--muted)">✅ Prices keep rising above true value</div>
+      </div>
+      <div style="margin-top:1rem;padding:10px;background:rgba(76,175,125,0.08);border-radius:6px;font-size:13px;font-family:'DM Mono',monospace">
+        <span style="color:var(--green)">⚠️ TIP:</span> <span style="color:var(--muted)">Avoid extremely high valuations while buying</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">🐻 Bear Market</div>
+      <h3 style="color:var(--red)">Falling Prices</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="font-size:13px;color:var(--muted)">❌ Low investor confidence</div>
+        <div style="font-size:13px;color:var(--muted)">❌ Fear dominates decisions</div>
+        <div style="font-size:13px;color:var(--muted)">❌ People sell to avoid further loss</div>
+        <div style="font-size:13px;color:var(--muted)">❌ Prices fall below true value</div>
+      </div>
+      <div style="margin-top:1rem;padding:10px;background:rgba(224,90,90,0.08);border-radius:6px;font-size:13px;font-family:'DM Mono',monospace">
+        <span style="color:var(--green)">⭐ TIP:</span> <span style="color:var(--muted)">This is where buying opportunities are created!</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem;background:rgba(245,197,24,0.04);border-color:rgba(245,197,24,0.2)">
+    <div style="display:flex;align-items:flex-start;gap:1rem">
+      <div style="font-size:2.5rem;line-height:1">💡</div>
+      <div>
+        <h3 style="margin-bottom:0.5rem">The Classic Retail Investor Mistake</h3>
+        <p style="color:var(--muted);font-size:14px">We <em>should</em> buy during bear markets (negative sentiment, low prices) and sell during bull markets (high sentiment, inflated prices). But most retail investors do the <strong style="color:var(--red)">exact opposite</strong> — they buy when prices are already high due to media hype, and panic-sell when prices drop.</p>
+      </div>
+    </div>
+  </div>
+
+  <blockquote class="reveal">
+    "When others are apprehensive and hesitant due to the bearish market, instead of being afraid we must carefully invest in stocks. When others are greedy we must be concerned and fearful."
+    <cite>— Warren Buffett</cite>
+  </blockquote>
+</section>
+
+<!-- OPPORTUNITIES -->
+<section id="opportunities" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.3 — How Fluctuations Create Opportunities</div>
+  <h2>Buy <em style="color:var(--gold)">Undervalued</em>, Sell <em style="color:var(--gold)">Overvalued</em></h2>
+  <p class="lead">The gap between market price and true value is where all the profit potential lies. Your job is to spot this gap before others do.</p>
+
+  <div class="card reveal" style="margin-bottom:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Company A Example — Seeing the Opportunity</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.2rem">
+      <div style="text-align:center;padding:1rem;background:var(--charcoal);border-radius:8px">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">TRUE VALUE</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif">₹100</div>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(76,175,125,0.08);border-radius:8px;border:1px solid rgba(76,175,125,0.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green)">MARKET VALUE (Bear)</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif;color:var(--green)">₹60</div>
+        <div style="font-size:11px;color:var(--green);margin-top:4px">BUY → Profit +₹40</div>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(224,90,90,0.08);border-radius:8px;border:1px solid rgba(224,90,90,0.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--red)">MARKET VALUE (Bull)</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif;color:var(--red)">₹140</div>
+        <div style="font-size:11px;color:var(--red);margin-top:4px">SELL → Profit realized</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-left:3px solid var(--green)">
+      <h3>✅ Do's</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <li style="font-size:13px;color:var(--muted)">→ Focus on determining intrinsic value</li>
+        <li style="font-size:13px;color:var(--muted)">→ Buy when negative sentiment = discount</li>
+        <li style="font-size:13px;color:var(--muted)">→ Hold through short-term volatility</li>
+        <li style="font-size:13px;color:var(--muted)">→ Sell when price far exceeds true value</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <h3>❌ Don'ts</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <li style="font-size:13px;color:var(--muted)">→ Don't buy during peak bull market hype</li>
+        <li style="font-size:13px;color:var(--muted)">→ Don't sell during peak fear/panic</li>
+        <li style="font-size:13px;color:var(--muted)">→ Don't follow tips from friends blindly</li>
+        <li style="font-size:13px;color:var(--muted)">→ Don't mistake sentiment for value</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE CREATION -->
+<section id="value-creation" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.4 — Value Creation</div>
+  <h2>How Wealth Is <em style="color:var(--gold)">Actually Built</em></h2>
+  <p class="lead">Great companies increase both the quality and quantity of earnings over time. As intrinsic value rises, market price follows — and that's where your returns come from.</p>
+
+  <div class="flow reveal" style="justify-content:center;flex-wrap:wrap">
+    <div class="flow-node">Quality Earnings ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Quantity Earnings ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Intrinsic Value ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node" style="border-color:rgba(245,197,24,0.3);color:var(--gold)">Market Price ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node" style="background:rgba(76,175,125,0.1);border-color:rgba(76,175,125,0.3)">💰 Returns</div>
+  </div>
+
+  <div class="grid2 reveal" style="margin-top:1.5rem">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">Value Creation</div>
+      <h3>When Size & Quality Go Up</h3>
+      <p>A consistently performing company grows earnings year over year. Its true value increases, and eventually the market price follows. Time + Patience = Wealth.</p>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Value Destruction</div>
+      <h3>When Size & Quality Go Down</h3>
+      <p>Unforeseen events (new competitors, COVID, litigation) can destroy earnings quality. Real value falls, and market price follows downward. This leads to investment losses.</p>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Risks That Can Destroy Value</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="risk-meter">
+        <div class="risk-label"><span>Wrong Assumptions</span><span style="color:var(--muted)">High Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:80%;background:var(--red)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Nestle expected to grow 15%/yr; grew only 5%. True value was lower than estimated.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Misunderstood Facts</span><span style="color:var(--muted)">High Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:75%;background:var(--red)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Invested in petrol car company, underestimating EV adoption (now 20% market share).</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Over-optimism</span><span style="color:var(--muted)">Medium Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:60%;background:var(--gold)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Friend said "Cello is great!" — bought without research at ₹1500 instead of fair ₹1000.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>New Competition</span><span style="color:var(--muted)">Medium Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:65%;background:var(--gold)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Tata Docomo / Aircel earnings destroyed when Jio entered. Quality collapsed overnight.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Business Events (COVID, Litigation)</span><span style="color:var(--muted)">Unpredictable</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:50%;background:var(--blue)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Restaurants, cinemas took massive hits. Debt piled up, real value destroyed for years.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATORS -->
+<section id="calculators" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">Interactive Tools</div>
+  <h2>Smart <em style="color:var(--gold)">Calculators</em></h2>
+  <p class="lead">Apply the concepts — calculate earnings growth, check if a stock is under/overvalued, and estimate investment returns.</p>
+
+  <!-- CALC 1: Earnings Growth -->
+  <div class="calc-box reveal">
+    <h3>📊 Earnings Growth Calculator</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">See how volume or price increases impact total earnings</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Current Units Sold</label>
+        <input type="number" id="eg-units" value="1000" min="1">
+      </div>
+      <div class="input-group">
+        <label>Price Per Unit (₹)</label>
+        <input type="number" id="eg-price" value="10" min="1">
+      </div>
+      <div class="input-group">
+        <label>New Units (Volume Change)</label>
+        <input type="number" id="eg-newunits" value="1200" min="1">
+      </div>
+      <div class="input-group">
+        <label>New Price Per Unit (₹)</label>
+        <input type="number" id="eg-newprice" value="11" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="calcEarnings()">Calculate Growth</button>
+    <div class="result-box" id="eg-result">
+      <div class="result-row"><span class="label">Old Revenue</span><span class="val" id="eg-old"></span></div>
+      <div class="result-row"><span class="label">New Revenue (Volume Only)</span><span class="val val-green" id="eg-vol"></span></div>
+      <div class="result-row"><span class="label">New Revenue (Price Only)</span><span class="val val-green" id="eg-pri"></span></div>
+      <div class="result-row"><span class="label">New Revenue (Both Changes)</span><span class="val val-gold" id="eg-both"></span></div>
+      <div class="result-row"><span class="label">Total Growth %</span><span class="val val-gold" id="eg-pct"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 2: True vs Market Value -->
+  <div class="calc-box reveal">
+    <h3>🎯 Valuation Checker</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">Is a stock overvalued, undervalued, or fairly priced?</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Your True Value Estimate (₹)</label>
+        <input type="number" id="vc-true" value="100" min="1">
+      </div>
+      <div class="input-group">
+        <label>Current Market Price (₹)</label>
+        <input type="number" id="vc-market" value="75" min="1">
+      </div>
+      <div class="input-group">
+        <label>Margin of Safety (%)</label>
+        <input type="number" id="vc-safety" value="20" min="1" max="50">
+      </div>
+    </div>
+    <button class="btn" onclick="calcValuation()">Check Valuation</button>
+    <div class="result-box" id="vc-result">
+      <div class="result-row"><span class="label">Sentimental Value</span><span class="val" id="vc-sent"></span></div>
+      <div class="result-row"><span class="label">Discount / Premium</span><span class="val" id="vc-disc"></span></div>
+      <div class="result-row"><span class="label">Buy Price with Margin of Safety</span><span class="val val-gold" id="vc-buy"></span></div>
+      <div class="result-row"><span class="label">Verdict</span><span class="val" id="vc-verdict"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 3: Investment Return Simulator -->
+  <div class="calc-box reveal">
+    <h3>💰 Investment Return Simulator</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">If you invest at a certain price, what happens as true value grows?</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Investment Amount (₹)</label>
+        <input type="number" id="ir-amount" value="100000" min="1000">
+      </div>
+      <div class="input-group">
+        <label>Buy Price Per Share (₹)</label>
+        <input type="number" id="ir-buy" value="60" min="1">
+      </div>
+      <div class="input-group">
+        <label>Current True Value (₹)</label>
+        <input type="number" id="ir-tv" value="100" min="1">
+      </div>
+      <div class="input-group">
+        <label>Expected True Value Growth (%/yr)</label>
+        <input type="number" id="ir-growth" value="15" min="1" max="100">
+      </div>
+      <div class="input-group">
+        <label>Holding Period (Years)</label>
+        <input type="number" id="ir-years" value="5" min="1" max="30">
+      </div>
+    </div>
+    <button class="btn" onclick="calcReturn()">Simulate Returns</button>
+    <div class="result-box" id="ir-result">
+      <div class="result-row"><span class="label">Shares Purchased</span><span class="val" id="ir-shares"></span></div>
+      <div class="result-row"><span class="label">Total Investment</span><span class="val" id="ir-inv"></span></div>
+      <div class="result-row"><span class="label">Projected True Value After Period</span><span class="val val-gold" id="ir-projv"></span></div>
+      <div class="result-row"><span class="label">Projected Portfolio Value</span><span class="val val-green" id="ir-portv"></span></div>
+      <div class="result-row"><span class="label">Absolute Gain</span><span class="val val-green" id="ir-gain"></span></div>
+      <div class="result-row"><span class="label">CAGR</span><span class="val val-gold" id="ir-cagr"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 4: Pricing Power Test -->
+  <div class="calc-box reveal">
+    <h3>💪 Pricing Power Analyzer</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">Estimate a company's pricing power based on price & volume data</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Old Price (₹)</label>
+        <input type="number" id="pp-op" value="10" min="1">
+      </div>
+      <div class="input-group">
+        <label>New Price (₹)</label>
+        <input type="number" id="pp-np" value="12" min="1">
+      </div>
+      <div class="input-group">
+        <label>Old Volume (units)</label>
+        <input type="number" id="pp-ov" value="1000" min="1">
+      </div>
+      <div class="input-group">
+        <label>New Volume (units)</label>
+        <input type="number" id="pp-nv" value="950" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="calcPricingPower()">Analyze</button>
+    <div class="result-box" id="pp-result">
+      <div class="result-row"><span class="label">Price Change</span><span class="val" id="pp-pc"></span></div>
+      <div class="result-row"><span class="label">Volume Change</span><span class="val" id="pp-vc"></span></div>
+      <div class="result-row"><span class="label">Price Elasticity</span><span class="val" id="pp-el"></span></div>
+      <div class="result-row"><span class="label">Revenue Impact</span><span class="val" id="pp-rev"></span></div>
+      <div class="result-row"><span class="label">Pricing Power</span><span class="val" id="pp-verdict"></span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);margin-bottom:0.5rem">StockIQ</div>
+  Based on "Stock Investing Mastermind" — ZebraLearn Pvt. Ltd. · Chapter 2
+  <div style="margin-top:0.5rem;color:rgba(154,152,128,0.5)">For educational purposes only. Not financial advice.</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// CHART
+const ctx = document.getElementById('priceChart').getContext('2d');
+const labels = ['Y1','Y2','Y3','Y4','Y5','Y6','Y7','Y8','Y9','Y10'];
+const intrinsic = [20,24,28,33,38,44,50,57,65,74];
+const market = [18,26,32,25,30,52,58,48,55,80];
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Market Price',
+        data: market,
+        borderColor: '#4CAF7D',
+        backgroundColor: 'rgba(76,175,125,0.08)',
+        tension: 0.4,
+        borderWidth: 2,
+        pointBackgroundColor: '#4CAF7D',
+        pointRadius: 4,
+        fill: false
+      },
+      {
+        label: 'Intrinsic Value',
+        data: intrinsic,
+        borderColor: '#E05A5A',
+        borderDash: [6,3],
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        borderWidth: 2,
+        pointBackgroundColor: '#E05A5A',
+        pointRadius: 3,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1E1E18',
+        titleColor: '#F5C518',
+        bodyColor: '#9A9880',
+        borderColor: 'rgba(245,197,24,0.2)',
+        borderWidth: 1,
+        callbacks: {
+          label: ctx => ' ₹' + ctx.parsed.y
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { color: '#9A9880', font: { family: 'DM Mono', size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { color: '#9A9880', font: { family: 'DM Mono', size: 11 }, callback: v => '₹'+v }
+      }
+    }
+  }
+});
+
+// TABS
+function switchTab(el, id) {
+  el.closest('.card').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.closest('.card').querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// REVEAL ON SCROLL
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// CALCULATOR HELPERS
+function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+function pct(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+
+// CALC 1: Earnings
+function calcEarnings() {
+  const u = +document.getElementById('eg-units').value;
+  const p = +document.getElementById('eg-price').value;
+  const nu = +document.getElementById('eg-newunits').value;
+  const np = +document.getElementById('eg-newprice').value;
+  const old = u * p;
+  const vol = nu * p;
+  const pri = u * np;
+  const both = nu * np;
+  const growth = ((both - old) / old) * 100;
+  document.getElementById('eg-old').textContent = fmt(old);
+  document.getElementById('eg-vol').textContent = fmt(vol) + ' (' + pct((vol-old)/old*100) + ')';
+  document.getElementById('eg-pri').textContent = fmt(pri) + ' (' + pct((pri-old)/old*100) + ')';
+  document.getElementById('eg-both').textContent = fmt(both) + ' (' + pct(growth) + ')';
+  document.getElementById('eg-pct').textContent = pct(growth);
+  document.getElementById('eg-pct').className = 'val ' + (growth >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('eg-result').classList.add('show');
+}
+
+// CALC 2: Valuation
+function calcValuation() {
+  const tv = +document.getElementById('vc-true').value;
+  const mv = +document.getElementById('vc-market').value;
+  const safety = +document.getElementById('vc-safety').value;
+  const sent = mv - tv;
+  const disc = ((mv - tv) / tv) * 100;
+  const buyPrice = tv * (1 - safety / 100);
+  let verdict, vclass;
+  if (mv < buyPrice) { verdict = '🟢 STRONG BUY — Trading well below intrinsic value'; vclass = 'val-green'; }
+  else if (mv < tv) { verdict = '🟡 BUY — Undervalued, good entry point'; vclass = 'val-gold'; }
+  else if (mv < tv * 1.1) { verdict = '⚪ HOLD — Fairly valued'; vclass = 'val'; }
+  else if (mv < tv * 1.3) { verdict = '🟠 CAUTION — Slightly overvalued'; vclass = 'val-gold'; }
+  else { verdict = '🔴 AVOID — Significantly overvalued'; vclass = 'val-red'; }
+  document.getElementById('vc-sent').textContent = fmt(sent) + (sent > 0 ? ' (positive sentiment)' : ' (negative sentiment — discount!)');
+  document.getElementById('vc-sent').className = 'val ' + (sent > 0 ? 'val-red' : 'val-green');
+  document.getElementById('vc-disc').textContent = pct(disc);
+  document.getElementById('vc-disc').className = 'val ' + (disc <= 0 ? 'val-green' : 'val-red');
+  document.getElementById('vc-buy').textContent = fmt(buyPrice);
+  document.getElementById('vc-verdict').textContent = verdict;
+  document.getElementById('vc-verdict').className = 'val ' + vclass;
+  document.getElementById('vc-result').classList.add('show');
+}
+
+// CALC 3: Return
+function calcReturn() {
+  const amt = +document.getElementById('ir-amount').value;
+  const buy = +document.getElementById('ir-buy').value;
+  const tv = +document.getElementById('ir-tv').value;
+  const g = +document.getElementById('ir-growth').value / 100;
+  const yr = +document.getElementById('ir-years').value;
+  const shares = Math.floor(amt / buy);
+  const invested = shares * buy;
+  const projTV = tv * Math.pow(1 + g, yr);
+  const portV = shares * projTV;
+  const gain = portV - invested;
+  const cagr = (Math.pow(portV / invested, 1 / yr) - 1) * 100;
+  document.getElementById('ir-shares').textContent = shares.toLocaleString('en-IN') + ' shares';
+  document.getElementById('ir-inv').textContent = fmt(invested);
+  document.getElementById('ir-projv').textContent = fmt(projTV) + ' per share';
+  document.getElementById('ir-portv').textContent = fmt(portV);
+  document.getElementById('ir-gain').textContent = fmt(gain) + ' (' + pct((gain/invested)*100) + ' total)';
+  document.getElementById('ir-cagr').textContent = cagr.toFixed(1) + '% per year';
+  document.getElementById('ir-result').classList.add('show');
+}
+
+// CALC 4: Pricing Power
+function calcPricingPower() {
+  const op = +document.getElementById('pp-op').value;
+  const np = +document.getElementById('pp-np').value;
+  const ov = +document.getElementById('pp-ov').value;
+  const nv = +document.getElementById('pp-nv').value;
+  const priceChg = ((np - op) / op) * 100;
+  const volChg = ((nv - ov) / ov) * 100;
+  const elasticity = volChg / priceChg;
+  const oldRev = op * ov;
+  const newRev = np * nv;
+  const revChg = ((newRev - oldRev) / oldRev) * 100;
+  let verdict, vclass;
+  if (Math.abs(elasticity) < 0.5) { verdict = '💪 STRONG — Highly inelastic demand'; vclass = 'val-green'; }
+  else if (Math.abs(elasticity) < 1) { verdict = '✅ MODERATE — Some pricing power'; vclass = 'val-gold'; }
+  else if (Math.abs(elasticity) < 2) { verdict = '⚠️ WEAK — Customers price-sensitive'; vclass = 'val-gold'; }
+  else { verdict = '❌ VERY WEAK — High price sensitivity'; vclass = 'val-red'; }
+  document.getElementById('pp-pc').textContent = pct(priceChg);
+  document.getElementById('pp-pc').className = 'val val-gold';
+  document.getElementById('pp-vc').textContent = pct(volChg);
+  document.getElementById('pp-vc').className = 'val ' + (volChg >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('pp-el').textContent = Math.abs(elasticity).toFixed(2) + ' (|PED|)';
+  document.getElementById('pp-rev').textContent = fmt(newRev) + ' (' + pct(revChg) + ')';
+  document.getElementById('pp-rev').className = 'val ' + (revChg >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('pp-verdict').textContent = verdict;
+  document.getElementById('pp-verdict').className = 'val ' + vclass;
+  document.getElementById('pp-result').classList.add('show');
+}
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+  document.querySelectorAll('nav a').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
