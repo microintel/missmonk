@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set-up Your Trading Accounts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0e0a1a;
+      --paper: #f5f1eb;
+      --accent: #5a2fd4;
+      --accent-light: #7c55e6;
+      --gold: #e8b84b;
+      --soft: #ede8f9;
+      --muted: #8a82a0;
+      --card-bg: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(245,241,235,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(90,47,212,0.12);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 7rem 2.5rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 50%, rgba(90,47,212,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 10% 80%, rgba(232,184,75,0.1) 0%, transparent 60%);
+    }
+    .hero-stripe {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 60px; overflow: hidden;
+    }
+    .hero-stripe svg { width: 100%; height: 100%; }
+
+    .hero-content { position: relative; z-index: 1; max-width: 680px; }
+    .chapter-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Syne', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); background: var(--soft);
+      padding: 0.4rem 1rem; border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .chapter-tag span { font-size: 1rem; }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: normal; color: var(--accent);
+      position: relative; display: inline-block;
+    }
+    .hero h1 em::after {
+      content: '';
+      position: absolute; bottom: 4px; left: 0; right: 0;
+      height: 6px; background: var(--gold); opacity: 0.5;
+      transform: skewX(-4deg);
+      z-index: -1;
+    }
+    .hero-desc {
+      font-size: 1.1rem; line-height: 1.7;
+      color: #4a4260; max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-accounts {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+    }
+    .account-pill {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.2rem;
+      border: 1.5px solid var(--accent);
+      border-radius: 100px;
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.85rem; color: var(--accent);
+      background: white; cursor: pointer;
+      transition: all 0.25s;
+    }
+    .account-pill:hover {
+      background: var(--accent); color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(90,47,212,0.25);
+    }
+    .account-pill .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* ─── FLOW SECTION ─────────────────────────────────── */
+    .flow-section {
+      padding: 6rem 2.5rem;
+      background: var(--ink);
+      position: relative; overflow: hidden;
+    }
+    .flow-section::before {
+      content: '';
+      position: absolute; top: -80px; left: 0; right: 0; height: 80px;
+      background: var(--ink);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    .section-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.025em; color: white;
+      margin-bottom: 3.5rem;
+    }
+    .flow-diagram {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 0; max-width: 900px; margin: 0 auto;
+    }
+    .flow-node {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; flex: 0 0 auto;
+    }
+    .flow-icon-wrap {
+      width: 100px; height: 100px; border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; margin-bottom: 0.75rem;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .flow-icon-wrap:hover { transform: translateY(-6px) scale(1.05); }
+    .flow-icon-wrap.bank  { background: #1c1830; border: 2px solid #3a3060; }
+    .flow-icon-wrap.trade { background: rgba(90,47,212,0.3); border: 2px solid var(--accent); }
+    .flow-icon-wrap.demat { background: #1c1830; border: 2px solid #3a3060; }
+    .flow-icon-wrap.market{ background: rgba(232,184,75,0.15); border: 2px solid rgba(232,184,75,0.4); }
+    .flow-name {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.85rem; color: white;
+    }
+    .flow-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+    .flow-arrow {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 0.5rem; color: var(--accent-light);
+      font-size: 1.4rem; flex: 0 0 auto;
+    }
+    .flow-arrow-label {
+      font-size: 0.62rem; color: var(--muted);
+      white-space: nowrap; text-align: center;
+      margin-top: 0.2rem;
+    }
+
+    /* ─── ACCOUNTS ─────────────────────────────────────── */
+    .accounts-section {
+      padding: 6rem 2.5rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .account-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1.5px solid #ede8f9;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp 0.6s forwards;
+    }
+    .account-card:nth-child(1) { animation-delay: 0.1s; }
+    .account-card:nth-child(2) { animation-delay: 0.25s; }
+    .account-card:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .account-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(90,47,212,0.12);
+    }
+    .account-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      border-radius: 20px 20px 0 0;
+    }
+    .account-card.bank::before { background: linear-gradient(90deg, #3ecf8e, #2ba8f5); }
+    .account-card.trade::before { background: linear-gradient(90deg, var(--accent), #b066ff); }
+    .account-card.demat::before { background: linear-gradient(90deg, var(--gold), #f07f3c); }
+
+    .card-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 1.2rem;
+    }
+    .bank  .card-icon { background: #e8faf2; }
+    .trade .card-icon { background: var(--soft); }
+    .demat .card-icon { background: #fff8e8; }
+
+    .card-number {
+      font-family: 'Syne', sans-serif; font-size: 0.65rem;
+      font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.3rem; letter-spacing: -0.02em;
+      color: var(--ink); margin-bottom: 0.75rem;
+    }
+    .card-desc {
+      font-size: 0.9rem; line-height: 1.65;
+      color: #5a5270;
+    }
+    .card-examples {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 1.2rem;
+    }
+    .example-tag {
+      font-size: 0.72rem; font-weight: 500;
+      background: #f3f0fb; color: var(--accent);
+      padding: 0.25rem 0.65rem; border-radius: 100px;
+    }
+
+    /* ─── BUY/SELL SECTION ─────────────────────────────── */
+    .buysell-section {
+      background: var(--soft);
+      padding: 5rem 2.5rem;
+    }
+    .buysell-inner {
+      max-width: 900px; margin: 0 auto;
+    }
+    .buysell-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    @media(max-width: 600px) { .buysell-cards { grid-template-columns: 1fr; } }
+    .buysell-card {
+      background: white; border-radius: 20px; padding: 2rem;
+      border: 1.5px solid #ddd6f5;
+    }
+    .buysell-card h3 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .badge-buy  { background: #d4f5e4; color: #1b8a5a; padding: 0.2rem 0.7rem; border-radius: 8px; font-size: 0.8rem; }
+    .badge-sell { background: #fde8e8; color: #c0392b; padding: 0.2rem 0.7rem; border-radius: 8px; font-size: 0.8rem; }
+    .step-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .step-list li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.88rem; line-height: 1.55; color: #4a4260;
+    }
+    .step-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .step-dot.buy  { background: #d4f5e4; color: #1b8a5a; }
+    .step-dot.sell { background: #fde8e8; color: #c0392b; }
+
+    /* ─── KEY INSIGHT ───────────────────────────────────── */
+    .insight-section {
+      padding: 5rem 2.5rem;
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .insight-box {
+      background: var(--ink); border-radius: 24px;
+      padding: 3rem 2.5rem; position: relative; overflow: hidden;
+    }
+    .insight-box::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: rgba(90,47,212,0.2);
+    }
+    .insight-box::after {
+      content: '';
+      position: absolute; bottom: -40px; left: -40px;
+      width: 150px; height: 150px; border-radius: 50%;
+      background: rgba(232,184,75,0.12);
+    }
+    .insight-emoji { font-size: 2.5rem; margin-bottom: 1rem; }
+    .insight-box p {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: white; line-height: 1.5;
+      position: relative; z-index: 1;
+    }
+    .insight-box p em {
+      font-style: normal; color: var(--gold);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      text-align: center; padding: 2rem;
+      font-size: 0.78rem; color: var(--muted);
+      border-top: 1px solid #e5e0f5;
+    }
+    footer strong { color: var(--accent); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .hero { padding: 5.5rem 1.25rem 3rem; }
+      .accounts-section, .flow-section, .buysell-section { padding: 4rem 1.25rem; }
+      .flow-diagram { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">📈 StockMastermind</div>
+  <ul class="nav-links">
+    <li><a href="#accounts">Accounts</a></li>
+    <li><a href="#flow">How It Works</a></li>
+    <li><a href="#transactions">Buy & Sell</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="chapter-tag"><span>📖</span> Chapter 3 · Stock Investing Mastermind</div>
+    <h1>Set-up Your<br/><em>Trading Accounts</em></h1>
+    <p class="hero-desc">
+      Before you place your first trade, you need 3 essential accounts working together.
+      Understand what each one does and why all three are required.
+    </p>
+    <div class="hero-accounts">
+      <div class="account-pill"><span class="dot"></span> Bank Account</div>
+      <div class="account-pill"><span class="dot"></span> Trading Account</div>
+      <div class="account-pill"><span class="dot"></span> Demat Account</div>
+    </div>
+  </div>
+  <div class="hero-stripe">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+      <path d="M0,60 C480,0 960,0 1440,60 L1440,60 L0,60 Z" fill="#0e0a1a"/>
+    </svg>
+  </div>
+</section>
+
+<!-- HOW IT FLOWS -->
+<section class="flow-section" id="flow">
+  <div style="max-width:900px; margin:0 auto;">
+    <p class="section-label">The Ecosystem</p>
+    <h2 class="section-title">How the 3 Accounts Work Together</h2>
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="flow-icon-wrap bank">🏦</div>
+        <div class="flow-name">Bank Account</div>
+        <div class="flow-sub">Holds your money</div>
+      </div>
+      <div class="flow-arrow">
+        <div>→</div>
+        <div class="flow-arrow-label">Allocates<br/>funds</div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-icon-wrap trade">💻</div>
+        <div class="flow-name">Trading Account</div>
+        <div class="flow-sub">Places orders</div>
+      </div>
+      <div class="flow-arrow">
+        <div style="display:flex;flex-direction:column;gap:0.3rem;align-items:center">
+          <div style="font-size:0.9rem;color:#7c55e6;">↓ Order Placed</div>
+          <div style="font-size:0.9rem;color:#e8b84b;">↑ Trade Confirmed</div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-icon-wrap market">🏛️</div>
+        <div class="flow-name">Stock Market</div>
+        <div class="flow-sub">NSE / BSE</div>
+      </div>
+      <div class="flow-arrow">
+        <div>→</div>
+        <div class="flow-arrow-label">Shares<br/>credited</div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-icon-wrap demat">📂</div>
+        <div class="flow-name">Demat Account</div>
+        <div class="flow-sub">Stores your shares</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCOUNTS -->
+<section class="accounts-section" id="accounts">
+  <p class="section-label" style="color:var(--accent)">Section 3.1</p>
+  <h2 class="section-title" style="color:var(--ink)">Accounts Required to<br/>Trade in the Stock Market</h2>
+
+  <div class="accounts-grid">
+
+    <!-- Bank -->
+    <div class="account-card bank">
+      <div class="card-icon">🏦</div>
+      <p class="card-number">Account 01</p>
+      <h3 class="card-title">Bank Account</h3>
+      <p class="card-desc">
+        A normal bank account where your money resides. It is the source of funds
+        for all your stock market transactions. Money flows out of here when you buy,
+        and flows back in when you sell.
+      </p>
+      <div class="card-examples">
+        <span class="example-tag">SBI</span>
+        <span class="example-tag">HDFC</span>
+        <span class="example-tag">Kotak Mahindra</span>
+        <span class="example-tag">Any bank</span>
+      </div>
+    </div>
+
+    <!-- Trading -->
+    <div class="account-card trade">
+      <div class="card-icon">💻</div>
+      <p class="card-number">Account 02</p>
+      <h3 class="card-title">Trading Account</h3>
+      <p class="card-desc">
+        A broker account that allows you to actually place buy and sell orders
+        in the equity and stock market. It acts as the <strong>bridge</strong> between your
+        bank and the stock exchange. Must be opened with a registered broker.
+      </p>
+      <div class="card-examples">
+        <span class="example-tag">Zerodha</span>
+        <span class="example-tag">Motilal Oswal</span>
+        <span class="example-tag">Upstox</span>
+        <span class="example-tag">Groww</span>
+      </div>
+    </div>
+
+    <!-- Demat -->
+    <div class="account-card demat">
+      <div class="card-icon">📂</div>
+      <p class="card-number">Account 03</p>
+      <h3 class="card-title">Demat Account</h3>
+      <p class="card-desc">
+        Short for <strong>Dematerialised Account</strong>. It holds the equity shares you
+        purchase in digital form. Instead of a physical stock certificate, you receive
+        a digital version that is automatically credited here within 2 working days
+        of purchase.
+      </p>
+      <div class="card-examples">
+        <span class="example-tag">CDSL</span>
+        <span class="example-tag">NSDL</span>
+        <span class="example-tag">Via your broker</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BUY / SELL -->
+<section class="buysell-section" id="transactions">
+  <div class="buysell-inner">
+    <p class="section-label" style="color:var(--accent)">Transactions</p>
+    <h2 class="section-title" style="color:var(--ink)">What Happens When<br/>You Buy or Sell?</h2>
+    <div class="buysell-cards">
+
+      <div class="buysell-card">
+        <h3><span class="badge-buy">BUY</span> Purchasing Shares</h3>
+        <ul class="step-list">
+          <li>
+            <span class="step-dot buy">1</span>
+            You place a buy order through your <strong>Trading Account</strong>.
+          </li>
+          <li>
+            <span class="step-dot buy">2</span>
+            Money is automatically <strong>deducted</strong> from your Bank Account.
+          </li>
+          <li>
+            <span class="step-dot buy">3</span>
+            The order goes to the Stock Exchange (NSE / BSE) for execution.
+          </li>
+          <li>
+            <span class="step-dot buy">4</span>
+            Once trade is confirmed, shares are <strong>credited</strong> to your Demat Account within 2 working days (T+2 settlement).
+          </li>
+        </ul>
+      </div>
+
+      <div class="buysell-card">
+        <h3><span class="badge-sell">SELL</span> Selling Shares</h3>
+        <ul class="step-list">
+          <li>
+            <span class="step-dot sell">1</span>
+            You place a sell order through your <strong>Trading Account</strong>.
+          </li>
+          <li>
+            <span class="step-dot sell">2</span>
+            Shares are <strong>withdrawn</strong> from your Demat Account.
+          </li>
+          <li>
+            <span class="step-dot sell">3</span>
+            The sell order executes on the Stock Exchange.
+          </li>
+          <li>
+            <span class="step-dot sell">4</span>
+            The sale proceeds are automatically <strong>credited</strong> back to your Bank Account.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- KEY INSIGHT -->
+<section class="insight-section">
+  <div class="insight-box">
+    <div class="insight-emoji">💡</div>
+    <p>
+      All 3 accounts are <em>linked to each other automatically</em>.<br/>
+      You only need to place an order — the system
+      handles the money movement and share transfer <em>on your behalf</em>.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Based on <strong>Stock Investing Mastermind</strong> · Chapter 3 · ZebraLearn Pvt Ltd © 2022</p>
+  <p style="margin-top:0.4rem;">For educational purposes only. Not financial advice.</p>
+</footer>
+
+</body>
+</html>
