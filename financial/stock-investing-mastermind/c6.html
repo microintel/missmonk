@@ -551,6 +551,107 @@
   .hero-left > *:nth-child(3) { animation-delay: 0.4s; }
   .hero-left > *:nth-child(4) { animation-delay: 0.55s; }
   .toc-card { animation: fadeInUp 0.7s ease 0.5s both; }
+
+/* ── SCREENER SECTION ── */
+.filter-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0;
+}
+.filter-pill {
+  background: var(--ink);
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Sans', monospace;
+  padding: 7px 14px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+.filter-result {
+  background: #fff;
+  border: 1px solid var(--warm-grey);
+  border-radius: 8px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+.result-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--red);
+  line-height: 1;
+}
+.result-text p { font-size: 14px; color: var(--text-muted); }
+.result-text strong { font-size: 16px; color: var(--ink); display: block; }
+
+/* ── SCREENER QUERY BOX ── */
+.screener-query-box {
+  border: 1px solid var(--warm-grey);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0 32px;
+  font-family: 'DM Sans', monospace;
+}
+.sq-header {
+  background: var(--ink);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sq-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.sq-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+.sq-body { background: #fff; }
+.sq-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--warm-grey);
+}
+.sq-row-last { border-bottom: none; }
+.sq-row:hover { background: var(--paper); }
+.sq-line {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  font-weight: 600;
+}
+.sq-code {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red-dark);
+  letter-spacing: 0.01em;
+}
+.sq-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+@media (max-width: 600px) {
+  .sq-row { grid-template-columns: 24px 1fr; }
+  .sq-note { display: none; }
+}
+
+
 </style>
 </head>
 <body>
@@ -832,6 +933,9 @@
 <!-- ════════════════════════════════════════════════
      5. SCREENER
 ════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════
+     5. SCREENER
+════════════════════════════════════════════════ -->
 <section class="section" id="s5">
   <div class="section-header">
     <div class="section-num">05</div>
@@ -846,26 +950,123 @@
     turning thousands of stocks into a manageable shortlist.
   </p>
 
-  <p style="font-size:15px; color:var(--text-muted); margin-bottom:20px; line-height:1.7">
-    In India, the go-to free screener is <strong style="color:var(--ink)">screener.in</strong>.
-    Here is how a real filter for "high dividend yield, quality companies" looks:
-  </p>
-
-  <div class="filter-pill-group">
-    <span class="filter-pill">Dividend Yield &lt; 2%</span>
-    <span class="filter-pill">Dividend Payout &lt; 100%</span>
-    <span class="filter-pill">Profit Growth 3yr &gt; 10%</span>
-    <span class="filter-pill">Profit Growth 5yr &gt; 10%</span>
-    <span class="filter-pill">Avg ROCE 3yr &gt; 30%</span>
-    <span class="filter-pill">P/E &lt; 6</span>
+  <!-- STEPS -->
+  <p class="section-tag" style="margin-bottom:16px;">How to Use Screener.in — Step by Step</p>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h5>Go to screener.in</h5>
+      <p>Open <strong>screener.in</strong> in your browser. Create a free account if you haven't already.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h5>Click "Screens"</h5>
+      <p>In the top navigation, click <strong>Screens</strong>. You'll see pre-built screens and an option to create your own.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h5>Create New Screen</h5>
+      <p>Click <strong>"Create new screen"</strong>. A query editor box will appear where you type your filters.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">04</span>
+      <h5>Enter Your Queries</h5>
+      <p>Type each filter on a new line in the query box exactly as shown below. Screener auto-suggests field names.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">05</span>
+      <h5>Run the Screen</h5>
+      <p>Click <strong>"Run this screen"</strong>. The matching companies appear as a sortable table below.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">06</span>
+      <h5>Analyse Results</h5>
+      <p>Sort by any column. Click any company to open its full financial page. Look for the 2–3 outlier gems.</p>
+    </div>
   </div>
 
+  <!-- QUERY BOX -->
+  <p class="section-tag" style="margin-bottom:16px;">The Exact Queries to Paste in Screener</p>
+  <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px; line-height:1.6;">
+    The book uses this screen to find <strong style="color:var(--ink)">high dividend yield, quality companies</strong>.
+    Paste each line into the screener query box (one filter per line):
+  </p>
+
+  <div class="screener-query-box">
+    <div class="sq-header">
+      <span class="sq-label">screener.in · Query Editor</span>
+      <span class="sq-tag">Highest Dividend Yield — Quality Filter</span>
+    </div>
+    <div class="sq-body">
+      <div class="sq-row">
+        <span class="sq-line">1</span>
+        <span class="sq-code">Dividend yield &gt; 2</span>
+        <span class="sq-note">Only companies paying meaningful dividends</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">2</span>
+        <span class="sq-code">Dividend payout ratio &lt; 100</span>
+        <span class="sq-note">Payout is sustainable — not paying more than they earn</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">3</span>
+        <span class="sq-code">Profit growth 3Years &gt; 10</span>
+        <span class="sq-note">Consistent 3-year profit growth of at least 10%</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">4</span>
+        <span class="sq-code">Profit growth 5Years &gt; 10</span>
+        <span class="sq-note">Consistent 5-year profit growth of at least 10%</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">5</span>
+        <span class="sq-code">Average return on capital employed 3Years &gt; 30</span>
+        <span class="sq-note">High-quality business — earns strong returns on capital</span>
+      </div>
+      <div class="sq-row sq-row-last">
+        <span class="sq-line">6</span>
+        <span class="sq-code">Price to Earning &lt; 6</span>
+        <span class="sq-note">Trading cheap — potential undiscovered opportunity</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT EACH QUERY MEANS -->
+  <p class="section-tag" style="margin-top:40px; margin-bottom:16px;">What Each Filter Is Testing</p>
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">💰</span>
+      <h4>Dividend Yield &gt; 2%</h4>
+      <p>The company is actively returning cash to shareholders. A yield above 2% signals a real, paying business — not just a growth story.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">✅</span>
+      <h4>Dividend Payout &lt; 100%</h4>
+      <p>The company isn't paying out more than it earns. Payout below 100% means dividends are safe and the business retains some profit to grow.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📈</span>
+      <h4>Profit Growth 3yr &amp; 5yr &gt; 10%</h4>
+      <p>Profits are growing consistently — not a one-year spike. Both 3-year and 5-year filters together weed out cyclical or one-time winners.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏆</span>
+      <h4>Avg ROCE 3yr &gt; 30%</h4>
+      <p>Return on Capital Employed above 30% is the hallmark of a high-quality, competitively advantaged business. Very few companies clear this bar.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔍</span>
+      <h4>P/E &lt; 6</h4>
+      <p>The stock is trading at a very low multiple. A company with great fundamentals at a P/E below 6 is likely <strong>undiscovered</strong> — that's the opportunity.</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
   <div class="filter-result">
     <div class="result-num">131</div>
     <div class="result-text">
       <strong>Companies matched from 5,000+</strong>
-      <p>Screener narrows the field to a manageable shortlist. A few of these might be
-         undiscovered gems — that's the opportunity.</p>
+      <p>All 6 filters applied together. From this shortlist, look for 2–3 outlier companies with no obvious red flags.</p>
     </div>
   </div>
 
