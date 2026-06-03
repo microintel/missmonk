@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2 — Company Reports: Where to Find Information</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --accent: #f0a500;
+    --accent2: #3b82f6;
+    --accent3: #10b981;
+    --danger: #ef4444;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --primary-label: #3b4a6b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(13,15,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-tab {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-tab:hover { color: var(--text); background: var(--surface); }
+  .nav-tab.active { color: var(--bg); background: var(--accent); }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    min-height: 100vh;
+    padding: 100px 40px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.45s ease both;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding-top: 120px;
+    padding-bottom: 80px;
+  }
+
+  .chapter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(240,165,0,0.12);
+    border: 1px solid rgba(240,165,0,0.3);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(38px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 48px;
+  }
+
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .hero-card:hover { border-color: var(--card-color, var(--accent)); transform: translateY(-3px); }
+  .hero-card:hover::before { transform: scaleX(1); }
+
+  .hero-card .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--card-color, var(--accent));
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .hero-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .hero-card p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── SECTION HEADERS ── */
+  .sec-header {
+    margin-bottom: 48px;
+  }
+
+  .sec-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .sec-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+
+  .sec-header p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── SOURCE CARDS ── */
+  .sources-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .source-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 24px;
+    align-items: start;
+    transition: all 0.25s;
+    cursor: default;
+  }
+
+  .source-card:hover {
+    border-color: var(--card-accent, var(--accent));
+    background: var(--surface2);
+    transform: translateX(4px);
+  }
+
+  .source-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    background: var(--icon-bg, rgba(240,165,0,0.1));
+  }
+
+  .source-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .source-body p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .source-tag {
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box {
+    background: rgba(59,130,246,0.06);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #93c5fd;
+    line-height: 1.6;
+  }
+
+  .example-box strong {
+    color: var(--accent2);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── AVOID SECTION ── */
+  .avoid-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .avoid-card {
+    background: var(--surface);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.25s;
+  }
+
+  .avoid-card:hover {
+    border-color: rgba(239,68,68,0.5);
+    background: var(--surface2);
+  }
+
+  .avoid-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: rgba(239,68,68,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+
+  .avoid-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fca5a5;
+  }
+
+  .avoid-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .but-badge {
+    display: inline-block;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #6ee7b7;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-top: 12px;
+  }
+
+  /* ── RESEARCH PLAN ── */
+  .tier-section { margin-bottom: 40px; }
+
+  .tier-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .tier-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tier-header h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .tier-header span {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .tier-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-left: 28px;
+  }
+
+  .tier-card {
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+
+  .tier-card:hover { transform: translateY(-2px); }
+
+  .tier-card .t-icon { font-size: 28px; margin-bottom: 10px; }
+  .tier-card h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .tier-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .tier-compulsory .tier-card { background: rgba(240,165,0,0.07); border-color: rgba(240,165,0,0.2); }
+  .tier-encouraged .tier-card { background: rgba(59,130,246,0.07); border-color: rgba(59,130,246,0.2); }
+  .tier-skip .tier-card { background: rgba(107,114,128,0.07); border-color: rgba(107,114,128,0.15); }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin-top: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--dot-color, var(--accent));
+    border: 2px solid var(--bg);
+  }
+
+  .tl-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .tl-item p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 680px; }
+
+  .quiz-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .quiz-q.answered { border-color: var(--border); }
+
+  .quiz-q h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  .quiz-q .q-num {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    font-size: 13.5px;
+    transition: all 0.18s;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: rgba(59,130,246,0.08);
+  }
+
+  .opt.correct { background: rgba(16,185,129,0.12); border-color: #10b981; color: #6ee7b7; }
+  .opt.wrong   { background: rgba(239,68,68,0.1);  border-color: #ef4444; color: #fca5a5; }
+  .opt:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.good { background: rgba(16,185,129,0.1); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+  .feedback.bad  { background: rgba(239,68,68,0.08); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+
+  .score-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 28px;
+  }
+
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .score-bar p { font-size: 14px; color: var(--muted); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 24px 0;
+    border: 1px solid;
+  }
+
+  .callout-warn {
+    background: rgba(240,165,0,0.07);
+    border-color: rgba(240,165,0,0.25);
+    color: #fde68a;
+  }
+
+  .callout-info {
+    background: rgba(59,130,246,0.06);
+    border-color: rgba(59,130,246,0.2);
+    color: #93c5fd;
+  }
+
+  .callout strong { font-weight: 600; }
+
+  /* ── PORTFOLIO VIZ ── */
+  .portfolio-viz {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-top: 24px;
+  }
+
+  .portfolio-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .p-fill {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.4s ease;
+  }
+
+  .p-label { font-size: 12px; text-align: center; color: var(--muted); font-weight: 500; }
+  .p-pct { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 16px; }
+    .nav-tabs { gap: 2px; }
+    .nav-tab { padding: 6px 10px; font-size: 12px; }
+    .section { padding: 90px 16px 40px; }
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+    .source-card { grid-template-columns: 44px 1fr; }
+    .source-tag { display: none; }
+    .avoid-grid { grid-template-columns: 1fr; }
+    .tier-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">Chapter .2 · ZebraLearn</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="show('intro')">Overview</button>
+    <button class="nav-tab" onclick="show('primary')">Primary</button>
+    <button class="nav-tab" onclick="show('secondary')">Secondary</button>
+    <button class="nav-tab" onclick="show('avoid')">Avoid</button>
+    <button class="nav-tab" onclick="show('plan')">4–5 hrs</button>
+    <button class="nav-tab" onclick="show('quiz')">Quiz</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div id="intro" class="section hero active">
+  <div class="chapter-tag">📚 ZebraLearn · Stock Investing Mastermind</div>
+  <h1>Company Reports<br><span>Where to Find</span><br>Information</h1>
+  <p class="hero-sub">
+    Before you invest a single rupee, you need the right information. Chapter 2 maps out exactly where to look — and what to skip.
+  </p>
+
+  <div class="callout callout-info">
+    <strong>Core idea:</strong> Information about a company flows from two directions — directly from the company itself (<em>primary</em>) and from third-party analysts (<em>secondary</em>). Knowing which to trust, and how to use each, is the foundation of smart investing.
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-card" style="--card-color:#f0a500" onclick="show('primary')">
+      <div class="num">2.1</div>
+      <h3>Primary Sources</h3>
+      <p>Straight from the company — Annual Reports, Investor Decks, Conference Calls & more.</p>
+    </div>
+    <div class="hero-card" style="--card-color:#3b82f6" onclick="show('secondary')">
+      <div class="num">2.2</div>
+      <h3>Secondary Sources</h3>
+      <p>Third-party research — Brokerage Reports, Industry Reports, Government Data.</p>
+    </div>
+    <div class="hero-card" style="--card-color:#ef4444" onclick="show('avoid')">
+      <div class="num">2.3</div>
+      <h3>What to Avoid</h3>
+      <p>Blogs, media articles, newspapers — noisy, biased, unreliable for valuation.</p>
+    </div>
+    <div class="hero-card" style="--card-color:#10b981" onclick="show('plan')">
+      <div class="num">2.4</div>
+      <h3>4–5 hrs / Week</h3>
+      <p>A prioritised research plan any retail investor can stick to consistently.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PRIMARY ═══════════════════ -->
+<div id="primary" class="section">
+  <div class="sec-header">
+    <div class="sec-badge" style="background:rgba(240,165,0,0.12);color:var(--accent)">2.1 — Primary Sources</div>
+    <h2>Straight from the<br>Horse's Mouth</h2>
+    <p>These documents come directly from the company or its management — making them the most authoritative first-hand data you can get.</p>
+  </div>
+
+  <div class="sources-grid">
+
+    <!-- Annual Report -->
+    <div class="source-card" style="--card-accent:#f0a500">
+      <div class="source-icon" style="--icon-bg:rgba(240,165,0,0.1)">📋</div>
+      <div class="source-body">
+        <h3>Annual Report</h3>
+        <p>Published every year (50–250 pages), it covers the company's full financials, KMPs (Key Managerial Personnel), employee details, and business commentary. Think of it as a company's complete health report card.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          Open Reliance Industries Annual Report → go to "Management Discussion & Analysis" → you'll find revenue breakdown by segment, capex plans, and risk factors all in one place.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(240,165,0,0.12);color:var(--accent)">Must Read</span>
+    </div>
+
+    <!-- Investor Presentation -->
+    <div class="source-card" style="--card-accent:#f0a500">
+      <div class="source-icon" style="--icon-bg:rgba(240,165,0,0.1)">📊</div>
+      <div class="source-body">
+        <h3>Investor Presentation</h3>
+        <p>Management creates 20–40 slide decks that give a structured, visual breakdown of the business. Far easier to skim than a full annual report. Published quarterly after results.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          A logistics company's investor deck will tell you: total fleet size (trucks/ships), quarterly revenue, industry growth rate, and market share — all in a few slides.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(240,165,0,0.12);color:var(--accent)">Must Read</span>
+    </div>
+
+    <!-- Conference Call -->
+    <div class="source-card" style="--card-accent:#a78bfa">
+      <div class="source-icon" style="--icon-bg:rgba(167,139,250,0.1)">🎙️</div>
+      <div class="source-body">
+        <h3>Conference Call (Con Call)</h3>
+        <p>Quarterly calls where management addresses investors directly. Starts with a brief update, then Q&A. Transcripts are freely available on BSE/NSE or the company website. You hear management's tone and evasiveness — invaluable signals.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          In an Infosys Q2 con call, an analyst asked about visa cost headwinds. The CFO's measured answer vs. a defensive answer signals management quality.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa">Encouraged</span>
+    </div>
+
+    <!-- Interview -->
+    <div class="source-card" style="--card-accent:#a78bfa">
+      <div class="source-icon" style="--icon-bg:rgba(167,139,250,0.1)">🎤</div>
+      <div class="source-body">
+        <h3>Management Interviews</h3>
+        <p>When the CEO/CFO appears on YouTube channels, CNBC, or podcasts. These are quick to consume (20–30 min) and give you a feel for how management thinks about competition, growth, and risk.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          Watching Zepto's founder on a startup podcast reveals their unit economics mindset far more directly than any press release.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa">Encouraged</span>
+    </div>
+
+    <!-- DRHP -->
+    <div class="source-card" style="--card-accent:#f0a500">
+      <div class="source-icon" style="--icon-bg:rgba(240,165,0,0.1)">📜</div>
+      <div class="source-body">
+        <h3>DRHP — Draft Red Herring Prospectus</h3>
+        <p>Every company filing for an IPO must submit a DRHP to SEBI. It's 400–500 pages of exhaustive detail — business model, 5-year financials, risk factors, fund utilisation, promoter history. The most thorough document ever submitted by a company. As a retail investor, reading ~150 pages is enough.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          ONGC's DRHP (Sept 2011) listed its oil reserves, refinancing risks, and government stake details — information unavailable anywhere else in such structured form. Find DRHPs at sebi.gov.in.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(240,165,0,0.12);color:var(--accent)">Must Read</span>
+    </div>
+
+    <!-- Corporate Announcement -->
+    <div class="source-card" style="--card-accent:#a78bfa">
+      <div class="source-icon" style="--icon-bg:rgba(167,139,250,0.1)">📢</div>
+      <div class="source-body">
+        <h3>Corporate Announcements</h3>
+        <p>Companies file regular updates to BSE/NSE for any material event — new market entry, acquisition, key management change, board meeting outcome. These are mandatory disclosures that you can access free on bseindia.com or nseindia.com.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          Reliance announced its entry into the Jio retail energy market via a BSE corporate announcement months before it made mainstream news.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa">Monitor</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ SECONDARY ═══════════════════ -->
+<div id="secondary" class="section">
+  <div class="sec-header">
+    <div class="sec-badge" style="background:rgba(59,130,246,0.1);color:var(--accent2)">2.2 — Secondary Sources</div>
+    <h2>Third-Party Research<br>That's Worth Trusting</h2>
+    <p>These come from organizations with no stake in any particular stock — making them relatively unbiased and useful for industry-level understanding.</p>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>Key principle:</strong> Consulting firms like Deloitte, Edelweiss, Arthur D Little, Knight Frank, and PwC have no incentive to favour any individual stock. Use their data for facts, not their opinions for buy/sell decisions.
+  </div>
+
+  <div class="sources-grid">
+
+    <div class="source-card" style="--card-accent:#3b82f6">
+      <div class="source-icon" style="--icon-bg:rgba(59,130,246,0.1)">🏭</div>
+      <div class="source-body">
+        <h3>Industry Reports</h3>
+        <p>Consulting firms publish deep-dive reports on specific sectors — current trends, market size, CAGR projections, key risks, and regulatory outlook. Essential for understanding the playing field before you evaluate a specific company.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          A McKinsey or KPMG "Future of Indian Logistics" report tells you whether the entire sector is growing before you decide if a logistics company stock is worth investigating.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(59,130,246,0.12);color:var(--accent2)">Encouraged</span>
+    </div>
+
+    <div class="source-card" style="--card-accent:#3b82f6">
+      <div class="source-icon" style="--icon-bg:rgba(59,130,246,0.1)">🏛️</div>
+      <div class="source-body">
+        <h3>Government Reports</h3>
+        <p>Ministries like Ministry of Road Transport & Highways, Ministry of Power, or DPIIT publish annual data with actual numbers — number of registered vehicles, installed power capacity, FDI figures. Hard data with official credibility.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          The MoRTH Annual Report gives you exact data on National Highway construction km/year — crucial context if you're evaluating a roads infra company.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(59,130,246,0.12);color:var(--accent2)">Skippable</span>
+    </div>
+
+    <div class="source-card" style="--card-accent:#3b82f6">
+      <div class="source-icon" style="--icon-bg:rgba(59,130,246,0.1)">🤝</div>
+      <div class="source-body">
+        <h3>Industry Associations</h3>
+        <p>Every sector has a body — SIAM (automobiles), NASSCOM (IT), CII (general industry). They publish on-ground reports with member data, lobbying positions, and sector health. Not biased toward any single company.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          NASSCOM's annual IT industry report gives staffing trends, export revenue, and emerging tech adoption rates across the entire Indian IT sector.
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(59,130,246,0.12);color:var(--accent2)">Skippable</span>
+    </div>
+
+    <div class="source-card" style="--card-accent:#3b82f6">
+      <div class="source-icon" style="--icon-bg:rgba(59,130,246,0.1)">🏦</div>
+      <div class="source-body">
+        <h3>Brokerage Reports</h3>
+        <p>Published by brokers like Motilal Oswal, Kotak, ICICI Securities. Contain deep financial models, segment breakdowns, and management commentary summaries. <strong style="color:#93c5fd">Ignore the Buy/Sell recommendation</strong> — use only the factual data they've aggregated.</p>
+        <div class="example-box">
+          <strong>Real example</strong>
+          A Motilal Oswal report on Titan may contain 5-year sales data across segments (watches, jewellery, eyewear) that would take you hours to compile yourself. Take the data, discard the "BUY at ₹3200 target."
+        </div>
+      </div>
+      <span class="source-tag" style="background:rgba(59,130,246,0.12);color:var(--accent2)">Skippable</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ AVOID ═══════════════════ -->
+<div id="avoid" class="section">
+  <div class="sec-header">
+    <div class="sec-badge" style="background:rgba(239,68,68,0.1);color:#ef4444">2.3 — What to Avoid</div>
+    <h2>Sources That<br>Mislead Investors</h2>
+    <p>These can help spark investment <em>ideas</em> — but never use them to validate or make a buy/sell decision.</p>
+  </div>
+
+  <div class="avoid-grid">
+
+    <div class="avoid-card">
+      <div class="avoid-icon">📰</div>
+      <h3>Newspapers</h3>
+      <p>Excellent for <em>discovering</em> new companies or sectors. Terrible for <em>valuing</em> them. News cycles create noise — stocks react to headlines, not fundamentals.</p>
+      <div class="but-badge">✓ OK for idea generation</div>
+    </div>
+
+    <div class="avoid-card">
+      <div class="avoid-icon">📱</div>
+      <h3>Media Articles</h3>
+      <p>Often opinionated, driven by traffic incentives, and frequently influenced by PR. A "Top 5 Stocks for 2025" article has zero accountability if those picks lose money.</p>
+      <div class="but-badge">✓ OK as a starting point</div>
+    </div>
+
+    <div class="avoid-card">
+      <div class="avoid-icon">✍️</div>
+      <h3>Blogs & Social Posts</h3>
+      <p>Anyone can write a blog or tweet about a stock. There's no verification, no accountability, and strong potential for pump-and-dump manipulation. Credibility is zero without track record.</p>
+      <div class="but-badge">✗ Never rely on these</div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <div class="callout callout-warn">
+    <strong>The golden rule:</strong> Use media and blogs to <em>discover</em> ideas. Then verify everything independently through primary and secondary sources before making any decision. "I read it on Moneycontrol" is not a thesis.
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;margin-top:28px;">
+    <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;">🔄 The Right Research Flow</h3>
+    <div class="timeline">
+      <div class="tl-item" style="--dot-color:#6b7280">
+        <h4 style="color:#9ca3af">Step 1 — Idea Discovery (use media)</h4>
+        <p>Read newspapers, watch YouTube, browse Screener.in screeners. Find a company that interests you.</p>
+      </div>
+      <div class="tl-item" style="--dot-color:#f0a500">
+        <h4>Step 2 — Primary Research (use primary sources)</h4>
+        <p>Read the latest Annual Report + Investor Presentation. Scan the DRHP if it's a newer company.</p>
+      </div>
+      <div class="tl-item" style="--dot-color:#3b82f6">
+        <h4>Step 3 — Context Check (use secondary sources)</h4>
+        <p>Read an industry report. Skim 4 recent con-call transcripts. Grab factual data from a brokerage report.</p>
+      </div>
+      <div class="tl-item" style="--dot-color:#10b981">
+        <h4>Step 4 — Decision</h4>
+        <p>Now — and only now — form your own investment thesis. Never outsource this step to media or blogs.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PLAN ═══════════════════ -->
+<div id="plan" class="section">
+  <div class="sec-header">
+    <div class="sec-badge" style="background:rgba(16,185,129,0.1);color:var(--accent3)">2.4 — Research Plan</div>
+    <h2>How to Research in<br>4–5 Hours a Week</h2>
+    <p>A retail investor can't dedicate 40+ hours like an institutional fund manager. Here's a prioritised system that works.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>Important:</strong> If you genuinely cannot dedicate 4–5 hours per week to research, direct stock investing is not for you. In that case, mutual funds or a PMS (Portfolio Management Service) will give you better risk-adjusted outcomes.
+  </div>
+
+  <!-- Tier 1 -->
+  <div class="tier-section tier-compulsory">
+    <div class="tier-header">
+      <div class="tier-dot" style="background:#f0a500"></div>
+      <h3 style="color:#fde68a">🔴 Compulsory to Go Through</h3>
+      <span>Never skip these</span>
+    </div>
+    <div class="tier-cards">
+      <div class="tier-card">
+        <div class="t-icon">📋</div>
+        <h4>Annual Report</h4>
+        <p>Complete picture of financials and operations for the prior year. Essential to read every single year for every holding.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">📊</div>
+        <h4>Investor Presentation</h4>
+        <p>20–30 minute read. Quarterly data on operations and financials. Faster than the full annual report.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">📜</div>
+        <h4>DRHP</h4>
+        <p>One-time deep read (~150 pages for retail). The most comprehensive company document ever filed. Do this before any new position.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier 2 -->
+  <div class="tier-section tier-encouraged">
+    <div class="tier-header">
+      <div class="tier-dot" style="background:#3b82f6"></div>
+      <h3 style="color:#93c5fd">🔵 Encouraged to Go Through</h3>
+      <span>High value when time allows</span>
+    </div>
+    <div class="tier-cards">
+      <div class="tier-card">
+        <div class="t-icon">🏭</div>
+        <h4>Industry Reports</h4>
+        <p>Allocate time proportional to your portfolio exposure. 25% in textiles? Spend 25% of your industry research time there.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">🎙️</div>
+        <h4>Conference Calls</h4>
+        <p>Read at least 4 con calls per company you analyse. Consecutive quarters reveal management consistency and tone shifts.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">🎤</div>
+        <h4>Management Interviews</h4>
+        <p>Quick, high-signal. Watch/read as many as you can find. Reveals thinking quality of the people running your money.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier 3 -->
+  <div class="tier-section tier-skip">
+    <div class="tier-header">
+      <div class="tier-dot" style="background:#6b7280"></div>
+      <h3 style="color:#9ca3af">⚪ You Can Skip</h3>
+      <span>For institutional investors, not retail</span>
+    </div>
+    <div class="tier-cards">
+      <div class="tier-card">
+        <div class="t-icon">🏦</div>
+        <h4>Brokerage Reports</h4>
+        <p>Time-consuming and buy/sell recommendations are unreliable. Only grab specific factual data if you need it.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">🤝</div>
+        <h4>Industry Associations</h4>
+        <p>Useful but takes significant time to find and parse the right data. Lower ROI for retail investors.</p>
+      </div>
+      <div class="tier-card">
+        <div class="t-icon">🏛️</div>
+        <h4>Government Reports</h4>
+        <p>Dense, often delayed. Unless you're in a highly regulated sector like power or roads infra, you can skip these.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio time allocation viz -->
+  <hr class="divider">
+  <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px;">📐 Time Allocation = Portfolio Allocation</h3>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:4px;">If 25% of your portfolio is in Textiles, spend ~25% of your industry research hours on textile reports.</p>
+
+  <div class="portfolio-viz">
+    <div class="portfolio-bar">
+      <div class="p-pct" style="color:#f0a500">25%</div>
+      <div class="p-fill" style="height:100px;background:rgba(240,165,0,0.3);border:1px solid rgba(240,165,0,0.4)"></div>
+      <div class="p-label">Textile</div>
+    </div>
+    <div class="portfolio-bar">
+      <div class="p-pct" style="color:#3b82f6">20%</div>
+      <div class="p-fill" style="height:80px;background:rgba(59,130,246,0.3);border:1px solid rgba(59,130,246,0.4)"></div>
+      <div class="p-label">Food</div>
+    </div>
+    <div class="portfolio-bar">
+      <div class="p-pct" style="color:#10b981">10%</div>
+      <div class="p-fill" style="height:40px;background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4)"></div>
+      <div class="p-label">Telecom</div>
+    </div>
+    <div class="portfolio-bar">
+      <div class="p-pct" style="color:#a78bfa">45%</div>
+      <div class="p-fill" style="height:180px;background:rgba(167,139,250,0.3);border:1px solid rgba(167,139,250,0.4)"></div>
+      <div class="p-label">Others</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ QUIZ ═══════════════════ -->
+<div id="quiz" class="section">
+  <div class="sec-header">
+    <div class="sec-badge" style="background:rgba(16,185,129,0.1);color:var(--accent3)">Test Yourself</div>
+    <h2>Quick Check —<br>Chapter 2</h2>
+    <p>5 questions. No timer. Just click an answer to see if you got it right.</p>
+  </div>
+
+  <div class="quiz-wrap">
+    <div id="score-display" style="display:none" class="score-bar">
+      <div class="score-num" id="score-num">0/5</div>
+      <div>
+        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Your Score</p>
+        <p>Review the explanations below to reinforce your understanding.</p>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-q" id="q1">
+      <span class="q-num">Question 1 of 5</span>
+      <h4>Which document is described as "the most detailed document ever submitted by a company"?</h4>
+      <div class="options">
+        <button class="opt" onclick="answer(this,'q1','a')">Annual Report</button>
+        <button class="opt" onclick="answer(this,'q1','b')">Investor Presentation</button>
+        <button class="opt" onclick="answer(this,'q1','c')">DRHP (Draft Red Herring Prospectus)</button>
+        <button class="opt" onclick="answer(this,'q1','d')">Brokerage Report</button>
+      </div>
+      <div class="feedback" id="fb-q1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" id="q2">
+      <span class="q-num">Question 2 of 5</span>
+      <h4>You want to understand the overall health of the Indian EV industry before buying an EV stock. What's the best source?</h4>
+      <div class="options">
+        <button class="opt" onclick="answer(this,'q2','a')">A Moneycontrol article about EV stocks</button>
+        <button class="opt" onclick="answer(this,'q2','b')">An Industry Report by a consulting firm like McKinsey or KPMG</button>
+        <button class="opt" onclick="answer(this,'q2','c')">The EV company's own investor presentation</button>
+        <button class="opt" onclick="answer(this,'q2','d')">A finance blogger's analysis on Substack</button>
+      </div>
+      <div class="feedback" id="fb-q2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" id="q3">
+      <span class="q-num">Question 3 of 5</span>
+      <h4>A brokerage report on HDFC Bank says "BUY — Target Price ₹2200." What should you do?</h4>
+      <div class="options">
+        <button class="opt" onclick="answer(this,'q3','a')">Trust the recommendation and buy immediately</button>
+        <button class="opt" onclick="answer(this,'q3','b')">Ignore the BUY call, but use the factual financial data in the report</button>
+        <button class="opt" onclick="answer(this,'q3','c')">Discard the entire report — brokerage reports are useless</button>
+        <button class="opt" onclick="answer(this,'q3','d')">Sell your current HDFC holdings to avoid the predicted correction</button>
+      </div>
+      <div class="feedback" id="fb-q3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" id="q4">
+      <span class="q-num">Question 4 of 5</span>
+      <h4>You have 4–5 hours per week for research. Which of the following is in the "You Can Skip" category for retail investors?</h4>
+      <div class="options">
+        <button class="opt" onclick="answer(this,'q4','a')">Annual Report</button>
+        <button class="opt" onclick="answer(this,'q4','b')">DRHP</button>
+        <button class="opt" onclick="answer(this,'q4','c')">Government Reports</button>
+        <button class="opt" onclick="answer(this,'q4','d')">Investor Presentations</button>
+      </div>
+      <div class="feedback" id="fb-q4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-q" id="q5">
+      <span class="q-num">Question 5 of 5</span>
+      <h4>A newspaper article sparks your interest in a cement company. What is the correct next step?</h4>
+      <div class="options">
+        <button class="opt" onclick="answer(this,'q5','a')">Buy the stock — if it's in the news, it must be doing well</button>
+        <button class="opt" onclick="answer(this,'q5','b')">Use the article as an idea generator, then research via primary sources before deciding</button>
+        <button class="opt" onclick="answer(this,'q5','c')">Look for more newspaper articles to confirm the thesis</button>
+        <button class="opt" onclick="answer(this,'q5','d')">Ask a finance influencer on Instagram for their opinion</button>
+      </div>
+      <div class="feedback" id="fb-q5"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const correct = { q1:'c', q2:'b', q3:'b', q4:'c', q5:'b' };
+  const explanations = {
+    q1: { good: "Correct! The DRHP is filed during an IPO and is 400–500 pages of exhaustive detail — more comprehensive than any other company document.", bad: "Not quite. The DRHP (Draft Red Herring Prospectus) is the most detailed document, filed at IPO time." },
+    q2: { good: "Correct! Industry reports from neutral consulting firms give you sector-wide data — market size, trends, risks — with no bias toward any single stock.", bad: "For industry-level understanding, a neutral third-party industry report from a consulting firm (like McKinsey) is the best source — not opinionated media or the company's own deck." },
+    q3: { good: "Exactly right! Brokerage reports contain valuable aggregated data (financials, segment breakdowns, management summaries). Use the facts — ignore the buy/sell targets.", bad: "The right approach is to use the factual data in brokerage reports while ignoring the buy/sell recommendation, which can be influenced by the broker's own interests." },
+    q4: { good: "Correct! Government reports fall in the 'You Can Skip' tier for retail investors. They're dense, time-consuming, and usually relevant only for specific regulated sectors.", bad: "Government Reports are the skippable tier for retail investors. Annual Reports, DRHPs, and Investor Presentations are all compulsory reads." },
+    q5: { good: "Perfect! Newspapers are for idea discovery, not validation. The next step is always first-hand research through primary sources like the Annual Report and DRHP.", bad: "Newspapers are only idea generators. You must verify independently through primary sources before any investment decision." }
+  };
+
+  let answered = {};
+  let score = 0;
+
+  function answer(btn, qid, chosen) {
+    if (answered[qid]) return;
+    answered[qid] = true;
+    score += chosen === correct[qid] ? 1 : 0;
+
+    const q = document.getElementById(qid);
+    const opts = q.querySelectorAll('.opt');
+    const fb = document.getElementById('fb-' + qid);
+    const isRight = chosen === correct[qid];
+
+    opts.forEach(o => o.disabled = true);
+    btn.classList.add(isRight ? 'correct' : 'wrong');
+
+    // Highlight correct answer
+    opts.forEach(o => {
+      const idx = ['a','b','c','d'];
+      if (o.getAttribute('onclick').includes("'" + correct[qid] + "'")) {
+        o.classList.add('correct');
+      }
+    });
+
+    fb.className = 'feedback show ' + (isRight ? 'good' : 'bad');
+    fb.textContent = isRight ? '✓ ' + explanations[qid].good : '✗ ' + explanations[qid].bad;
+    q.classList.add('answered');
+
+    if (Object.keys(answered).length === 5) {
+      const sd = document.getElementById('score-display');
+      sd.style.display = 'flex';
+      document.getElementById('score-num').textContent = score + '/5';
+      sd.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = ['intro','primary','secondary','avoid','plan','quiz'];
+    document.querySelectorAll('.nav-tab')[tabs.indexOf(id)].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
