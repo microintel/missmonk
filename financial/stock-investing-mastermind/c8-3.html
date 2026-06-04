@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Read an Annual Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1018;
+    --paper: #faf7f2;
+    --cream: #f0ebe0;
+    --plum: #6b2d5e;
+    --plum-light: #8b3d7e;
+    --plum-pale: #f5eaf3;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --sage: #4a7c59;
+    --sage-light: #e8f2ec;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --text-muted: #6b5f68;
+    --border: #d8cfd5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--plum);
+    color: #fff;
+    padding: 80px 40px 72px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,.03) 60px,
+      rgba(255,255,255,.03) 61px
+    );
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp .6s .1s ease forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    opacity: 0;
+    animation: fadeUp .6s .2s ease forwards;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold-light);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,.72);
+    max-width: 520px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp .6s .35s ease forwards;
+  }
+  .section-count {
+    display: inline-block;
+    margin-top: 36px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 100px;
+    padding: 8px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: .82rem;
+    letter-spacing: .08em;
+    color: var(--gold-light);
+    opacity: 0;
+    animation: fadeUp .6s .45s ease forwards;
+  }
+
+  /* ── MASTER RULE ── */
+  .master-rule {
+    background: var(--gold);
+    padding: 22px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .master-rule .icon { font-size: 1.4rem; }
+  .master-rule p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1018;
+    text-align: center;
+  }
+  .master-rule span {
+    font-style: italic;
+    font-weight: 400;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    color: #3a2a10;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-block {
+    border-bottom: 1px solid var(--border);
+    padding: 60px 0;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+  .section-block.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .section-num {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--plum);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-title-wrap {}
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--plum);
+  }
+
+  /* checklist items */
+  .checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .check-item {
+    background: var(--plum-pale);
+    border: 1px solid #dcc8d8;
+    border-radius: 10px;
+    padding: 14px 16px 14px 42px;
+    position: relative;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--plum);
+  }
+  .check-item::before {
+    content: '✓';
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    color: var(--sage);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* description block */
+  .desc {
+    font-size: .95rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+
+  /* ── FACT vs OPINION ── */
+  .fact-opinion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media(max-width: 560px) { .fact-opinion { grid-template-columns: 1fr; } }
+  .fo-card {
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .fo-card.fact {
+    background: var(--sage-light);
+    border: 1.5px solid #b5d9c3;
+  }
+  .fo-card.opinion {
+    background: var(--red-light);
+    border: 1.5px solid #f0c0bb;
+  }
+  .fo-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .fo-card.fact .fo-label { color: var(--sage); }
+  .fo-card.opinion .fo-label { color: var(--red); }
+  .fo-badge {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+  .fo-card.fact .fo-badge { background: var(--sage); color: #fff; }
+  .fo-card.opinion .fo-badge { background: var(--red); color: #fff; }
+  .fo-quote {
+    font-size: .88rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  /* ── TONE PILLS ── */
+  .tone-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .tone-pill {
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: .85rem;
+    font-weight: 500;
+    background: var(--plum-pale);
+    border: 1.5px solid #dcc8d8;
+    color: var(--plum);
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin: 20px 0;
+    font-size: .9rem;
+    color: var(--ink);
+  }
+  .info-box strong { color: var(--plum); }
+
+  /* ── PPE VISUAL ── */
+  .ppe-example {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    margin: 24px 0;
+  }
+  .ppe-example h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 18px;
+  }
+  .ppe-bar-wrap { margin-bottom: 14px; }
+  .ppe-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    margin-bottom: 5px;
+    color: rgba(255,255,255,.75);
+  }
+  .ppe-bar-track {
+    height: 10px;
+    background: rgba(255,255,255,.12);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .ppe-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s ease;
+  }
+
+  /* ── RESOLUTION TABLE ── */
+  .resolution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  @media(max-width: 560px){ .resolution-grid { grid-template-columns: 1fr; } }
+  .res-card {
+    border-radius: 12px;
+    padding: 20px;
+    border: 1.5px solid var(--border);
+  }
+  .res-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--plum);
+    margin-bottom: 8px;
+  }
+  .res-card p { font-size: .88rem; color: var(--text-muted); }
+  .res-card.special { background: #fff8ee; border-color: var(--gold); }
+  .res-card.special h4 { color: #8a5500; }
+  .res-card.special .res-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+  }
+
+  /* ── PROGRESS STEPS ── */
+  .steps-trail {
+    position: relative;
+    padding-left: 32px;
+    margin: 24px 0;
+  }
+  .steps-trail::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--plum), var(--gold));
+    border-radius: 2px;
+  }
+  .step-row {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .step-row::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--plum);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 2px var(--plum);
+  }
+  .step-row h4 {
+    font-size: .92rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .step-row p { font-size: .85rem; color: var(--text-muted); }
+
+  /* ── ALERT CALLOUT ── */
+  .alert {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #fff8ee;
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+  }
+  .alert-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+  .alert p { font-size: .9rem; color: #5a3800; }
+  .alert strong { display: block; font-size: .95rem; margin-bottom: 4px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 36px 24px;
+    font-size: .82rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: .06em;
+  }
+  .footer strong { color: var(--gold-light); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 40px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 10px 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-eyebrow">Investor's Field Guide</p>
+  <h1>How to Read an <em>Annual Report</em></h1>
+  <p class="hero-sub">A practical, section-by-section breakdown of what to look for — and what to ignore — when analysing a company's annual report.</p>
+  <span class="section-count">10 sections covered</span>
+</header>
+
+<!-- MASTER RULE -->
+<div class="master-rule">
+  <span class="icon">⚖️</span>
+  <p>
+    The Golden Rule: Focus on Facts, Not Opinions
+    <span>Management writes reports to impress. Your job is to extract data, not be persuaded.</span>
+  </p>
+</div>
+
+<!-- MAIN -->
+<main class="container">
+
+  <!-- 1. INTRODUCTION -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section One</p>
+        <h2 class="section-title">Introduction &amp; Highlights</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">The opening section is management's sales pitch to investors. Focus only on verifiable data points, not the narrative framing around them.</p>
+    <div class="checklist">
+      <div class="check-item">Products &amp; services offered</div>
+      <div class="check-item">Annual achievements with numbers</div>
+      <div class="check-item">Year-on-year growth figures</div>
+      <div class="check-item">How management wants to be perceived</div>
+    </div>
+
+    <p style="font-size:.88rem;font-weight:600;color:var(--ink);margin-bottom:12px;">Spot the difference: Fact vs. Opinion</p>
+    <div class="fact-opinion">
+      <div class="fo-card fact">
+        <div class="fo-label">
+          <span class="fo-badge">✓</span> Fact — Use This
+        </div>
+        <p class="fo-quote">"Our revenues for the current fiscal year are ₹620 crores, which reflects a 24% increase from the previous fiscal year."</p>
+      </div>
+      <div class="fo-card opinion">
+        <div class="fo-label">
+          <span class="fo-badge">✗</span> Opinion — Skip This
+        </div>
+        <p class="fo-quote">"We are confident in continuing to develop our sales, which have increased dramatically."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CHAIRMAN / CEO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Two</p>
+        <h2 class="section-title">Chairman's Speech &amp; CEO's Letter</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Written by communications professionals with specific investor-relations goals. Read it for direction and tone — not as a candid reflection from leadership.</p>
+    <div class="checklist">
+      <div class="check-item">Company goals for next 2–5 years</div>
+      <div class="check-item">Direction the business is heading</div>
+    </div>
+    <p style="font-size:.88rem;font-weight:600;color:var(--ink);margin:20px 0 12px;">Gauge the management tone:</p>
+    <div class="tone-grid">
+      <div class="tone-pill">📈 Bullish or Bearish?</div>
+      <div class="tone-pill">😊 Positive or Negative?</div>
+      <div class="tone-pill">🔭 What is the overall outlook?</div>
+    </div>
+    <div class="info-box">
+      <strong>Pro tip:</strong> With practice, you'll develop an instinct for reading between the lines. For now, anchor every impression you form back to a concrete fact from elsewhere in the report.
+    </div>
+  </div>
+
+  <!-- 3. RESPONSIBILITY -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Three</p>
+        <h2 class="section-title">Responsibility Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">A brief overview of the company's social and environmental commitments. From a retail investor standpoint, this section is largely optional reading — but it can reveal corporate values.</p>
+    <div class="checklist">
+      <div class="check-item">Corporate Social Responsibility (CSR)</div>
+      <div class="check-item">Environmental, Social &amp; Governance (ESG)</div>
+      <div class="check-item">Sustainability Report</div>
+      <div class="check-item">Business Responsibility Report</div>
+    </div>
+  </div>
+
+  <!-- 4. MD&A -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Four</p>
+        <h2 class="section-title">Management Discussion &amp; Analysis (MD&amp;A)</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">One of the most information-dense sections. Read every line. This is where the real business story lives — stripped of marketing language.</p>
+    <div class="steps-trail">
+      <div class="step-row">
+        <h4>Industry Status &amp; Updates</h4>
+        <p>Extract industry-specific data and macro trends affecting the sector.</p>
+      </div>
+      <div class="step-row">
+        <h4>Performance of Each Business Segment</h4>
+        <p>Understand how each division is doing independently.</p>
+      </div>
+      <div class="step-row">
+        <h4>State of Competition</h4>
+        <p>Identify key competitors and the company's positioning.</p>
+      </div>
+      <div class="step-row">
+        <h4>Future Goals &amp; Outlook</h4>
+        <p>Note stated targets — you can verify these against next year's report.</p>
+      </div>
+      <div class="step-row">
+        <h4>Financial Highlights</h4>
+        <p>Key numbers summarised — cross-check against the full financial statements.</p>
+      </div>
+      <div class="step-row">
+        <h4>Risks Foreseen</h4>
+        <p>Management-disclosed risks are legally significant. Don't skip these.</p>
+      </div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">⚠️</span>
+      <p><strong>Stay objective.</strong> Instead of forming positive or negative opinions, focus on the facts stated about the business — especially the risk disclosures.</p>
+    </div>
+  </div>
+
+  <!-- 5. DIRECTORS REPORT -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Five</p>
+        <h2 class="section-title">Directors' Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">The Annexures are the most important part of this section. They contain legally required disclosures that cannot be spun by PR teams.</p>
+    <div class="checklist">
+      <div class="check-item">Annexures — the key disclosures</div>
+      <div class="check-item">Management remuneration details</div>
+    </div>
+    <div class="info-box">
+      <strong>Why management pay matters:</strong> Comparing management remuneration against company profitability and shareholder returns reveals whether leadership is aligned with investors — or primarily rewarding itself.
+    </div>
+  </div>
+
+  <!-- 6. CORP GOVERNANCE -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Six</p>
+        <h2 class="section-title">Corporate Governance Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Reveals the governance architecture — who sits on the board, which committees exist, and who ultimately owns the company.</p>
+    <div class="checklist">
+      <div class="check-item">Board composition &amp; independence</div>
+      <div class="check-item">Committee structure</div>
+      <div class="check-item">Ownership structure</div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">🔍</span>
+      <p><strong>Key question:</strong> How independent are the directors on the board? A board dominated by promoter-appointed insiders is a governance red flag.</p>
+    </div>
+  </div>
+
+  <!-- 7. CORP INFO / MGMT TEAM -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Seven</p>
+        <h2 class="section-title">Corporate Information &amp; Management Team</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Lists the directors and key management personnel. Most valuable when compared year-over-year — changes here often signal important internal developments.</p>
+    <div class="steps-trail">
+      <div class="step-row">
+        <h4>Composition</h4>
+        <p>Who are the directors and management team members?</p>
+      </div>
+      <div class="step-row">
+        <h4>Changes</h4>
+        <p>Any new appointments? Any departures? Compare with last year's report to spot shifts.</p>
+      </div>
+      <div class="step-row">
+        <h4>Reasons for Resignations</h4>
+        <p>If a senior director resigned, find out why. Early exits often precede bad news.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. FINANCIAL STATEMENTS -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Eight</p>
+        <h2 class="section-title">Financial Statements</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">The numerical core of the report. Three analytical lenses to apply here:</p>
+    <div class="checklist">
+      <div class="check-item">Auditors' Report &amp; Opinion</div>
+      <div class="check-item">Common-size analysis</div>
+      <div class="check-item">Key financial ratios</div>
+    </div>
+    <div class="info-box">
+      <strong>Common-sizing:</strong> Expressing every line item as a % of revenue (income statement) or total assets (balance sheet) reveals structural changes that raw numbers can hide — even as a company grows larger.
+    </div>
+  </div>
+
+  <!-- 9. NOTES TO ACCOUNT -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Nine</p>
+        <h2 class="section-title">Notes to Accounts</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">This is where every major line item in the financial statements gets broken down in forensic detail. Don't skip it — the devil (and the opportunity) is in the details.</p>
+    <div class="checklist">
+      <div class="check-item">Breakup for each line item</div>
+      <div class="check-item">Extra focus on the biggest line items</div>
+    </div>
+
+    <!-- PPE example -->
+    <div class="ppe-example">
+      <h4>Example — PPE Breakdown (₹1,000 Cr total assets)</h4>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>Plant, Property &amp; Equipment</span><span>₹600 Cr — 60%</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:60%;background:var(--gold);"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Machinery</span><span>₹310 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:31%;background:#8b3d7e;"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Land</span><span>₹180 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:18%;background:#4a7c59;"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Plant / Buildings</span><span>₹110 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:11%;background:#c0392b;"></div></div>
+      </div>
+      <p style="margin-top:16px;font-size:.8rem;color:rgba(255,255,255,.5);">Notes to Accounts reveal this full breakdown — critical for capital-intensive businesses.</p>
+    </div>
+  </div>
+
+  <!-- 10. NOTES TO AGM -->
+  <div class="section-block" style="border-bottom:none;">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section Ten</p>
+        <h2 class="section-title">Notes to AGM</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Covers the resolutions put to shareholders at the Annual General Meeting. The special business resolutions are where significant corporate actions — new share issuances, large acquisitions, related-party transactions — get approved.</p>
+    <div class="resolution-grid">
+      <div class="res-card">
+        <h4>Ordinary Business Resolution</h4>
+        <p>Routine approvals: adoption of accounts, dividend declaration, re-appointment of directors, auditor ratification.</p>
+      </div>
+      <div class="res-card special">
+        <span class="res-badge">⭐ Priority</span>
+        <h4>Special Business Resolution</h4>
+        <p>Anything material — new equity issuance, buybacks, major M&amp;A, related-party transactions, change of objects. Always read these carefully.</p>
+      </div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">📌</span>
+      <p><strong>Rule of thumb:</strong> Anything important enough to change the company's capital structure or strategic direction must pass through a special business resolution. This is your early warning system.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Source: <strong>Stock Investing Mastermind</strong> — ZebraLearn Pvt. Ltd. (2022) &nbsp;·&nbsp; Section 3.2: What to Look For in Each Section</p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll-reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.section-block').forEach(el => observer.observe(el));
+
+  // Animate PPE bars on scroll
+  const ppeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.ppe-bar-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => { bar.style.width = w; }, 100);
+        });
+        ppeObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.ppe-example').forEach(el => ppeObserver.observe(el));
+</script>
+</body>
+</html>
