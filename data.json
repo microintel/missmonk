@@ -84,7 +84,25 @@
           "How to Research Within 4-5 Hours a \rWeek": "",
           "Chapter 7": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c7.html"
         },
-        "How to Read Annual Report": {},
+        "How to Read Annual Report": {
+          "Sections of Annual Report": {
+            "Introduction and Highlights": "",
+            "Chairman’s Letter and CEO’s Letter": "",
+            "Responsibility Reports": "",
+            "Management Discussion & Analysis": "",
+            "Director’s Report": "",
+            "Corporate Governance Report": "",
+            "Board of Directors and Management Team": "",
+            "Financials - Consolidated and Standalone": "",
+            "Notes to Financials": "",
+            "Notice to AGM": "",
+            "Chapter 8.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-1.html",
+            "Chapter 8.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-2.html"
+          },
+          "What to look for in each Section?": {
+            "Chapter 8.3": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-3.html"
+          }
+        },
         "Basics of Financial Statment": {},
         "Tools to use": {},
         "How To Analyze a Company": {},
