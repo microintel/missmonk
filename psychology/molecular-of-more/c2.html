@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Molecule of More — Why Love Fades</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg: #0b0b0f;
+  --bg2: #111118;
+  --surface: #16161e;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8e4dc;
+  --muted: #6b6878;
+  --accent: #e8724a;
+  --accent2: #6c8cff;
+  --accent3: #9de86a;
+  --gold: #d4aa6a;
+  --glow: rgba(232,114,74,0.18);
+}
+
+/* ═══════════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* custom cursor */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(232,114,74,0.5);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease, width 0.3s, height 0.3s;
+}
+
+a, button { cursor: none; }
+
+/* ═══════════════════════════════════════════════
+   GRAIN TEXTURE
+═══════════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9000; opacity: 0.45;
+}
+
+/* ═══════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════ */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  width: 0%; z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  padding: 20px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(11,11,15,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 40px 80px;
+  position: relative; overflow: hidden;
+}
+
+/* animated background orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+.orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(232,114,74,0.15), transparent 70%);
+  top: -100px; right: -100px;
+  animation: orb-drift1 12s ease-in-out infinite;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(108,140,255,0.12), transparent 70%);
+  bottom: -80px; left: -80px;
+  animation: orb-drift2 15s ease-in-out infinite;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(157,232,106,0.08), transparent 70%);
+  top: 40%; left: 30%;
+  animation: orb-drift3 10s ease-in-out infinite;
+}
+@keyframes orb-drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,30px)} }
+@keyframes orb-drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(50px,-40px)} }
+@keyframes orb-drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,50px)} }
+
+.hero-eyebrow {
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 32px;
+  opacity: 0; animation: rise 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 12vw, 180px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--text) 0%, var(--gold) 50%, var(--accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0; animation: rise 0.9s 0.4s forwards;
+  margin-bottom: 8px;
+}
+.hero-subtitle {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(18px, 2.5vw, 28px);
+  color: var(--muted);
+  margin-bottom: 48px;
+  opacity: 0; animation: rise 0.9s 0.6s forwards;
+}
+.hero-desc {
+  max-width: 560px;
+  font-size: 13px; line-height: 1.9;
+  color: rgba(232,228,220,0.55);
+  margin-bottom: 60px;
+  opacity: 0; animation: rise 0.9s 0.8s forwards;
+}
+
+/* dopamine molecule animation */
+.molecule-viz {
+  position: relative; width: 160px; height: 160px; margin: 0 auto 60px;
+  opacity: 0; animation: rise 1s 1s forwards;
+}
+.mol-center {
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  width: 48px; height: 48px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 40px var(--accent), 0 0 80px rgba(232,114,74,0.3);
+  display: flex; align-items:center; justify-content:center;
+  font-size: 18px;
+}
+.mol-orbit {
+  position: absolute; top:50%; left:50%;
+  border: 1px solid rgba(232,114,74,0.2);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+}
+.mol-orbit:nth-child(2) { width:90px;height:90px; animation: spin 4s linear infinite; }
+.mol-orbit:nth-child(3) { width:130px;height:130px; animation: spin 7s linear infinite reverse; }
+.mol-orbit:nth-child(4) { width:160px;height:160px; animation: spin 11s linear infinite; }
+.mol-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  position: absolute; transform: translate(-50%,-50%);
+}
+.mol-orbit:nth-child(2) .mol-dot { background: var(--accent2); top:0; left:50%; }
+.mol-orbit:nth-child(3) .mol-dot { background: var(--accent3); top:50%; left:100%; }
+.mol-orbit:nth-child(4) .mol-dot { background: var(--gold); top:100%; left:50%; }
+
+@keyframes spin { from{transform:translate(-50%,-50%) rotate(0deg)} to{transform:translate(-50%,-50%) rotate(360deg)} }
+@keyframes rise { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+.scroll-hint {
+  opacity: 0; animation: rise 1s 1.2s forwards;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: pulse-line 2s ease-in-out infinite;
+}
+@keyframes pulse-line { 0%,100%{opacity:0.3;height:40px} 50%{opacity:1;height:60px} }
+
+/* ═══════════════════════════════════════════════
+   SECTION LAYOUT
+═══════════════════════════════════════════════ */
+.section {
+  padding: 100px 0;
+  position: relative;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+.section-tag {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.section-tag::after {
+  content: '';
+  height: 1px; width: 60px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 24px;
+}
+.section-lead {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 24px);
+  color: var(--gold);
+  margin-bottom: 40px;
+  line-height: 1.5;
+}
+.body-text {
+  font-size: 13px; line-height: 2;
+  color: rgba(232,228,220,0.65);
+  max-width: 620px;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 48px;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 1 — SCIENCE
+═══════════════════════════════════════════════ */
+#science { background: var(--bg); }
+
+.science-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px; margin-top: 56px; align-items: start;
+}
+
+/* dopamine meter */
+.dopamine-meter {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  position: relative; overflow: hidden;
+}
+.dopamine-meter::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.meter-label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+.meter-bar-wrap {
+  background: rgba(255,255,255,0.04);
+  border-radius: 100px; height: 12px;
+  margin-bottom: 10px; overflow: hidden; position: relative;
+}
+.meter-bar {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  box-shadow: 0 0 16px rgba(232,114,74,0.4);
+  transition: width 1.5s cubic-bezier(.16,1,.3,1);
+  width: 0%;
+}
+.meter-scenario {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.meter-name { font-size: 12px; color: var(--text); }
+.meter-val { font-size: 11px; color: var(--accent); font-weight: 500; }
+
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
+}
+.info-card-icon { font-size: 28px; margin-bottom: 14px; }
+.info-card h4 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 18px; color: var(--gold);
+  margin-bottom: 10px;
+}
+.info-card p { font-size: 13px; line-height: 1.8; color: rgba(232,228,220,0.6); }
+
+/* ═══════════════════════════════════════════════
+   SECTION 2 — THE MONKEY EXPERIMENT
+═══════════════════════════════════════════════ */
+#monkey { background: var(--bg2); }
+
+.timeline {
+  position: relative;
+  margin-top: 56px;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 48px;
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.timeline-item.visible { opacity: 1; transform: translateX(0); }
+.timeline-dot {
+  position: absolute; left: -46px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg2);
+}
+.timeline-item.active .timeline-dot { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.timeline-step {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 8px;
+}
+.timeline-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px; color: var(--text); margin-bottom: 10px;
+}
+.timeline-body { font-size: 13px; line-height: 1.9; color: rgba(232,228,220,0.6); max-width: 560px; }
+.timeline-highlight {
+  margin-top: 12px;
+  padding: 12px 18px;
+  background: rgba(232,114,74,0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-size: 12px; color: var(--accent);
+  font-style: italic;
+}
+
+/* brain activity visual */
+.brain-activity {
+  display: flex; gap: 4px; align-items: flex-end;
+  height: 64px; margin-top: 16px;
+}
+.ba-bar {
+  flex: 1; border-radius: 3px 3px 0 0;
+  transition: height 0.8s ease, background 0.8s ease;
+  min-height: 4px;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 3 — REWARD PREDICTION ERROR
+═══════════════════════════════════════════════ */
+#rpe { background: var(--bg); }
+
+.rpe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; margin-top: 56px;
+}
+.rpe-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.rpe-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.15); }
+.rpe-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+}
+.rpe-card.negative::after { background: var(--rust, #e84a4a); }
+.rpe-card.neutral::after { background: var(--muted); }
+.rpe-card.positive::after { background: var(--accent3); }
+
+.rpe-badge {
+  display: inline-block;
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px; margin-bottom: 16px;
+}
+.rpe-card.negative .rpe-badge { background: rgba(232,74,74,0.12); color: #e87474; }
+.rpe-card.neutral .rpe-badge { background: rgba(107,104,120,0.2); color: var(--muted); }
+.rpe-card.positive .rpe-badge { background: rgba(157,232,106,0.12); color: var(--accent3); }
+
+.rpe-equation {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; margin-bottom: 12px;
+}
+.rpe-card.negative .rpe-equation { color: #e87474; }
+.rpe-card.neutral .rpe-equation { color: var(--muted); }
+.rpe-card.positive .rpe-equation { color: var(--accent3); }
+
+.rpe-example { font-size: 12px; line-height: 1.8; color: rgba(232,228,220,0.55); }
+.rpe-result {
+  margin-top: 14px; font-size: 13px;
+  font-family: 'Instrument Serif', serif; font-style: italic;
+}
+.rpe-card.negative .rpe-result { color: #e87474; }
+.rpe-card.neutral .rpe-result { color: var(--muted); }
+.rpe-card.positive .rpe-result { color: var(--accent3); }
+
+/* ═══════════════════════════════════════════════
+   SECTION 4 — WHY LOVE FADES (interactive)
+═══════════════════════════════════════════════ */
+#love { background: var(--bg2); }
+
+.love-timeline {
+  position: relative;
+  margin-top: 64px;
+}
+.love-stages {
+  display: flex; gap: 0; position: relative;
+}
+.love-stage {
+  flex: 1; text-align: center;
+  position: relative; padding: 0 16px;
+  cursor: pointer;
+}
+.love-stage-connector {
+  position: absolute; top: 28px; left: 50%; right: -50%;
+  height: 2px; background: var(--border); z-index: 0;
+}
+.love-stage:last-child .love-stage-connector { display: none; }
+.love-stage-dot {
+  width: 56px; height: 56px; border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  position: relative; z-index: 1;
+  transition: all 0.3s;
+}
+.love-stage.active .love-stage-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(232,114,74,0.4);
+}
+.love-stage-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.love-stage.active .love-stage-label { color: var(--accent); }
+.love-stage-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+
+.love-detail {
+  margin-top: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 40px;
+  min-height: 220px;
+  position: relative; overflow: hidden;
+  transition: all 0.4s;
+}
+.love-detail::before {
+  content: attr(data-num);
+  position: absolute; right: 32px; top: 24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px; opacity: 0.05; line-height: 1;
+}
+.love-detail-inner { max-width: 640px; }
+.love-detail-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 26px; color: var(--gold);
+  margin-bottom: 14px;
+}
+.love-detail-body { font-size: 13px; line-height: 1.9; color: rgba(232,228,220,0.65); }
+.love-detail-quote {
+  margin-top: 20px; padding: 16px 20px;
+  background: rgba(212,170,106,0.06);
+  border-left: 3px solid var(--gold);
+  font-family: 'Instrument Serif', serif;
+  font-style: italic; font-size: 16px; color: var(--gold);
+  border-radius: 0 6px 6px 0;
+}
+
+/* dopamine chart */
+.dopamine-chart {
+  margin-top: 20px;
+  height: 60px; display: flex; align-items: flex-end; gap: 3px;
+}
+.dc-bar {
+  flex: 1; border-radius: 3px 3px 0 0;
+  background: rgba(232,114,74,0.2);
+  transition: height 0.6s cubic-bezier(.16,1,.3,1), background 0.6s;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 5 — THE BAKERY STORY
+═══════════════════════════════════════════════ */
+#bakery { background: var(--bg); }
+
+.bakery-story {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px; align-items: start;
+}
+.story-phases { display: flex; flex-direction: column; gap: 12px; }
+.story-phase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.story-phase:hover, .story-phase.active {
+  border-color: rgba(232,114,74,0.4);
+  background: rgba(232,114,74,0.04);
+}
+.story-phase-header {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+}
+.sp-icon { font-size: 24px; }
+.sp-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.sp-title { font-family: 'Instrument Serif', serif; font-size: 17px; color: var(--text); }
+.sp-body { font-size: 12px; line-height: 1.8; color: rgba(232,228,220,0.5); }
+.sp-meter {
+  margin-top: 12px; height: 4px;
+  background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden;
+}
+.sp-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 0.8s ease;
+}
+
+.bakery-right { position: sticky; top: 100px; }
+.bakery-visual {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+}
+.bv-emoji { font-size: 64px; margin-bottom: 20px; display: block; transition: all 0.4s; }
+.bv-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing: 0.05em;
+  margin-bottom: 10px; transition: color 0.4s;
+}
+.bv-desc { font-size: 13px; line-height: 1.8; color: rgba(232,228,220,0.5); transition: all 0.4s; }
+.dopamine-gauge {
+  margin: 24px 0;
+  position: relative; height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px; overflow: hidden;
+}
+.dg-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 100px;
+  box-shadow: 0 0 12px rgba(232,114,74,0.5);
+  transition: width 1s cubic-bezier(.16,1,.3,1);
+}
+.dg-labels {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--muted); margin-top: 6px;
+  letter-spacing: 0.1em;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 6 — HOW TO ADOPT / APPLY
+═══════════════════════════════════════════════ */
+#apply { background: var(--bg2); }
+
+.apply-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px; margin-top: 56px;
+}
+.apply-col h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px; letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+.apply-col h3.danger { color: #e87474; }
+.apply-col h3.good { color: var(--accent3); }
+
+.apply-item {
+  display: flex; gap: 16px;
+  margin-bottom: 20px; align-items: flex-start;
+}
+.apply-num {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 12px; font-weight: 500; flex-shrink: 0;
+  margin-top: 2px;
+}
+.danger-col .apply-num { background: rgba(232,116,116,0.12); color: #e87474; }
+.good-col .apply-num { background: rgba(157,232,106,0.12); color: var(--accent3); }
+.apply-text h5 { font-size: 13px; color: var(--text); margin-bottom: 5px; font-weight: 500; }
+.apply-text p { font-size: 12px; line-height: 1.75; color: rgba(232,228,220,0.5); }
+
+/* ═══════════════════════════════════════════════
+   SECTION 7 — KEY TAKEAWAY
+═══════════════════════════════════════════════ */
+#takeaway {
+  background: var(--bg);
+  padding: 120px 0;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.big-quote {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(22px, 3.5vw, 42px);
+  line-height: 1.5;
+  max-width: 800px; margin: 0 auto 48px;
+  color: var(--text);
+}
+.big-quote em {
+  color: var(--gold);
+  font-style: normal;
+}
+.takeaway-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; margin-top: 64px; text-align: left;
+}
+.tk-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 20px;
+  transition: all 0.3s;
+}
+.tk-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); }
+.tk-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.tk-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.05em; color: var(--gold); margin-bottom: 8px; }
+.tk-body { font-size: 12px; line-height: 1.75; color: rgba(232,228,220,0.5); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--accent); letter-spacing: 0.1em; }
+.footer-meta { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+
+/* ═══════════════════════════════════════════════
+   REVEAL ANIMATION
+═══════════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+@media (max-width: 900px) {
+  .science-grid, .bakery-story, .apply-grid { grid-template-columns: 1fr; }
+  .rpe-grid { grid-template-columns: 1fr; }
+  .love-stages { flex-direction: column; gap: 20px; }
+  .love-stage-connector { display: none; }
+  .takeaway-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .container { padding: 0 24px; }
+  footer { flex-direction: column; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Progress -->
+<div id="progress-bar"></div>
+
+<!-- Nav -->
+<nav>
+  <span class="nav-logo">Molecule of More</span>
+  <ul class="nav-links">
+    <li><a href="#science">The Science</a></li>
+    <li><a href="#monkey">The Experiment</a></li>
+    <li><a href="#rpe">RPE</a></li>
+    <li><a href="#love">Why Love Fades</a></li>
+    <li><a href="#apply">Apply It</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="molecule-viz">
+    <div class="mol-orbit">
+      <div class="mol-dot"></div>
+    </div>
+    <div class="mol-orbit">
+      <div class="mol-dot"></div>
+    </div>
+    <div class="mol-orbit">
+      <div class="mol-dot"></div>
+    </div>
+    <div class="mol-center">⚡</div>
+  </div>
+
+  <p class="hero-eyebrow">From The Molecule of More · Daniel Z. Lieberman</p>
+  <h1 class="hero-title">Dopamine</h1>
+  <p class="hero-subtitle">The chemical that drives desire — and kills satisfaction</p>
+  <p class="hero-desc">
+    Dopamine doesn't fire when you get what you want.<br>
+    It fires when you <em>expect</em> to get something better than expected.<br>
+    This single idea explains why love fades, habits form, and novelty is addictive.
+  </p>
+
+  <div class="scroll-hint">
+    <span>scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 1: THE SCIENCE ═══ -->
+<section class="section" id="science">
+  <div class="container">
+    <p class="section-tag reveal">The Neuroscience</p>
+    <h2 class="section-title reveal">What Is<br>Dopamine?</h2>
+    <p class="section-lead reveal">Not the "pleasure molecule" — the <em>anticipation molecule.</em></p>
+    <p class="body-text reveal">
+      Scientists used to believe dopamine was released when we experienced pleasure. 
+      Then came the rats. Rats were given food pellets daily — they devoured them enthusiastically, 
+      but their dopamine activity <em>shut down</em> after a few days. The food hadn't changed. 
+      The joy hadn't changed. But the dopamine had.
+    </p>
+
+    <div class="science-grid reveal">
+      <div>
+        <div class="dopamine-meter" id="dopamine-meter">
+          <p class="meter-label">Dopamine Activity Level</p>
+
+          <div class="meter-scenario">
+            <span class="meter-name">New lover texts you</span>
+            <span class="meter-val" id="val1">0%</span>
+          </div>
+          <div class="meter-bar-wrap"><div class="meter-bar" id="bar1" data-target="95"></div></div>
+
+          <div class="meter-scenario" style="margin-top:16px;">
+            <span class="meter-name">Same lover texts every day</span>
+            <span class="meter-val" id="val2">0%</span>
+          </div>
+          <div class="meter-bar-wrap"><div class="meter-bar" id="bar2" data-target="18" style="background:linear-gradient(90deg,var(--muted),rgba(107,104,120,0.4));box-shadow:none;"></div></div>
+
+          <div class="meter-scenario" style="margin-top:16px;">
+            <span class="meter-name">Discovering a new bakery</span>
+            <span class="meter-val" id="val3">0%</span>
+          </div>
+          <div class="meter-bar-wrap"><div class="meter-bar" id="bar3" data-target="88"></div></div>
+
+          <div class="meter-scenario" style="margin-top:16px;">
+            <span class="meter-name">Same bakery, 3 months later</span>
+            <span class="meter-val" id="val4">0%</span>
+          </div>
+          <div class="meter-bar-wrap"><div class="meter-bar" id="bar4" data-target="12" style="background:linear-gradient(90deg,var(--muted),rgba(107,104,120,0.4));box-shadow:none;"></div></div>
+
+          <div class="meter-scenario" style="margin-top:16px;">
+            <span class="meter-name">Unexpected salary raise</span>
+            <span class="meter-val" id="val5">0%</span>
+          </div>
+          <div class="meter-bar-wrap"><div class="meter-bar" id="bar5" data-target="100"></div></div>
+
+          <p style="margin-top:20px;font-size:11px;color:var(--muted);line-height:1.6;">
+            Dopamine doesn't respond to the <em>size</em> of the reward.<br>It responds to how <em>unexpected</em> it is.
+          </p>
+        </div>
+      </div>
+      <div>
+        <div class="info-card">
+          <div class="info-card-icon">🧪</div>
+          <h4>The Rat Experiment</h4>
+          <p>Scientists implanted electrodes in rats' brains to monitor dopamine neurons. Day 1: food pellets trigger huge dopamine spikes. Day 7: same food, same enthusiasm — but dopamine flatlined. The experience was still enjoyable. But the dopamine had moved on.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">💡</div>
+          <h4>The Key Discovery</h4>
+          <p>Dopamine is not a pleasure signal. It is a <strong style="color:var(--accent);">prediction signal</strong> — it fires when reality is <em>better than expected</em>. Once something becomes predictable, dopamine stops firing entirely — even if you still enjoy it.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">🔮</div>
+          <h4>Desire vs Pleasure</h4>
+          <p>Two separate systems: dopamine controls desire and seeking. Other neurotransmitters (serotonin, endorphins, oxytocin) control actual enjoyment. You can desperately want something you know won't satisfy you. That's dopamine at work.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 2: MONKEY EXPERIMENT ═══ -->
+<section class="section" id="monkey">
+  <div class="container">
+    <p class="section-tag reveal">The Breakthrough Experiment</p>
+    <h2 class="section-title reveal">The Monkey<br>& The Light</h2>
+    <p class="section-lead reveal">Wolfram Schultz discovered that dopamine fires at <em>signals</em> — not rewards.</p>
+
+    <div class="timeline">
+      <div class="timeline-item" id="tl1">
+        <div class="timeline-dot"></div>
+        <p class="timeline-step">Step 01</p>
+        <h3 class="timeline-title">The Setup</h3>
+        <p class="timeline-body">Macaque monkeys are placed in an apparatus with two lights and two boxes. One light = food on the right. The other = food on the left. The monkeys don't know the rule yet — they open boxes randomly.</p>
+        <div class="brain-activity" id="ba1">
+          <div class="ba-bar" style="height:20%;background:rgba(232,114,74,0.15);"></div>
+          <div class="ba-bar" style="height:35%;background:rgba(232,114,74,0.2);"></div>
+          <div class="ba-bar" style="height:25%;background:rgba(232,114,74,0.15);"></div>
+          <div class="ba-bar" style="height:40%;background:rgba(232,114,74,0.25);"></div>
+          <div class="ba-bar" style="height:30%;background:rgba(232,114,74,0.18);"></div>
+          <div class="ba-bar" style="height:20%;background:rgba(232,114,74,0.15);"></div>
+          <div class="ba-bar" style="height:80%;background:var(--accent);"></div>
+          <div class="ba-bar" style="height:15%;background:rgba(232,114,74,0.1);"></div>
+          <div class="ba-bar" style="height:25%;background:rgba(232,114,74,0.15);"></div>
+          <div class="ba-bar" style="height:30%;background:rgba(232,114,74,0.18);"></div>
+        </div>
+        <div class="timeline-highlight">⚡ Dopamine spikes when the monkey finds food (the reward). Expected.</div>
+      </div>
+
+      <div class="timeline-item" id="tl2">
+        <div class="timeline-dot"></div>
+        <p class="timeline-step">Step 02</p>
+        <h3 class="timeline-title">The Pattern Emerges</h3>
+        <p class="timeline-body">Over many trials, the monkeys figure out the rule. They now reach for the correct box every time. They never miss. The food is the same. Their enthusiasm is the same. But something in the brain changes dramatically.</p>
+        <div class="brain-activity" id="ba2">
+          <div class="ba-bar" style="height:85%;background:var(--accent2);"></div>
+          <div class="ba-bar" style="height:20%;background:rgba(108,140,255,0.2);"></div>
+          <div class="ba-bar" style="height:15%;background:rgba(108,140,255,0.1);"></div>
+          <div class="ba-bar" style="height:10%;background:rgba(108,140,255,0.08);"></div>
+          <div class="ba-bar" style="height:8%;background:rgba(108,140,255,0.06);"></div>
+          <div class="ba-bar" style="height:10%;background:rgba(108,140,255,0.08);"></div>
+          <div class="ba-bar" style="height:8%;background:rgba(108,140,255,0.06);"></div>
+          <div class="ba-bar" style="height:12%;background:rgba(108,140,255,0.1);"></div>
+          <div class="ba-bar" style="height:10%;background:rgba(108,140,255,0.08);"></div>
+          <div class="ba-bar" style="height:15%;background:rgba(108,140,255,0.1);"></div>
+        </div>
+        <div class="timeline-highlight" style="border-color:var(--accent2);color:var(--accent2);background:rgba(108,140,255,0.08);">💡 Dopamine now fires at the LIGHT, not the food. The signal has shifted.</div>
+      </div>
+
+      <div class="timeline-item" id="tl3">
+        <div class="timeline-dot"></div>
+        <p class="timeline-step">Step 03 — The Revelation</p>
+        <h3 class="timeline-title">The Unexpected Discovery</h3>
+        <p class="timeline-body">When researchers removed the food after the light turned on (violating the monkey's expectation), dopamine didn't just stay flat — it dropped <em>below baseline</em>. A negative prediction error. The monkey was disappointed by what didn't happen.</p>
+        <div class="brain-activity" id="ba3">
+          <div class="ba-bar" style="height:75%;background:var(--accent2);"></div>
+          <div class="ba-bar" style="height:15%;background:rgba(232,74,74,0.2);"></div>
+          <div class="ba-bar" style="height:5%;background:rgba(232,74,74,0.3);"></div>
+          <div class="ba-bar" style="height:3%;background:rgba(232,74,74,0.4);"></div>
+          <div class="ba-bar" style="height:8%;background:rgba(232,74,74,0.3);"></div>
+          <div class="ba-bar" style="height:10%;background:rgba(232,74,74,0.2);"></div>
+          <div class="ba-bar" style="height:15%;background:rgba(232,74,74,0.15);"></div>
+          <div class="ba-bar" style="height:18%;background:rgba(232,74,74,0.12);"></div>
+          <div class="ba-bar" style="height:20%;background:rgba(232,74,74,0.1);"></div>
+          <div class="ba-bar" style="height:22%;background:rgba(232,74,74,0.08);"></div>
+        </div>
+        <div class="timeline-highlight" style="border-color:#e87474;color:#e87474;background:rgba(232,74,74,0.08);">📉 Dopamine crashes below baseline when the expected reward doesn't arrive. This is disappointment, chemically.</div>
+      </div>
+
+      <div class="timeline-item" id="tl4">
+        <div class="timeline-dot"></div>
+        <p class="timeline-step">The Conclusion</p>
+        <h3 class="timeline-title">Dopamine = Prediction Machine</h3>
+        <p class="timeline-body">Dopamine activity is not a marker of pleasure. It is a reaction to the unexpected — to possibility and anticipation. Once the future becomes the present and the outcome is known, dopamine's job is done. It moves on to seek the next unknown.</p>
+        <div class="timeline-highlight" style="border-color:var(--accent3);color:var(--accent3);background:rgba(157,232,106,0.08);">🧠 The brain isn't built to enjoy things. It's built to <em>predict</em> and <em>pursue</em> better things.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 3: REWARD PREDICTION ERROR ═══ -->
+<section class="section" id="rpe">
+  <div class="container">
+    <p class="section-tag reveal">The Core Mechanism</p>
+    <h2 class="section-title reveal">Reward<br>Prediction Error</h2>
+    <p class="section-lead reveal">The gap between what you <em>expected</em> and what you <em>got</em>. That gap <em>is</em> the dopamine.</p>
+    <p class="body-text reveal">Scientists named this phenomenon "reward prediction error." We constantly make predictions — what time we'll leave work, how much is in our bank account, what our partner will say. The dopamine doesn't come from the result. It comes from the <em>error</em> — the beautiful surprise of being wrong in a good direction.</p>
+
+    <div class="rpe-grid reveal" style="margin-top:40px;">
+      <div class="rpe-card negative">
+        <span class="rpe-badge">Negative RPE</span>
+        <div class="rpe-equation">Got &lt; Expected</div>
+        <p class="rpe-example">You expected a promotion. You didn't get it. You checked your ATM and had $200 less than expected. Your partner forgot your anniversary.</p>
+        <p class="rpe-result">Dopamine crashes. Disappointment. Frustration. Withdrawal.</p>
+      </div>
+      <div class="rpe-card neutral">
+        <span class="rpe-badge">Neutral RPE</span>
+        <div class="rpe-equation">Got = Expected</div>
+        <p class="rpe-example">Your morning coffee is exactly as good as always. Your commute took the usual 30 minutes. Your partner said the same "love you" as every day.</p>
+        <p class="rpe-result">Dopamine flat. No reaction. This is contentment — but also the quiet death of excitement.</p>
+      </div>
+      <div class="rpe-card positive">
+        <span class="rpe-badge">Positive RPE</span>
+        <div class="rpe-equation">Got &gt; Expected</div>
+        <p class="rpe-example">You found $100 more in your account than expected. You left work early. Your partner surprised you with a handwritten note. A new bakery appeared on your walk.</p>
+        <p class="rpe-result">Dopamine surges. Excitement. Energy. This is the molecule of more in action.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:48px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:36px 40px; max-width:700px;">
+      <p style="font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">Real World Example</p>
+      <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:20px;color:var(--gold);line-height:1.6;margin-bottom:16px;">"It's not the extra time or the extra money themselves. It's the thrill of the unexpected good news."</p>
+      <p style="font-size:13px;line-height:1.9;color:rgba(232,228,220,0.55);">A $100 raise to someone earning $5,000/month and $5,000 to someone earning $500,000/month produce similar dopamine spikes — because dopamine responds to <em>deviation from expectation</em>, not absolute magnitude. The prediction error, not the prize, is what lights you up.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 4: WHY LOVE FADES ═══ -->
+<section class="section" id="love">
+  <div class="container">
+    <p class="section-tag reveal">Applied to Relationships</p>
+    <h2 class="section-title reveal">Why Love<br>Fades</h2>
+    <p class="section-lead reveal">The chemical explanation for the oldest human heartbreak.</p>
+
+    <div class="reveal" style="margin-top:48px;">
+      <div class="love-stages" id="love-stages">
+        <div class="love-stage active" data-stage="0" onclick="setLoveStage(0)">
+          <div class="love-stage-connector"></div>
+          <div class="love-stage-dot">😍</div>
+          <div class="love-stage-label">First Sight</div>
+          <div class="love-stage-sub">Dopamine: MAX</div>
+        </div>
+        <div class="love-stage" data-stage="1" onclick="setLoveStage(1)">
+          <div class="love-stage-connector"></div>
+          <div class="love-stage-dot">💌</div>
+          <div class="love-stage-label">Obsession</div>
+          <div class="love-stage-sub">Dopamine: Very High</div>
+        </div>
+        <div class="love-stage" data-stage="2" onclick="setLoveStage(2)">
+          <div class="love-stage-connector"></div>
+          <div class="love-stage-dot">🫂</div>
+          <div class="love-stage-label">Together</div>
+          <div class="love-stage-sub">Dopamine: Fading</div>
+        </div>
+        <div class="love-stage" data-stage="3" onclick="setLoveStage(3)">
+          <div class="love-stage-connector"></div>
+          <div class="love-stage-dot">🛋️</div>
+          <div class="love-stage-label">Familiar</div>
+          <div class="love-stage-sub">Dopamine: Low</div>
+        </div>
+        <div class="love-stage" data-stage="4" onclick="setLoveStage(4)">
+          <div class="love-stage-dot">❓</div>
+          <div class="love-stage-label">What Now?</div>
+          <div class="love-stage-sub">Dopamine: Seeking</div>
+        </div>
+      </div>
+
+      <div class="love-detail" id="love-detail" data-num="01">
+        <div class="love-detail-inner">
+          <h3 class="love-detail-title" id="ld-title">The Stranger Across the Bar</h3>
+          <p class="love-detail-body" id="ld-body">You notice someone fascinating across the room. Everything about them is unknown — What's their story? What might happen? Your brain is flooded with possibility. Dopamine isn't reacting to who they are. It's reacting to the infinite potential of who they <em>might</em> be.</p>
+          <div class="love-detail-quote" id="ld-quote">"Meeting a fascinating new partner at a sticky table in the same old bar (What might happen?) — that's dopamine taking charge."</div>
+          <div class="dopamine-chart" id="love-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 5: BAKERY STORY ═══ -->
+<section class="section" id="bakery">
+  <div class="container">
+    <p class="section-tag reveal">The Parable</p>
+    <h2 class="section-title reveal">The Bakery<br>Story</h2>
+    <p class="section-lead reveal">From <em>"best coffee in the city"</em> to <em>"same old breakfast"</em> — in three weeks.</p>
+
+    <div class="bakery-story reveal">
+      <div class="story-phases" id="story-phases">
+        <div class="story-phase active" onclick="setBakery(0, this)">
+          <div class="story-phase-header">
+            <span class="sp-icon">👁️</span>
+            <div>
+              <div class="sp-label">Phase 1</div>
+              <div class="sp-title">Discovery</div>
+            </div>
+          </div>
+          <p class="sp-body">You're walking your familiar street when you notice a new bakery. You've never seen it before. You immediately want to go in. That pull — before you've tasted anything — is pure dopamine. Anticipation of the unknown.</p>
+          <div class="sp-meter"><div class="sp-fill" style="width:92%"></div></div>
+        </div>
+
+        <div class="story-phase" onclick="setBakery(1, this)">
+          <div class="story-phase-header">
+            <span class="sp-icon">☕</span>
+            <div>
+              <div class="sp-label">Phase 2</div>
+              <div class="sp-title">First Taste</div>
+            </div>
+          </div>
+          <p class="sp-body">The coffee is extraordinary. The croissant is the best you've ever had. You're euphoric. You tell your friends more than they want to hear. You plan to come back every single morning. Dopamine + actual pleasure = peak experience.</p>
+          <div class="sp-meter"><div class="sp-fill" style="width:100%"></div></div>
+        </div>
+
+        <div class="story-phase" onclick="setBakery(2, this)">
+          <div class="story-phase-header">
+            <span class="sp-icon">📅</span>
+            <div>
+              <div class="sp-label">Phase 3</div>
+              <div class="sp-title">The Routine</div>
+            </div>
+          </div>
+          <p class="sp-body">Two weeks in. You come every morning. The coffee is objectively just as good. The croissant hasn't changed. But it's now expected. No surprise. No prediction error. Dopamine stays flat. You've stopped telling people about it.</p>
+          <div class="sp-meter"><div class="sp-fill" style="width:38%"></div></div>
+        </div>
+
+        <div class="story-phase" onclick="setBakery(3, this)">
+          <div class="story-phase-header">
+            <span class="sp-icon">😐</span>
+            <div>
+              <div class="sp-label">Phase 4</div>
+              <div class="sp-title">Same Old Breakfast</div>
+            </div>
+          </div>
+          <p class="sp-body">"Best coffee and croissant in the city" has become "same old breakfast." Nothing changed about the bakery. What changed was your expectation. The future became the present, and dopamine moved on to seek the next unknown.</p>
+          <div class="sp-meter"><div class="sp-fill" style="width:12%"></div></div>
+        </div>
+      </div>
+
+      <div class="bakery-right">
+        <div class="bakery-visual" id="bakery-visual">
+          <span class="bv-emoji" id="bv-emoji">👁️</span>
+          <div class="bv-title" id="bv-title">Discovery</div>
+          <div class="dopamine-gauge">
+            <div class="dg-fill" id="dg-fill" style="width:92%"></div>
+          </div>
+          <div class="dg-labels"><span>No Dopamine</span><span>Peak Dopamine</span></div>
+          <p class="bv-desc" id="bv-desc">The anticipation of something unknown and potentially better floods the brain with dopamine — before you've even tasted anything.</p>
+        </div>
+        <div style="margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px;">
+          <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">The Key Insight</p>
+          <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;color:var(--gold);line-height:1.6;">"It wasn't the coffee and croissant that changed; it was your expectation."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 6: APPLY IT ═══ -->
+<section class="section" id="apply">
+  <div class="container">
+    <p class="section-tag reveal">How to Use This Knowledge</p>
+    <h2 class="section-title reveal">Working With<br>Your Dopamine</h2>
+    <p class="section-lead reveal">Understanding the mechanism lets you <em>design</em> your life around it — instead of being controlled by it.</p>
+
+    <div class="apply-grid reveal">
+      <div class="apply-col danger-col">
+        <h3 class="danger">Dopamine Traps</h3>
+        <p class="body-text" style="margin-bottom:28px;font-size:12px;">Patterns that exploit your prediction circuits and leave you chasing without arriving.</p>
+
+        <div class="apply-item">
+          <div class="apply-num">01</div>
+          <div class="apply-text">
+            <h5>Endless Scrolling</h5>
+            <p>Social media is engineered around variable reward — the unpredictable appearance of a good post. Every scroll is a slot machine pull. The brain can't stop because the next one <em>might</em> be great.</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">02</div>
+          <div class="apply-text">
+            <h5>Chasing the "New" in Relationships</h5>
+            <p>When familiarity sets in, dopamine seeks novelty elsewhere. This is chemistry, not a character flaw. Recognizing it prevents you from confusing "the spark is gone" with "the relationship is over."</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">03</div>
+          <div class="apply-text">
+            <h5>Hedonic Treadmill</h5>
+            <p>Getting a raise, buying a new car, moving to a nicer apartment — each feels amazing for weeks, then returns to baseline. You've adapted. Now you need more to get the same dopamine hit.</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">04</div>
+          <div class="apply-text">
+            <h5>Addiction Loops</h5>
+            <p>Drugs hijack the dopamine prediction system. The brain starts predicting enormous rewards from the drug signal (a smell, a place, a feeling). The wanting grows. The enjoying stays flat or shrinks.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-col good-col">
+        <h3 class="good">Designing with Dopamine</h3>
+        <p class="body-text" style="margin-bottom:28px;font-size:12px;">Strategies that use your prediction circuits to build better habits, relationships, and meaning.</p>
+
+        <div class="apply-item">
+          <div class="apply-num">01</div>
+          <div class="apply-text">
+            <h5>Introduce Deliberate Novelty</h5>
+            <p>In long-term relationships: new experiences, unpredictable gestures, surprising dates. Novelty isn't superficial — it's biologically necessary to re-engage the dopamine system that drives desire.</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">02</div>
+          <div class="apply-text">
+            <h5>Use Variable Rewards for Habits</h5>
+            <p>Design your goals with unpredictable milestones. Instead of "gym every day," add occasional random rewards. The uncertainty keeps dopamine engaged and prevents the routine from going flat.</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">03</div>
+          <div class="apply-text">
+            <h5>Savor the Anticipation</h5>
+            <p>Plan experiences weeks in advance. The anticipation period itself generates dopamine. A vacation planned for two months from now gives you eight weeks of reward prediction — often more than the trip itself.</p>
+          </div>
+        </div>
+        <div class="apply-item">
+          <div class="apply-num">04</div>
+          <div class="apply-text">
+            <h5>Build "Here and Now" Circuits</h5>
+            <p>Dopamine lives in the future. Serotonin, oxytocin, and endorphins live in the present. Meditation, physical touch, music, gratitude — these activate the non-dopamine satisfaction systems that dopamine ignores.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 7: TAKEAWAY ═══ -->
+<section class="section" id="takeaway">
+  <div class="container" style="text-align:center;">
+    <p class="section-tag reveal" style="justify-content:center;">The Big Idea</p>
+    <h2 class="section-title reveal">The Central Insight</h2>
+
+    <p class="big-quote reveal">
+      "Passion rises when we dream of a world of <em>possibility</em>,<br>
+      and fades when we are confronted by <em>reality</em>."
+    </p>
+
+    <p class="body-text reveal" style="max-width:580px;margin:0 auto;">
+      Dopamine is not broken when love fades. It's working exactly as designed. 
+      It evolved to push us toward better futures — not to help us appreciate the present. 
+      The goal is not to fight dopamine, but to understand it well enough to choose when to follow it and when to resist.
+    </p>
+
+    <div class="takeaway-grid reveal">
+      <div class="tk-card">
+        <span class="tk-icon">⚡</span>
+        <div class="tk-title">Dopamine Is Anticipation</div>
+        <p class="tk-body">It fires at the signal of possible reward — not at the reward itself. The excitement of "what might happen" is the chemical. The thing that happens is almost beside the point.</p>
+      </div>
+      <div class="tk-card">
+        <span class="tk-icon">🔁</span>
+        <div class="tk-title">Familiarity Kills It</div>
+        <p class="tk-body">Any experience — coffee, love, music, money — loses its dopamine charge once it becomes predictable. Your brain marks it as "known" and stops reacting. This is not boredom. It's adaptation.</p>
+      </div>
+      <div class="tk-card">
+        <span class="tk-icon">🎯</span>
+        <div class="tk-title">The Error Is the Rush</div>
+        <p class="tk-body">The gap between what you expected and what happened — the prediction error — is where dopamine lives. It's the surprise, the deviation, the unexpected better thing. Not the thing itself.</p>
+      </div>
+      <div class="tk-card">
+        <span class="tk-icon">🌱</span>
+        <div class="tk-title">Love Must Evolve</div>
+        <p class="tk-body">Dopaminergic love (desire, obsession, fantasy) cannot sustain forever. Lasting relationships require different chemistry: the warmth of serotonin, the bonding of oxytocin, the stability of being truly known.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Molecule of More</div>
+  <div class="footer-meta">Based on "The Molecule of More" by Daniel Z. Lieberman & Michael E. Long</div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animCursor() {
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+/* ── REVEAL OBSERVER ── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .timeline-item').forEach(el => revealObs.observe(el));
+
+/* ── DOPAMINE METER ANIMATION ── */
+const meterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      [1,2,3,4,5].forEach(i => {
+        const bar = document.getElementById('bar' + i);
+        const val = document.getElementById('val' + i);
+        const target = parseInt(bar.dataset.target);
+        setTimeout(() => {
+          bar.style.width = target + '%';
+          let current = 0;
+          const interval = setInterval(() => {
+            current = Math.min(current + 2, target);
+            val.textContent = current + '%';
+            if (current >= target) clearInterval(interval);
+          }, 20);
+        }, i * 200);
+      });
+      meterObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.getElementById('dopamine-meter') && meterObs.observe(document.getElementById('dopamine-meter'));
+
+/* ── LOVE STAGES ── */
+const loveData = [
+  {
+    title: "The Stranger Across the Bar",
+    body: "You notice someone fascinating across the room. Everything about them is unknown — What's their story? What might happen? Your brain is flooded with possibility. Dopamine isn't reacting to who they are. It's reacting to the infinite potential of who they might be.",
+    quote: '"Meeting a fascinating new partner... What might happen? That\'s dopamine taking charge."',
+    bars: [5,8,12,20,35,60,95,100,90,80,70,85,95,100,88],
+    num: "01"
+  },
+  {
+    title: "The Obsession Phase",
+    body: "Every text, every glance, every thought about them triggers a dopamine hit. The sweet note (What will it say?), the email from out of nowhere (What's the news?). Each arrives as a signal of possible good news — a prediction waiting to be confirmed or exceeded.",
+    quote: '"The arrival of a sweet note from your lover — What will it say? — that is dopamine at work."',
+    bars: [60,95,40,85,30,90,50,80,45,95,55,75,40,88,70],
+    num: "02"
+  },
+  {
+    title: "Reality Meets Fantasy",
+    body: "You're together now. The imagined future of never-ending delight has become the concrete experience of reality. You still love them. The relationship is real and meaningful. But dopamine's job — idealizing the unknown — is done. It's starting to step back.",
+    quote: '"Dopaminergic excitement doesn\'t last forever, because eventually the future becomes the present."',
+    bars: [70,65,55,60,50,45,55,40,42,35,45,38,32,40,35],
+    num: "03"
+  },
+  {
+    title: "The Comfortable Familiar",
+    body: "They blow their nose in a ratty Kleenex. You know exactly what they'll order at every restaurant. Their laugh is familiar and warm. No prediction error — but no dopamine surge either. This is not love dying. This is love changing form, requiring different chemistry to sustain.",
+    quote: '"When the god or goddess of love becomes a sleepy spouse... dopamine shut down."',
+    bars: [20,18,22,15,20,18,16,22,18,15,20,17,19,16,18],
+    num: "04"
+  },
+  {
+    title: "The Restless Search",
+    body: "Dopamine, denied its familiar source, starts scanning for the next unknown. A flirtation. A new project. A fantasy. This isn't failure of love — it's dopamine doing exactly what it evolved to do: seek better futures. The question is whether you direct it consciously, or let it steer you.",
+    quote: '"Our brains are programmed to crave the unexpected and thus to look to the future."',
+    bars: [10,8,15,12,20,40,25,60,35,80,50,90,65,75,85],
+    num: "05"
+  }
+];
+
+function buildLoveChart(bars, container) {
+  const el = document.getElementById(container);
+  el.innerHTML = '';
+  const max = Math.max(...bars);
+  bars.forEach(v => {
+    const b = document.createElement('div');
+    b.className = 'dc-bar';
+    b.style.height = (v / max * 100) + '%';
+    b.style.background = v > 60 ? `rgba(232,114,74,${v/100})` : v > 30 ? `rgba(212,170,106,${v/100})` : `rgba(107,104,120,${v/100})`;
+    el.appendChild(b);
+  });
+}
+
+function setLoveStage(idx) {
+  document.querySelectorAll('.love-stage').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  const d = loveData[idx];
+  const detail = document.getElementById('love-detail');
+  detail.dataset.num = d.num;
+  detail.style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('ld-title').textContent = d.title;
+    document.getElementById('ld-body').textContent = d.body;
+    document.getElementById('ld-quote').textContent = d.quote;
+    buildLoveChart(d.bars, 'love-chart');
+    detail.style.opacity = '1';
+  }, 150);
+}
+buildLoveChart(loveData[0].bars, 'love-chart');
+
+/* ── BAKERY ── */
+const bakeryData = [
+  { emoji: '👁️', title: 'Discovery', fill: '92%', desc: 'The anticipation of something unknown and potentially better floods the brain with dopamine — before you\'ve even tasted anything.' },
+  { emoji: '☕', title: 'First Taste', fill: '100%', desc: 'Dopamine + actual pleasure = peak experience. Reality exceeded expectation. You are in love with this bakery.' },
+  { emoji: '📅', title: 'The Routine', fill: '38%', desc: 'Two weeks in. Objectively the same coffee. But expected. No prediction error. Dopamine stays flat. You\'ve stopped mentioning it.' },
+  { emoji: '😐', title: 'Same Old Breakfast', fill: '12%', desc: '"Best coffee in the city" has become "same old breakfast." The bakery didn\'t change. Your expectation did.' }
+];
+
+function setBakery(idx, el) {
+  document.querySelectorAll('.story-phase').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const d = bakeryData[idx];
+  document.getElementById('bv-emoji').textContent = d.emoji;
+  document.getElementById('bv-title').textContent = d.title;
+  document.getElementById('dg-fill').style.width = d.fill;
+  document.getElementById('bv-desc').textContent = d.desc;
+}
+</script>
+</body>
+</html>
