@@ -1,1 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Molecule of More</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #0a0608;
+    --bg2: #100c10;
+    --ink: #f0e8e0;
+    --muted: #8a7a72;
+    --accent: #c4473a;
+    --accent2: #e8a020;
+    --dopamine: #7c3aed;
+    --dopamine-glow: rgba(124,58,237,0.25);
+    --love: #c4473a;
+    --fade: #2a5a3a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: linear-gradient(to bottom, rgba(10,6,8,0.95), transparent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+  nav a:hover { color: var(--ink); }
+  nav .brand { color: var(--ink); margin-right: auto; font-size: 0.7rem; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .orb1 { width: 500px; height: 500px; background: var(--dopamine-glow); top: 10%; left: -10%; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(196,71,58,0.15); bottom: 10%; right: 5%; animation-delay: 3s; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.15);opacity:1} }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dopamine);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 1s ease both;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--dopamine);
+    text-shadow: 0 0 40px var(--dopamine-glow);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--muted);
+    max-width: 520px;
+    margin: 1.5rem auto 0;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    animation: fadeUp 1s ease 1s both;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── SECTIONS ── */
+  section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    position: relative;
+  }
+
+  section.full-bleed {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dopamine);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--dopamine), transparent);
+    max-width: 80px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  h2 strong { color: var(--accent2); font-weight: 700; }
+
+  p { margin-bottom: 1.2rem; color: #c8bdb5; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── DOPAMINE DISCOVERY ── */
+  .discovery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 2.5rem 0;
+  }
+  .discovery-cell {
+    background: var(--bg2);
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .discovery-cell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--dopamine);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s ease;
+  }
+  .discovery-cell:hover::before { transform: scaleX(1); }
+  .cell-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--dopamine);
+    opacity: 0.2;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .cell-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .cell-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── THE BIG REVEAL ── */
+  #reveal {
+    background: var(--bg2);
+    border-left: 3px solid var(--dopamine);
+    padding: 3rem 2rem 3rem 3rem;
+    margin: 3rem 0;
+    position: relative;
+  }
+  #reveal::before {
+    content: '"';
+    position: absolute;
+    top: -1rem;
+    left: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: var(--dopamine);
+    opacity: 0.15;
+    line-height: 1;
+  }
+  #reveal p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  #reveal .attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 1rem;
+    font-style: normal;
+  }
+
+  /* ── LOVE ARC INTERACTIVE ── */
+  #love-arc {
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+  }
+  .arc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .arc-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .timeline {
+    display: flex;
+    gap: 0;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .phase {
+    flex: 1;
+    padding: 1rem 0.8rem 1.2rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    text-align: center;
+  }
+  .phase:hover { background: rgba(255,255,255,0.03); }
+  .phase.active { border-bottom-color: var(--accent2); }
+  .phase-icon { font-size: 1.6rem; margin-bottom: 0.4rem; display: block; }
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+  }
+  .phase.active .phase-label { color: var(--accent2); }
+
+  .phase-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .phase-content.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  .phase-detail {
+    border-left: 2px solid;
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 2px 2px 0;
+  }
+  .phase-detail h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .phase-detail p { font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .phase-detail .chem {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1px;
+    margin-right: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── DOPAMINE METER ── */
+  #meter-section {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .meter-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .meter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .meter {
+    width: 280px;
+    height: 12px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1), background 1.2s;
+    position: relative;
+  }
+  .meter-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 20px;
+    background: rgba(255,255,255,0.3);
+    filter: blur(4px);
+  }
+  .meter-stages {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .meter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 1px;
+  }
+  .meter-btn:hover, .meter-btn.active {
+    border-color: var(--dopamine);
+    color: var(--ink);
+    background: rgba(124,58,237,0.1);
+  }
+  .meter-reading {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-style: italic;
+    color: var(--ink);
+    min-height: 3.5rem;
+    transition: all 0.4s;
+  }
+  .meter-desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 320px;
+    min-height: 3rem;
+    transition: all 0.4s;
+  }
+
+  /* ── KEY INSIGHT CARDS ── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    margin: 2rem 0;
+  }
+  .insight-card {
+    background: var(--bg);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .insight-card:hover { background: var(--bg2); }
+  .insight-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .insight-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .insight-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; margin: 0; }
+
+  /* ── THE SUMMARY BOX ── */
+  .summary-box {
+    border: 1px solid rgba(196,71,58,0.3);
+    background: rgba(196,71,58,0.05);
+    padding: 2.5rem;
+    margin: 3rem 0;
+    position: relative;
+  }
+  .summary-box::before {
+    content: 'CORE INSIGHT';
+    position: absolute;
+    top: -0.6rem;
+    left: 1.5rem;
+    background: var(--bg);
+    padding: 0 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+  .summary-box p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── APPLY ── */
+  .apply-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .apply-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem;
+    border-radius: 2px;
+  }
+  .apply-card.good { border-color: rgba(42,90,58,0.5); background: rgba(42,90,58,0.08); }
+  .apply-card.caution { border-color: rgba(196,71,58,0.3); background: rgba(196,71,58,0.05); }
+  .apply-card h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .apply-card.good h4 { color: #4ade80; }
+  .apply-card.caution h4 { color: var(--accent); }
+  .apply-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .apply-card li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    padding: 0.3rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+    line-height: 1.4;
+  }
+  .apply-card li::before { position: absolute; left: 0; }
+  .apply-card.good li::before { content: '→'; color: #4ade80; }
+  .apply-card.caution li::before { content: '!'; color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  footer span { color: var(--dopamine); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
+    margin: 0 2rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .discovery-grid { grid-template-columns: 1fr; }
+    .apply-grid { grid-template-columns: 1fr; }
+    nav a:not(.brand) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">The Molecule of More</span>
+  <a onclick="document.getElementById('what').scrollIntoView({behavior:'smooth'})">Science</a>
+  <a onclick="document.getElementById('love-section').scrollIntoView({behavior:'smooth'})">Love Arc</a>
+  <a onclick="document.getElementById('apply-section').scrollIntoView({behavior:'smooth'})">Apply</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-eyebrow">Chapter 1 · Daniel Lieberman & Michael Long</div>
+  <h1>The Molecule<br>of <em>More</em></h1>
+  <p class="hero-sub">Why your brain always wants what it does not have — and loses interest in what it gets.</p>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- WHAT IS DOPAMINE -->
+<section id="what">
+  <div class="section-label">The Discovery</div>
+  <h2>Dopamine is <strong>not</strong> about feeling good.</h2>
+  <p>Scientists used to call it the "pleasure chemical." But they got it wrong. Dopamine is really about <em>wanting</em> — the excitement you feel before you get something, not after.</p>
+
+  <div class="discovery-grid">
+    <div class="discovery-cell">
+      <div class="cell-num">1957</div>
+      <div class="cell-stat">Year Found</div>
+      <div class="cell-desc">A scientist named Kathleen Montagu found dopamine in the brain for the first time, in a hospital near London.</div>
+    </div>
+    <div class="discovery-cell">
+      <div class="cell-num">0.0005%</div>
+      <div class="cell-stat">Of Brain Cells</div>
+      <div class="cell-desc">Almost no brain cells make dopamine — but those few cells control a huge part of how we act and feel.</div>
+    </div>
+    <div class="discovery-cell">
+      <div class="cell-num">≠ Joy</div>
+      <div class="cell-stat">The Big Surprise</div>
+      <div class="cell-desc">When scientists tested food instead of drugs, dopamine fired while waiting for food — not while eating it.</div>
+    </div>
+    <div class="discovery-cell">
+      <div class="cell-num">∞ Want</div>
+      <div class="cell-stat">What It Really Does</div>
+      <div class="cell-desc">Dopamine pushes you to go after things — food, love, goals, new ideas. It is about the chase, not the reward.</div>
+    </div>
+  </div>
+
+  <div id="reveal">
+    <p>Dopamine fires when you see a gap between what you have and what you could have. Once you get the thing you wanted, dopamine stops. It only works when something is still possible.</p>
+    <div class="attr">— Core idea, The Molecule of More</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DOPAMINE METER -->
+<section id="meter-section">
+  <div class="section-label">Interactive</div>
+  <h2>Dopamine at Each Stage</h2>
+  <p style="text-align:center; margin-bottom:2rem;">Pick a relationship stage and see how dopamine changes.</p>
+
+  <div class="meter-wrap">
+    <div class="meter-stages">
+      <button class="meter-btn" onclick="setMeter('stranger',this)">Stranger</button>
+      <button class="meter-btn active" onclick="setMeter('crush',this)">New Crush</button>
+      <button class="meter-btn" onclick="setMeter('honeymoon',this)">Honeymoon</button>
+      <button class="meter-btn" onclick="setMeter('settled',this)">Settled</button>
+      <button class="meter-btn" onclick="setMeter('routine',this)">Routine</button>
+    </div>
+    <div class="meter-reading" id="meter-pct">High</div>
+    <div class="meter" style="width:280px">
+      <div class="meter-fill" id="meter-bar" style="width:80%;background:linear-gradient(90deg,#7c3aed,#c026d3)"></div>
+    </div>
+    <div class="meter-label">Dopamine Level</div>
+    <div class="meter-desc" id="meter-desc">Every text and glance feels exciting. You don't know what will happen next — and that feeling is exactly what fires dopamine.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- LOVE ARC -->
+<section id="love-section">
+  <div class="section-label">The Love Story</div>
+  <h2>Why the excitement always fades.</h2>
+  <p>Shawn and Samantha did not fail at love. Their brain chemistry just did what it was built to do.</p>
+
+  <div id="love-arc">
+    <div class="arc-title">How a Relationship Changes</div>
+    <div class="arc-subtitle">Tap a stage to read more</div>
+
+    <div class="timeline">
+      <div class="phase active" onclick="showPhase(0,this)">
+        <span class="phase-icon">⚡</span>
+        <span class="phase-label">Attraction</span>
+      </div>
+      <div class="phase" onclick="showPhase(1,this)">
+        <span class="phase-icon">🔥</span>
+        <span class="phase-label">Obsession</span>
+      </div>
+      <div class="phase" onclick="showPhase(2,this)">
+        <span class="phase-icon">💍</span>
+        <span class="phase-label">Commitment</span>
+      </div>
+      <div class="phase" onclick="showPhase(3,this)">
+        <span class="phase-icon">🌅</span>
+        <span class="phase-label">Fading</span>
+      </div>
+    </div>
+
+    <div id="phase-0" class="phase-content active">
+      <div class="phase-detail" style="border-color:var(--dopamine)">
+        <h3>You First Notice Someone</h3>
+        <p>Shawn sees Samantha across the bar. He does not know if she likes him. That uncertainty is exactly what makes dopamine fire. Every word they share feels exciting because anything could happen.</p>
+        <p>They talk easily — gym, fitness apps, shared interests. The brain reads all of this as: "something good might be coming."</p>
+        <span class="chem" style="background:rgba(124,58,237,0.15);color:var(--dopamine)">Dopamine ↑↑↑</span>
+        <span class="chem" style="background:rgba(232,160,32,0.1);color:var(--accent2)">Adrenaline ↑</span>
+      </div>
+    </div>
+    <div id="phase-1" class="phase-content">
+      <div class="phase-detail" style="border-color:var(--accent)">
+        <h3>You Can't Stop Thinking About Them</h3>
+        <p>Shawn had not dated anyone in 7 months and 3 days — and he knew the exact count. That is his brain fixating on what it does not have. Once he has Samantha, other women stop catching his eye completely.</p>
+        <p>Every time he thinks of her, he gets excited about seeing her again. He is not really in love yet — his brain is just hooked on the possibility of more.</p>
+        <span class="chem" style="background:rgba(124,58,237,0.15);color:var(--dopamine)">Dopamine ↑↑↑↑</span>
+        <span class="chem" style="background:rgba(196,71,58,0.1);color:var(--accent)">Serotonin ↓</span>
+      </div>
+    </div>
+    <div id="phase-2" class="phase-content">
+      <div class="phase-detail" style="border-color:var(--accent2)">
+        <h3>You Make it Official</h3>
+        <p>He proposes. She says yes. Now the outcome is certain. And right there — that is when dopamine starts to quiet down.</p>
+        <p>The brain got what it was chasing. So it stops chasing. Other brain chemicals like oxytocin take over now — these are the ones that create warmth, safety, and real closeness.</p>
+        <span class="chem" style="background:rgba(124,58,237,0.1);color:var(--dopamine)">Dopamine →</span>
+        <span class="chem" style="background:rgba(74,222,128,0.1);color:#4ade80">Oxytocin ↑</span>
+      </div>
+    </div>
+    <div id="phase-3" class="phase-content">
+      <div class="phase-detail" style="border-color:var(--muted)">
+        <h3>The Spark Gets Quieter</h3>
+        <p>A few months after the honeymoon, things feel normal. Samantha smiles at a stranger. Shawn notices other women again. Neither wants to cheat — their brain just needs something new to get excited about.</p>
+        <p>"This happened in my last relationship too," thinks Samantha. Yes — because it happens to everyone. It is not a sign something is wrong. It is just how the brain works.</p>
+        <span class="chem" style="background:rgba(124,58,237,0.08);color:var(--muted)">Dopamine ↓↓</span>
+        <span class="chem" style="background:rgba(74,222,128,0.1);color:#4ade80">Oxytocin steady</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- KEY INSIGHTS -->
+<section>
+  <div class="section-label">Key Ideas</div>
+  <h2>4 things to remember.</h2>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <span class="insight-icon">🎯</span>
+      <h3>Wanting is not the same as liking</h3>
+      <p>Dopamine makes you chase things. But once you get them, the excitement can disappear. You wanted it badly — yet it feels flat now.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">🔄</span>
+      <h3>Sure things are boring to the brain</h3>
+      <p>When you know you will get something, dopamine stops firing. The thrill is in not knowing. Once you know — it is over.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">🧪</span>
+      <h3>It is not your fault</h3>
+      <p>When the early excitement in a relationship fades, that is not a problem with you or your partner. It is just how the brain is built.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">🌱</span>
+      <h3>Real love uses different chemicals</h3>
+      <p>Long-term love runs on oxytocin and serotonin — the calm, happy, safe feeling. Dopamine is only for the early chase.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- APPLY -->
+<section id="apply-section">
+  <div class="section-label">What To Do</div>
+  <h2>How to use this in real life.</h2>
+
+  <div class="summary-box">
+    <p>Dopamine is not bad. It pushes you to grow, try new things, and connect with people. The problem is when you keep chasing the excitement of early love — instead of building something real.</p>
+    <p>Now that you understand why the wave rises and falls, you can make smarter choices about love, habits, and goals.</p>
+  </div>
+
+  <div class="apply-grid">
+    <div class="apply-card good">
+      <h4>✓ Good moves</h4>
+      <ul>
+        <li>Try new things with your partner — new places, new activities keep things fresh</li>
+        <li>Use the "chase" feeling to set goals that are just out of reach</li>
+        <li>When the early excitement fades, do not panic — it does not mean love is gone</li>
+        <li>Build closeness through touch, time together, and small daily care</li>
+      </ul>
+    </div>
+    <div class="apply-card caution">
+      <h4>! Watch out for</h4>
+      <ul>
+        <li>Leaving relationships just because they no longer feel "new"</li>
+        <li>Confusing early excitement with real love</li>
+        <li>Social media, junk food, and gambling all use the same dopamine trick</li>
+        <li>Giving up on good things just because the excitement wore off</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Based on <span>The Molecule of More</span> · Chapter 1: Love · Daniel Z. Lieberman &amp; Michael E. Long</p>
+  <p style="margin-top:0.5rem;font-size:0.55rem;">A visual study guide · For educational use</p>
+</footer>
+
+<script>
+  // ── PHASE SWITCHER ──
+  function showPhase(i, el) {
+    document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('phase-' + i);
+    target.classList.add('active');
+    // Reset any opacity/transform applied by scroll observer
+    target.style.opacity = '1';
+    target.style.transform = 'translateY(0)';
+    el.classList.add('active');
+  }
+
+  // ── DOPAMINE METER ──
+  const meterData = {
+    stranger: { pct: 20, label: 'Low', desc: 'No signal yet. The brain does not see any reward coming, so dopamine stays quiet.', color: '#4b5563' },
+    crush:    { pct: 80, label: 'High', desc: 'Every text and glance feels exciting. You do not know what will happen next — and that feeling is exactly what fires dopamine.', color: 'linear-gradient(90deg,#7c3aed,#c026d3)' },
+    honeymoon:{ pct: 95, label: 'Peak', desc: 'Everything feels possible. You are together but still learning each other. The brain is at full excitement.', color: 'linear-gradient(90deg,#7c3aed,#ec4899)' },
+    settled:  { pct: 45, label: 'Settling', desc: 'Things are becoming predictable. Dopamine quiets down. Calmer chemicals like oxytocin start doing the work.', color: 'linear-gradient(90deg,#059669,#7c3aed)' },
+    routine:  { pct: 18, label: 'Quiet', desc: 'The brain knows what to expect. Dopamine is low — but that does not mean the love is gone. It just changed form.', color: '#059669' },
+  };
+
+  function setMeter(key, btn) {
+    const d = meterData[key];
+    document.getElementById('meter-bar').style.width = d.pct + '%';
+    document.getElementById('meter-bar').style.background = d.color;
+    document.getElementById('meter-pct').textContent = d.label;
+    document.getElementById('meter-desc').textContent = d.desc;
+    document.querySelectorAll('.meter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Init
+  setMeter('crush', document.querySelectorAll('.meter-btn')[1]);
+
+  // ── SCROLL REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Ensure phase-content divs are never touched by the observer
+  document.querySelectorAll('.phase-content').forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+  });
+
+  document.querySelectorAll('section, .discovery-cell, .insight-card, .apply-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
