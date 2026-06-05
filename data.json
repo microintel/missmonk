@@ -103,7 +103,11 @@
             "Chapter 8.3": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-3.html"
           }
         },
-        "Basics of Financial Statment": {},
+        "Basics of Financial Statment": {
+          "Income Statement & Balance Sheet": "",
+          "Cash Flow Statement": "",
+          "Chapter 9": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c9.html"
+        },
         "Tools to use": {},
         "How To Analyze a Company": {},
         "Financial Ratios": {}
