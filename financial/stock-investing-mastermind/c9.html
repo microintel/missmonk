@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basics of Financial Statements</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1a6b2e;
+    --green-mid: #228b3e;
+    --green-bright: #2db350;
+    --green-light: #e8f5ed;
+    --gold: #f5c842;
+    --gold-light: #fdf3c0;
+    --white: #ffffff;
+    --off-white: #f7f9f7;
+    --charcoal: #1c2b1f;
+    --text: #263328;
+    --muted: #5a7060;
+    --border: #c8e0ce;
+    --red: #e03e3e;
+    --blue: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--green-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 28px,
+      rgba(255,255,255,0.04) 28px,
+      rgba(255,255,255,0.04) 30px
+    );
+  }
+
+  .hero-chapter {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.05;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero-sub {
+    margin-top: 24px;
+    color: rgba(255,255,255,0.65);
+    font-size: 1.1rem;
+    font-weight: 300;
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+
+  .pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .pill:hover { background: var(--gold); color: var(--charcoal); border-color: var(--gold); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.4);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  /* ── OVERVIEW CARDS ── */
+  .overview {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 48px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 36px 32px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(34,139,62,0.12); }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .card.income::before { background: var(--green-bright); }
+  .card.balance::before { background: var(--gold); }
+  .card.cashflow::before { background: var(--green-dark); }
+
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  .card.income .card-icon { background: var(--green-light); }
+  .card.balance .card-icon { background: var(--gold-light); }
+  .card.cashflow .card-icon { background: #e8f0fb; }
+
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--charcoal);
+  }
+  .card p { color: var(--muted); line-height: 1.65; font-size: 0.95rem; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 24px;
+  }
+
+  /* ── INCOME STATEMENT SECTION ── */
+  .section {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--green-light);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .timeline-box {
+    background: white;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+
+  .timeline-box h4 {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .timeline-periods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 600px) { .timeline-periods { grid-template-columns: 1fr; } }
+
+  .period {
+    background: var(--green-light);
+    border-radius: 12px;
+    padding: 20px 24px;
+    border-left: 4px solid var(--green-bright);
+  }
+
+  .period .dates {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+  }
+  .period .freq {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--green-bright);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── INCOME EXAMPLE ── */
+  .example-box {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .example-header {
+    background: var(--green-dark);
+    color: white;
+    padding: 16px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .example-header span { color: var(--gold); }
+
+  .example-body { padding: 28px; }
+
+  .revenue-rows { margin-bottom: 20px; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+  .row.segment { background: var(--off-white); }
+  .row.total { background: var(--green-dark); color: white; font-weight: 600; }
+  .row.expense { background: #fef2f2; color: var(--red); }
+  .row.profit { background: var(--green-light); color: var(--green-dark); font-weight: 600; }
+  .row.tax { background: #fff8e1; color: #92650a; }
+  .row.net { background: var(--green-bright); color: white; font-weight: 700; font-size: 1.05rem; }
+
+  .row .label { font-weight: 500; }
+  .row .amount { font-family: 'DM Mono', monospace; }
+
+  .row-divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* ── STATEMENT STRUCTURE ── */
+  .structure-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .struct-card {
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid;
+  }
+  .struct-card.rev { background: var(--green-light); border-color: #a8d8b4; }
+  .struct-card.exp { background: #fef2f2; border-color: #f8b4b4; }
+  .struct-card.pnl { background: var(--gold-light); border-color: #f0d060; }
+
+  .struct-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 14px;
+    color: var(--charcoal);
+  }
+
+  .struct-card ul { list-style: none; }
+  .struct-card ul li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .struct-card ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--green-bright);
+    font-size: 0.8rem;
+  }
+
+  /* EPS */
+  .eps-box {
+    background: var(--charcoal);
+    color: white;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin-top: 24px;
+  }
+  .eps-box h4 { color: var(--gold); font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 12px; }
+  .eps-formula {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    color: white;
+  }
+  .eps-formula .frac { display: inline-flex; flex-direction: column; align-items: center; margin: 0 12px; vertical-align: middle; }
+  .eps-formula .num { border-bottom: 2px solid var(--gold); padding-bottom: 4px; }
+  .eps-formula .den { padding-top: 4px; color: rgba(255,255,255,0.6); font-size: 0.85em; }
+  .eps-result { font-size: 1.4rem; color: var(--gold); font-family: 'DM Mono', monospace; margin-top: 16px; }
+
+  /* ── BALANCE SHEET ── */
+  .balance-intro {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .balance-intro p { color: var(--muted); line-height: 1.7; }
+  .balance-intro strong { color: var(--green-dark); }
+
+  .balance-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 640px) { .balance-split { grid-template-columns: 1fr; } }
+
+  .bs-side {
+    border-radius: 14px;
+    padding: 28px;
+    border: 2px solid;
+  }
+  .bs-side.assets { background: var(--green-light); border-color: var(--green-bright); }
+  .bs-side.liabilities { background: #fff8f0; border-color: #f5a623; }
+
+  .bs-side h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: var(--charcoal);
+  }
+  .bs-side .def {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .bs-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bs-tag {
+    background: white;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--green-dark);
+    border: 1px solid var(--border);
+  }
+  .bs-side.liabilities .bs-tag { color: #92400e; }
+
+  .equal-badge {
+    background: var(--green-dark);
+    color: white;
+    text-align: center;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+  }
+  .equal-badge span { color: var(--gold); font-size: 1.2rem; }
+
+  /* Balance sheet structure */
+  .bs-structure {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 640px) { .bs-structure { grid-template-columns: 1fr; } }
+
+  .bs-block {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    border: 1px solid var(--border);
+  }
+  .bs-block .bs-block-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: var(--muted);
+  }
+  .bs-block.lt-assets .bs-block-title { color: var(--green-dark); }
+  .bs-block.st-assets .bs-block-title { color: #2563eb; }
+  .bs-block.equity-block .bs-block-title { color: #92650a; }
+  .bs-block.lt-liab .bs-block-title { color: #c53030; }
+  .bs-block.st-liab .bs-block-title { color: #7e3af2; }
+
+  .bs-block ul { list-style: none; }
+  .bs-block ul li {
+    font-size: 0.85rem;
+    padding: 5px 0;
+    color: var(--text);
+    border-bottom: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bs-block ul li:last-child { border-bottom: none; }
+  .bs-block ul li::before { content: '◆'; font-size: 0.5rem; color: var(--green-bright); }
+
+  /* Real example */
+  .real-example {
+    background: var(--charcoal);
+    border-radius: 16px;
+    padding: 32px;
+    color: white;
+  }
+  .real-example h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .stat-item { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 16px; }
+  .stat-item .stat-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+  .stat-item .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 4px; }
+  .stat-item .stat-note { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .bullet-list { list-style: none; }
+  .bullet-list li {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.7);
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .bullet-list li::before { content: '○'; position: absolute; left: 0; color: var(--gold); }
+
+  /* ── CASH FLOW ── */
+  .cashflow-intro {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .cashflow-intro p { color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+  .cashflow-intro strong { color: var(--green-dark); }
+
+  .credit-example {
+    background: var(--gold-light);
+    border: 1px solid #f0d060;
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 0.9rem;
+    color: #7a5200;
+    line-height: 1.6;
+  }
+  .credit-example strong { color: #5a3a00; }
+
+  .cf-components {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .cf-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .cf-card:hover { transform: translateY(-3px); }
+
+  .cf-card-header {
+    padding: 18px 22px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cf-card:nth-child(1) .cf-card-header { background: var(--green-bright); }
+  .cf-card:nth-child(2) .cf-card-header { background: var(--blue); }
+  .cf-card:nth-child(3) .cf-card-header { background: #9333ea; }
+  .cf-card:nth-child(4) .cf-card-header { background: var(--charcoal); }
+
+  .cf-card-body { padding: 18px 22px; }
+  .cf-card-body ul { list-style: none; }
+  .cf-card-body ul li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .cf-card-body ul li:last-child { border-bottom: none; }
+
+  /* Inflow/Outflow */
+  .io-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 600px) { .io-split { grid-template-columns: 1fr; } }
+
+  .io-box { border-radius: 14px; padding: 24px; }
+  .io-box.inflow { background: var(--green-light); border: 2px solid var(--green-bright); }
+  .io-box.outflow { background: #fef2f2; border: 2px solid #fca5a5; }
+
+  .io-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 10px; }
+  .io-box.inflow h4 { color: var(--green-dark); }
+  .io-box.outflow h4 { color: #c53030; }
+  .io-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .io-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .io-box.inflow .io-badge { background: var(--green-dark); color: white; }
+  .io-box.outflow .io-badge { background: #c53030; color: white; }
+
+  /* Net CF calculation */
+  .net-cf-box {
+    background: var(--charcoal);
+    border-radius: 16px;
+    padding: 32px;
+    color: white;
+    margin-bottom: 32px;
+  }
+  .net-cf-box h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .cf-calc { max-width: 400px; }
+  .cf-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+  }
+  .cf-row .cf-val { font-family: 'DM Mono', monospace; }
+  .cf-row.neg .cf-val { color: #fc8181; }
+  .cf-row.pos .cf-val { color: #68d391; }
+  .cf-row.result {
+    background: var(--gold);
+    color: var(--charcoal);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 12px;
+    border-bottom: none;
+  }
+  .cf-row.result .cf-val { font-size: 1.1rem; }
+
+  /* cf real numbers */
+  .cf-real {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 28px;
+  }
+  .cf-real h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--charcoal);
+  }
+  .cf-real-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .cf-real-item { border-radius: 10px; padding: 16px; }
+  .cf-real-item.ops { background: var(--green-light); border-left: 4px solid var(--green-bright); }
+  .cf-real-item.inv { background: #eff6ff; border-left: 4px solid var(--blue); }
+  .cf-real-item.fin { background: #f5f3ff; border-left: 4px solid #9333ea; }
+  .cf-real-item .cf-ri-label { font-size: 0.75rem; font-family: 'DM Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .cf-real-item .cf-ri-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; }
+  .cf-real-item.ops .cf-ri-val { color: var(--green-dark); }
+  .cf-real-item.inv .cf-ri-val { color: var(--blue); }
+  .cf-real-item.fin .cf-ri-val { color: #9333ea; }
+  .cf-real-item .cf-ri-note { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── SUMMARY / CONCLUSION ── */
+  .conclusion {
+    background: var(--green-dark);
+    padding: 80px 24px;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .conclusion::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 28px,
+      rgba(255,255,255,0.03) 28px,
+      rgba(255,255,255,0.03) 30px
+    );
+  }
+  .conclusion-inner { position: relative; max-width: 700px; margin: 0 auto; }
+  .conclusion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 24px;
+    color: white;
+  }
+  .conclusion h2 span { color: var(--gold); }
+  .conclusion p { color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 16px; font-size: 1rem; }
+  .conclusion .highlight {
+    background: rgba(245,200,66,0.15);
+    border: 1px solid rgba(245,200,66,0.4);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 32px;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    line-height: 1.7;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(26,107,46,0.95);
+    backdrop-filter: blur(12px);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    transform: translateY(-100%);
+    transition: transform 0.4s;
+  }
+  nav.visible { transform: translateY(0); }
+  .nav-logo { font-family: 'Playfair Display', serif; color: white; font-size: 1rem; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── BAR CHART ── */
+  .bar-chart { margin: 24px 0; }
+  .bar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .bar-label { font-size: 0.82rem; color: var(--muted); width: 130px; flex-shrink: 0; }
+  .bar-track { flex: 1; background: var(--off-white); border-radius: 6px; height: 28px; overflow: hidden; }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    color: white;
+    font-weight: 500;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 0;
+  }
+  .bar-fill.green { background: var(--green-bright); }
+  .bar-fill.red { background: var(--red); }
+  .bar-fill.gold { background: #d4a017; }
+  .bar-fill.net { background: var(--green-dark); }
+
+  /* Source tag */
+  .source { font-size: 0.75rem; color: var(--muted); font-style: italic; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- FIXED NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Financial <span>Statements</span></div>
+  <div class="nav-links">
+    <a href="#income">Income Statement</a>
+    <a href="#balance">Balance Sheet</a>
+    <a href="#cashflow">Cash Flow</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-chapter">Chapter 4 · Stock Investing Mastermind</div>
+  <h1>Basics of<br><span>Financial</span><br>Statements</h1>
+  <p class="hero-sub">Master the three core financial documents every investor must read — with real examples from Godawari Power & Ispat Ltd.</p>
+  <div class="hero-pills">
+    <a class="pill" href="#income">📊 Income Statement</a>
+    <a class="pill" href="#balance">⚖️ Balance Sheet</a>
+    <a class="pill" href="#cashflow">💸 Cash Flow</a>
+  </div>
+  <div class="scroll-hint">↓ scroll</div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="overview">
+  <div class="section-label">Overview</div>
+  <div class="section-title">Three Documents,<br>One Complete Picture</div>
+  <div class="cards-grid reveal">
+    <div class="card income">
+      <div class="card-icon">💰</div>
+      <h3>Income Statement</h3>
+      <p>Lists all the sales and expenses incurred by the company during the year, resulting in net profit or loss. Prepared annually (12 months) or quarterly (3 months).</p>
+    </div>
+    <div class="card balance">
+      <div class="card-icon">⚖️</div>
+      <h3>Balance Sheet</h3>
+      <p>Lists all that the company owns (assets) and owes (liabilities) at a given point in time — specifically at 31st March of every year in India.</p>
+    </div>
+    <div class="card cashflow">
+      <div class="card-icon">🔄</div>
+      <h3>Cash Flow Statement</h3>
+      <p>Tracks every rupee entering and leaving the company during the year. Unlike the income statement, this only records actual cash movements.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INCOME STATEMENT -->
+<section class="section" id="income">
+  <div class="section-header">
+    <div class="section-num">4.1</div>
+    <div>
+      <div class="section-label">Section One</div>
+      <h2 class="section-title" style="margin-bottom:0">Income Statement &amp;<br>Balance Sheet</h2>
+    </div>
+  </div>
+
+  <!-- Time Periods -->
+  <div class="timeline-box reveal">
+    <h4>Reporting Periods</h4>
+    <div class="timeline-periods">
+      <div class="period">
+        <div class="dates">1st April → 31st March</div>
+        <div class="freq">12 Months · Annual</div>
+      </div>
+      <div class="period">
+        <div class="dates">1st Jan → 31st March</div>
+        <div class="freq">3 Months · Quarterly</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reliance Example -->
+  <div class="example-box reveal">
+    <div class="example-header">🔴 <span>Example:</span> Reliance Industries — How Income Statement Works</div>
+    <div class="example-body">
+      <div class="revenue-rows">
+        <div class="row segment">
+          <span class="label">Petrochemical</span>
+          <span class="amount">₹30,000 Cr.</span>
+        </div>
+        <div class="row segment">
+          <span class="label">Jio</span>
+          <span class="amount">+ ₹20,000 Cr.</span>
+        </div>
+        <div class="row segment">
+          <span class="label">Reliance Retail</span>
+          <span class="amount">+ ₹20,000 Cr.</span>
+        </div>
+        <div class="row total">
+          <span class="label">Total Revenue</span>
+          <span class="amount">₹70,000 Cr.</span>
+        </div>
+        <div class="row-divider"></div>
+        <div class="row expense">
+          <span class="label">Total Expenses</span>
+          <span class="amount">– ₹50,000 Cr.</span>
+        </div>
+        <div class="row profit">
+          <span class="label">Profit Before Tax</span>
+          <span class="amount">₹20,000 Cr.</span>
+        </div>
+        <div class="row tax">
+          <span class="label">Tax (30%)</span>
+          <span class="amount">– ₹6,000 Cr.</span>
+        </div>
+        <div class="row net">
+          <span class="label">✅ Net Profit After Tax</span>
+          <span class="amount">₹14,000 Cr.</span>
+        </div>
+      </div>
+
+      <!-- Bar chart visual -->
+      <div class="bar-chart">
+        <div class="bar-item">
+          <div class="bar-label">Revenue (₹ Cr.)</div>
+          <div class="bar-track"><div class="bar-fill green" data-width="100">₹70,000</div></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Expenses (₹ Cr.)</div>
+          <div class="bar-track"><div class="bar-fill red" data-width="71">₹50,000</div></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Profit Before Tax</div>
+          <div class="bar-track"><div class="bar-fill gold" data-width="29">₹20,000</div></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Net Profit After Tax</div>
+          <div class="bar-track"><div class="bar-fill net" data-width="20">₹14,000</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statement Structure -->
+  <p style="color:var(--muted); margin-bottom:20px; font-size:0.95rem; line-height:1.6;">Every income statement is structured in three parts — Revenue, Expenses, and the resulting Profit or Loss:</p>
+  <div class="structure-grid reveal">
+    <div class="struct-card rev">
+      <h4>💚 Revenue Side</h4>
+      <ul>
+        <li>Revenue from operations (core business)</li>
+        <li>Other revenue (interest, asset gains)</li>
+        <li>Break-up from notes to accounts</li>
+      </ul>
+    </div>
+    <div class="struct-card exp">
+      <h4>❤️ Expense Side</h4>
+      <ul>
+        <li>Cost of Goods Sold (COGS)</li>
+        <li>Employee benefit expenses</li>
+        <li>Finance costs (interest)</li>
+        <li>Depreciation &amp; Amortisation</li>
+        <li>Other expenses</li>
+      </ul>
+    </div>
+    <div class="struct-card pnl">
+      <h4>💛 Profit / Loss</h4>
+      <ul>
+        <li>Profit/Loss before taxes</li>
+        <li>Other comprehensive income</li>
+        <li>Tax deductions</li>
+        <li>Net Profit after tax</li>
+        <li>EPS (Earnings Per Share)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- EPS Explainer -->
+  <div class="eps-box reveal">
+    <h4>Understanding EPS — Earnings Per Share</h4>
+    <div class="eps-formula">
+      EPS &nbsp;=&nbsp;
+      <span class="frac">
+        <span class="num">Net Profit</span>
+        <span class="den">Total Shares Outstanding</span>
+      </span>
+    </div>
+    <div class="eps-result">
+      Example: ₹200 Cr. ÷ 5 Cr. shares = <strong>₹40 per share</strong>
+    </div>
+  </div>
+
+  <p class="source" style="text-align:center; margin-top:12px;">Real data reference: Godawari Power &amp; Ispat Ltd Annual Report FY21 — Net Profit after tax: ₹604 Crores</p>
+
+  <!-- BALANCE SHEET -->
+  <div style="margin-top:60px;" id="balance">
+    <div class="section-label">Section One, Continued</div>
+    <h3 style="font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.2rem); margin-bottom:28px; color:var(--charcoal);">The Balance Sheet</h3>
+
+    <div class="balance-intro reveal">
+      <p>A balance sheet lists a company's <strong>assets, liabilities, and shareholders' equity</strong> at a specific point in time — typically 31st March every year in India.</p>
+      <p style="margin-top:12px;">Unlike the income statement which covers a period, the balance sheet is a <strong>snapshot in time</strong>. Think of it like a photograph of the company's financial health on a single day.</p>
+    </div>
+
+    <div class="balance-split reveal">
+      <div class="bs-side assets">
+        <h3>Assets</h3>
+        <p class="def">A resource which a company owns and controls, with the ability to generate future economic benefit.</p>
+        <div class="bs-tags">
+          <span class="bs-tag">Cash</span>
+          <span class="bs-tag">Land</span>
+          <span class="bs-tag">Machinery</span>
+          <span class="bs-tag">Automobiles</span>
+          <span class="bs-tag">Inventory</span>
+          <span class="bs-tag">Short-term Investments</span>
+          <span class="bs-tag">Goodwill</span>
+        </div>
+      </div>
+      <div class="bs-side liabilities">
+        <h3>Liabilities</h3>
+        <p class="def">An obligation which a company owes and will have to transfer economic benefit to some external party.</p>
+        <div class="bs-tags">
+          <span class="bs-tag">Bank Loans</span>
+          <span class="bs-tag">Trade Payables</span>
+          <span class="bs-tag">Borrowings</span>
+          <span class="bs-tag">Provisions</span>
+          <span class="bs-tag">Loans from Suppliers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="equal-badge reveal">
+      <span>Total Assets</span> &nbsp;=&nbsp; <span>Total Liabilities + Equity</span>
+      &nbsp;&nbsp;·&nbsp;&nbsp; Both sides MUST balance — always.
+    </div>
+
+    <div class="bs-structure reveal">
+      <div class="bs-block lt-assets">
+        <div class="bs-block-title">📦 Long-Term Assets</div>
+        <ul>
+          <li>Fixed Assets &amp; work in progress</li>
+          <li>Long-term Investments</li>
+          <li>Intangible assets</li>
+          <li>Goodwill</li>
+        </ul>
+      </div>
+      <div class="bs-block st-assets">
+        <div class="bs-block-title">⚡ Short-Term Assets</div>
+        <ul>
+          <li>Inventory</li>
+          <li>Account Receivables</li>
+          <li>Cash &amp; Cash Equivalents</li>
+          <li>Short-term Investments</li>
+          <li>Other current assets</li>
+        </ul>
+      </div>
+      <div class="bs-block equity-block">
+        <div class="bs-block-title">👥 Equity</div>
+        <ul>
+          <li>Shareholder Capital</li>
+          <li>Retained Earnings</li>
+          <li>Reserves &amp; Surplus</li>
+          <li>Profit/Loss after taxes</li>
+        </ul>
+      </div>
+      <div class="bs-block lt-liab">
+        <div class="bs-block-title">🔴 Long-Term Liabilities</div>
+        <ul>
+          <li>Long-term Borrowings</li>
+          <li>Deferred Tax Liabilities</li>
+          <li>Provisions</li>
+          <li>Other long-term liabilities</li>
+        </ul>
+      </div>
+      <div class="bs-block st-liab">
+        <div class="bs-block-title">🟣 Short-Term Liabilities</div>
+        <ul>
+          <li>Accounts Payable</li>
+          <li>Short-term Borrowings</li>
+          <li>Other short-term liabilities</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Godawari Real Example -->
+    <div class="real-example reveal">
+      <h4>📌 Real Example — Godawari Power &amp; Ispat Ltd (FY 2020-21)</h4>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-val">₹3,473 Cr.</div>
+          <div class="stat-label">Total Assets</div>
+          <div class="stat-note">Balance Sheet Total</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">₹1,919 Cr.</div>
+          <div class="stat-label">Fixed Assets</div>
+          <div class="stat-note">~60% of total assets</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">₹273 Cr.</div>
+          <div class="stat-label">Investments</div>
+          <div class="stat-note">Financial investments</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">₹956 Cr.</div>
+          <div class="stat-label">Non-Current Liabilities</div>
+          <div class="stat-note">Primarily loan-financed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">₹771 Cr.</div>
+          <div class="stat-label">Long-term Loan</div>
+          <div class="stat-note">Primary debt financing</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">₹81 Cr.</div>
+          <div class="stat-label">Short-term Borrowings</div>
+          <div class="stat-note">Current liabilities</div>
+        </div>
+      </div>
+      <ul class="bullet-list">
+        <li>Long-term assets (property &amp; equipment), inventory, and trade receivables make up the majority of assets.</li>
+        <li>Non-current liabilities of ₹956 Cr. are primarily financed by a loan of ₹771 Cr.</li>
+        <li>Equity from shareholders' capital makes up the remaining amount.</li>
+      </ul>
+      <p class="source" style="color:rgba(255,255,255,0.35); margin-top:12px;">Source: Godawari Power &amp; Ispat Ltd Annual Report FY21</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CASH FLOW STATEMENT -->
+<section class="section" id="cashflow">
+  <div class="section-header">
+    <div class="section-num">4.2</div>
+    <div>
+      <div class="section-label">Section Two</div>
+      <h2 class="section-title" style="margin-bottom:0">Cash Flow<br>Statement</h2>
+    </div>
+  </div>
+
+  <div class="cashflow-intro reveal">
+    <p>The cash flow statement is a list of all <strong>actual cash inflows and outflows</strong> for the business from April 1st to March 31st (the accounting year). It is fundamentally different from the income statement.</p>
+    <div class="credit-example">
+      <strong>Key Distinction:</strong> Imagine your company sold goods worth ₹10 Crores on 3-month credit. The income statement will record this as ₹10 Cr. in sales immediately. But since no cash has changed hands yet — <strong>it will NOT appear in the cash flow statement.</strong> The cash flow only moves when money actually moves.
+    </div>
+  </div>
+
+  <!-- Components -->
+  <div class="cf-components reveal">
+    <div class="cf-card">
+      <div class="cf-card-header">⚙️ Cash Flow from Operations</div>
+      <div class="cf-card-body">
+        <ul>
+          <li>All cash from day-to-day business activity</li>
+          <li>Working Capital Changes</li>
+          <li>Direct taxes paid</li>
+          <li>Net cash flow from/used in operating activities</li>
+          <li><em>Example: Electricity sales receipts, expense payments</em></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cf-card">
+      <div class="cf-card-header">📈 Cash Flow from Investing</div>
+      <div class="cf-card-body">
+        <ul>
+          <li>Purchase and sale of fixed assets</li>
+          <li>Purchase and sale of financial assets</li>
+          <li>Interest received on investments</li>
+          <li><em>Any long-term asset purchase = investing activity</em></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cf-card">
+      <div class="cf-card-header">🏦 Cash Flow from Financing</div>
+      <div class="cf-card-body">
+        <ul>
+          <li>Equity issued or bought back</li>
+          <li>Proceeds from new debt issuance</li>
+          <li>Capital used for debt repayment</li>
+          <li>Interest / Dividends paid</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cf-card">
+      <div class="cf-card-header">📊 Net Cash Flow Change</div>
+      <div class="cf-card-body">
+        <ul>
+          <li>Sum of all three components above</li>
+          <li>Added to previous year's cash balance</li>
+          <li>Gives current year-end cash position</li>
+          <li>Cash and cash equivalents at year end</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inflow / Outflow -->
+  <div class="io-split reveal">
+    <div class="io-box inflow">
+      <div class="io-badge">↓ INFLOW</div>
+      <h4>Cash Inflow</h4>
+      <p>Includes all cash received through sales, advance payments, and other sources. Debt financing by the company is also counted as cash inflow. Examples: Raising capital, selling machines.</p>
+    </div>
+    <div class="io-box outflow">
+      <div class="io-badge">↑ OUTFLOW</div>
+      <h4>Cash Outflow</h4>
+      <p>Includes dividends paid and expenses incurred by the company, or when money leaves the company due to any other reason — purchasing assets, repaying loans, etc.</p>
+    </div>
+  </div>
+
+  <!-- Net CF Calculation Example -->
+  <div class="net-cf-box reveal">
+    <h4>How Net Cash Position is Calculated</h4>
+    <div class="cf-calc">
+      <div class="cf-row neg">
+        <span>Net Cash Flow (Current Year)</span>
+        <span class="cf-val">– ₹60 Cr.</span>
+      </div>
+      <div class="cf-row pos">
+        <span>Cash Balance from Previous Year</span>
+        <span class="cf-val">+ ₹200 Cr.</span>
+      </div>
+      <div class="cf-row result">
+        <span>Cash on Hand (Year End)</span>
+        <span class="cf-val">₹140 Cr.</span>
+      </div>
+    </div>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin-top:20px; line-height:1.6;">This is essentially how a cash flow statement is constructed. It tells us how management is using cash, and places a lot of emphasis on how cash is being utilized within the company.</p>
+  </div>
+
+  <!-- Godawari Cash Flow Real Data -->
+  <div class="cf-real reveal">
+    <h4>📌 Real Example — Godawari Power &amp; Ispat Ltd Cash Flow (FY 2020-21)</h4>
+    <div class="cf-real-grid">
+      <div class="cf-real-item ops">
+        <div class="cf-ri-label">Operating Activities</div>
+        <div class="cf-ri-val">+ ₹968 Cr.</div>
+        <div class="cf-ri-note">From steel &amp; goods sales. Direct taxes paid: ₹146 Cr.</div>
+      </div>
+      <div class="cf-real-item inv">
+        <div class="cf-ri-label">Investing Activities</div>
+        <div class="cf-ri-val">– ₹51 Cr.</div>
+        <div class="cf-ri-note">Property, plant &amp; equipment. ₹25 Cr. invested in bank deposits.</div>
+      </div>
+      <div class="cf-real-item fin">
+        <div class="cf-ri-label">Financing Activities</div>
+        <div class="cf-ri-val">– ₹900 Cr.</div>
+        <div class="cf-ri-note">₹652 Cr. on long-term debt repayment. ₹153 Cr. on interest payments.</div>
+      </div>
+    </div>
+    <p style="margin-top:20px; color:var(--muted); font-size:0.88rem; line-height:1.6;">
+      The company had a steady cash flow with limited investment spending. ₹6 Cr. remaining after all expenses, ₹8 Cr. left at year end. Analyzing cash flows over 3–4 years gives a clear picture of how a company generates and consumes cash.
+    </p>
+    <p class="source">Source: Godawari Power &amp; Ispat Ltd Annual Report FY21</p>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="conclusion">
+  <div class="conclusion-inner">
+    <h2>Three Statements,<br><span>One Story</span></h2>
+    <p>We've now covered all three core financial statements that every stock investor must understand. Together, they paint a complete picture of a company's financial health.</p>
+    <p>There is also a fourth statement — the <strong style="color:var(--gold)">Statement of Changes in Equity</strong> — which reveals if the company has issued or repurchased any equity, or altered its ownership structure.</p>
+    <div class="highlight">
+      Income Statement → What did the company earn? <br>
+      Balance Sheet → What does it own &amp; owe right now?<br>
+      Cash Flow → How is it actually managing its cash?
+    </div>
+    <p style="margin-top:28px; font-size:0.9rem;">At first, these statements may feel overwhelming. But with practice, finding and analyzing information becomes intuitive. Now go read as many annual reports as you can!</p>
+  </div>
+</section>
+
+<script>
+  // Navbar visibility
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('visible', window.scrollY > 80);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Animate bars if inside
+        e.target.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Also animate bars not inside reveal
+  const allBars = document.querySelectorAll('.bar-fill[data-width]');
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => { e.target.style.width = e.target.dataset.width + '%'; }, 300);
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  allBars.forEach(b => barObserver.observe(b));
+</script>
+</body>
+</html>
