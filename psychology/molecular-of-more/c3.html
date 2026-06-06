@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Molecule of More</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0c0a;
+    --cream: #f5f0e8;
+    --warm-white: #faf7f2;
+    --dopamine: #c8411a;
+    --dopamine-pale: #f0d5cc;
+    --near: #2a5c45;
+    --near-pale: #c8ddd6;
+    --far: #1a2f5c;
+    --far-pale: #c8d0dd;
+    --gold: #b8922a;
+    --muted: #7a7268;
+    --rule: #c8c0b0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(200,65,26,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(26,47,92,0.15) 0%, transparent 60%);
+  }
+
+  .brain-diagram {
+    position: absolute;
+    right: -60px; top: 50%;
+    transform: translateY(-50%);
+    width: min(520px, 55vw);
+    opacity: 0.07;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(3rem, 8vw, 7rem) clamp(2rem, 8vw, 8rem);
+    position: relative; z-index: 1;
+  }
+
+  .chapter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--dopamine);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 9vw, 9rem);
+    line-height: 0.95;
+    color: var(--cream);
+    font-weight: 900;
+    max-width: 700px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.45s forwards;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--dopamine);
+  }
+
+  .hero-sub {
+    margin-top: 2.5rem;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: #9a9086;
+    max-width: 420px;
+    line-height: 1.6;
+    font-weight: 300;
+    font-style: italic;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.7s forwards;
+  }
+
+  .scroll-hint {
+    padding: 2rem clamp(2rem, 8vw, 8rem);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.1s forwards;
+    position: relative; z-index: 1;
+  }
+
+  .scroll-line {
+    width: 48px; height: 1px;
+    background: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--dopamine);
+    transform: translateX(-100%);
+    animation: slideRight 1.8s 1.5s infinite;
+  }
+
+  .scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: clamp(5rem, 10vw, 9rem) clamp(2rem, 8vw, 8rem);
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-number::after {
+    content: '';
+    flex: 0 0 40px;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+
+  p {
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    line-height: 1.8;
+    color: #2a2520;
+    max-width: 620px;
+  }
+
+  p + p { margin-top: 1.2em; }
+
+  /* ─── SPACE DIAGRAM ─── */
+  #space {
+    background: var(--cream);
+  }
+
+  .space-diagram {
+    margin: 4rem 0;
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 0;
+    max-width: 820px;
+    position: relative;
+  }
+
+  .space-card {
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .space-card.near {
+    background: var(--near);
+    color: var(--cream);
+  }
+
+  .space-card.far {
+    background: var(--far);
+    color: var(--cream);
+  }
+
+  .space-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--ink);
+    position: relative;
+  }
+
+  .arm-icon {
+    font-size: 1.4rem;
+    opacity: 0.6;
+  }
+
+  .vs-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: #666;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .space-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 1rem;
+  }
+
+  .space-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    line-height: 1.1;
+  }
+
+  .space-desc {
+    font-size: 1rem;
+    line-height: 1.65;
+    opacity: 0.85;
+    max-width: none;
+  }
+
+  .space-chemical {
+    margin-top: 1.8rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .chemical-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .chemical-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  /* ─── DOPAMINE SECTION ─── */
+  #dopamine {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  #dopamine h2 { color: var(--cream); }
+  #dopamine p { color: #c8c0b0; }
+
+  .dopamine-def {
+    margin: 3.5rem 0;
+    padding: 2.5rem 3rem;
+    border-left: 3px solid var(--dopamine);
+    background: rgba(200,65,26,0.06);
+    max-width: 700px;
+  }
+
+  .dopamine-def .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--cream);
+  }
+
+  .dopamine-def .quote-attr {
+    margin-top: 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--dopamine);
+    text-transform: uppercase;
+  }
+
+  .molecule-visual {
+    margin: 4rem 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    max-width: 680px;
+  }
+
+  .molecule-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--dopamine) 0%, rgba(200,65,26,0.1) 100%);
+    flex: 1;
+  }
+
+  .molecule-node {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--dopamine);
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(200,65,26,0.6);
+  }
+
+  /* ─── EXAMPLES: GLAMOUR ─── */
+  #glamour {
+    background: var(--warm-white);
+  }
+
+  .examples-grid {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+    max-width: 860px;
+    background: var(--rule);
+  }
+
+  .example-card {
+    background: var(--warm-white);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .example-card:hover { background: var(--dopamine-pale); }
+
+  .example-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    display: block;
+    opacity: 0.8;
+  }
+
+  .example-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .example-illusion {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 0.7rem;
+  }
+
+  .example-reality {
+    font-size: 0.88rem;
+    color: var(--dopamine);
+    line-height: 1.6;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  .reality-label {
+    display: inline-block;
+    background: var(--dopamine);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    margin-bottom: 0.4rem;
+  }
+
+  blockquote {
+    margin: 3.5rem 0;
+    padding: 0 0 0 2rem;
+    border-left: 2px solid var(--gold);
+    max-width: 580px;
+  }
+
+  blockquote p {
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  blockquote cite {
+    display: block;
+    margin-top: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-style: normal;
+  }
+
+  /* ─── STORY SECTION ─── */
+  #story {
+    background: var(--cream);
+  }
+
+  .story-card {
+    max-width: 640px;
+    background: white;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    border: 1px solid var(--rule);
+    box-shadow: 8px 8px 0 var(--ink);
+    position: relative;
+  }
+
+  .story-card::before {
+    content: '"';
+    position: absolute;
+    top: -0.5rem;
+    left: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: var(--dopamine);
+    opacity: 0.15;
+  }
+
+  .story-text {
+    font-size: clamp(1.05rem, 1.8vw, 1.15rem);
+    line-height: 1.85;
+    color: #2a2520;
+    font-style: italic;
+  }
+
+  .story-text strong { font-style: normal; font-weight: 600; }
+
+  .story-note {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  /* ─── INSIGHT: THE SHIFT ─── */
+  #shift {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  #shift h2 { color: var(--cream); }
+
+  .shift-diagram {
+    margin: 4rem 0;
+    max-width: 700px;
+    position: relative;
+  }
+
+  .shift-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2px;
+  }
+
+  .shift-from, .shift-to {
+    padding: 1.5rem 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    font-style: italic;
+  }
+
+  .shift-from {
+    background: rgba(200,65,26,0.12);
+    color: #d4a090;
+    text-align: right;
+  }
+
+  .shift-to {
+    background: rgba(42,92,69,0.18);
+    color: #90b4a6;
+  }
+
+  .shift-arrow {
+    background: rgba(255,255,255,0.04);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  .shift-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    opacity: 0.5;
+  }
+
+  #shift p { color: #a09888; max-width: 580px; margin-top: 1.5rem; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    padding: 4rem clamp(2rem, 8vw, 8rem);
+    border-top: 1px solid #222;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .footer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cream);
+  }
+
+  .footer-title span { color: var(--dopamine); font-style: italic; }
+
+  .footer-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: #555;
+    text-transform: uppercase;
+    line-height: 2;
+    text-align: right;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideRight {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 640px) {
+    .space-diagram { grid-template-columns: 1fr; }
+    .space-divider { display: none; }
+    .shift-row { grid-template-columns: 1fr 40px 1fr; }
+    .shift-from, .shift-to { padding: 1.2rem 1rem; font-size: 0.9rem; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .story-card { box-shadow: 4px 4px 0 var(--ink); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ░░ HERO ░░ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <svg class="brain-diagram" viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="200" cy="160" rx="160" ry="130" stroke="white" stroke-width="1.2" fill="none"/>
+    <path d="M90 140 Q140 100 180 130 Q220 160 260 120 Q300 80 340 110" stroke="white" stroke-width="1" fill="none"/>
+    <path d="M80 180 Q130 150 170 170 Q210 190 250 155 Q290 120 330 145" stroke="white" stroke-width="1" fill="none"/>
+    <path d="M100 220 Q155 195 195 210 Q235 225 275 200 Q310 175 340 190" stroke="white" stroke-width="1" fill="none"/>
+    <line x1="200" y1="50" x2="200" y2="270" stroke="white" stroke-width="0.7" stroke-dasharray="5 4"/>
+    <text x="120" y="310" fill="white" font-size="9" font-family="monospace" opacity="0.5">PERIPERSONAL</text>
+    <text x="222" y="310" fill="white" font-size="9" font-family="monospace" opacity="0.5">EXTRAPERSONAL</text>
+  </svg>
+
+  <div class="hero-content">
+    <div class="chapter-label">Neuroscience of Desire &nbsp;·&nbsp; J.D. Pettigrew &nbsp;·&nbsp; Dopamine</div>
+    <h1>The Molecule<br>of <em>More</em></h1>
+    <p class="hero-sub">One brain. Two worlds. The chemical that fuels every dream, every love, every obsession.</p>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll to explore</span>
+  </div>
+</section>
+
+
+<!-- ░░ TWO SPACES ░░ -->
+<section id="space">
+  <div class="section-number">01 &nbsp;—&nbsp; Neuroscience</div>
+  <h2>One Brain,<br>Two Worlds</h2>
+  <p class="reveal">
+    Neuroscientist John Douglas Pettigrew discovered that the brain divides all of reality into two territories — and uses different chemicals to navigate each one.
+  </p>
+
+  <div class="space-diagram reveal">
+    <div class="space-card near">
+      <div class="space-tag">Zone 1</div>
+      <div class="space-title">Peripersonal Space</div>
+      <p class="space-desc">Within arm's reach. What you can touch, taste, hold, and squeeze right now. The world of the <em>actual</em> — pleasure, pain, reality.</p>
+      <div class="space-chemical">
+        <div class="chemical-dot" style="background: var(--near-pale);"></div>
+        <span class="chemical-name">Here-and-now chemicals → Serotonin, Oxytocin, Endorphins</span>
+      </div>
+    </div>
+
+    <div class="space-divider">
+      <span class="vs-label">vs</span>
+    </div>
+
+    <div class="space-card far">
+      <div class="space-tag">Zone 2</div>
+      <div class="space-title">Extrapersonal Space</div>
+      <p class="space-desc">Everything beyond your reach. Three feet or three million miles away. The realm of <em>possibility</em> — desire, ambition, imagination.</p>
+      <div class="space-chemical">
+        <div class="chemical-dot" style="background: var(--dopamine);"></div>
+        <span class="chemical-name">Future-oriented molecule → <strong>Dopamine</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal" style="max-width:580px;">
+    Distance is linked to time. Anything beyond your reach can only be <em>obtained in the future</em> — which means it requires effort, planning, and anticipation. That gap between wanting and having is precisely where dopamine lives.
+  </p>
+</section>
+
+
+<!-- ░░ DOPAMINE ░░ -->
+<section id="dopamine">
+  <div class="section-number" style="color: #554d44;">02 &nbsp;—&nbsp; The Chemical</div>
+  <h2>Dopamine</h2>
+
+  <div class="dopamine-def reveal">
+    <div class="quote-text">"Dopamine has a very specific job: maximizing resources that will be available to us in the future — the pursuit of better things."</div>
+    <div class="quote-attr">— The Molecule of More</div>
+  </div>
+
+  <p class="reveal">
+    Dopamine doesn't reward. It <em>anticipates</em>. It fires hardest before you get what you want — fading the moment you receive it. It is the engine of wanting, not of having.
+  </p>
+  <p class="reveal">
+    Evolution wired us this way: food you <em>don't yet have</em> matters far more than food already in your hands. Chasing it could save your life. Sitting still with it cannot.
+  </p>
+
+  <div class="molecule-visual reveal">
+    <div class="molecule-node"></div>
+    <div class="molecule-bar"></div>
+    <div class="molecule-node" style="width:8px;height:8px;opacity:0.6;"></div>
+    <div class="molecule-bar" style="background:linear-gradient(90deg,rgba(200,65,26,0.4),rgba(200,65,26,0.05));"></div>
+    <div class="molecule-node" style="width:5px;height:5px;opacity:0.3;"></div>
+  </div>
+
+  <p class="reveal" style="font-style:italic;">The signal grows strong in pursuit. It dissolves on arrival.</p>
+</section>
+
+
+<!-- ░░ GLAMOUR ░░ -->
+<section id="glamour">
+  <div class="section-number">03 &nbsp;—&nbsp; The Illusion</div>
+  <h2>Glamour<br>Is a Lie</h2>
+
+  <blockquote class="reveal">
+    <p>Glamour is a beautiful illusion that promises to transcend ordinary life and make the ideal real. It depends on a special combination of mystery and grace. Too much information breaks the spell.</p>
+    <cite>— Virginia Postrel</cite>
+  </blockquote>
+
+  <p class="reveal">
+    Glamour is dopamine misfiring. It makes you believe the extrapersonal is more beautiful than it can ever be once it becomes peripersonal. The farther away, the more perfect. The closer you get, the more ordinary.
+  </p>
+
+  <div class="examples-grid reveal">
+
+    <div class="example-card">
+      <span class="example-icon">✈️</span>
+      <div class="example-title">Air Travel</div>
+      <p class="example-illusion">Soaring through clouds to exotic destinations — freedom, elegance, escape.</p>
+      <div class="reality-label">Reality</div>
+      <p class="example-reality">A rush-hour bus across town: cramped, exhausting, unpleasant.</p>
+    </div>
+
+    <div class="example-card">
+      <span class="example-icon">🎬</span>
+      <div class="example-title">Hollywood</div>
+      <p class="example-illusion">Parties by the pool, beautiful people, effortless fame and beauty.</p>
+      <div class="reality-label">Reality</div>
+      <p class="example-reality">14-hour days under hot lights, coercion, performance-enhancing drugs.</p>
+    </div>
+
+    <div class="example-card">
+      <span class="example-icon">⛰️</span>
+      <div class="example-title">The Mountain</div>
+      <p class="example-illusion">Majestic, softened by miles of air — the promise of conquest and wonder.</p>
+      <div class="reality-label">Reality</div>
+      <p class="example-reality">You're surrounded by trees. The beauty is always in the valley below.</p>
+    </div>
+
+  </div>
+
+  <p class="reveal" style="margin-top: 2.5rem; font-style: italic; color: var(--muted);">
+    Only things out of reach can be glamorous. Only things that remain unreal.
+  </p>
+</section>
+
+
+<!-- ░░ STORY ░░ -->
+<section id="story">
+  <div class="section-number">04 &nbsp;—&nbsp; A Story</div>
+  <h2>Samantha<br>&amp; Demarco</h2>
+  <p class="reveal" style="margin-bottom: 3rem;">
+    The theory made human. Samantha hadn't felt it in months — that electric dopamine surge. Then, unexpectedly, an old flame appeared.
+  </p>
+
+  <div class="story-card reveal">
+    <p class="story-text">
+      Samantha ran into Demarco — her last serious boyfriend before Shawn. They hadn't seen each other in years. She found him as funny and smart as ever, and <strong>in minutes she was starry-eyed again.</strong> Here was something she hadn't felt in a long time: the surge of excitement and the sense of possibility with a man who seemed full of fresh things to discover.
+      <br><br>
+      The first thing he shared was how excited he was to be <strong>engaged</strong>. His fiancée was "the one."
+      <br><br>
+      After he left, Samantha decided this was a good day to drink. She loved Shawn, she really did — or did she? They had been in a rut for most of a year. <strong>That feeling with Demarco was what she wanted.</strong> She had once had it with Shawn, but not anymore.
+    </p>
+    <div class="story-note">
+      The surge wasn't about Demarco. It was about distance. He was extrapersonal — unavailable, mysterious, full of possibility. Shawn was peripersonal. Real. Present. And dopamine had moved on.
+    </div>
+  </div>
+</section>
+
+
+<!-- ░░ THE SHIFT ░░ -->
+<section id="shift">
+  <div class="section-number" style="color: #554d44;">05 &nbsp;—&nbsp; The Challenge</div>
+  <h2>The Shift<br>Love Must Make</h2>
+
+  <div class="shift-diagram reveal">
+
+    <div class="shift-row">
+      <div class="shift-from">
+        <div class="shift-label">Dopamine phase</div>
+        Pursuit
+      </div>
+      <div class="shift-arrow">→</div>
+      <div class="shift-to">
+        <div class="shift-label">Here-and-now</div>
+        Possession
+      </div>
+    </div>
+
+    <div class="shift-row">
+      <div class="shift-from">
+        <div class="shift-label">Dopamine phase</div>
+        Anticipation
+      </div>
+      <div class="shift-arrow">→</div>
+      <div class="shift-to">
+        <div class="shift-label">Here-and-now</div>
+        Tending
+      </div>
+    </div>
+
+    <div class="shift-row">
+      <div class="shift-from">
+        <div class="shift-label">Dopamine phase</div>
+        Discovery
+      </div>
+      <div class="shift-arrow">→</div>
+      <div class="shift-to">
+        <div class="shift-label">Here-and-now</div>
+        Knowing
+      </div>
+    </div>
+
+    <div class="shift-row">
+      <div class="shift-from">
+        <div class="shift-label">Dopamine phase</div>
+        Romance
+      </div>
+      <div class="shift-arrow">→</div>
+      <div class="shift-to">
+        <div class="shift-label">Here-and-now</div>
+        Commitment
+      </div>
+    </div>
+
+  </div>
+
+  <p class="reveal">
+    Finding love and making love stay require vastly different skills. The dopamine thrill of romance — of wanting what you don't have — will always fade. The question is what you choose to build in its place.
+  </p>
+  <p class="reveal">
+    Many people make the transition. They outsmart the seduction of dopamine. But it requires understanding what's happening — and choosing presence over pursuit.
+  </p>
+</section>
+
+
+<!-- ░░ FOOTER ░░ -->
+<footer>
+  <div>
+    <div class="footer-title">The Molecule of <span>More</span></div>
+    <div style="margin-top:0.6rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:#444; text-transform:uppercase;">
+      Daniel Z. Lieberman &amp; Michael E. Long
+    </div>
+  </div>
+  <div class="footer-meta">
+    One Brain · Two Worlds<br>
+    Peripersonal · Extrapersonal<br>
+    Dopamine · Desire · Love
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
