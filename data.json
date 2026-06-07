@@ -3,7 +3,13 @@
     "sem1": {
       "engineering mathematics": {
         "matrix and determinants ": {
-          "matrix & types": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/maths/matrix/matrix&types.html\"> Matrix & Types </a>"
+          "Matrix and types": "",
+          "Algebra of Matrices (addition, \rsubtraction, scalar multiplication\rand multiplication)": "",
+          "Evaluation of determinants of a \rsquare matrix of order 2 and 3. \rSingular matrices": "",
+          "Cramer’s rule for solving system \rof linear equations involving 2\rand 3 variables": "",
+          "Adjoint and Inverse of the non-\rsingular matrices of order 2 and 3": "",
+          "Characteristic equation and Eigen \rvalues of a square matrix of order 2": "",
+          "Unit 1": "https://microintel.github.io/missmonk/diploma/sem1/maths/u1.html"
         }
       },
       "Fundamentals of Computer": {
