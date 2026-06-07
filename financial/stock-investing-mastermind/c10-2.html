@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Investing — Company Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --accent: #f5a623;
+    --accent2: #e8754a;
+    --text: #f0ece4;
+    --muted: #7a7570;
+    --green: #4ade80;
+    --red: #f87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem; height: 56px;
+  }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-right: auto;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 0; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 1rem;
+    height: 56px;
+    display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding: 88px 0 60px; }
+  .page.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 560px; font-size: 1rem; }
+
+  /* SECTION TITLES */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .section-intro { color: var(--muted); margin-bottom: 2rem; max-width: 600px; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-label {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .card-label .icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .card-label strong { font-size: 1rem; font-weight: 600; }
+  .card p { color: #b0ada8; font-size: 0.92rem; }
+
+  /* EXAMPLE BOX */
+  .example {
+    background: #1a1a1a;
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+    color: #c8c4bc;
+  }
+  .example strong { color: var(--accent2); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 0.3rem; }
+
+  /* QUOTE */
+  .quote {
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 1rem;
+    position: relative;
+  }
+  .quote::before { content: '"'; font-size: 3rem; line-height: 0; position: absolute; top: 1.6rem; left: 1rem; opacity: 0.2; font-family: 'Playfair Display', serif; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* COMPARE TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 1rem 0; }
+  .compare-table th {
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    color: #c0bdb8;
+    vertical-align: top;
+  }
+  .compare-table tr:hover td { background: var(--card); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(245,166,35,0.15); color: var(--accent); }
+
+  /* BAR CHART */
+  .bar-chart { margin: 1.5rem 0; }
+  .bar-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+  .bar-label { width: 110px; font-size: 0.8rem; color: var(--muted); flex-shrink: 0; text-align: right; }
+  .bar-track { flex: 1; height: 20px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+  .bar-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    animation: growBar 1s ease forwards;
+    transform-origin: left;
+  }
+  @keyframes growBar { from { width: 0 !important; } }
+  .bar-val { width: 50px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--accent); }
+
+  /* MOAT DIAGRAM */
+  .moat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+  .moat-cell {
+    background: var(--card);
+    padding: 1.2rem;
+    transition: background 0.2s;
+  }
+  .moat-cell:hover { background: #222; }
+  .moat-cell .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--accent);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .moat-cell strong { display: block; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moat-cell p { font-size: 0.8rem; color: var(--muted); }
+
+  /* OWNERSHIP METER */
+  .ownership-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .ownership-name { width: 130px; font-size: 0.85rem; flex-shrink: 0; }
+  .ownership-track { flex: 1; height: 28px; background: var(--surface); border-radius: 6px; overflow: hidden; position: relative; }
+  .ownership-fill { height: 100%; display: flex; align-items: center; padding-left: 0.6rem; font-size: 0.75rem; font-weight: 600; color: #000; border-radius: 6px; animation: growBar 1.2s ease forwards; }
+  .ownership-fill.high { background: linear-gradient(90deg, var(--green), #22c55e); }
+  .ownership-fill.med { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .ownership-fill.low { background: linear-gradient(90deg, #555, #666); }
+
+  /* TAG CHIP */
+  .chip {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 3px;
+  }
+
+  /* STEP LIST */
+  .steps { counter-reset: steps; margin: 1rem 0; }
+  .step { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .step-num {
+    counter-increment: steps;
+    content: counter(steps);
+    width: 28px; height: 28px; flex-shrink: 0;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .step-body strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .step-body p { font-size: 0.85rem; color: var(--muted); }
+
+  /* INFO ROW */
+  .info-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.6rem; }
+  .info-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+
+  /* VERDICT */
+  .verdict {
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(232,117,74,0.08));
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  .verdict h3 { color: var(--accent); margin-bottom: 0.5rem; }
+  .verdict p { color: #c0bdb8; font-size: 0.9rem; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+  .tab-btn {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--muted); cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.7rem 1.2rem;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  /* SUMMARY PILL */
+  .summary-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">StockIQ</div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('overview',this)">Overview</a>
+    <a href="#" onclick="showPage('moat',this)">Economic Moat</a>
+    <a href="#" onclick="showPage('cost',this)">Cost Advantages</a>
+    <a href="#" onclick="showPage('distribution',this)">Distribution</a>
+    <a href="#" onclick="showPage('innovation',this)">Innovation</a>
+    <a href="#" onclick="showPage('management',this)">Management</a>
+  </div>
+</nav>
+
+<!-- OVERVIEW PAGE -->
+<div id="page-overview" class="page active">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Chapter 6.4 — 6.5</span>
+    <h1>Company <span>Research</span><br>Framework</h1>
+    <p>A practical guide to evaluating competitive advantages and management quality before investing in any stock.</p>
+  </div>
+
+  <h3>The Core Question</h3>
+  <h2>What gives a company its edge?</h2>
+  <p class="section-intro">Warren Buffett calls it the <strong style="color:var(--accent)">Economic Moat</strong> — a structural competitive advantage that protects a company from rivals, like a moat protecting a castle.</p>
+
+  <div class="moat-grid">
+    <div class="moat-cell" onclick="showPage('moat', null)" style="cursor:pointer">
+      <div class="num">01</div>
+      <strong>🏷️ Brand</strong>
+      <p>Strong recognition that drives customer loyalty and repeat purchases.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('cost', null)" style="cursor:pointer">
+      <div class="num">02</div>
+      <strong>💰 Cost Advantages</strong>
+      <p>Ability to produce cheaper than competitors via location, resources, or scale.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('distribution', null)" style="cursor:pointer">
+      <div class="num">03</div>
+      <strong>🚚 Distribution</strong>
+      <p>Wide, hard-to-replicate reach from manufacturer to end consumer.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('innovation', null)" style="cursor:pointer">
+      <div class="num">04</div>
+      <strong>💡 Product Innovation</strong>
+      <p>Unique products or services that competitors cannot easily copy.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>The One Rule</h3>
+    <p>The company you invest in must have <strong>at least one edge</strong> — Brand, Cost, Distribution, or Innovation. Without it, there's no reason for the company to lead its market over time.</p>
+  </div>
+
+  <hr class="divider">
+  <h3>How to Use This Guide</h3>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Learn each concept</strong><p>Navigate through the tabs above to understand each competitive advantage.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Study the examples</strong><p>Real Indian companies like Parachute, Jio, Balaji Wafers are used as case studies.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Evaluate management</strong><p>Use the Management tab to check ownership alignment and compensation.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Make your call</strong><p>Does the company have a moat? Does the management care? Then it's worth considering.</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- MOAT PAGE -->
+<div id="page-moat" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Competitive Advantage</span>
+    <h1>The Economic <span>Moat</span></h1>
+    <p>Why some companies dominate their markets for decades while others fade away.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('moat','brand',this)">Brand</button>
+    <button class="tab-btn" onclick="showTab('moat','why',this)">Why It Matters</button>
+    <button class="tab-btn" onclick="showTab('moat','identify',this)">How to Identify</button>
+  </div>
+
+  <div id="moat-tab-brand" class="tab-content active">
+    <h3>Brand as a Moat</h3>
+    <h2>When the brand name becomes the product</h2>
+    <p class="section-intro">A brand moat exists when customers choose your product by name, not just by category.</p>
+
+    <div class="example">
+      <strong>Parachute Example</strong>
+      Customers say <em>"Buy Parachute oil"</em> — not "Buy coconut hair oil." That's brand recall as a competitive moat. Parachute (by Marico) has trained consumers to equate their name with the entire product category.
+    </div>
+
+    <div class="card">
+      <div class="card-label"><div class="icon">🏷️</div><strong>What makes a strong brand?</strong></div>
+      <p>The brand doesn't need mass-market fame. It just needs strong recognition <em>among its target audience</em>. Apar Industries is barely known to the public — but among power companies, it's the go-to name. That's a brand moat.</p>
+    </div>
+
+    <div class="quote">A brand need not be known to the mass market but must have strong market recognition amongst its target audience.</div>
+
+    <h3 style="margin-top:1.5rem">Examples by type</h3>
+    <table class="compare-table">
+      <tr><th>Company</th><th>Category</th><th>Brand Moat Type</th></tr>
+      <tr><td>Parachute (Marico)</td><td>Coconut hair oil</td><td><span class="badge badge-green">Consumer B2C</span></td></tr>
+      <tr><td>Apar Industries</td><td>Power cables</td><td><span class="badge badge-yellow">Industrial B2B</span></td></tr>
+      <tr><td>Google</td><td>Search engines</td><td><span class="badge badge-green">Tech Platform</span></td></tr>
+    </table>
+  </div>
+
+  <div id="moat-tab-why" class="tab-content">
+    <h3>Simple English Explanation</h3>
+    <h2>Why moats protect profits</h2>
+    <p class="section-intro">Imagine you run a lemonade stand. If anyone can set up next to you tomorrow, you have no moat. But if you own the only lemon tree for miles — that's a moat.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label"><div class="icon" style="background:var(--red)">😟</div><strong>No Moat</strong></div>
+        <p>Any competitor can copy what you do. Customers switch easily. You're forced to cut prices to survive. Profits shrink over time.</p>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="icon">🏰</div><strong>Has a Moat</strong></div>
+        <p>Competitors struggle to replicate your advantage. Customers stay loyal. You can maintain pricing power. Profits hold strong.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <strong>Google's Moat — 90% Market Share</strong>
+      Google controls ~90% of the global search market. The remaining 7–8% is split among all competitors. This level of dominance is only possible because of deep competitive advantages — brand trust, data network effects, and distribution. If something like this exists, dig deeper to find the source.
+    </div>
+
+    <div class="bar-chart">
+      <h3>Search Engine Market Share</h3>
+      <div class="bar-row"><div class="bar-label">Google</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">90%</div></div>
+      <div class="bar-row"><div class="bar-label">Bing</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:linear-gradient(90deg,#4488ff,#66aaff)"></div></div><div class="bar-val">4%</div></div>
+      <div class="bar-row"><div class="bar-label">Others</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#555,#666)"></div></div><div class="bar-val">6%</div></div>
+    </div>
+
+    <div class="quote">There should be a significant difference in market share between the market leader and its followers.</div>
+  </div>
+
+  <div id="moat-tab-identify" class="tab-content">
+    <h3>Identification Checklist</h3>
+    <h2>How to spot a moat</h2>
+    <p class="section-intro">Companies won't advertise their competitive advantages. You have to find them yourself through Annual Reports and industry data.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Check market share gaps</strong><p>Is the leader's share dramatically higher than #2? That gap is the moat.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Read Annual Reports</strong><p>Look at management commentary, competitive positioning, and investor presentations.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Study Industry Reports</strong><p>Rating agencies and sector analysts often identify sources of competitive advantage.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Ask: can a rival copy this in 2 years?</strong><p>If yes, it's not a durable moat. Real moats take decades to build.</p></div></div>
+    </div>
+
+    <div class="verdict">
+      <h3>Retail Investor Approach</h3>
+      <p>Institutional analysts spend months on this. As a retail investor, spend 2 weeks — about 4 hours/week. What you lack in depth, you compensate for with portfolio diversification.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- COST PAGE -->
+<div id="page-cost" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 2</span>
+    <h1>Cost <span>Advantages</span></h1>
+    <p>When a company can make the same thing cheaper than everyone else — that's a powerful and often invisible moat.</p>
+  </div>
+
+  <h3>Core Concept</h3>
+  <div class="quote" style="margin-top:0">In a commodity market where all products are the same, the only thing that matters is price. In such an environment, cost advantage can be a huge factor.</div>
+
+  <div class="example">
+    <strong>Jio vs Airtel Example</strong>
+    Jio and Airtel sell similar telecom services. Ideally they'd charge the same. But Jio's service cost is structurally lower — so they can price below Airtel <em>and still maintain profit margins</em>. That's a cost advantage.
+  </div>
+
+  <hr class="divider">
+  <h3>Four Sources of Cost Advantage</h3>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">📍</div><strong>I. Location</strong></div>
+    <p>A factory closer to raw materials or customers saves on logistics. In cement, transporting product from point A to B is a major cost component. Companies like <strong>Ambuja Cement</strong> benefit from being near limestone deposits — cutting transport costs vs rivals.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">⛏️</div><strong>II. Resources</strong></div>
+    <p>Unique natural assets that competitors simply don't have.</p>
+    <div class="example" style="margin-top:0.8rem">
+      <strong>Mining Example</strong>
+      Company A's high-quality mines produce minerals with only 25% waste. Competitors generate 50% waste. Company A extracts twice as much value per ton — a structural advantage no amount of management skill can overcome.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">👷</div><strong>III. Labour</strong></div>
+    <p>Lower labour costs in certain geographies = lower production costs. For decades, global manufacturers produced in China specifically for this reason. A company in a low-wage region has a built-in cost edge.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">📦</div><strong>IV. Economies of Scale</strong></div>
+    <p>Bigger production volume = lower cost per unit. Large players negotiate better raw material prices and spread fixed costs over more units.</p>
+    <div style="margin-top:1rem">
+      <div class="bar-chart">
+        <h3>Cost per Unit — Scale Effect</h3>
+        <div class="bar-row"><div class="bar-label">Balaji (1000 units)</div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><div class="bar-val">₹10</div></div>
+        <div class="bar-row"><div class="bar-label">DFM (100 units)</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,var(--red),#f87171)"></div></div><div class="bar-val">₹9</div></div>
+      </div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem">⚠️ Note: DFM actually costs <em>more</em> per unit due to high fixed costs and weak vendor negotiation at smaller scale. Balaji's scale lets it manufacture cheaper and still profit more.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>The Investor Test</h3>
+    <p>The company must either have a <strong>significant cost advantage over others</strong>, or be doing something that other companies <strong>cannot easily duplicate</strong>. Both are valid; either is sufficient.</p>
+  </div>
+</div>
+</div>
+
+<!-- DISTRIBUTION PAGE -->
+<div id="page-distribution" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 3</span>
+    <h1>Distribution <span>Networks</span></h1>
+    <p>The hidden moat. Getting your product to more places than anyone else — and making it hard to replicate.</p>
+  </div>
+
+  <h3>What is Distribution?</h3>
+  <p class="section-intro">Distribution is the entire journey from factory to consumer — packaging, transport, warehousing, wholesalers, and retail shelf space. It's invisible to customers but decisive for market share.</p>
+
+  <div class="card" style="background: linear-gradient(135deg, #1c1c1c, #181818);">
+    <p style="font-size:0.85rem; color: var(--muted); margin-bottom:0.8rem">Supply Chain Flow</p>
+    <div style="display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; font-size:0.82rem;">
+      <span class="chip" style="color:var(--accent); border-color:var(--accent)">Manufacturer</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Packaging</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Transport</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Inventory</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Wholesaler</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Retailer</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">Customer</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3>Distribution = Visibility = Sales</h3>
+  <h2>More stores = More sales</h2>
+
+  <div class="bar-chart">
+    <h3>Hair Oil — Store Presence Comparison</h3>
+    <div class="bar-row"><div class="bar-label">Marico</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-val">1,00,000</div></div>
+    <div class="bar-row"><div class="bar-label">Indulekha</div><div class="bar-track"><div class="bar-fill" style="width:35%; background:linear-gradient(90deg,#4488ff,#66aaff)"></div></div><div class="bar-val">35,000</div></div>
+    <div class="bar-row"><div class="bar-label">Trichup</div><div class="bar-track"><div class="bar-fill" style="width:2%; background:linear-gradient(90deg,#555,#666)"></div></div><div class="bar-val">2,000</div></div>
+  </div>
+
+  <div class="example">
+    <strong>Why This Matters</strong>
+    Marico's Parachute is on 100,000 shelves. A customer in a small town who's never seen an ad still buys Parachute simply because it's the only option available. Visibility creates sales — and building that visibility took decades of investment.
+  </div>
+
+  <hr class="divider">
+  <h3>Why Distribution is Hard to Copy</h3>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label"><div class="icon">⏳</div><strong>Time</strong></div>
+      <p>Building a nationwide distribution network takes years of relationship-building with wholesalers and retailers across thousands of localities.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🤝</div><strong>Incentives</strong></div>
+      <p>Retailers only stock what sells. If a brand loses consumer pull, retailers switch to competitors instantly. Distribution only persists if products perform.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>Distribution Risks</h3>
+    <div class="info-row"><div class="info-dot"></div><p>If product quality drops, brand image suffers, and distribution becomes obsolete fast</p></div>
+    <div class="info-row"><div class="info-dot"></div><p>If retailer/wholesaler incentives aren't competitive, they'll stop carrying the product</p></div>
+    <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p style="color:var(--green)">If sales rise, distribution channels can expand rapidly — a self-reinforcing advantage</p></div>
+  </div>
+</div>
+</div>
+
+<!-- INNOVATION PAGE -->
+<div id="page-innovation" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 4</span>
+    <h1>Product <span>Innovation</span></h1>
+    <p>Products so unique and valuable that competitors can't match them, and customers can't leave.</p>
+  </div>
+
+  <h3>Definition</h3>
+  <h2>What makes a product truly innovative?</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label"><div class="icon">✨</div><strong>Unique</strong></div>
+      <p>No other product does what yours does. Customers can't find an equivalent alternative.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🏆</div><strong>No Competition</strong></div>
+      <p>Competitors either don't exist yet or can't replicate the core offering.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💎</div><strong>Customer Value</strong></div>
+      <p>Solves a real problem so well that users form strong habits around the product.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🔄</div><strong>Continuous Innovation</strong></div>
+      <p>The product keeps evolving, raising the bar for any potential entrants.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3>Deep Dive Example</h3>
+  <h2>The Facebook / Meta Case Study</h2>
+
+  <div class="example">
+    <strong>The Network Effect Moat</strong>
+    Facebook launched as a unique platform for connecting with friends online. WhatsApp has a competitor in Telegram — but most people circle back to WhatsApp because their friends aren't on Telegram. The product's value grows with every new user. That's a network effect moat built on top of product innovation.
+  </div>
+
+  <table class="compare-table">
+    <tr><th>Platform</th><th>Moat Type</th><th>Can You Switch?</th><th>Verdict</th></tr>
+    <tr><td>Facebook/Instagram</td><td>Network Effect + Distribution</td><td>Technically yes</td><td><span class="badge badge-red">Hard to leave</span></td></tr>
+    <tr><td>WhatsApp</td><td>Network Effect</td><td>Yes — but friends aren't there</td><td><span class="badge badge-red">Hard to leave</span></td></tr>
+    <tr><td>Telegram</td><td>Features only</td><td>Easy</td><td><span class="badge badge-yellow">Competing</span></td></tr>
+    <tr><td>Generic App</td><td>None</td><td>Instantly</td><td><span class="badge badge-green">No moat</span></td></tr>
+  </table>
+
+  <div class="quote">Facebook when it started was one of its kind. Innovative products and companies stay ahead of the market.</div>
+
+  <div class="verdict">
+    <h3>The Investor Takeaway</h3>
+    <p>We want our company to have at least <strong>one edge</strong> — Brand, Cost, Distribution, or Innovation. Innovation moats often compound over time because continuous R&D raises the barrier to entry higher and higher each year.</p>
+    <div class="summary-row">
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Unique product</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ No easy substitute</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Network effects</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Continuous R&D</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MANAGEMENT PAGE -->
+<div id="page-management" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Section 6.5</span>
+    <h1>Management <span>Background</span></h1>
+    <p>Even a great business can be destroyed by bad management. Here's how to evaluate the people running the company.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('mgmt','importance',this)">Why It Matters</button>
+    <button class="tab-btn" onclick="showTab('mgmt','ownership',this)">Ownership</button>
+    <button class="tab-btn" onclick="showTab('mgmt','compensation',this)">Compensation</button>
+    <button class="tab-btn" onclick="showTab('mgmt','checklist',this)">Checklist</button>
+  </div>
+
+  <div id="mgmt-tab-importance" class="tab-content active">
+    <h3>Why Management Matters</h3>
+    <h2>The past and future of the company</h2>
+    <p class="section-intro">Every result you see on a balance sheet — every decision, every acquisition, every capital allocation — was made by the management team (CEO, CFO, CTO, MD etc).</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label"><div class="icon">📜</div><strong>Past</strong></div>
+        <p>All past decisions and work done determine the company's current position. History reveals how management behaves under pressure.</p>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="icon">🔭</div><strong>Future</strong></div>
+        <p>The company's future performance depends entirely on this same team. Good management compounds value; bad management destroys it.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <h3>What Institutional Investors Assess</h3>
+    <div class="card">
+      <div class="card-label"><div class="icon">🎯</div><strong>Ability</strong></div>
+      <p>Are they competent? How are they allocating capital? Are they achieving stated goals? Are they using generated cash wisely?</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">👁️</div><strong>Vision</strong></div>
+      <p>What is the company trying to accomplish? Do they have clear long-term and short-term goals that are being met?</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🤲</div><strong>Integrity</strong></div>
+      <p>Has management ever acted against the interests of shareholders or customers? Integrity is subjective but critical — look at track record.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💵</div><strong>Motivation</strong></div>
+      <p>How is management compensated? Their pay structure reveals whether their incentives align with yours as a shareholder.</p>
+    </div>
+  </div>
+
+  <div id="mgmt-tab-ownership" class="tab-content">
+    <h3>Ownership Structure</h3>
+    <h2>Skin in the game?</h2>
+    <p class="section-intro">The more of the company the management owns, the more aligned their interests are with yours as a shareholder.</p>
+
+    <h3 style="margin-top:1.5rem">Owner-Operated vs Professionally Operated</h3>
+    <table class="compare-table">
+      <tr><th>Type</th><th>Ownership %</th><th>Interest Alignment</th><th>Our Preference</th></tr>
+      <tr><td>Owner Operated<br><small style="color:var(--muted)">CEO/CFO is the founder/family</small></td><td>40–50%</td><td><span class="badge badge-green">High</span></td><td><span class="badge badge-green">✓ Preferred</span></td></tr>
+      <tr><td>Professionally Operated<br><small style="color:var(--muted)">Hired professionals run it</small></td><td>2–4%</td><td><span class="badge badge-red">Low</span></td><td><span class="badge badge-yellow">Exception only</span></td></tr>
+    </table>
+
+    <div class="example">
+      <strong>Godawari Power & Ispat</strong>
+      When looking at their shareholding pattern, a large portion of stock is held by promoters (the founding family). This tells us the company is owner-operated — their wealth depends on the company's success. Interests are aligned.
+    </div>
+
+    <hr class="divider">
+    <h3>What % of Net Worth is this company?</h3>
+    <p style="color:var(--muted); margin-bottom:1.2rem; font-size:0.9rem">The higher a company represents of management's total net worth, the more they care about its long-term health.</p>
+
+    <div class="ownership-row">
+      <div class="ownership-name">Raheja & Co.</div>
+      <div class="ownership-track"><div class="ownership-fill high" style="width:85%">85%</div></div>
+    </div>
+    <div class="ownership-row">
+      <div class="ownership-name">Sharma & Co.</div>
+      <div class="ownership-track"><div class="ownership-fill med" style="width:40%">40%</div></div>
+    </div>
+    <div class="ownership-row">
+      <div class="ownership-name">Hypothetical Co.</div>
+      <div class="ownership-track"><div class="ownership-fill low" style="width:10%">10%</div></div>
+    </div>
+
+    <p style="color:var(--muted); font-size:0.82rem; margin-top:0.5rem">Raheja's promoter has 85% of their net worth in the company → far stronger incentive to make good decisions than Sharma's promoter at 40%.</p>
+  </div>
+
+  <div id="mgmt-tab-compensation" class="tab-content">
+    <h3>Pay Structure</h3>
+    <h2>How is management paid?</h2>
+    <p class="section-intro">Compensation structure determines whether management optimizes for short-term metrics or long-term company health.</p>
+
+    <div class="card">
+      <div class="card-label"><div class="icon">📈</div><strong>Shares / ESOPs</strong></div>
+      <p style="margin-bottom:0.5rem">Best alignment. If management is paid in shares or employee stock options, their wealth grows only when shareholders' wealth grows.</p>
+      <span class="badge badge-green">✓ Ideal for long-term investors</span>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">📊</div><strong>Commission on Net Profit</strong></div>
+      <p style="margin-bottom:0.5rem">Moderate alignment. Variable component tied to current net profits. Risk: management may sacrifice long-term health for short-term profit boosts.</p>
+      <span class="badge badge-yellow">⚠ Acceptable with oversight</span>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💰</div><strong>Fixed Salary</strong></div>
+      <p style="margin-bottom:0.5rem">Worst alignment. A fixed salary is paid regardless of company performance. If the company struggles, management still collects their cheque.</p>
+      <span class="badge badge-red">✗ Red flag if too high</span>
+    </div>
+
+    <div class="example" style="border-left-color: var(--red)">
+      <strong>Red Flag Example</strong>
+      If management takes ₹20 crore as a fixed salary, that's a red flag. It signals their primary interest is their own compensation — not shareholder value. Their interests are not aligned with yours.
+    </div>
+
+    <div class="example">
+      <strong>Apar Industries — Good Example</strong>
+      Management holds 23–24% of shares. Their commission is used as a balance — so short-term performance is also incentivized. The combination ensures both long-term and short-term decisions are made in the company's best interest.
+    </div>
+  </div>
+
+  <div id="mgmt-tab-checklist" class="tab-content">
+    <h3>Final Evaluation</h3>
+    <h2>The 3-Question Test</h2>
+    <p class="section-intro">As a retail investor, keep it simple. Ask these three questions before trusting the management of any company.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>How much does management own?</strong><p>Look for owner-operated businesses (40–50% promoter holding). ESOPs in professional companies are the next best thing.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>What % of their net worth is here?</strong><p>If the company is their primary wealth source, they will protect and grow it carefully.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>How are they being paid?</strong><p>Share-based compensation = aligned interests. Fixed salary dominance = misaligned interests.</p></div></div>
+    </div>
+
+    <div class="verdict">
+      <h3>✓ Green Light Criteria</h3>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>Your interests align with the management</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>Management doesn't hold significant stock in many other companies</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>This company is the primary source of income for management</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>Compensation plan is tied to long-term stock performance</p></div>
+      <p style="margin-top:1rem; font-style:italic; color: var(--accent)">If these conditions are satisfied — you are good to go!</p>
+      <p style="font-size:0.82rem; color: var(--muted); margin-top:0.5rem">📄 Find this data in: <strong>Corporate Governance Report</strong> and <strong>Directors Report</strong> sections of the Annual Report.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  function showPage(page, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showTab(page, tab, btn) {
+    const prefix = page + '-tab-';
+    document.querySelectorAll('[id^="' + prefix + '"]').forEach(t => t.classList.remove('active'));
+    document.getElementById(prefix + tab).classList.add('active');
+    if (btn) {
+      btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6 · How to Analyze a Company</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0f;
+  --surface: #141418;
+  --surface2: #1a1a20;
+  --border: #2a2a35;
+  --accent: #f5840c;
+  --accent2: #fbbf24;
+  --accent3: #10b981;
+  --accent4: #3b82f6;
+  --text: #e8e6e0;
+  --muted: #8a8794;
+  --danger: #ef4444;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lora', Georgia, serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* Progress bar */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  z-index: 999;
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* Nav */
+nav {
+  position: fixed;
+  top: 3px;
+  left: 0; right: 0;
+  z-index: 100;
+  background: rgba(13,13,15,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface2); }
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 50%, rgba(245,132,12,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(59,130,246,0.05) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.25;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 80%);
+}
+
+.hero-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.chapter-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.3rem 0.8rem;
+  border-radius: 2px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s 0.4s forwards;
+}
+
+.hero h1 span { color: var(--accent); display: block; }
+
+.hero-sub {
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 500px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s 0.6s forwards;
+}
+
+.hero-framework {
+  margin-top: 3.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s 0.8s forwards;
+}
+
+.framework-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.framework-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(245,132,12,0.05);
+}
+.framework-pill .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sections */
+.section {
+  padding: 6rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 5rem;
+  font-weight: 500;
+  color: var(--border);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.section-title-wrap h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.section-title-wrap p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.card h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+/* Grid layouts */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+
+/* Intro block */
+.framework-map {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+}
+
+.fm-item {
+  padding: 1.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.fm-item:last-child { border-right: none; }
+
+.fm-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.fm-item h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.fm-item p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Comparison table */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.compare-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-table td {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: var(--surface2); }
+
+.compare-table .company-cell {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Tag */
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+.tag-orange { background: rgba(245,132,12,0.15); color: var(--accent); }
+.tag-blue   { background: rgba(59,130,246,0.15); color: var(--accent4); }
+.tag-green  { background: rgba(16,185,129,0.15); color: var(--accent3); }
+.tag-red    { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+/* Callout box */
+.callout {
+  border-left: 3px solid var(--accent);
+  background: rgba(245,132,12,0.05);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+.callout strong { color: var(--accent); }
+
+/* Bar chart */
+.bar-chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.bar-chart-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text);
+  width: 130px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  flex: 1;
+  height: 28px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  align-items: center;
+  padding-left: 0.75rem;
+}
+
+.bar-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+}
+
+/* Decision flow */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.flow-step {
+  flex: 1;
+  padding: 1.75rem 1.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.flow-step:last-child { border-right: none; }
+
+.flow-step::after {
+  content: '→';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-size: 1.2rem;
+  z-index: 2;
+}
+.flow-step:last-child::after { display: none; }
+
+.flow-step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.flow-step h4 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.flow-step p {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Stability meter */
+.stability-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.stability-row:last-child { border-bottom: none; }
+
+.stability-industry {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.stability-track {
+  flex: 1;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.stability-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.stability-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Questions grid */
+.q-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.q-item {
+  padding: 1.5rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.q-item:hover { background: var(--surface2); }
+
+.q-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.q-item p {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Two column */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .two-col { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; }
+  .flow-step { border-right: none; border-bottom: 1px solid var(--border); }
+  .flow-step::after { content: '↓'; right: auto; bottom: -14px; top: auto; transform: none; left: 50%; }
+  .framework-map { grid-template-columns: 1fr; }
+  .fm-item { border-right: none; border-bottom: 1px solid var(--border); }
+  nav .nav-links { display: none; }
+  .hero h1 { font-size: 2.8rem; }
+}
+
+/* Pill verdict */
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+}
+
+.verdict-yes { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+.verdict-no  { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 2rem;
+}
+
+/* Management cards */
+.mgmt-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem;
+}
+
+.mgmt-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mgmt-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mgmt-card ul li {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding-left: 1.2rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.mgmt-card ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Footer */
+footer {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Quiz */
+.quiz-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.quiz-header {
+  background: linear-gradient(135deg, rgba(245,132,12,0.15), rgba(251,191,36,0.05));
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quiz-header h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+#quiz-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.quiz-body { padding: 2rem; }
+
+#quiz-question {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.quiz-option {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-align: left;
+  color: var(--text);
+  font-family: 'Lora', serif;
+  transition: all 0.15s;
+}
+
+.quiz-option:hover { border-color: var(--accent); background: rgba(245,132,12,0.05); }
+.quiz-option.correct { border-color: var(--accent3); background: rgba(16,185,129,0.1); color: var(--accent3); }
+.quiz-option.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); color: var(--danger); }
+
+#quiz-feedback {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  display: none;
+}
+
+.quiz-footer {
+  padding: 0 2rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#quiz-next {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s;
+}
+#quiz-next:hover { opacity: 0.85; }
+
+#quiz-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-brand">Ch.6 · Analyze a Company</div>
+  <ul class="nav-links">
+    <li><a href="#intro">Framework</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#industry">Industry</a></li>
+    <li><a href="#business">Business</a></li>
+    <li><a href="#management">Management</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="chapter-badge">· Chapter 06 · ZebraLearn ·</div>
+    <h1>How to <span>Analyze a</span>Company</h1>
+    <p class="hero-sub">A 4-pillar framework to deeply evaluate any stock before you invest your money — from products to management.</p>
+    <div class="hero-framework">
+      <a href="#products" class="framework-pill"><span class="dot"></span>Products & Services</a>
+      <a href="#industry" class="framework-pill"><span class="dot"></span>Industry Research</a>
+      <a href="#business" class="framework-pill"><span class="dot"></span>Business Research</a>
+      <a href="#management" class="framework-pill"><span class="dot"></span>Management</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INTRO / FRAMEWORK MAP -->
+<section class="section" id="intro">
+  <div class="section-header reveal">
+    <div class="section-num">6.1</div>
+    <div class="section-title-wrap">
+      <h2>The 4-Pillar Framework</h2>
+      <p>Every stock analysis starts here — these four lenses tell you everything you need to know.</p>
+    </div>
+  </div>
+
+  <div class="framework-map reveal">
+    <div class="fm-item">
+      <div class="fm-num">01 ·</div>
+      <h3>Products & Services</h3>
+      <p>What does the company sell? Who buys it? Why do they buy it? Is there anything special about it?</p>
+    </div>
+    <div class="fm-item">
+      <div class="fm-num">02 ·</div>
+      <h3>Industry Research</h3>
+      <p>How big is the market? Is it stable? Are other players doing well? What's the future outlook?</p>
+    </div>
+    <div class="fm-item">
+      <div class="fm-num">03 ·</div>
+      <h3>Business Research</h3>
+      <p>Where does the company stand in its industry? Is it a market leader or a niche player?</p>
+    </div>
+    <div class="fm-item">
+      <div class="fm-num">04 ·</div>
+      <h3>Management</h3>
+      <p>Who runs the company? Are they qualified? How are they paid? Do their interests align with shareholders?</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem;" class="reveal">
+    <div class="callout">
+      <strong>Key principle:</strong> We will also study financial performance, different ratio types, and KPIs for each sector. We'll identify who owns the stock, if smart money follows the firm, and what the ownership trend looks like. Think of this chapter as your <em>complete investor's due diligence checklist</em>.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRODUCTS & SERVICES -->
+<section class="section" id="products">
+  <div class="section-header reveal">
+    <div class="section-num">6.2</div>
+    <div class="section-title-wrap">
+      <h2>Products & Services</h2>
+      <p>Understand what the company sells before anything else.</p>
+    </div>
+  </div>
+
+  <div class="grid-3 reveal">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(245,132,12,0.1)">🔍</div>
+      <h3>Features of the Product</h3>
+      <p>What are the product's core characteristics? What problem does it solve? Is it sticky or one-time?</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(59,130,246,0.1)">👥</div>
+      <h3>Who Uses It & Why?</h3>
+      <p>Identify the exact target audience — age, gender, income group — and their core reason for buying.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(16,185,129,0.1)">⭐</div>
+      <h3>Uniqueness / USP</h3>
+      <p>What's the unique selling proposition? Brand trust, lower cost, distribution strength, or better quality?</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(251,191,36,0.1)">📊</div>
+      <h3>Similar Products</h3>
+      <p>Compile a full list of competitors. Who else sells this? Is the company the leader or a follower?</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(239,68,68,0.1)">🔄</div>
+      <h3>Available Substitutes</h3>
+      <p>Can the product be completely replaced? EVs replace petrol cars. Pepsi can replace Coke. Does this company face such a risk?</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(168,85,247,0.1)">📁</div>
+      <h3>Data Sources</h3>
+      <p>Company websites, investor presentations, YouTube demos, product brochures, Annual Reports (MD&A section).</p>
+    </div>
+  </div>
+
+  <!-- Marico vs APAR comparison -->
+  <div style="margin-top:3rem" class="reveal">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.2rem; margin-bottom:1.5rem;">
+      Example Comparison — Marico vs APAR Industries
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="compare-table" style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Marico (Consumer Goods)</th>
+            <th>APAR Industries (Industrial)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">Core Products</td>
+            <td>Parachute Hair Oil, Saffola Edible Oil, Set-Wet Gel, LIVON</td>
+            <td>Transformer Oil, Cables</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">Target Audience</td>
+            <td>Male & Female, age 10–60. Everyday household use.</td>
+            <td>Power companies, industrial buyers. B2B mostly.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">Ease of Understanding</td>
+            <td><span class="verdict verdict-yes">✓ Easy</span> — most people use their products</td>
+            <td><span class="verdict verdict-no">! Hard</span> — need industry knowledge to evaluate</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">USP</td>
+            <td>Brand recognition + widespread trust. Non-sticky, gentle formulas.</td>
+            <td>3rd largest transformer oil manufacturer. Strong brand recall in niche.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">Key Competitors</td>
+            <td>Dabur, Trichup, Indulekha (but Parachute leads)</td>
+            <td>Velvex, Lodha Petro</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.75rem;">Substitution Risk</td>
+            <td>Low — switching hair oil is possible but brand loyalty is high</td>
+            <td>Medium — industrial specifications matter; not easily swapped</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Substitute decision flow -->
+  <div style="margin-top:3rem;" class="reveal">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:1.25rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">
+      Substitution Decision Tree
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">STEP 01 ·</div>
+        <h4>Is there a substitute?</h4>
+        <p>Can the entire product category be replaced? EV → Petrol cars. Digital → Print.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">STEP 02 ·</div>
+        <h4>Are people actually switching?</h4>
+        <p>Existence of substitute ≠ adoption. Check if real customers are moving away.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">STEP 03 ·</div>
+        <h4>What's the advantage?</h4>
+        <p>Cost? Convenience? Performance? Understand the reason behind switching behavior.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">VERDICT ·</div>
+        <h4>No substitute? Invest with confidence.</h4>
+        <p>If there's no real substitute and people keep buying, that's a durable business.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maggi case -->
+  <div style="margin-top:2.5rem;" class="reveal">
+    <div class="callout">
+      <strong>Maggi Case Study:</strong> In the noodles market, multiple brands compete — yet Maggi dominates. Why? It's not just one thing. <em>Distribution Network + Brand Recognition = Maggi's popularity.</em> The product reaches even the smallest kirana stores across PAN India. This is called a <strong>distribution moat</strong> — harder to replicate than product features alone.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INDUSTRY RESEARCH -->
+<section class="section" id="industry">
+  <div class="section-header reveal">
+    <div class="section-num">6.3</div>
+    <div class="section-title-wrap">
+      <h2>Industry Research</h2>
+      <p>The right industry matters as much as the right company.</p>
+    </div>
+  </div>
+
+  <!-- Market Size Chart -->
+  <div style="margin-bottom:2.5rem;" class="reveal">
+    <div class="bar-chart-wrap">
+      <div class="bar-chart-title">Market Size Comparison — Indian Industries (approx. figures)</div>
+      <div class="bar-row">
+        <div class="bar-label">Passenger Cars</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:0%; background:linear-gradient(90deg,#3b82f6,#60a5fa);" data-target="92">
+            <span class="bar-val">~$32.7B USD</span>
+          </div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Paint Industry</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:0%; background:linear-gradient(90deg,#f5840c,#fbbf24);" data-target="68">
+            <span class="bar-val">₹62,000 Cr</span>
+          </div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Hair Oil Industry</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:0%; background:linear-gradient(90deg,#10b981,#34d399);" data-target="22">
+            <span class="bar-val">₹8,000 Cr</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1rem; font-size:0.78rem; color:var(--muted);">
+        💡 Bigger market = more room to grow before the company is forced to diversify.
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col reveal">
+    <!-- Market Stability -->
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom:1.5rem;">
+        Market Stability Index
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.75rem;">
+        <div class="stability-row">
+          <div class="stability-industry">Hair Oil</div>
+          <div class="stability-track">
+            <div class="stability-fill" style="width:0%; background:var(--accent3);" data-target="88"></div>
+          </div>
+          <div class="stability-score" style="color:var(--accent3);">88/100 🟢</div>
+        </div>
+        <div class="stability-row">
+          <div class="stability-industry">FMCG / Edibles</div>
+          <div class="stability-track">
+            <div class="stability-fill" style="width:0%; background:var(--accent);" data-target="82"></div>
+          </div>
+          <div class="stability-score" style="color:var(--accent);">82/100 🟡</div>
+        </div>
+        <div class="stability-row">
+          <div class="stability-industry">Paint Industry</div>
+          <div class="stability-track">
+            <div class="stability-fill" style="width:0%; background:var(--accent2);" data-target="72"></div>
+          </div>
+          <div class="stability-score" style="color:var(--accent2);">72/100 🟡</div>
+        </div>
+        <div class="stability-row">
+          <div class="stability-industry">Telecom</div>
+          <div class="stability-track">
+            <div class="stability-fill" style="width:0%; background:#f97316;" data-target="45"></div>
+          </div>
+          <div class="stability-score" style="color:#f97316;">45/100 🔴</div>
+        </div>
+        <div class="stability-row">
+          <div class="stability-industry">Mobile Phones</div>
+          <div class="stability-track">
+            <div class="stability-fill" style="width:0%; background:var(--danger);" data-target="25"></div>
+          </div>
+          <div class="stability-score" style="color:var(--danger);">25/100 🔴</div>
+        </div>
+        <div style="margin-top:1rem; font-size:0.78rem; color:var(--muted);">
+          Nokia, Micromax → replaced by Oppo, Vivo, Redmi. Leaders keep changing = unstable.
+        </div>
+      </div>
+    </div>
+
+    <!-- Health of players -->
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom:1.5rem;">
+        Health of Players — What It Signals
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--accent3); margin-bottom:0.5rem; letter-spacing:0.1em;">ALL DOING WELL</div>
+        <h3 style="color:var(--accent3);">Healthy Industry ✓</h3>
+        <p>When all/most companies in the sector show good performance — like Marico, Dabur, Trichup, Indulekha all growing — the industry itself has strong tailwinds.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--danger); margin-bottom:0.5rem; letter-spacing:0.1em;">MOST STRUGGLING</div>
+        <h3 style="color:var(--danger);">Poor Industry ✗</h3>
+        <p>If all except one player is doing poorly, it suggests the whole industry is struggling — not just one bad company. Avoid this sector.</p>
+      </div>
+      <div class="callout">
+        <strong>Golden Rule:</strong> An average performer in a healthy industry beats a great performer in a sick industry. Jio is great — but the entire telecom industry has been price-war-stressed for years.
+      </div>
+    </div>
+  </div>
+
+  <!-- Industry Outlook -->
+  <div style="margin-top:3rem;" class="reveal">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom:1.5rem;">
+      Industry Outlook — What to Evaluate
+    </div>
+    <div class="two-col">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:2rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--danger); margin-bottom:1rem;">⚠ Major Risk Example — EV vs Petroleum</div>
+        <p style="font-size:0.88rem; color:var(--muted); line-height:1.75;">
+          If EVs are expected to cover 40% of the market in 10 years, the petroleum distribution industry is at risk. Petrol pump companies may struggle. This is a <strong style="color:var(--text);">structural threat</strong> — avoid investing in that sector even if the top company looks profitable today.
+        </p>
+        <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <span class="tag tag-red">Petrol Pumps</span>
+          <span class="tag tag-red">ICE Auto Parts</span>
+          <span class="tag tag-green">EV Charging Infra</span>
+          <span class="tag tag-green">Battery Makers</span>
+        </div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:2rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--accent3); margin-bottom:1rem;">✓ Growth Outlook Example — Tech & Digital</div>
+        <p style="font-size:0.88rem; color:var(--muted); line-height:1.75;">
+          Products and services moving to digital platforms. Tech, SaaS, digital fintech — all have positive structural tailwinds. Consumer behavior is shifting <em>toward</em> digital, not away. Invest in industries where the wind is at your back.
+        </p>
+        <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <span class="tag tag-green">Fintech</span>
+          <span class="tag tag-green">Cloud SaaS</span>
+          <span class="tag tag-green">Digital Payments</span>
+          <span class="tag tag-orange">EV Infra</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key questions -->
+  <div style="margin-top:3rem;" class="reveal">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:1.25rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Industry Research — Questions to Answer</div>
+    <div class="q-grid">
+      <div class="q-item"><div class="q-icon">📏</div><p>"What's the market size?"</p></div>
+      <div class="q-item"><div class="q-icon">⚖️</div><p>"Is the market stable?"</p></div>
+      <div class="q-item"><div class="q-icon">🏥</div><p>"Is the industry healthy?"</p></div>
+      <div class="q-item"><div class="q-icon">👥</div><p>"Are other players doing well?"</p></div>
+      <div class="q-item"><div class="q-icon">🔭</div><p>"What's the 5-year outlook?"</p></div>
+      <div class="q-item"><div class="q-icon">🚦</div><p>"What are the industry-specific risks?"</p></div>
+      <div class="q-item"><div class="q-icon">🧠</div><p>"Is user behaviour changing?"</p></div>
+      <div class="q-item"><div class="q-icon">🌱</div><p>"How big can the company grow within this market?"</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BUSINESS RESEARCH -->
+<section class="section" id="business">
+  <div class="section-header reveal">
+    <div class="section-num">6.4</div>
+    <div class="section-title-wrap">
+      <h2>Business Research</h2>
+      <p>Where does the company sit within its industry?</p>
+    </div>
+  </div>
+
+  <div class="grid-3 reveal">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(245,132,12,0.1)">🏆</div>
+      <h3>Market Position</h3>
+      <p>Is the company a market leader, challenger, or niche player? Leaders like Marico in hair oil have pricing power and brand loyalty that smaller players can't match.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(59,130,246,0.1)">🛡️</div>
+      <h3>Competitive Moat</h3>
+      <p>What prevents competitors from stealing customers? Brand (Marico), distribution (Maggi), patents, or switching costs (B2B industrial like APAR)?</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(16,185,129,0.1)">📍</div>
+      <h3>Market Share Trend</h3>
+      <p>Is the company growing or losing share? Asian Paints holds ~50% of the paint industry — any further growth requires either industry expansion or entering new segments.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;" class="reveal">
+    <div class="callout">
+      <strong>The Asian Paints Lesson:</strong> When a company holds 50% market share in a ₹62,000 crore industry, it can only grow further by (1) the industry itself expanding, or (2) entering new geographies/product lines. No company can grow bigger than its own industry. This is why <em>market size matters as a ceiling for growth</em>.
+    </div>
+  </div>
+
+  <!-- Behaviour shifts -->
+  <div style="margin-top:2.5rem;" class="reveal">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom:1.25rem;">Behaviour Shifts — The Hidden Risk</div>
+    <div class="two-col">
+      <div class="card" style="border-color:var(--accent3);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--accent3); margin-bottom:0.5rem;">STABLE BEHAVIOUR ✓</div>
+        <h3>Hair Oil Industry</h3>
+        <p>People's hair care habits don't change drastically. Marico and Dabur have led for 15+ years. Behaviour is predictable → safe to invest.</p>
+      </div>
+      <div class="card" style="border-color:var(--danger);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--danger); margin-bottom:0.5rem;">SHIFTING BEHAVIOUR ✗</div>
+        <h3>Social Media Platforms</h3>
+        <p>Facebook → Instagram → TikTok → ? Platforms that were dominant 5 years ago have lost younger audiences rapidly. Risky for long-term investors.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MANAGEMENT -->
+<section class="section" id="management">
+  <div class="section-header reveal">
+    <div class="section-num">6.5</div>
+    <div class="section-title-wrap">
+      <h2>Management Background</h2>
+      <p>The people running the company are as important as the company itself.</p>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal">
+    <div class="mgmt-card">
+      <h3>🎓 Qualifications & Track Record</h3>
+      <ul>
+        <li>What is the CEO/founders' background and education?</li>
+        <li>Have they successfully run a company before?</li>
+        <li>Do they have relevant domain experience in this industry?</li>
+        <li>How long have they been with the company?</li>
+      </ul>
+    </div>
+    <div class="mgmt-card">
+      <h3>💰 Compensation Structure</h3>
+      <ul>
+        <li>What is the salary vs performance bonus ratio?</li>
+        <li>Is executive pay linked to shareholder returns?</li>
+        <li>Are they paid too much relative to the company size?</li>
+        <li>ESOP (employee stock options) — do they eat their own cooking?</li>
+      </ul>
+    </div>
+    <div class="mgmt-card">
+      <h3>📌 Ownership & Vested Interests</h3>
+      <ul>
+        <li>How much stock does the promoter hold? (High = good alignment)</li>
+        <li>Is promoter holding increasing or decreasing?</li>
+        <li>Is smart institutional money (FIIs, DIIs) following the stock?</li>
+        <li>Check ownership trend — promoters selling is a red flag.</li>
+      </ul>
+    </div>
+    <div class="mgmt-card">
+      <h3>🗣️ Communication & Integrity</h3>
+      <ul>
+        <li>Do they give honest guidance — even bad news?</li>
+        <li>Read old investor calls: did they deliver on past promises?</li>
+        <li>Management that only paints rosy pictures → be cautious.</li>
+        <li>Prioritize industry reports over management statements for outlook.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;" class="reveal">
+    <div class="callout">
+      <strong>Smart Investor Tip:</strong> A company's management will always present a positive outlook. So don't rely only on their statements. Cross-reference with independent industry reports. And always check the <em>ownership trend</em> — if promoters are slowly reducing their stake, that's a silent red flag no press release will mention.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-header reveal">
+    <div class="section-num">✎</div>
+    <div class="section-title-wrap">
+      <h2>Quick Quiz</h2>
+      <p>Test your understanding of Chapter 6 concepts.</p>
+    </div>
+  </div>
+
+  <div class="quiz-wrap reveal">
+    <div class="quiz-header">
+      <h3>Chapter 6 — Knowledge Check</h3>
+      <span id="quiz-counter">Question 1 of 7</span>
+    </div>
+    <div class="quiz-body">
+      <p id="quiz-question"></p>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div id="quiz-feedback"></div>
+    </div>
+    <div class="quiz-footer">
+      <button id="quiz-next">Next Question →</button>
+      <span id="quiz-score"></span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>ZebraLearn · Stock Investing Mastermind · Chapter 6 · How to Analyze a Company</p>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 60);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+
+// Bar chart animation
+const barFills = document.querySelectorAll('.bar-fill[data-target]');
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const pct = e.target.getAttribute('data-target');
+      e.target.style.width = pct + '%';
+      barObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+barFills.forEach(b => barObserver.observe(b));
+
+// Stability fills
+const stabFills = document.querySelectorAll('.stability-fill[data-target]');
+const stabObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.width = e.target.getAttribute('data-target') + '%';
+      stabObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+stabFills.forEach(s => stabObserver.observe(s));
+
+// QUIZ
+const questions = [
+  {
+    q: "What is the FIRST step in evaluating a stock according to the 4-pillar framework?",
+    options: ["Management Background", "Industry Research", "Products & Services", "Financial Ratios"],
+    answer: 2,
+    explanation: "We always start with Products & Services — you must understand what the company sells before anything else."
+  },
+  {
+    q: "Marico sells Parachute Hair Oil. Which market does it primarily cater to?",
+    options: ["B2B industrial buyers", "Power companies only", "Everyday household consumers aged 10–60", "Government procurement"],
+    answer: 2,
+    explanation: "Parachute targets male and female consumers aged 10–60 for hair nourishment — a classic consumer FMCG product."
+  },
+  {
+    q: "Why does Maggi dominate the noodles market despite many competitors?",
+    options: ["Cheapest price in the market", "Distribution Network + Brand Recognition", "Government subsidies", "No competitors"],
+    answer: 1,
+    explanation: "Maggi's moat is Distribution Network + Brand Recognition. It's available in even the smallest stores PAN India."
+  },
+  {
+    q: "If you find that in an industry, ALL major companies are struggling, what does this suggest?",
+    options: ["One company is poorly managed", "The entire industry might be in trouble", "It's a great time to buy the market leader", "The government will intervene"],
+    answer: 1,
+    explanation: "When most players in an industry struggle, it indicates the industry itself has structural problems — not just one bad company. Avoid investing."
+  },
+  {
+    q: "Asian Paints holds ~50% of India's paint industry. How can it grow further?",
+    options: ["Reduce prices significantly", "Only through industry growth OR entering new markets", "Hire more salespeople", "Copy competitor products"],
+    answer: 1,
+    explanation: "No company can grow bigger than its industry. Asian Paints can only grow if (1) the paint industry as a whole grows, or (2) it enters new industries/geographies."
+  },
+  {
+    q: "The mobile phone market (Nokia → Micromax → Oppo/Vivo) is an example of what?",
+    options: ["A highly stable market", "Market with constant leaders", "An unstable market — retail investors should be cautious", "A government-regulated market"],
+    answer: 2,
+    explanation: "Leaders kept changing over 10 years — Nokia to Micromax to Chinese brands. That's classic market instability, which retail investors should avoid."
+  },
+  {
+    q: "What is the most important thing to check about a company's management?",
+    options: ["Their social media followers", "Whether promoter ownership is increasing or decreasing", "How many employees they have", "Their office location"],
+    answer: 1,
+    explanation: "Promoter ownership trend is critical. If promoters are selling their stake, that's a red flag — they're exiting their own company."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[current];
+  document.getElementById('quiz-counter').textContent = `Question ${current+1} of ${questions.length}`;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next').style.display = 'none';
+
+  const optDiv = document.getElementById('quiz-options');
+  optDiv.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    optDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.quiz-option');
+  const fb = document.getElementById('quiz-feedback');
+
+  btns[q.answer].classList.add('correct');
+  if (index !== q.answer) {
+    btns[index].classList.add('wrong');
+    fb.style.background = 'rgba(239,68,68,0.1)';
+    fb.style.color = '#ef4444';
+    fb.style.border = '1px solid rgba(239,68,68,0.3)';
+  } else {
+    score++;
+    fb.style.background = 'rgba(16,185,129,0.1)';
+    fb.style.color = '#10b981';
+    fb.style.border = '1px solid rgba(16,185,129,0.3)';
+  }
+
+  fb.textContent = '💡 ' + q.explanation;
+  fb.style.display = 'block';
+  fb.style.borderRadius = '6px';
+  fb.style.padding = '0.75rem 1rem';
+  fb.style.fontSize = '0.85rem';
+
+  const nextBtn = document.getElementById('quiz-next');
+  if (current < questions.length - 1) {
+    nextBtn.textContent = 'Next Question →';
+  } else {
+    nextBtn.textContent = 'See Results';
+  }
+  nextBtn.style.display = 'inline-block';
+  document.getElementById('quiz-score').textContent = `Score: ${score}/${current+1}`;
+}
+
+document.getElementById('quiz-next').addEventListener('click', () => {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+    document.getElementById('quiz-score').textContent = `Score: ${score}/${current}`;
+  } else {
+    const pct = Math.round(score / questions.length * 100);
+    const grade = pct >= 85 ? '🏆 Excellent!' : pct >= 60 ? '✅ Good' : '📖 Review the chapter';
+    document.getElementById('quiz-question').textContent = `Final Score: ${score}/${questions.length} (${pct}%) — ${grade}`;
+    document.getElementById('quiz-options').innerHTML = '';
+    document.getElementById('quiz-feedback').style.display = 'none';
+    document.getElementById('quiz-next').style.display = 'none';
+    document.getElementById('quiz-score').textContent = '';
+    document.getElementById('quiz-counter').textContent = 'Complete!';
+  }
+});
+
+loadQuestion();
+</script>
+</body>
+</html>
