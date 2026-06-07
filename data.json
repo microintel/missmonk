@@ -114,7 +114,15 @@
           "Morning Star": "",
           "Chapter 10": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10.html"
         },
-        "How To Analyze a Company": {},
+        "How To Analyze a Company": {
+          "Introduction": "",
+          "Product & Services of the Company": "",
+          "Industry Research": "",
+          "Business Research": "",
+          "Management Background": "",
+          "Chapter 10.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-1.html",
+          "Chapter 10.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-2.html"
+        },
         "Financial Ratios": {}
       },
       "Valuation of Stocks": {},
