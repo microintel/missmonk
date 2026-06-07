@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 — Straight Lines</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #2a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7c4dff;
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --formula-bg: #0d1a1f;
+    --good: #00e676;
+    --warn: #ffeb3b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ====== NAV ====== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 56px;
+    overflow-x: auto;
+  }
+
+  nav::-webkit-scrollbar { height: 2px; }
+  nav::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent);
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+
+  nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  nav a:hover { color: var(--accent); background: rgba(0,229,255,0.06); }
+
+  /* ====== HERO ====== */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 120px 2rem 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg-line {
+    position: absolute;
+    top: 50%; left: -10%;
+    width: 120%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform: rotate(-8deg);
+    opacity: 0.15;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -3px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 1.2rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-topics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2.5rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .topic-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 6px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .topic-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ====== MAIN LAYOUT ====== */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* ====== SECTION ====== */
+  .section {
+    margin-bottom: 5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin-bottom: 2rem;
+  }
+
+  /* ====== CONCEPT CARD ====== */
+  .concept {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s;
+  }
+
+  .concept:hover { border-color: rgba(0,229,255,0.3); }
+
+  .concept p { color: #c8c8d8; margin-bottom: 0.8rem; }
+  .concept p:last-child { margin-bottom: 0; }
+
+  /* ====== FORMULA BOX ====== */
+  .formula-box {
+    background: var(--formula-bg);
+    border: 1px solid rgba(0,229,255,0.25);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.92rem;
+    color: var(--accent);
+    line-height: 2;
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .formula-box .formula-label {
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .formula-box .f { color: var(--text); }
+  .formula-box .v { color: var(--accent); }
+  .formula-box .op { color: var(--accent2); }
+  .formula-box .kw { color: var(--accent3); }
+
+  /* ====== HANDWRITTEN FRACTION STYLE ====== */
+  .formula-box,
+  .formula-box * {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.25rem;
+  }
+  .formula-box .formula-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+  }
+
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 3px;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.1;
+  }
+  .frac .fnum {
+    border-bottom: 2px solid currentColor;
+    padding: 0 4px 1px;
+    font-size: 1em;
+    min-width: 1em;
+    text-align: center;
+  }
+  .frac .fden {
+    padding: 1px 4px 0;
+    font-size: 1em;
+    min-width: 1em;
+    text-align: center;
+  }
+  /* color variants for fractions */
+  .frac.vc .fnum,
+  .frac.vc .fden { color: var(--accent); }
+  .frac.vc { color: var(--accent); }
+  .frac.oc .fnum,
+  .frac.oc .fden { color: var(--accent2); }
+  .frac.oc { color: var(--accent2); }
+
+  .hw { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; }
+
+  /* ====== EXAMPLE BOX ====== */
+  .example {
+    background: rgba(255,107,53,0.05);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 10px;
+    padding: 1.4rem 1.6rem;
+    margin-top: 1rem;
+  }
+
+  .example-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .example-label::before {
+    content: '▶';
+    font-size: 0.6rem;
+  }
+
+  .example p { color: #d0cce0; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .example .solution {
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    margin-top: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--good);
+    line-height: 1.9;
+  }
+
+  /* ====== VISUAL CANVAS ====== */
+  .canvas-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  canvas {
+    border-radius: 8px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ====== CALCULATOR ====== */
+  .calc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .calc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .calc-title::before { content: '⚡'; }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-group label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .input-group input, .input-group select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.88rem;
+    transition: border-color 0.2s;
+    outline: none;
+    width: 100%;
+  }
+
+  .input-group input:focus, .input-group select:focus {
+    border-color: var(--accent);
+  }
+
+  .calc-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 24px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .calc-btn:hover {
+    background: #33eeff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(0,229,255,0.3);
+  }
+
+  .calc-result {
+    background: var(--formula-bg);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin-top: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--good);
+    line-height: 2;
+    min-height: 60px;
+    display: none;
+  }
+
+  .calc-result.show { display: block; }
+
+  /* ====== INFO GRID ====== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+
+  .info-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin-bottom: 0.6rem;
+  }
+
+  .info-card p { color: var(--muted); font-size: 0.9rem; }
+
+  /* ====== TABLE ====== */
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 1rem 0;
+  }
+
+  .tbl th {
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tbl td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #c8c8d8;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .tbl tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ====== CONDITION BOX ====== */
+  .condition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 600px) { .condition-grid { grid-template-columns: 1fr; } }
+
+  .condition-card {
+    border-radius: 10px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+
+  .condition-card.parallel {
+    background: rgba(124,77,255,0.08);
+    border: 1px solid rgba(124,77,255,0.3);
+  }
+
+  .condition-card.perp {
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+
+  .condition-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .condition-card.parallel h4 { color: var(--accent3); }
+  .condition-card.perp h4 { color: var(--accent2); }
+
+  .condition-card .cond-formula {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .condition-card.parallel .cond-formula { color: var(--accent3); }
+  .condition-card.perp .cond-formula { color: var(--accent2); }
+
+  .condition-card p { font-size: 0.85rem; color: var(--muted); }
+
+  /* ====== TABS ====== */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ====== HIGHLIGHT ====== */
+  .hl-cyan { color: var(--accent); }
+  .hl-orange { color: var(--accent2); }
+  .hl-purple { color: var(--accent3); }
+  .hl-green { color: var(--good); }
+
+  /* ====== SCROLLTOP ====== */
+  #scrolltop {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: #000;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    box-shadow: 0 4px 20px rgba(0,229,255,0.4);
+    transition: transform 0.2s;
+  }
+  #scrolltop:hover { transform: scale(1.1); }
+  #scrolltop.show { display: flex; }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 640px) {
+    .hero h1 { letter-spacing: -1px; }
+    .section-title { font-size: 1.3rem; }
+    .calc-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">UNIT 2</div>
+  <div class="nav-sep"></div>
+  <a href="#s21">2.1 Slope</a>
+  <a href="#s22">2.2 Intercepts</a>
+  <a href="#s23">2.3 Intercept Form</a>
+  <a href="#s24">2.4 Slope-Intercept</a>
+  <a href="#s25">2.5 Slope-Point</a>
+  <a href="#s26">2.6 Two-Point</a>
+  <a href="#s27">2.7 General Form</a>
+  <a href="#s28">2.8 Angle & Parallel/Perp</a>
+  <a href="#s29">2.9 Parallel Line Eq</a>
+  <a href="#s210">2.10 Perp Line Eq</a>
+  <a href="#mega-calc">🧮 Calculator</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-line"></div>
+  <div class="hero-badge">UNIT 2 · COORDINATE GEOMETRY</div>
+  <h1>STRAIGHT<br><span>LINES</span></h1>
+  <p class="hero-sub">Master every concept — from slope to general form — with clear formulas, worked examples, and interactive calculators.</p>
+  <div class="hero-topics">
+    <a href="#s21" class="topic-pill">2.1 Slope</a>
+    <a href="#s22" class="topic-pill">2.2 Intercepts</a>
+    <a href="#s23" class="topic-pill">2.3 Intercept Form</a>
+    <a href="#s24" class="topic-pill">2.4 Slope-Intercept</a>
+    <a href="#s25" class="topic-pill">2.5 Slope-Point</a>
+    <a href="#s26" class="topic-pill">2.6 Two-Point</a>
+    <a href="#s27" class="topic-pill">2.7 General Form</a>
+    <a href="#s28" class="topic-pill">2.8 Parallel & Perp</a>
+    <a href="#s29" class="topic-pill">2.9 Parallel Eq</a>
+    <a href="#s210" class="topic-pill">2.10 Perp Eq</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+<!-- ==============================
+     2.1 SLOPE
+============================== -->
+<section class="section" id="s21">
+  <div class="section-header">
+    <span class="section-num">2.1</span>
+    <h2 class="section-title">Slope of a Straight Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>The <strong class="hl-cyan">slope</strong> (or gradient) of a straight line measures its steepness — how much it rises or falls per unit of horizontal distance. It is usually denoted by the letter <strong class="hl-cyan">m</strong>.</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Formula — Slope from Two Points</span>
+      <span class="v">m</span> <span class="op"> = </span>
+      <span class="frac vc"><span class="fnum">y₂ − y₁</span><span class="fden">x₂ − x₁</span></span>
+      &nbsp;&nbsp;<span class="f">where x₁ ≠ x₂</span>
+    </div>
+
+    <div class="formula-box">
+      <span class="formula-label">Formula — Slope from Angle of Inclination (θ)</span>
+      <span class="v">m</span> <span class="op">=</span> tan(θ) &nbsp;&nbsp;<span class="f">where 0° ≤ θ &lt; 180°, θ ≠ 90°</span>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card"><h4>Positive Slope ↗</h4><p>Line rises left to right. m > 0. Acute angle with positive x-axis.</p></div>
+      <div class="info-card"><h4>Negative Slope ↘</h4><p>Line falls left to right. m < 0. Obtuse angle with positive x-axis.</p></div>
+      <div class="info-card"><h4>Zero Slope →</h4><p>Horizontal line. m = 0. Parallel to x-axis.</p></div>
+      <div class="info-card"><h4>Undefined Slope ↕</h4><p>Vertical line. m is undefined (division by zero). Parallel to y-axis.</p></div>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.1</div>
+    <p>Find the slope of the line joining A(3, 2) and B(7, 10).</p>
+    <div class="solution">
+m = (y₂ − y₁) / (x₂ − x₁)
+  = (10 − 2) / (7 − 3)
+  = 8 / 4
+  = 2
+
+∴ Slope m = 2 ✓
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.2</div>
+    <p>A line makes an angle of 135° with the positive x-axis. Find its slope.</p>
+    <div class="solution">
+m = tan(θ) = tan(135°)
+  = tan(180° − 45°)
+  = −tan(45°)
+  = −1
+
+∴ Slope m = −1 ✓
+    </div>
+  </div>
+
+  <!-- Slope Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Slope Calculator</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>x₁</label><input id="sl_x1" type="number" placeholder="e.g. 3"></div>
+      <div class="input-group"><label>y₁</label><input id="sl_y1" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>x₂</label><input id="sl_x2" type="number" placeholder="e.g. 7"></div>
+      <div class="input-group"><label>y₂</label><input id="sl_y2" type="number" placeholder="e.g. 10"></div>
+    </div>
+    <button class="calc-btn" onclick="calcSlope()">Calculate Slope</button>
+    <div class="calc-result" id="sl_result"></div>
+  </div>
+
+  <!-- Visual -->
+  <div class="canvas-wrap">
+    <canvas id="slopeCanvas" width="500" height="280"></canvas>
+    <p style="color:var(--muted);font-size:0.8rem;margin-top:10px;font-family:'Space Mono',monospace">Slope = Rise / Run</p>
+  </div>
+</section>
+
+<!-- ==============================
+     2.2 INTERCEPTS
+============================== -->
+<section class="section" id="s22">
+  <div class="section-header">
+    <span class="section-num">2.2</span>
+    <h2 class="section-title">Intercepts of a Straight Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>An <strong class="hl-orange">intercept</strong> is the point where a line crosses one of the coordinate axes.</p>
+
+    <div class="formula-box">
+      <span class="formula-label">X-Intercept</span>
+      <span class="f">Set </span><span class="v">y = 0</span><span class="f"> and solve for x. The line crosses the x-axis at</span> (<span class="v">a</span>, 0).
+    </div>
+
+    <div class="formula-box">
+      <span class="formula-label">Y-Intercept</span>
+      <span class="f">Set </span><span class="v">x = 0</span><span class="f"> and solve for y. The line crosses the y-axis at</span> (0, <span class="v">b</span>).
+    </div>
+
+    <p>The x-intercept is denoted <strong class="hl-orange">a</strong> and the y-intercept is denoted <strong class="hl-orange">b</strong>.</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.3</div>
+    <p>Find the x-intercept and y-intercept of the line 3x + 4y = 12.</p>
+    <div class="solution">
+X-intercept: Set y = 0
+  3x + 4(0) = 12 → 3x = 12 → x = 4
+  ∴ X-intercept = 4, point (4, 0)
+
+Y-intercept: Set x = 0
+  3(0) + 4y = 12 → 4y = 12 → y = 3
+  ∴ Y-intercept = 3, point (0, 3)
+    </div>
+  </div>
+
+  <!-- Intercepts Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Intercepts Calculator</div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">For line: Ax + By = C</p>
+    <div class="calc-grid">
+      <div class="input-group"><label>A (coeff of x)</label><input id="int_a" type="number" placeholder="e.g. 3"></div>
+      <div class="input-group"><label>B (coeff of y)</label><input id="int_b" type="number" placeholder="e.g. 4"></div>
+      <div class="input-group"><label>C (constant)</label><input id="int_c" type="number" placeholder="e.g. 12"></div>
+    </div>
+    <button class="calc-btn" onclick="calcIntercepts()">Find Intercepts</button>
+    <div class="calc-result" id="int_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.3 INTERCEPT FORM
+============================== -->
+<section class="section" id="s23">
+  <div class="section-header">
+    <span class="section-num">2.3</span>
+    <h2 class="section-title">Intercept Form of a Straight Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>When we know where a line crosses both axes, the <strong class="hl-purple">Intercept Form</strong> gives the most direct equation. Here <strong class="hl-purple">a</strong> is the x-intercept and <strong class="hl-purple">b</strong> is the y-intercept (both ≠ 0).</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Intercept Form</span>
+      <span class="frac vc"><span class="fnum">x</span><span class="fden">a</span></span>
+      <span class="op">+</span>
+      <span class="frac vc"><span class="fnum">y</span><span class="fden">b</span></span>
+      <span class="op"> = </span> <span class="f">1</span>
+    </div>
+
+    <p>Verify: when x = a, y = 0 ✓ &nbsp; when x = 0, y = b ✓</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.4</div>
+    <p>Write the equation of a line with x-intercept = 5 and y-intercept = −4.</p>
+    <div class="solution">
+Using x/a + y/b = 1 with a = 5, b = −4:
+
+  x/5 + y/(−4) = 1
+  x/5 − y/4 = 1
+
+Multiply throughout by 20:
+  4x − 5y = 20
+
+∴ Equation: 4x − 5y = 20 ✓
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.5</div>
+    <p>The intercepts of a line on x and y axes are equal. If the line passes through (3, 3), find the equation.</p>
+    <div class="solution">
+Equal intercepts ⟹ a = b
+
+Equation: x/a + y/a = 1 → x + y = a
+
+Line passes through (3,3): 3 + 3 = a → a = 6
+
+∴ Equation: x + y = 6 ✓
+    </div>
+  </div>
+
+  <!-- Intercept Form Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Intercept Form Calculator</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>x-intercept (a)</label><input id="if_a" type="number" placeholder="e.g. 5"></div>
+      <div class="input-group"><label>y-intercept (b)</label><input id="if_b" type="number" placeholder="e.g. -4"></div>
+    </div>
+    <button class="calc-btn" onclick="calcInterceptForm()">Generate Equation</button>
+    <div class="calc-result" id="if_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.4 SLOPE-INTERCEPT FORM
+============================== -->
+<section class="section" id="s24">
+  <div class="section-header">
+    <span class="section-num">2.4</span>
+    <h2 class="section-title">Slope-Intercept Form</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>The most widely used form. When you know the <strong class="hl-cyan">slope m</strong> and the <strong class="hl-cyan">y-intercept c</strong> (where the line crosses the y-axis), the equation is:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Slope-Intercept Form</span>
+      <span class="v">y</span> <span class="op">=</span> <span class="v">m</span><span class="v">x</span> <span class="op">+</span> <span class="v">c</span>
+      &nbsp;&nbsp;&nbsp;<span class="f">(m = slope, c = y-intercept)</span>
+    </div>
+
+    <p>From any equation Ax + By + C = 0, rearrange to y = mx + c to read off slope and y-intercept immediately.</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.6</div>
+    <p>Write the equation of a line with slope 3 and y-intercept −2.</p>
+    <div class="solution">
+y = mx + c
+y = 3x + (−2)
+y = 3x − 2
+
+∴ Equation: y = 3x − 2 ✓
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.7</div>
+    <p>Find the slope and y-intercept of 4x − 2y + 8 = 0.</p>
+    <div class="solution">
+Rearranging to y = mx + c:
+  4x − 2y + 8 = 0
+  −2y = −4x − 8
+  y = 2x + 4
+
+∴ Slope m = 2,  y-intercept c = 4 ✓
+    </div>
+  </div>
+
+  <!-- Slope-Intercept Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Slope-Intercept Calculator</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'si_tab1')">m & c → Equation</button>
+      <button class="tab-btn" onclick="switchTab(this,'si_tab2')">Ax+By+C=0 → m & c</button>
+    </div>
+    <div class="tab-pane active" id="si_tab1">
+      <div class="calc-grid">
+        <div class="input-group"><label>Slope (m)</label><input id="si_m" type="number" placeholder="e.g. 3"></div>
+        <div class="input-group"><label>y-intercept (c)</label><input id="si_c" type="number" placeholder="e.g. -2"></div>
+      </div>
+      <button class="calc-btn" onclick="calcSlopeIntercept()">Get Equation</button>
+    </div>
+    <div class="tab-pane" id="si_tab2">
+      <div class="calc-grid">
+        <div class="input-group"><label>A</label><input id="si_A" type="number" placeholder="e.g. 4"></div>
+        <div class="input-group"><label>B</label><input id="si_B" type="number" placeholder="e.g. -2"></div>
+        <div class="input-group"><label>C</label><input id="si_C" type="number" placeholder="e.g. 8"></div>
+      </div>
+      <button class="calc-btn" onclick="calcFromGeneral()">Find m & c</button>
+    </div>
+    <div class="calc-result" id="si_result"></div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="siCanvas" width="500" height="280"></canvas>
+  </div>
+</section>
+
+<!-- ==============================
+     2.5 SLOPE-POINT FORM
+============================== -->
+<section class="section" id="s25">
+  <div class="section-header">
+    <span class="section-num">2.5</span>
+    <h2 class="section-title">Slope-Point Form</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>When you know the <strong class="hl-cyan">slope m</strong> and <strong class="hl-cyan">one point (x₁, y₁)</strong> on the line:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Slope-Point Form (Point-Slope Form)</span>
+      <span class="v">y</span> <span class="op">−</span> <span class="v">y₁</span> <span class="op">=</span> <span class="v">m</span>(<span class="v">x</span> <span class="op">−</span> <span class="v">x₁</span>)
+    </div>
+
+    <p><em>Derivation:</em> Any other point (x, y) on the line satisfies slope = (y − y₁)/(x − x₁) = m, giving y − y₁ = m(x − x₁).</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.8</div>
+    <p>Find the equation of a line with slope 2 passing through (3, −1).</p>
+    <div class="solution">
+y − y₁ = m(x − x₁)
+y − (−1) = 2(x − 3)
+y + 1 = 2x − 6
+y = 2x − 7
+
+∴ Equation: y = 2x − 7  (or  2x − y − 7 = 0) ✓
+    </div>
+  </div>
+
+  <!-- Slope-Point Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Slope-Point Calculator</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>Slope (m)</label><input id="sp_m" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>x₁</label><input id="sp_x1" type="number" placeholder="e.g. 3"></div>
+      <div class="input-group"><label>y₁</label><input id="sp_y1" type="number" placeholder="e.g. -1"></div>
+    </div>
+    <button class="calc-btn" onclick="calcSlopePoint()">Get Equation</button>
+    <div class="calc-result" id="sp_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.6 TWO-POINT FORM
+============================== -->
+<section class="section" id="s26">
+  <div class="section-header">
+    <span class="section-num">2.6</span>
+    <h2 class="section-title">Two-Point Form</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>When you know <strong class="hl-orange">two points</strong> (x₁, y₁) and (x₂, y₂), the equation is derived by first computing slope, then using slope-point form:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Two-Point Form</span>
+      <span class="frac vc"><span class="fnum">y − y₁</span><span class="fden">y₂ − y₁</span></span>
+      <span class="op"> = </span>
+      <span class="frac vc"><span class="fnum">x − x₁</span><span class="fden">x₂ − x₁</span></span>
+    </div>
+
+    <div class="formula-box">
+      <span class="formula-label">Equivalent Determinant Form</span>
+      |x &nbsp; y &nbsp; 1|<br>
+      |x₁ y₁ 1| = 0<br>
+      |x₂ y₂ 1|
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.9</div>
+    <p>Find the equation of a line through (1, 3) and (4, 9).</p>
+    <div class="solution">
+Step 1: Slope m = (9 − 3)/(4 − 1) = 6/3 = 2
+
+Step 2: y − y₁ = m(x − x₁)
+  y − 3 = 2(x − 1)
+  y − 3 = 2x − 2
+  y = 2x + 1
+
+∴ Equation: y = 2x + 1  (or  2x − y + 1 = 0) ✓
+
+Verify with (4,9): 2(4) + 1 = 9 ✓
+    </div>
+  </div>
+
+  <!-- Two-Point Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Two-Point Form Calculator</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>x₁</label><input id="tp_x1" type="number" placeholder="1"></div>
+      <div class="input-group"><label>y₁</label><input id="tp_y1" type="number" placeholder="3"></div>
+      <div class="input-group"><label>x₂</label><input id="tp_x2" type="number" placeholder="4"></div>
+      <div class="input-group"><label>y₂</label><input id="tp_y2" type="number" placeholder="9"></div>
+    </div>
+    <button class="calc-btn" onclick="calcTwoPoint()">Get Equation</button>
+    <div class="calc-result" id="tp_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.7 GENERAL FORM
+============================== -->
+<section class="section" id="s27">
+  <div class="section-header">
+    <span class="section-num">2.7</span>
+    <h2 class="section-title">General Form of a Straight Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>Every straight line (including vertical lines) can be expressed in the <strong class="hl-purple">General Form</strong>:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">General Form</span>
+      <span class="v">Ax</span> <span class="op">+</span> <span class="v">By</span> <span class="op">+</span> <span class="v">C</span> <span class="op">=</span> <span class="f">0</span>
+      &nbsp;&nbsp;<span class="f">where A, B are not both zero</span>
+    </div>
+
+    <p>From general form, we can extract all key information:</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th>Property</th><th>Formula from Ax + By + C = 0</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Slope (m)</td><td class="hw">m = <span class="frac" style="color:#e8e8f0"><span class="fnum">−A</span><span class="fden">B</span></span> &nbsp; (B ≠ 0)</td></tr>
+        <tr><td>X-intercept (a)</td><td class="hw">a = <span class="frac" style="color:#e8e8f0"><span class="fnum">−C</span><span class="fden">A</span></span> &nbsp; (A ≠ 0)</td></tr>
+        <tr><td>Y-intercept (b)</td><td class="hw">b = <span class="frac" style="color:#e8e8f0"><span class="fnum">−C</span><span class="fden">B</span></span> &nbsp; (B ≠ 0)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.10</div>
+    <p>For the line 5x − 3y + 15 = 0, find: (a) slope (b) x-intercept (c) y-intercept.</p>
+    <div class="solution">
+Here A = 5, B = −3, C = 15
+
+(a) Slope m = −A/B = −5/(−3) = 5/3
+
+(b) X-intercept a = −C/A = −15/5 = −3
+    → crosses x-axis at (−3, 0)
+
+(c) Y-intercept b = −C/B = −15/(−3) = 5
+    → crosses y-axis at (0, 5) ✓
+    </div>
+  </div>
+
+  <!-- General Form Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">General Form Analyzer</div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Enter Ax + By + C = 0</p>
+    <div class="calc-grid">
+      <div class="input-group"><label>A</label><input id="gf_a" type="number" placeholder="e.g. 5"></div>
+      <div class="input-group"><label>B</label><input id="gf_b" type="number" placeholder="e.g. -3"></div>
+      <div class="input-group"><label>C</label><input id="gf_c" type="number" placeholder="e.g. 15"></div>
+    </div>
+    <button class="calc-btn" onclick="analyzeGeneral()">Analyze</button>
+    <div class="calc-result" id="gf_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.8 ANGLE BETWEEN LINES / PARALLEL / PERP
+============================== -->
+<section class="section" id="s28">
+  <div class="section-header">
+    <span class="section-num">2.8</span>
+    <h2 class="section-title">Angle Between Two Lines & Conditions</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>Let two lines have slopes <strong class="hl-cyan">m₁</strong> and <strong class="hl-cyan">m₂</strong>. The angle θ between them satisfies:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Angle Between Two Lines</span>
+      <span class="v">tan(θ)</span> <span class="op"> = </span>
+      <span class="op">|</span><span class="frac vc"><span class="fnum">m₁ − m₂</span><span class="fden">1 + m₁m₂</span></span><span class="op">|</span>
+      &nbsp;&nbsp;<span class="f">(1 + m₁m₂ ≠ 0)</span>
+    </div>
+
+    <p>The acute angle is given by taking the positive value. The obtuse angle = 180° − θ.</p>
+  </div>
+
+  <div class="condition-grid">
+    <div class="condition-card parallel">
+      <h4>⟺ Parallel Lines</h4>
+      <div class="cond-formula">m₁ = m₂</div>
+      <p>Two lines are parallel if and only if their slopes are equal.</p>
+    </div>
+    <div class="condition-card perp">
+      <h4>⊥ Perpendicular Lines</h4>
+      <div class="cond-formula">m₁ · m₂ = −1</div>
+      <p>Two lines are perpendicular if and only if the product of their slopes is −1.</p>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.11</div>
+    <p>Find the acute angle between lines y = 2x + 3 and y = −x + 5.</p>
+    <div class="solution">
+m₁ = 2,  m₂ = −1
+
+tan(θ) = |(m₁ − m₂)/(1 + m₁m₂)|
+       = |(2 − (−1))/(1 + 2×(−1))|
+       = |3/(1 − 2)|
+       = |3/(−1)|
+       = 3
+
+θ = arctan(3) ≈ 71.57° ✓
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.12</div>
+    <p>Are the lines 2x − 4y + 5 = 0 and x − 2y + 7 = 0 parallel, perpendicular, or neither?</p>
+    <div class="solution">
+Line 1: 2x − 4y + 5 = 0 → slope m₁ = −2/(−4) = 1/2
+Line 2: x − 2y + 7 = 0  → slope m₂ = −1/(−2) = 1/2
+
+m₁ = m₂ = 1/2  →  Lines are PARALLEL ✓
+(but C values differ, so they don't coincide)
+    </div>
+  </div>
+
+  <!-- Angle Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Angle Between Two Lines Calculator</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>Slope m₁</label><input id="ang_m1" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>Slope m₂</label><input id="ang_m2" type="number" placeholder="e.g. -1"></div>
+    </div>
+    <button class="calc-btn" onclick="calcAngle()">Calculate Angle</button>
+    <div class="calc-result" id="ang_result"></div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="angleCanvas" width="500" height="280"></canvas>
+  </div>
+</section>
+
+<!-- ==============================
+     2.9 PARALLEL LINE EQUATION
+============================== -->
+<section class="section" id="s29">
+  <div class="section-header">
+    <span class="section-num">2.9</span>
+    <h2 class="section-title">Equation of a Line Parallel to a Given Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>A line <strong class="hl-purple">parallel</strong> to Ax + By + C = 0 has the same A and B coefficients. It differs only in the constant term:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Parallel Line Formula</span>
+      <span class="f">Given line: </span> <span class="v">Ax + By + C = 0</span><br>
+      <span class="f">Parallel line: </span> <span class="v">Ax + By + K = 0</span> &nbsp;<span class="f">(K ≠ C, K determined by given point)</span>
+    </div>
+
+    <p><strong>Key:</strong> Same slope → same A and B. Only the constant changes. Substitute the given point to find K.</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.13</div>
+    <p>Find the equation of a line parallel to 3x + 5y − 10 = 0 passing through (2, 1).</p>
+    <div class="solution">
+Parallel line has form: 3x + 5y + K = 0
+
+Substitute point (2, 1):
+  3(2) + 5(1) + K = 0
+  6 + 5 + K = 0
+  K = −11
+
+∴ Equation: 3x + 5y − 11 = 0 ✓
+
+Check: slope of 3x+5y−10=0 is −3/5
+       slope of 3x+5y−11=0 is −3/5 ✓ (equal → parallel)
+    </div>
+  </div>
+
+  <!-- Parallel Line Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Parallel Line Calculator</div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Given line: Ax + By + C = 0 passing through point (x₀, y₀)</p>
+    <div class="calc-grid">
+      <div class="input-group"><label>A</label><input id="par_a" type="number" placeholder="e.g. 3"></div>
+      <div class="input-group"><label>B</label><input id="par_b" type="number" placeholder="e.g. 5"></div>
+      <div class="input-group"><label>C</label><input id="par_c" type="number" placeholder="e.g. -10"></div>
+      <div class="input-group"><label>x₀</label><input id="par_x" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>y₀</label><input id="par_y" type="number" placeholder="e.g. 1"></div>
+    </div>
+    <button class="calc-btn" onclick="calcParallel()">Find Parallel Line</button>
+    <div class="calc-result" id="par_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     2.10 PERPENDICULAR LINE EQUATION
+============================== -->
+<section class="section" id="s210">
+  <div class="section-header">
+    <span class="section-num">2.10</span>
+    <h2 class="section-title">Equation of a Line Perpendicular to a Given Line</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="concept">
+    <p>A line <strong class="hl-orange">perpendicular</strong> to Ax + By + C = 0 swaps and negates the A and B coefficients:</p>
+
+    <div class="formula-box">
+      <span class="formula-label">Perpendicular Line Formula</span>
+      <span class="f">Given line: </span> <span class="v">Ax + By + C = 0</span><br>
+      <span class="f">Perp line: </span> <span class="v">Bx − Ay + K = 0</span> &nbsp;<span class="f">(K determined by given point)</span>
+    </div>
+
+    <p><strong>Why it works:</strong> Slope of given line = −A/B. Slope of perp line = B/A. Product = (−A/B)(B/A) = −1 ✓</p>
+  </div>
+
+  <div class="example">
+    <div class="example-label">Example 2.14</div>
+    <p>Find the equation of a line perpendicular to 2x − 3y + 6 = 0 passing through (4, 1).</p>
+    <div class="solution">
+Given: 2x − 3y + 6 = 0  (A=2, B=−3)
+
+Perp line form: Bx − Ay + K = 0
+  → (−3)x − (2)y + K = 0
+  → 3x + 2y + K = 0  [multiplied by −1]
+
+Substitute (4, 1):
+  3(4) + 2(1) + K = 0
+  12 + 2 + K = 0
+  K = −14
+
+∴ Equation: 3x + 2y − 14 = 0 ✓
+
+Verify: slope of given = −2/(−3) = 2/3
+        slope of perp  = −3/2
+        Product = (2/3)(−3/2) = −1 ✓
+    </div>
+  </div>
+
+  <!-- Perpendicular Calculator -->
+  <div class="calc-card">
+    <div class="calc-title">Perpendicular Line Calculator</div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Given line: Ax + By + C = 0 through point (x₀, y₀)</p>
+    <div class="calc-grid">
+      <div class="input-group"><label>A</label><input id="perp_a" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>B</label><input id="perp_b" type="number" placeholder="e.g. -3"></div>
+      <div class="input-group"><label>C</label><input id="perp_c" type="number" placeholder="e.g. 6"></div>
+      <div class="input-group"><label>x₀</label><input id="perp_x" type="number" placeholder="e.g. 4"></div>
+      <div class="input-group"><label>y₀</label><input id="perp_y" type="number" placeholder="e.g. 1"></div>
+    </div>
+    <button class="calc-btn" onclick="calcPerpendicular()">Find Perpendicular Line</button>
+    <div class="calc-result" id="perp_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     MEGA CALCULATOR
+============================== -->
+<section class="section" id="mega-calc">
+  <div class="section-header">
+    <span class="section-num" style="background:rgba(124,77,255,0.1);border-color:rgba(124,77,255,0.3);color:var(--accent3);">ALL IN ONE</span>
+    <h2 class="section-title">Master Calculator</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="calc-card" style="border-color:rgba(124,77,255,0.3);">
+    <div class="calc-title" style="color:var(--accent3);">Complete Line Analyzer — Enter Any Two Points</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>x₁</label><input id="mc_x1" type="number" placeholder="e.g. 1"></div>
+      <div class="input-group"><label>y₁</label><input id="mc_y1" type="number" placeholder="e.g. 2"></div>
+      <div class="input-group"><label>x₂</label><input id="mc_x2" type="number" placeholder="e.g. 5"></div>
+      <div class="input-group"><label>y₂</label><input id="mc_y2" type="number" placeholder="e.g. 8"></div>
+    </div>
+    <button class="calc-btn" style="background:var(--accent3);" onclick="megaCalc()">Analyze Line Completely</button>
+    <div class="calc-result" id="mc_result"></div>
+  </div>
+</section>
+
+<!-- ==============================
+     FORMULA CHEAT SHEET
+============================== -->
+<section class="section" id="cheatsheet">
+  <div class="section-header">
+    <span class="section-num" style="background:rgba(0,230,118,0.08);border-color:rgba(0,230,118,0.3);color:var(--good);">CHEAT SHEET</span>
+    <h2 class="section-title">Quick Reference</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Form</th><th>Equation</th><th>Use When…</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Intercept</td><td class="hw"><span class="frac" style="color:#e8e8f0"><span class="fnum">x</span><span class="fden">a</span></span> + <span class="frac" style="color:#e8e8f0"><span class="fnum">y</span><span class="fden">b</span></span> = 1</td><td>Both intercepts known</td></tr>
+      <tr><td>Slope-Intercept</td><td class="hw">y = mx + c</td><td>Slope &amp; y-intercept known</td></tr>
+      <tr><td>Slope-Point</td><td class="hw">y − y₁ = m(x − x₁)</td><td>Slope &amp; one point known</td></tr>
+      <tr><td>Two-Point</td><td class="hw"><span class="frac" style="color:#e8e8f0"><span class="fnum">y−y₁</span><span class="fden">y₂−y₁</span></span> = <span class="frac" style="color:#e8e8f0"><span class="fnum">x−x₁</span><span class="fden">x₂−x₁</span></span></td><td>Two points known</td></tr>
+      <tr><td>General</td><td class="hw">Ax + By + C = 0</td><td>Universal form</td></tr>
+      <tr><td>Parallel to Ax+By+C=0</td><td class="hw">Ax + By + K = 0</td><td>Parallel through point</td></tr>
+      <tr><td>Perp to Ax+By+C=0</td><td class="hw">Bx − Ay + K = 0</td><td>Perpendicular through point</td></tr>
+    </tbody>
+  </table>
+
+  <table class="tbl" style="margin-top:1.5rem;">
+    <thead>
+      <tr><th>Property</th><th>From Ax+By+C=0</th><th>Condition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Slope</td><td class="hw">m = <span class="frac" style="color:#e8e8f0"><span class="fnum">−A</span><span class="fden">B</span></span></td><td>B ≠ 0</td></tr>
+      <tr><td>X-intercept</td><td class="hw">a = <span class="frac" style="color:#e8e8f0"><span class="fnum">−C</span><span class="fden">A</span></span></td><td>A ≠ 0</td></tr>
+      <tr><td>Y-intercept</td><td class="hw">b = <span class="frac" style="color:#e8e8f0"><span class="fnum">−C</span><span class="fden">B</span></span></td><td>B ≠ 0</td></tr>
+      <tr><td>Angle with x-axis</td><td class="hw">θ = arctan(m)</td><td>—</td></tr>
+      <tr><td>Parallel lines</td><td class="hw">m₁ = m₂</td><td>—</td></tr>
+      <tr><td>Perpendicular lines</td><td class="hw">m₁·m₂ = −1</td><td>Neither vertical</td></tr>
+      <tr><td>Angle between lines</td><td class="hw">tan θ = <span class="op">|</span><span class="frac" style="color:#e8e8f0"><span class="fnum">m₁−m₂</span><span class="fden">1+m₁m₂</span></span><span class="op">|</span></td><td>1+m₁m₂ ≠ 0</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+
+<button id="scrolltop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ====== UTILITIES ======
+function fraction(n) {
+  if (n === Math.floor(n)) return String(n);
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  for (let d = 1; d <= 100; d++) {
+    const num = Math.round(abs * d);
+    if (Math.abs(num / d - abs) < 1e-9) {
+      return sign + (d === 1 ? num : `${num}/${d}`);
+    }
+  }
+  return n.toFixed(4);
+}
+
+function showResult(id, html) {
+  const el = document.getElementById(id);
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
+
+function simplifyLine(A, B, C) {
+  // Returns "Ax + By + C = 0" in simplified integer form
+  if (A === 0 && B === 0) return "0 = 0 (degenerate)";
+  const g = gcd(gcd(Math.abs(Math.round(A*1000)), Math.abs(Math.round(B*1000))), Math.abs(Math.round(C*1000)));
+  // Just format nicely
+  const fmt = (coeff, varname, first) => {
+    if (coeff === 0) return '';
+    const abs = Math.abs(coeff);
+    const sign = coeff > 0 ? (first ? '' : ' + ') : (first ? '-' : ' − ');
+    const num = abs === 1 && varname ? '' : fraction(abs);
+    return sign + num + varname;
+  };
+  let eq = '';
+  let first = true;
+  if (A !== 0) { eq += fmt(A, 'x', first); first = false; }
+  if (B !== 0) { eq += fmt(B, 'y', first); first = false; }
+  if (C !== 0) { eq += fmt(C, '', first); }
+  return (eq || '0') + ' = 0';
+}
+
+// ====== TAB SWITCH ======
+function switchTab(btn, tabId) {
+  const parent = btn.closest('.calc-card');
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+  parent.querySelector('.calc-result').classList.remove('show');
+}
+
+// ====== 2.1 SLOPE ======
+function calcSlope() {
+  const x1 = parseFloat(document.getElementById('sl_x1').value);
+  const y1 = parseFloat(document.getElementById('sl_y1').value);
+  const x2 = parseFloat(document.getElementById('sl_x2').value);
+  const y2 = parseFloat(document.getElementById('sl_y2').value);
+  if ([x1,y1,x2,y2].some(isNaN)) { showResult('sl_result','⚠ Please enter all four values.'); return; }
+  if (x1 === x2) { showResult('sl_result','Slope = UNDEFINED (vertical line)\nThe line is x = ' + x1); return; }
+  const m = (y2 - y1) / (x2 - x1);
+  const rise = y2 - y1, run = x2 - x1;
+  const angle = Math.atan(m) * 180 / Math.PI;
+  showResult('sl_result',
+    `m = (y₂ − y₁) / (x₂ − x₁)\n` +
+    `  = (${y2} − ${y1}) / (${x2} − ${x1})\n` +
+    `  = ${rise} / ${run}\n` +
+    `  = ${fraction(m)}\n\n` +
+    `Angle of inclination θ = arctan(${fraction(m)}) ≈ ${angle.toFixed(2)}°\n` +
+    `Type: ${m > 0 ? 'Positive slope (↗)' : m < 0 ? 'Negative slope (↘)' : 'Zero slope (→ horizontal)'}`
+  );
+  drawSlopeCanvas(x1, y1, x2, y2, m);
+}
+
+// ====== 2.2 INTERCEPTS ======
+function calcIntercepts() {
+  const A = parseFloat(document.getElementById('int_a').value);
+  const B = parseFloat(document.getElementById('int_b').value);
+  const C = parseFloat(document.getElementById('int_c').value);
+  if ([A,B,C].some(isNaN)) { showResult('int_result','⚠ Please fill all fields.'); return; }
+  let out = `Line: ${fraction(A)}x + ${fraction(B)}y = ${fraction(C)}\n\n`;
+  if (A !== 0) out += `X-intercept: Set y=0 → ${fraction(A)}x = ${fraction(C)} → x = ${fraction(C/A)}\n  Point: (${fraction(C/A)}, 0)\n\n`;
+  else out += `X-intercept: A = 0, line is horizontal → no x-intercept (unless C=0)\n\n`;
+  if (B !== 0) out += `Y-intercept: Set x=0 → ${fraction(B)}y = ${fraction(C)} → y = ${fraction(C/B)}\n  Point: (0, ${fraction(C/B)})`;
+  else out += `Y-intercept: B = 0, line is vertical → no y-intercept`;
+  showResult('int_result', out);
+}
+
+// ====== 2.3 INTERCEPT FORM ======
+function calcInterceptForm() {
+  const a = parseFloat(document.getElementById('if_a').value);
+  const b = parseFloat(document.getElementById('if_b').value);
+  if (isNaN(a) || isNaN(b)) { showResult('if_result','⚠ Enter both intercepts.'); return; }
+  if (a === 0 || b === 0) { showResult('if_result','⚠ Intercept form requires a ≠ 0 and b ≠ 0.'); return; }
+  // x/a + y/b = 1 → bx + ay = ab
+  const A = b, B = a, C = -a*b;
+  showResult('if_result',
+    `Intercept form: x/${fraction(a)} + y/${fraction(b)} = 1\n\n` +
+    `Multiply by ${fraction(a*b)}:\n` +
+    `  ${fraction(b)}x + ${fraction(a)}y = ${fraction(a*b)}\n\n` +
+    `General form: ${fraction(b)}x + ${fraction(a)}y − ${fraction(a*b)} = 0`
+  );
+}
+
+// ====== 2.4 SLOPE-INTERCEPT ======
+function calcSlopeIntercept() {
+  const m = parseFloat(document.getElementById('si_m').value);
+  const c = parseFloat(document.getElementById('si_c').value);
+  if (isNaN(m) || isNaN(c)) { showResult('si_result','⚠ Enter slope and y-intercept.'); return; }
+  const cs = c >= 0 ? `+ ${fraction(c)}` : `− ${fraction(Math.abs(c))}`;
+  const ms = m === 1 ? '' : m === -1 ? '-' : fraction(m);
+  showResult('si_result',
+    `y = ${ms}x ${cs}\n\n` +
+    `Slope m = ${fraction(m)}\nY-intercept = ${fraction(c)}\n\n` +
+    `Angle θ = arctan(${fraction(m)}) ≈ ${(Math.atan(m)*180/Math.PI).toFixed(2)}°\n` +
+    `General form: ${fraction(-m)}x + y ${c >= 0 ? '−' : '+'} ${fraction(Math.abs(c))} = 0`
+  );
+  drawSICanvas(m, c);
+}
+
+function calcFromGeneral() {
+  const A = parseFloat(document.getElementById('si_A').value);
+  const B = parseFloat(document.getElementById('si_B').value);
+  const C = parseFloat(document.getElementById('si_C').value);
+  if ([A,B,C].some(isNaN)) { showResult('si_result','⚠ Fill all fields.'); return; }
+  if (B === 0) { showResult('si_result','⚠ B = 0 → vertical line (undefined slope)\nEquation: x = ' + fraction(-C/A)); return; }
+  const m = -A/B, c = -C/B;
+  showResult('si_result',
+    `${fraction(A)}x + ${fraction(B)}y + ${fraction(C)} = 0\n` +
+    `Rearranging: y = (${fraction(-A/B)})x + (${fraction(-C/B)})\n\n` +
+    `Slope m = −A/B = ${fraction(m)}\n` +
+    `Y-intercept c = −C/B = ${fraction(c)}`
+  );
+  drawSICanvas(m, c);
+}
+
+// ====== 2.5 SLOPE-POINT ======
+function calcSlopePoint() {
+  const m = parseFloat(document.getElementById('sp_m').value);
+  const x1 = parseFloat(document.getElementById('sp_x1').value);
+  const y1 = parseFloat(document.getElementById('sp_y1').value);
+  if ([m,x1,y1].some(isNaN)) { showResult('sp_result','⚠ Fill all fields.'); return; }
+  const c = y1 - m * x1;
+  const cs = c >= 0 ? `+ ${fraction(c)}` : `− ${fraction(Math.abs(c))}`;
+  showResult('sp_result',
+    `y − (${fraction(y1)}) = ${fraction(m)}(x − (${fraction(x1)}))\n` +
+    `y − ${fraction(y1)} = ${fraction(m)}x − ${fraction(m*x1)}\n` +
+    `y = ${fraction(m)}x ${cs}\n\n` +
+    `Slope-intercept: y = ${fraction(m)}x ${cs}\n` +
+    `General form: ${simplifyLine(-m, 1, -c)}`
+  );
+}
+
+// ====== 2.6 TWO-POINT ======
+function calcTwoPoint() {
+  const x1 = parseFloat(document.getElementById('tp_x1').value);
+  const y1 = parseFloat(document.getElementById('tp_y1').value);
+  const x2 = parseFloat(document.getElementById('tp_x2').value);
+  const y2 = parseFloat(document.getElementById('tp_y2').value);
+  if ([x1,y1,x2,y2].some(isNaN)) { showResult('tp_result','⚠ Fill all fields.'); return; }
+  if (x1 === x2 && y1 === y2) { showResult('tp_result','⚠ Two points must be distinct.'); return; }
+  if (x1 === x2) { showResult('tp_result',`Vertical line: x = ${fraction(x1)}`); return; }
+  const m = (y2 - y1)/(x2 - x1);
+  const c = y1 - m*x1;
+  const cs = c >= 0 ? `+ ${fraction(c)}` : `− ${fraction(Math.abs(c))}`;
+  showResult('tp_result',
+    `Step 1: Slope m = (${fraction(y2)} − ${fraction(y1)}) / (${fraction(x2)} − ${fraction(x1)})\n` +
+    `              = ${fraction(y2-y1)} / ${fraction(x2-x1)} = ${fraction(m)}\n\n` +
+    `Step 2: y − ${fraction(y1)} = ${fraction(m)}(x − ${fraction(x1)})\n` +
+    `        y = ${fraction(m)}x ${cs}\n\n` +
+    `General form: ${simplifyLine(-m, 1, -c)}`
+  );
+}
+
+// ====== 2.7 GENERAL FORM ======
+function analyzeGeneral() {
+  const A = parseFloat(document.getElementById('gf_a').value);
+  const B = parseFloat(document.getElementById('gf_b').value);
+  const C = parseFloat(document.getElementById('gf_c').value);
+  if ([A,B,C].some(isNaN)) { showResult('gf_result','⚠ Fill all fields.'); return; }
+  let out = `Line: ${fraction(A)}x + ${fraction(B)}y + ${fraction(C)} = 0\n\n`;
+  if (B !== 0) {
+    const m = -A/B, c = -C/B;
+    out += `Slope m = −A/B = ${fraction(m)}\n`;
+    out += `Slope-intercept: y = ${fraction(m)}x + ${fraction(c)}\n`;
+    out += `Angle θ ≈ ${(Math.atan(m)*180/Math.PI).toFixed(2)}°\n\n`;
+  } else out += `B = 0 → Vertical line (slope undefined)\n\n`;
+  if (A !== 0) out += `X-intercept = −C/A = ${fraction(-C/A)}  →  (${fraction(-C/A)}, 0)\n`;
+  if (B !== 0) out += `Y-intercept = −C/B = ${fraction(-C/B)}  →  (0, ${fraction(-C/B)})`;
+  showResult('gf_result', out);
+}
+
+// ====== 2.8 ANGLE ======
+function calcAngle() {
+  const m1 = parseFloat(document.getElementById('ang_m1').value);
+  const m2 = parseFloat(document.getElementById('ang_m2').value);
+  if (isNaN(m1) || isNaN(m2)) { showResult('ang_result','⚠ Enter both slopes.'); return; }
+  const denom = 1 + m1*m2;
+  let out = `m₁ = ${fraction(m1)},  m₂ = ${fraction(m2)}\n\n`;
+  if (m1 === m2) {
+    out += `m₁ = m₂ → Lines are PARALLEL ∥\nAngle between them = 0°`;
+    showResult('ang_result', out);
+    drawAngleCanvas(m1, m2, 0);
+    return;
+  }
+  if (Math.abs(denom) < 1e-9) {
+    out += `1 + m₁m₂ = 0 → Lines are PERPENDICULAR ⊥\nAngle between them = 90°`;
+    showResult('ang_result', out);
+    drawAngleCanvas(m1, m2, 90);
+    return;
+  }
+  const tanTheta = Math.abs((m1 - m2)/denom);
+  const theta = Math.atan(tanTheta) * 180 / Math.PI;
+  out += `tan(θ) = |(m₁ − m₂)/(1 + m₁m₂)|\n`;
+  out += `       = |(${fraction(m1)} − ${fraction(m2)}) / (1 + ${fraction(m1*m2)})|\n`;
+  out += `       = |${fraction(m1-m2)} / ${fraction(denom)}|\n`;
+  out += `       = ${tanTheta.toFixed(4)}\n\n`;
+  out += `Acute angle θ = arctan(${tanTheta.toFixed(4)}) ≈ ${theta.toFixed(2)}°\n`;
+  out += `Obtuse angle = 180° − ${theta.toFixed(2)}° = ${(180-theta).toFixed(2)}°`;
+  showResult('ang_result', out);
+  drawAngleCanvas(m1, m2, theta);
+}
+
+// ====== 2.9 PARALLEL ======
+function calcParallel() {
+  const A = parseFloat(document.getElementById('par_a').value);
+  const B = parseFloat(document.getElementById('par_b').value);
+  const C = parseFloat(document.getElementById('par_c').value);
+  const x0 = parseFloat(document.getElementById('par_x').value);
+  const y0 = parseFloat(document.getElementById('par_y').value);
+  if ([A,B,C,x0,y0].some(isNaN)) { showResult('par_result','⚠ Fill all fields.'); return; }
+  const K = -(A*x0 + B*y0);
+  showResult('par_result',
+    `Given: ${fraction(A)}x + ${fraction(B)}y + ${fraction(C)} = 0\n\n` +
+    `Parallel line form: ${fraction(A)}x + ${fraction(B)}y + K = 0\n\n` +
+    `Substitute (${fraction(x0)}, ${fraction(y0)}):\n` +
+    `  ${fraction(A)}(${fraction(x0)}) + ${fraction(B)}(${fraction(y0)}) + K = 0\n` +
+    `  ${fraction(A*x0)} + ${fraction(B*y0)} + K = 0\n` +
+    `  K = ${fraction(K)}\n\n` +
+    `∴ Parallel line: ${simplifyLine(A, B, K)}\n\n` +
+    `Both have slope m = ${B !== 0 ? fraction(-A/B) : 'undefined'} ✓`
+  );
+}
+
+// ====== 2.10 PERPENDICULAR ======
+function calcPerpendicular() {
+  const A = parseFloat(document.getElementById('perp_a').value);
+  const B = parseFloat(document.getElementById('perp_b').value);
+  const C = parseFloat(document.getElementById('perp_c').value);
+  const x0 = parseFloat(document.getElementById('perp_x').value);
+  const y0 = parseFloat(document.getElementById('perp_y').value);
+  if ([A,B,C,x0,y0].some(isNaN)) { showResult('perp_result','⚠ Fill all fields.'); return; }
+  // Perp line: Bx - Ay + K = 0
+  const K = -(B*x0 - A*y0);
+  const m_given = B !== 0 ? -A/B : Infinity;
+  const m_perp = A !== 0 ? B/A : 0;
+  showResult('perp_result',
+    `Given: ${fraction(A)}x + ${fraction(B)}y + ${fraction(C)} = 0\n` +
+    `  Slope m₁ = ${fraction(-A/B)}\n\n` +
+    `Perp line form: ${fraction(B)}x − ${fraction(A)}y + K = 0\n` +
+    `  Slope m₂ = ${fraction(B/A)}\n\n` +
+    `Check: m₁ × m₂ = ${fraction(-A/B)} × ${fraction(B/A)} = ${fraction((-A/B)*(B/A))} = −1 ✓\n\n` +
+    `Substitute (${fraction(x0)}, ${fraction(y0)}):\n` +
+    `  ${fraction(B)}(${fraction(x0)}) − ${fraction(A)}(${fraction(y0)}) + K = 0\n` +
+    `  ${fraction(B*x0)} − ${fraction(A*y0)} + K = 0\n` +
+    `  K = ${fraction(K)}\n\n` +
+    `∴ Perpendicular line: ${simplifyLine(B, -A, K)}`
+  );
+}
+
+// ====== MEGA CALC ======
+function megaCalc() {
+  const x1 = parseFloat(document.getElementById('mc_x1').value);
+  const y1 = parseFloat(document.getElementById('mc_y1').value);
+  const x2 = parseFloat(document.getElementById('mc_x2').value);
+  const y2 = parseFloat(document.getElementById('mc_y2').value);
+  if ([x1,y1,x2,y2].some(isNaN)) { showResult('mc_result','⚠ Enter all four values.'); return; }
+  if (x1===x2 && y1===y2) { showResult('mc_result','⚠ Points must be distinct.'); return; }
+  let out = `━━━ TWO-POINT ANALYSIS ━━━\nPoints: (${x1}, ${y1}) and (${x2}, ${y2})\n\n`;
+  if (x1 === x2) {
+    out += `Vertical line: x = ${fraction(x1)}\nSlope: UNDEFINED\nX-intercept: ${fraction(x1)}\nNo y-intercept`;
+    showResult('mc_result', out); return;
+  }
+  const m = (y2-y1)/(x2-x1);
+  const c = y1 - m*x1;
+  const xint = -c/m;
+  out += `Slope (m) = ${fraction(m)}\n`;
+  out += `Y-intercept (c) = ${fraction(c)}\n`;
+  out += `X-intercept (a) = ${isFinite(xint) ? fraction(xint) : 'none'}\n\n`;
+  out += `━━━ ALL EQUATION FORMS ━━━\n`;
+  out += `Slope-Intercept:  y = ${fraction(m)}x + ${fraction(c)}\n`;
+  out += `Slope-Point:      y − ${fraction(y1)} = ${fraction(m)}(x − ${fraction(x1)})\n`;
+  out += `Two-Point Form:   (y−${fraction(y1)})/(${fraction(y2-y1)}) = (x−${fraction(x1)})/(${fraction(x2-x1)})\n`;
+  out += `General Form:     ${simplifyLine(-m,1,-c)}\n\n`;
+  if (c !== 0 && m !== 0) out += `Intercept Form:   x/${fraction(xint)} + y/${fraction(c)} = 1\n\n`;
+  out += `━━━ PARALLEL & PERPENDICULAR ━━━\n`;
+  out += `Parallel line family: ${simplifyLine(-m,1,-c).replace('= 0','')}= K\n`;
+  out += `Perpendicular slope: ${fraction(-1/m)}\n`;
+  out += `Angle with x-axis: ≈ ${(Math.atan(m)*180/Math.PI).toFixed(2)}°`;
+  showResult('mc_result', out);
+}
+
+// ====== CANVAS DRAWINGS ======
+function drawGrid(ctx, w, h, cx, cy, scale) {
+  ctx.strokeStyle = 'rgba(42,42,58,0.8)';
+  ctx.lineWidth = 1;
+  for (let x = cx % scale; x < w; x += scale) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = cy % scale; y < h; y += scale) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  // Axes
+  ctx.strokeStyle = 'rgba(122,122,154,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
+  // Labels
+  ctx.fillStyle = 'rgba(122,122,154,0.7)';
+  ctx.font = "11px 'Space Mono', monospace";
+  ctx.fillText('x', w-14, cy-8);
+  ctx.fillText('y', cx+8, 14);
+}
+
+function drawSlopeCanvas(x1,y1,x2,y2,m) {
+  const canvas = document.getElementById('slopeCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const scale = 40, cx = w/2, cy = h/2;
+  drawGrid(ctx, w, h, cx, cy, scale);
+
+  const toC = (x,y) => [cx + x*scale, cy - y*scale];
+
+  // Draw line
+  const t1 = -cx/scale, t2 = cx/scale;
+  const [lx1, ly1] = toC(t1, m*t1 + (y1 - m*x1));
+  const [lx2, ly2] = toC(t2, m*t2 + (y1 - m*x1));
+  ctx.beginPath(); ctx.moveTo(lx1,ly1); ctx.lineTo(lx2,ly2);
+  ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Draw points
+  [[x1,y1],[x2,y2]].forEach(([px,py]) => {
+    const [cx2, cy2] = toC(px,py);
+    ctx.beginPath(); ctx.arc(cx2,cy2,5,0,Math.PI*2);
+    ctx.fillStyle = '#ff6b35'; ctx.fill();
+  });
+
+  // Rise/Run
+  const [ax,ay] = toC(x1,y1);
+  const [bx,by] = toC(x2,y2);
+  ctx.setLineDash([4,4]);
+  ctx.strokeStyle = 'rgba(255,107,53,0.5)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,ay); ctx.lineTo(bx,by); ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#ff6b35';
+  ctx.font = "11px 'Space Mono',monospace";
+  ctx.fillText('Run', (ax+bx)/2 - 12, ay + 16);
+  ctx.fillText('Rise', bx + 6, (ay+by)/2);
+}
+
+function drawSICanvas(m, c) {
+  const canvas = document.getElementById('siCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const scale = 40, cx = w/2, cy = h/2;
+  drawGrid(ctx, w, h, cx, cy, scale);
+  const t1 = -cx/scale, t2 = cx/scale;
+  const toY = x => cy - (m*x + c)*scale;
+  ctx.beginPath(); ctx.moveTo(0, toY(t1)); ctx.lineTo(w, toY(t2));
+  ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2.5; ctx.stroke();
+  // y-intercept
+  const [yx, yy] = [cx, cy - c*scale];
+  ctx.beginPath(); ctx.arc(yx,yy,5,0,Math.PI*2);
+  ctx.fillStyle = '#7c4dff'; ctx.fill();
+  ctx.fillStyle = '#7c4dff';
+  ctx.font = "11px 'Space Mono',monospace";
+  ctx.fillText(`y-int (${fraction(c)})`, yx+8, yy-6);
+}
+
+function drawAngleCanvas(m1, m2, theta) {
+  const canvas = document.getElementById('angleCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const scale = 40, cx = w/2, cy = h/2;
+  drawGrid(ctx, w, h, cx, cy, scale);
+  const colors = ['#00e5ff','#ff6b35'];
+  [m1, m2].forEach((m, i) => {
+    const t = 200;
+    ctx.beginPath(); ctx.moveTo(cx-t, cy+m*t); ctx.lineTo(cx+t, cy-m*t);
+    ctx.strokeStyle = colors[i]; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = colors[i];
+    ctx.font = "12px 'Space Mono',monospace";
+    ctx.fillText(`m${i+1}=${fraction(m)}`, cx + 160 - i*80, cy - m*160 - 6);
+  });
+  if (theta > 0) {
+    ctx.fillStyle = '#ffeb3b';
+    ctx.font = "bold 13px 'Syne',sans-serif";
+    ctx.fillText(`θ ≈ ${theta.toFixed(1)}°`, cx + 12, cy - 18);
+  }
+}
+
+// ====== SCROLL ======
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrolltop');
+  btn.classList.toggle('show', window.scrollY > 400);
+});
+
+// Initial demo
+window.onload = () => {
+  drawSlopeCanvas(1,1,4,7, 2);
+  drawSICanvas(1, 2);
+  drawAngleCanvas(1, -0.5, 0);
+};
+</script>
+</body>
+</html>
