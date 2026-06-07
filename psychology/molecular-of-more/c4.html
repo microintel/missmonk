@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dark Side of Dopamine</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0705;
+    --surface: #110d0a;
+    --surface2: #1a1410;
+    --red: #c0392b;
+    --red-dim: #7a1f17;
+    --amber: #e67e22;
+    --amber-dim: #8a4a10;
+    --gold: #f0c040;
+    --text: #e8ddd0;
+    --text-dim: #8a7d6e;
+    --text-muted: #4a4035;
+    --border: rgba(240,192,64,0.12);
+    --border-hot: rgba(192,57,43,0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 256px;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,57,43,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.5s forwards;
+  }
+
+  .hero-title span {
+    color: var(--red);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 480px;
+    font-style: italic;
+    opacity: 0;
+    animation: fade-up 0.8s 0.7s forwards;
+    margin-bottom: 3rem;
+  }
+
+  .scroll-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fade-up 0.8s 1.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .scroll-hint::before, .scroll-hint::after {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--text-muted);
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,7,5,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* SECTIONS */
+  section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--amber);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    color: var(--text);
+  }
+
+  .section-title em { color: var(--red); font-style: italic; }
+
+  p { margin-bottom: 1.4rem; color: var(--text-dim); }
+  p strong { color: var(--text); }
+
+  /* DOPAMINE DEMO */
+  .demo-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .demo-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--red), var(--amber), var(--red));
+    background-size: 200%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0%; }
+    100% { background-position: 200%; }
+  }
+
+  .demo-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .rat-experiment {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .experiment-card {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.3s, transform 0.2s;
+    position: relative;
+  }
+
+  .experiment-card:hover {
+    border-color: var(--amber-dim);
+    transform: translateY(-2px);
+  }
+
+  .experiment-card.active {
+    border-color: var(--red);
+  }
+
+  .exp-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .exp-body {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .dopamine-meter {
+    margin-top: 2rem;
+  }
+
+  .meter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .meter-bar {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red-dim), var(--red));
+    border-radius: 4px;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 0%;
+  }
+
+  /* SLOT MACHINE */
+  .slot-section {
+    background: var(--surface);
+    border: 1px solid var(--border-hot);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+    text-align: center;
+  }
+
+  .slot-machine {
+    display: inline-flex;
+    gap: 8px;
+    background: var(--bg);
+    border: 2px solid var(--red-dim);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .slot-reel {
+    width: 60px; height: 72px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .slot-reel-inner {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .spin-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 0.75rem 2.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.2s, transform 0.1s;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .spin-btn:hover { background: #e74c3c; }
+  .spin-btn:active { transform: scale(0.97); }
+  .spin-btn:disabled { background: var(--red-dim); cursor: not-allowed; }
+
+  .slot-result {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    min-height: 20px;
+    transition: color 0.3s;
+  }
+
+  .slot-result.win { color: var(--gold); }
+  .slot-result.near { color: var(--amber); }
+
+  .slot-counter {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+  }
+
+  /* SKINNER BOX */
+  .skinner-demo {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .pigeon-row {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .pigeon-scenario {
+    flex: 1;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  .peck-bar-wrap {
+    height: 80px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .peck-bar {
+    width: 100%;
+    background: linear-gradient(to top, var(--amber-dim), var(--amber));
+    border-radius: 2px;
+    transition: height 0.6s ease;
+  }
+
+  .pigeon-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .pigeon-emoji { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+
+  /* LOVE CAROUSEL */
+  .love-carousel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+  }
+
+  .stages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .stage:hover { border-color: var(--border); }
+  .stage.active { border-color: var(--red); background: rgba(192,57,43,0.08); }
+
+  .stage-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 2.5rem;
+    padding-top: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  .stage.active .stage-num { color: var(--red); }
+
+  .stage-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .stage-content p {
+    font-size: 14px;
+    margin: 0;
+    color: var(--text-dim);
+  }
+
+  .choice-fork {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .fork-card {
+    flex: 1;
+    min-width: 200px;
+    padding: 1.5rem;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+
+  .fork-card.dopamine-path {
+    border-color: var(--red-dim);
+    background: rgba(192,57,43,0.07);
+  }
+
+  .fork-card.love-path {
+    border-color: rgba(240,192,64,0.25);
+    background: rgba(240,192,64,0.05);
+  }
+
+  .fork-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .fork-card.dopamine-path .fork-title { color: var(--red); }
+  .fork-card.love-path .fork-title { color: var(--gold); }
+
+  .fork-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* QUOTE PULL */
+  .pull-quote {
+    border-left: 3px solid var(--red);
+    padding: 1.25rem 2rem;
+    margin: 3rem 0;
+    background: rgba(192,57,43,0.04);
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    text-transform: uppercase;
+    font-style: normal;
+  }
+
+  /* LIFE LESSON CARDS */
+  .lessons {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+  }
+
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .lesson-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.5rem;
+    position: relative;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .lesson-card:hover {
+    border-color: var(--amber-dim);
+    transform: translateY(-3px);
+  }
+
+  .lesson-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+  }
+
+  .lesson-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+
+  .lesson-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--text-dim);
+  }
+
+  /* DIALOGUE */
+  .dialogue {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .dialogue-line {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+
+  .dialogue-line:last-child { margin-bottom: 0; }
+
+  .speaker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    min-width: 80px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .dialogue-text {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* SELF CHECK */
+  .self-check {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+  }
+
+  .check-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: var(--amber-dim); }
+  .check-item.checked { border-color: var(--gold); background: rgba(240,192,64,0.05); }
+
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1px solid var(--text-muted);
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--bg);
+    font-size: 12px;
+  }
+
+  .check-text {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+
+  .check-item.checked .check-text { color: var(--text); }
+
+  .check-progress {
+    margin-top: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .check-progress-bar {
+    flex: 1;
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .check-progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* FULL WIDTH SECTION */
+  .full-section {
+    padding: 4rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .full-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* MICK GEORGE BOX */
+  .examples-row {
+    display: flex;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .example-person {
+    flex: 1;
+    min-width: 220px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+  }
+
+  .example-person:hover { border-color: var(--red-dim); }
+
+  .person-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+
+  .person-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .person-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .person-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+  }
+
+  footer span { color: var(--red); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero-title { font-size: 3.2rem; }
+    nav { padding: 1rem; }
+    .nav-links { gap: 1rem; }
+    section { padding: 3.5rem 1.25rem; }
+    .demo-box, .slot-section, .love-carousel, .lessons, .self-check { padding: 1.5rem; }
+    .pigeon-row { gap: 0.75rem; }
+    .choice-fork { flex-direction: column; }
+    .examples-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Molecule of More</div>
+  <ul class="nav-links">
+    <li><a href="#science">Science</a></li>
+    <li><a href="#slots">Casino</a></li>
+    <li><a href="#love">Love</a></li>
+    <li><a href="#life">Apply</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Chapter — The Dark Side</div>
+  <h1 class="hero-title">The Dark<br>Side of <span>Dopamine</span></h1>
+  <p class="hero-sub">Why surprise, not satisfaction, is running your life — and what to do about it.</p>
+  <div class="scroll-hint">scroll to explore</div>
+</div>
+
+<!-- SECTION 1: THE SCIENCE -->
+<section id="science">
+  <div class="section-tag">The Science</div>
+  <h2 class="section-title reveal">Dopamine fires on<br><em>surprise</em>, not reward</h2>
+
+  <p class="reveal">Drop food into a rat's cage once — dopamine spikes. The rat is surprised. But keep dropping food <strong>every 5 minutes like clockwork</strong>? Dopamine goes quiet. Predictable reward = no error in expectation = no dopamine surge.</p>
+
+  <p class="reveal">The key insight: <strong>dopamine is not the pleasure molecule. It's the prediction-error molecule.</strong> It fires when the world gives you more than you expected. The moment a reward becomes predictable, the excitement vanishes — even if the reward is still there.</p>
+
+  <div class="demo-box reveal" id="experiment-demo">
+    <div class="demo-label">// Interactive — Click to compare experiments</div>
+
+    <div class="rat-experiment">
+      <div class="experiment-card" onclick="selectExp(this, 20)" data-level="20">
+        <div class="exp-title">Fixed Schedule</div>
+        <div class="exp-body">Food drops every 5 minutes. The rat knows when to expect it. Routine. Predictable.</div>
+      </div>
+      <div class="experiment-card" onclick="selectExp(this, 95)" data-level="95">
+        <div class="exp-title">Random Schedule</div>
+        <div class="exp-body">Food drops at random times. Always a surprise. Every pellet is unexpected. The rat goes frantic.</div>
+      </div>
+    </div>
+
+    <div class="dopamine-meter">
+      <div class="meter-label">
+        <span>Dopamine Activity</span>
+        <span id="meter-pct">—</span>
+      </div>
+      <div class="meter-bar">
+        <div class="meter-fill" id="meter-fill"></div>
+      </div>
+      <p style="font-size:13px; margin-top:0.75rem; font-family:'DM Mono',monospace; color:var(--text-muted); letter-spacing:0.05em; margin-bottom:0;" id="meter-msg">← Select an experiment</p>
+    </div>
+  </div>
+
+  <div class="pull-quote reveal">
+    <p>"If you drop the pellet at random times, so it's always a surprise — dopamine fires like mad. Every reward is unexpected. The animals become excited. They peck faster."</p>
+    <cite>— The Molecule of More, Chapter 1</cite>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 2: SLOT MACHINES -->
+<section id="slots">
+  <div class="section-tag">The Casino</div>
+  <h2 class="section-title reveal">The slot machine is<br><em>engineered</em> dopamine</h2>
+
+  <p class="reveal">Casino operators know that high-roller games — blackjack, poker, roulette — aren't the biggest earners. The humble slot machine is. Modern casinos dedicate <strong>80% of floor space</strong> to slots. Not because they're glamorous. Because they're <em>scientifically optimized</em> for dopamine.</p>
+
+  <p class="reveal">B.F. Skinner discovered this in the 1960s. Fixed pecks for fixed pellets? Boring, mechanical behavior. <strong>Random variable reward?</strong> The pigeon becomes obsessed. Pecks frantically. Cannot stop. The slot machine is just Skinner's box with flashing lights.</p>
+
+  <div class="skinner-demo reveal">
+    <div class="demo-label">// Skinner's Pigeon — Peck Rate Comparison</div>
+    <div class="pigeon-row" id="pigeon-row">
+      <div class="pigeon-scenario">
+        <span class="pigeon-emoji">🐦</span>
+        <div class="peck-bar-wrap">
+          <div class="peck-bar" id="bar-fixed" style="height:35%;"></div>
+        </div>
+        <div class="pigeon-label">Fixed reward<br>(boring, steady)</div>
+      </div>
+      <div class="pigeon-scenario">
+        <span class="pigeon-emoji">🐦</span>
+        <div class="peck-bar-wrap">
+          <div class="peck-bar" id="bar-random" style="height:90%; background: linear-gradient(to top, var(--red-dim), var(--red));"></div>
+        </div>
+        <div class="pigeon-label">Random reward<br>(frantic, obsessed)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slot-section reveal">
+    <div class="demo-label">// Feel It Yourself — Spin the machine</div>
+    <p style="font-size:14px; color:var(--text-dim); margin-bottom:0.25rem;">Notice what happens in your body as you wait. That's dopamine.</p>
+    <div class="slot-machine">
+      <div class="slot-reel"><div class="slot-reel-inner" id="r1">🍒</div></div>
+      <div class="slot-reel"><div class="slot-reel-inner" id="r2">💰</div></div>
+      <div class="slot-reel"><div class="slot-reel-inner" id="r3">⭐</div></div>
+    </div>
+    <button class="spin-btn" id="spin-btn" onclick="spinSlot()">SPIN</button>
+    <div class="slot-result" id="slot-result"></div>
+    <div class="slot-counter" id="spin-count">Spins: 0</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 3: LOVE -->
+<section id="love">
+  <div class="section-tag">Love & Relationships</div>
+  <h2 class="section-title reveal">Early love is a<br><em>dopamine</em> ride</h2>
+
+  <p class="reveal">When Samantha ran into her old boyfriend Demarco, her heart raced. She felt excitement, possibility, butterflies. She didn't know it was dopamine — the same circuit that fires in a rat's brain when food appears randomly. Demarco's appearance was an <strong>unexpected reward</strong> dropped into her emotional life.</p>
+
+  <p class="reveal">Early romance feels magical because it <em>is</em> dopamine. Every text is a surprise. Every date is uncertain. The brain is constantly predicting, getting surprised, firing dopamine. But there's a problem: <strong>novelty runs out.</strong></p>
+
+  <div class="love-carousel reveal">
+    <div class="demo-label">// The Stages of Romantic Dopamine — Click each</div>
+    <div class="stages" id="stages">
+      <div class="stage active" onclick="selectStage(this, 0)">
+        <div class="stage-num">01</div>
+        <div class="stage-content">
+          <h4>The Unexpected Encounter</h4>
+          <p>Surprise meeting. Your nervous system fires. Dopamine floods in. You feel alive, electric, focused.</p>
+        </div>
+      </div>
+      <div class="stage" onclick="selectStage(this, 1)">
+        <div class="stage-num">02</div>
+        <div class="stage-content">
+          <h4>Early Dating — The Peak</h4>
+          <p>Everything is new. Every interaction is unpredictable. Dopamine fires constantly. You think: "Maybe this is the one."</p>
+        </div>
+      </div>
+      <div class="stage" onclick="selectStage(this, 2)">
+        <div class="stage-num">03</div>
+        <div class="stage-content">
+          <h4>The Comfort Zone</h4>
+          <p>The relationship settles. Rewards become predictable. Dopamine quiets. You feel less excited. You might confuse this with "falling out of love."</p>
+        </div>
+      </div>
+      <div class="stage" onclick="selectStage(this, 3)">
+        <div class="stage-num">04</div>
+        <div class="stage-content">
+          <h4>The Fork in the Road</h4>
+          <p>You face a choice. The dopamine high is gone. Now what? This is where most relationships either deepen or die.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="choice-fork" id="love-choice">
+      <div class="fork-card dopamine-path">
+        <div class="fork-title">⚡ Chase the High</div>
+        <p class="fork-desc">End the relationship. Find someone new. Get the dopamine surge again. Repeat. Like Mick Jagger (4,000 partners) or George Costanza — addicted to the chase, not the person.</p>
+      </div>
+      <div class="fork-card love-path">
+        <div class="fork-title">🌿 Build Real Love</div>
+        <p class="fork-desc">Shift from anticipation to appreciation. From fantasy to reality. From dopamine to the Here & Now molecules — serotonin, oxytocin, endorphins. This is harder. This is rarer. This lasts.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialogue reveal">
+    <div class="dialogue-line">
+      <div class="speaker">Mother</div>
+      <div class="dialogue-text">"How's Shawn?"</div>
+    </div>
+    <div class="dialogue-line">
+      <div class="speaker">Samantha</div>
+      <div class="dialogue-text">"Well... This isn't the way I expected it to be."</div>
+    </div>
+    <div class="dialogue-line">
+      <div class="speaker">Mother</div>
+      <div class="dialogue-text">"Again?"</div>
+    </div>
+    <div class="dialogue-line">
+      <div class="speaker">Samantha</div>
+      <div class="dialogue-text">"Here it comes."</div>
+    </div>
+    <div class="dialogue-line">
+      <div class="speaker">Mother</div>
+      <div class="dialogue-text">"Remember Lawrence? And Demarco? Why can't you enjoy the things you have?"</div>
+    </div>
+  </div>
+
+  <p class="reveal">Samantha kept cycling. Lawrence → Demarco → Shawn. Each new person felt like a breakthrough. Each settled relationship felt like a letdown. But the pattern wasn't about the men — it was about her dopamine circuit. <strong>She was addicted to the chase, not the person.</strong></p>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 4: THE TWO PEOPLE -->
+<div class="full-section">
+  <div class="full-inner">
+    <div class="section-tag">Famous Examples</div>
+    <h2 class="section-title reveal">Dopamine in the<br><em>real world</em></h2>
+    <p class="reveal">These are not unusual people. They are extreme versions of a circuit we all share. The difference is self-awareness.</p>
+    <div class="examples-row reveal">
+      <div class="example-person">
+        <span class="person-icon">🎸</span>
+        <div class="person-name">Mick Jagger</div>
+        <div class="person-tag">The Pursuer</div>
+        <p class="person-desc">~4,000 partners over his adult life. A new one every 10 days. Not unusual by dopamine logic — he hit 4,000 and still didn't find "satisfaction." Because dopamine's directive is <em>more</em>. The pursuit never ends. Satisfaction is impossible by design.</p>
+      </div>
+      <div class="example-person">
+        <span class="person-icon">📺</span>
+        <div class="person-name">George Costanza</div>
+        <div class="person-tag">The Chaser</div>
+        <p class="person-desc">In nearly every Seinfeld episode, George fell in love — and the moment a woman returned his affection, he wanted out. He tried to escape his engagement. When his fiancée died, he was <em>relieved</em>. Pure dopamine logic: the chase matters, not the person.</p>
+      </div>
+      <div class="example-person">
+        <span class="person-icon">🪞</span>
+        <div class="person-name">Most of Us</div>
+        <div class="person-tag">The Aware</div>
+        <p class="person-desc">The difference between us and them? We eventually realize dopamine lies to us. We learn that the next exciting person probably isn't "the key to satisfaction." We choose the bridge over the carousel.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: APPLY TO LIFE -->
+<section id="life">
+  <div class="section-tag">Apply to Life</div>
+  <h2 class="section-title reveal">What to do<br>with this <em>knowledge</em></h2>
+
+  <p class="reveal">Understanding the dopamine circuit doesn't kill the magic — it gives you a choice. The carousel feels amazing but always leaves you where you started. The bridge is harder but leads somewhere real.</p>
+
+  <div class="lessons reveal">
+    <div class="demo-label">// Core Insights to Internalize</div>
+    <div class="lesson-grid">
+      <div class="lesson-card">
+        <div class="lesson-num">01 — PATTERN</div>
+        <h4>Excitement ≠ Love</h4>
+        <p>The butterflies, the obsession, the sleeplessness — that's dopamine, not love. Love is quieter. Don't mistake the chemistry crash for the relationship ending.</p>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">02 — CASINO</div>
+        <h4>You Are Being Played</h4>
+        <p>Slot machines, social media, dating apps — all engineered on Skinner's variable reward principle. When you feel compelled to check, spin, swipe — that's dopamine being harvested.</p>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">03 — TRAP</div>
+        <h4>More Never Satisfies</h4>
+        <p>Dopamine's directive is always "more." It cannot deliver satisfaction — only pursuit. Recognizing this breaks the spell. If you're always chasing, ask what you're actually running from.</p>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">04 — CHOICE</div>
+        <h4>Cross the Bridge</h4>
+        <p>The carousel is easy. The bridge — shifting from anticipation to presence, from fantasy to reality — is hard. But only the bridge leads somewhere new.</p>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">05 — SKINNER</div>
+        <h4>Notice the Variable Schedule</h4>
+        <p>Is someone "keeping you on your toes" unpredictably? Hot-cold behavior in relationships mimics variable reward — it hijacks dopamine and creates false intensity.</p>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">06 — PRACTICE</div>
+        <h4>Cultivate Here & Now</h4>
+        <p>Dopamine lives in the future (anticipation). Contentment lives in the present. Practices like gratitude, presence, and deep attention feed the H&N molecules instead.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="self-check reveal">
+    <div class="demo-label">// Self-Awareness Check — Am I running on dopamine?</div>
+    <div class="check-items" id="check-items">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I often feel most excited at the <em>beginning</em> of things — new jobs, new relationships, new projects — and lose interest once they stabilize.</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I sometimes confuse boredom in a relationship with "falling out of love," and the urge for novelty kicks in.</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I find myself checking my phone, social media, or apps compulsively — even when I don't expect anything new.</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I have a pattern of wanting what I don't have, and losing interest once I get it.</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I understand that the "excitement drop" in any long-term relationship is neurological — not a sign that something is wrong with the person or the relationship.</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">I can now identify when I'm being manipulated by variable reward — in apps, gambling, relationships, or content.</div>
+      </div>
+    </div>
+    <div class="check-progress">
+      <span id="check-label">0 / 6 understood</span>
+      <div class="check-progress-bar">
+        <div class="check-progress-fill" id="check-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull-quote reveal">
+    <p>"Early love is a ride on a merry-go-round that sits at the foot of a bridge. You can go around as many times as you like — but it will always leave you where you began."</p>
+    <cite>— The Molecule of More</cite>
+  </div>
+</section>
+
+<footer>
+  <span>The Molecule of More</span> — Daniel Z. Lieberman &amp; Michael E. Long<br>
+  <br>
+  Built for understanding · Microintel
+</footer>
+
+<script>
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // EXPERIMENT SELECTOR
+  function selectExp(card, level) {
+    document.querySelectorAll('.experiment-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    const fill = document.getElementById('meter-fill');
+    const pct = document.getElementById('meter-pct');
+    const msg = document.getElementById('meter-msg');
+    fill.style.width = level + '%';
+    pct.textContent = level + '%';
+    if (level > 50) {
+      msg.textContent = '⚡ High dopamine — frantic pecking, unpredictable reward';
+      msg.style.color = 'var(--red)';
+    } else {
+      msg.textContent = '— Low dopamine — routine behavior, no surprise';
+      msg.style.color = 'var(--text-muted)';
+    }
+  }
+
+  // SLOT MACHINE
+  const symbols = ['🍒', '💰', '⭐', '🔔', '🎯', '💎', '🍋', '7️⃣'];
+  let spinCount = 0;
+  let spinning = false;
+
+  function spinSlot() {
+    if (spinning) return;
+    spinning = true;
+    const btn = document.getElementById('spin-btn');
+    const result = document.getElementById('slot-result');
+    btn.disabled = true;
+    result.textContent = '';
+    result.className = 'slot-result';
+    spinCount++;
+    document.getElementById('spin-count').textContent = 'Spins: ' + spinCount;
+
+    const reels = ['r1', 'r2', 'r3'];
+    const chosen = reels.map(() => symbols[Math.floor(Math.random() * symbols.length)]);
+
+    reels.forEach((id, i) => {
+      const el = document.getElementById(id);
+      let ticks = 0;
+      const maxTicks = 8 + i * 4;
+      const interval = setInterval(() => {
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        ticks++;
+        if (ticks >= maxTicks) {
+          clearInterval(interval);
+          el.textContent = chosen[i];
+          if (i === 2) {
+            setTimeout(() => {
+              evalResult(chosen);
+              btn.disabled = false;
+              spinning = false;
+            }, 200);
+          }
+        }
+      }, 80 + i * 20);
+    });
+  }
+
+  function evalResult(s) {
+    const result = document.getElementById('slot-result');
+    if (s[0] === s[1] && s[1] === s[2]) {
+      result.textContent = '🎉 JACKPOT! Three of a kind!';
+      result.className = 'slot-result win';
+    } else if (s[0] === s[1] || s[1] === s[2] || s[0] === s[2]) {
+      result.textContent = '✨ Almost... two matched. Try again?';
+      result.className = 'slot-result near';
+    } else {
+      result.textContent = 'Nothing this time. But maybe next spin...';
+    }
+  }
+
+  // LOVE STAGES
+  function selectStage(el, idx) {
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // SELF CHECK
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const box = el.querySelector('.check-box');
+    if (el.classList.contains('checked')) {
+      box.textContent = '✓';
+    } else {
+      box.textContent = '';
+    }
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.check-item').length;
+    const done = document.querySelectorAll('.check-item.checked').length;
+    document.getElementById('check-label').textContent = done + ' / ' + total + ' understood';
+    document.getElementById('check-fill').style.width = (done / total * 100) + '%';
+  }
+
+  // PIGEON BAR ANIMATION ON SCROLL
+  const pigeonRow = document.getElementById('pigeon-row');
+  const pigeonObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      document.getElementById('bar-fixed').style.height = '35%';
+      document.getElementById('bar-random').style.height = '90%';
+      pigeonObs.unobserve(pigeonRow);
+    }
+  }, { threshold: 0.3 });
+  pigeonObs.observe(pigeonRow);
+</script>
+</body>
+</html>
