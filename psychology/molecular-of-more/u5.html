@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chemistry of Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dopamine: #E8523A;
+    --hn: #4A9E8E;
+    --bg: #0D0D0F;
+    --surface: #141418;
+    --surface2: #1C1C22;
+    --text: #F0EDE8;
+    --muted: #7A7870;
+    --gold: #C9A84C;
+    --oxytocin: #7B9FD4;
+    --vasopressin: #9B7FD4;
+    --serotonin: #72C472;
+    --endorphin: #D4A77B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-glow.red { width: 500px; height: 500px; background: var(--dopamine); top: -100px; left: -100px; }
+  .hero-glow.teal { width: 400px; height: 400px; background: var(--hn); bottom: -80px; right: -80px; animation-delay: 3s; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.12; transform: scale(1); }
+    50% { opacity: 0.2; transform: scale(1.05); }
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 700;
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--dopamine);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .scroll-cue {
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollAnim {
+    0%, 100% { transform: scaleY(1); opacity: 0.5; }
+    50% { transform: scaleY(0.6); opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── NAV DOTS ── */
+  .nav-dots {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .nav-dot.active { background: var(--gold); transform: scale(1.5); }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  p { color: #B8B5B0; margin-bottom: 1.2rem; font-size: 1.05rem; }
+
+  em.highlight { font-style: normal; color: var(--text); font-weight: 500; }
+
+  /* ── MOLECULE COMPARISON ── */
+  .molecule-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .molecule-split { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+  }
+
+  .molecule-card {
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .molecule-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .molecule-card.dopamine {
+    background: linear-gradient(135deg, rgba(232,82,58,0.08), rgba(232,82,58,0.02));
+    border: 1px solid rgba(232,82,58,0.2);
+  }
+
+  .molecule-card.hn {
+    background: linear-gradient(135deg, rgba(74,158,142,0.08), rgba(74,158,142,0.02));
+    border: 1px solid rgba(74,158,142,0.2);
+  }
+
+  .mol-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .mol-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .mol-title.red { color: var(--dopamine); }
+  .mol-title.teal { color: var(--hn); }
+
+  .mol-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    color: var(--muted);
+  }
+
+  .mol-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .mol-list li {
+    font-size: 0.9rem;
+    color: #A0A0A0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .mol-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  .mol-list.red li::before { color: var(--dopamine); }
+  .mol-list.teal li::before { color: var(--hn); }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    border-left: 3px solid var(--gold);
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+    background: var(--surface);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .quote-block p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--text);
+    margin: 0;
+  }
+
+  /* ── LOVE PHASES TIMELINE ── */
+  .timeline {
+    position: relative;
+    margin: 3rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--dopamine), var(--hn));
+    transform: translateX(-50%);
+  }
+
+  @media (max-width: 600px) {
+    .timeline::before { left: 20px; }
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    align-items: center;
+  }
+
+  @media (max-width: 600px) {
+    .timeline-item { grid-template-columns: 40px 1fr; }
+    .timeline-item .tl-right { grid-column: 2; }
+    .timeline-item .tl-left { display: none; }
+  }
+
+  .timeline-item:nth-child(even) .tl-left { order: 1; }
+  .timeline-item:nth-child(even) .tl-dot { order: 2; }
+  .timeline-item:nth-child(even) .tl-right { order: 3; }
+
+  .tl-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    justify-self: center;
+    z-index: 1;
+    border: 2px solid;
+  }
+
+  .tl-dot.dopamine { background: rgba(232,82,58,0.15); border-color: var(--dopamine); }
+  .tl-dot.hn { background: rgba(74,158,142,0.15); border-color: var(--hn); }
+
+  .tl-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .tl-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tl-card h4.red { color: var(--dopamine); }
+  .tl-card h4.teal { color: var(--hn); }
+
+  .tl-card p { font-size: 0.85rem; margin: 0; color: var(--muted); }
+
+  /* ── H&N MOLECULES GRID ── */
+  .hn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  @media (max-width: 500px) { .hn-grid { grid-template-columns: 1fr; } }
+
+  .hn-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .hn-card:hover { transform: translateY(-3px); }
+
+  .hn-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+
+  .hn-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .hn-desc { font-size: 0.82rem; color: var(--muted); margin: 0; line-height: 1.5; }
+
+  /* ── STORY BLOCK ── */
+  .story-block {
+    background: var(--surface2);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin: 2.5rem 0;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .story-tag {
+    position: absolute;
+    top: -12px;
+    left: 2rem;
+    background: var(--gold);
+    color: #000;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .story-block p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #C0BDB8;
+    margin-bottom: 0.8rem;
+  }
+
+  .story-block p:last-child { margin: 0; }
+
+  /* ── LIFE APPLICATION ── */
+  .apply-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+
+  .apply-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.8rem;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 0.3s;
+  }
+
+  .apply-card:hover { transform: translateY(-3px); }
+
+  .apply-icon { font-size: 2rem; margin-bottom: 1rem; }
+
+  .apply-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+
+  .apply-card p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+  .apply-card .tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-bottom: 0.8rem;
+  }
+
+  .tag.dopa { background: rgba(232,82,58,0.15); color: var(--dopamine); }
+  .tag.hn-tag { background: rgba(74,158,142,0.15); color: var(--hn); }
+  .tag.both { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+  /* ── TESTOSTERONE SECTION ── */
+  .testo-bar {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .cycle-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .cycle-bar-wrap {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 10px;
+    overflow: visible;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .cycle-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(to right, rgba(74,158,142,0.3), var(--dopamine));
+    transition: width 1s ease;
+  }
+
+  .cycle-peak {
+    position: absolute;
+    top: -22px;
+    font-size: 0.68rem;
+    color: var(--dopamine);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  /* ── INTERACTIVE QUIZ ── */
+  .quiz-section {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+  }
+
+  .quiz-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .quiz-btn {
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    color: #A0A0A0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .quiz-btn:hover { border-color: var(--gold); color: var(--text); }
+  .quiz-btn.correct { border-color: var(--hn); color: var(--hn); background: rgba(74,158,142,0.1); }
+  .quiz-btn.wrong { border-color: var(--dopamine); color: var(--dopamine); background: rgba(232,82,58,0.1); }
+
+  .quiz-feedback {
+    margin-top: 1.2rem;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    display: none;
+    background: var(--surface2);
+    color: var(--muted);
+    border-left: 3px solid var(--gold);
+  }
+
+  .quiz-next {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    display: none;
+  }
+
+  .quiz-next:hover { border-color: var(--gold); color: var(--text); }
+
+  /* ── KEY INSIGHT BOXES ── */
+  .insight {
+    display: flex;
+    gap: 1rem;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    align-items: flex-start;
+  }
+
+  .insight-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+  .insight-body h5 {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: var(--text);
+  }
+
+  .insight-body p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+  /* ── PROGRESS TRACKER ── */
+  .progress-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.05);
+    z-index: 200;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--dopamine), var(--gold), var(--hn));
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  footer span { color: var(--gold); }
+
+  /* ── UTILITY ── */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: 4rem 0;
+  }
+
+  .full-bleed {
+    max-width: 100%;
+    padding: 5rem 2rem;
+    background: var(--surface);
+    margin: 0;
+  }
+
+  .full-bleed-inner { max-width: 900px; margin: 0 auto; }
+
+  .motto {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 700;
+    text-align: center;
+    color: var(--dopamine);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    padding: 3rem 2rem;
+  }
+
+  .red { color: var(--dopamine); }
+  .teal { color: var(--hn); }
+  .gold { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar-container">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+
+<!-- Nav Dots -->
+<nav class="nav-dots" id="navDots">
+  <div class="nav-dot active" onclick="scrollToSection(0)" title="Intro"></div>
+  <div class="nav-dot" onclick="scrollToSection(1)" title="Dopamine"></div>
+  <div class="nav-dot" onclick="scrollToSection(2)" title="Two Loves"></div>
+  <div class="nav-dot" onclick="scrollToSection(3)" title="H&N Molecules"></div>
+  <div class="nav-dot" onclick="scrollToSection(4)" title="Testosterone"></div>
+  <div class="nav-dot" onclick="scrollToSection(5)" title="Life Application"></div>
+  <div class="nav-dot" onclick="scrollToSection(6)" title="Quiz"></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="s0">
+  <div class="hero-glow red"></div>
+  <div class="hero-glow teal"></div>
+  <div class="hero-eyebrow">The Molecule of More · Chapter: Love</div>
+  <h1>The Chemical Keys to<br><em>Long-Lasting Love</em></h1>
+  <p class="hero-sub">Why the spark fades — and how to build something that endures. A neuroscience guide to understanding your own heart.</p>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</div>
+
+<!-- SECTION 1: DOPAMINE -->
+<section id="s1">
+  <div class="section-label">The Anticipation Machine</div>
+  <h2>Dopamine: The <span class="red">More</span> Molecule</h2>
+  <p>Dopamine is not — despite popular belief — the pleasure molecule. It is the <em class="highlight">anticipation molecule</em>. It fires in the gap between wanting and having, in the space of possibility.</p>
+  <p>Its only standard is "not yet." It is never satisfied with the present because it evolved to push you forward — to hunt, to pursue, to strive. The moment you arrive, dopamine loses interest.</p>
+
+  <div class="quote-block">
+    <p>"If you live in the most expensive mansion in the world, dopamine makes you want a castle on the moon. It has no standard for good, and seeks no finish line."</p>
+  </div>
+
+  <div class="molecule-split">
+    <div class="molecule-card dopamine">
+      <div class="mol-icon">🔥</div>
+      <div class="mol-title red">Dopamine</div>
+      <div class="mol-subtitle">The Anticipation Molecule</div>
+      <ul class="mol-list red">
+        <li>Activated by possibility & novelty</li>
+        <li>Future-oriented thinking</li>
+        <li>Drives pursuit, not satisfaction</li>
+        <li>Fuels passionate, early love</li>
+        <li>The motto: <strong>"More"</strong></li>
+        <li>Suppresses H&N circuits</li>
+      </ul>
+    </div>
+    <div class="molecule-card hn">
+      <div class="mol-icon">🌿</div>
+      <div class="mol-title teal">H&N Molecules</div>
+      <div class="mol-subtitle">Here & Now Chemicals</div>
+      <ul class="mol-list teal">
+        <li>Activated by present experience</li>
+        <li>Sensation and emotion-based</li>
+        <li>Provides deep satisfaction</li>
+        <li>Sustains companionate love</li>
+        <li>The motto: <strong>"Enough"</strong></li>
+        <li>Suppresses dopamine circuits</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-icon">🧬</div>
+    <div class="insight-body">
+      <h5>The Lab Evidence</h5>
+      <p>Blood cells from people in the passionate stage of love showed lower levels of H&N serotonin receptors — a measurable sign that the H&N system was in retreat while dopamine dominated.</p>
+    </div>
+  </div>
+</section>
+
+<div class="motto">MORE.</div>
+
+<!-- SECTION 2: TWO PHASES -->
+<section id="s2">
+  <div class="section-label">The Two Stages</div>
+  <h2>Passionate Love <span class="muted">→</span> Companionate Love</h2>
+  <p>Anthropologist <em class="highlight">Helen Fisher</em> found that early, passionate love lasts only <em class="highlight">12 to 18 months</em>. After that, the chemistry must shift — or the relationship ends. This isn't failure; it's biology's design.</p>
+  <p>Dopamine paints a rosy future to motivate change. But <em class="highlight">companionate love</em> is characterised by deep satisfaction with the present — an aversion to change, a desire to stay. These two states are chemically incompatible. One must yield to the other.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="tl-card tl-left">
+        <h4 class="red">Passionate Love</h4>
+        <p>Dopaminergic — exhilarating, idealized, curious, future-looking. You obsess over possibility.</p>
+      </div>
+      <div class="tl-dot dopamine">❤️‍🔥</div>
+      <div class="tl-card tl-right" style="visibility:hidden"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-card tl-left" style="visibility:hidden"></div>
+      <div class="tl-dot" style="background:rgba(201,168,76,0.15);border:2px solid var(--gold)">⚡</div>
+      <div class="tl-card tl-right">
+        <h4 class="gold">The Transition</h4>
+        <p>12–18 months in. Dopamine fades. H&N chemistry must take over. A moment of maturity.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-card tl-left">
+        <h4 class="teal">Companionate Love</h4>
+        <p>H&N-mediated — satisfying, peaceful, felt through the body and shared present experience.</p>
+      </div>
+      <div class="tl-dot hn">🌿</div>
+      <div class="tl-card tl-right" style="visibility:hidden"></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-icon">🏛️</div>
+    <div class="insight-body">
+      <h5>The Rome Analogy</h5>
+      <p>A man plans a vacation to Rome for weeks, scheduling every museum. But when standing before Michelangelo's masterpieces, he thinks about the dinner reservation. His personality is primarily dopaminergic: he enjoys the <em>anticipation</em> of experiences more than the experiences themselves. Lovers work the same way in passionate love — they're always looking ahead, not here.</p>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-icon">🦦</div>
+    <div class="insight-body">
+      <h5>It's Not Just Human</h5>
+      <p>Companionate love appears in animals that mate for life — cooperative territory defence, grooming, shared parenting, and visible anxiety when separated. The biological drive for long-term bonding is ancient and cross-species.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: H&N MOLECULES -->
+<div class="full-bleed" id="s3">
+  <div class="full-bleed-inner">
+    <div class="section-label">The Here & Now System</div>
+    <h2>The Four <span class="teal">H&N</span> Molecules</h2>
+    <p>These chemicals give pleasure through <em class="highlight">sensation and emotion</em> — not future possibility. They are the neurochemical foundation of lasting love.</p>
+
+    <div class="hn-grid">
+      <div class="hn-card" style="border-color:rgba(114,196,114,0.2)">
+        <div class="hn-name"><span class="hn-dot" style="background:var(--serotonin)"></span>Serotonin</div>
+        <p class="hn-desc">Regulates mood, contentment, and social belonging. Low in passionate love — high in stable, secure attachment. It's the "I am enough, we are enough" molecule.</p>
+      </div>
+      <div class="hn-card" style="border-color:rgba(123,159,212,0.2)">
+        <div class="hn-name"><span class="hn-dot" style="background:var(--oxytocin)"></span>Oxytocin</div>
+        <p class="hn-desc">Released through touch, eye contact, physical closeness. More active in women. Injected into female prairie voles, it made them bond with whatever male was nearby — the "bonding molecule."</p>
+      </div>
+      <div class="hn-card" style="border-color:rgba(155,127,212,0.2)">
+        <div class="hn-name"><span class="hn-dot" style="background:var(--vasopressin)"></span>Vasopressin</div>
+        <p class="hn-desc">More active in men. Acts like a "good-husband hormone." When promiscuous male voles were given a vasopressin gene boost, they became exclusively monogamous — even with other receptive females present.</p>
+      </div>
+      <div class="hn-card" style="border-color:rgba(212,167,123,0.2)">
+        <div class="hn-name"><span class="hn-dot" style="background:var(--endorphin)"></span>Endorphins &amp; Endocannabinoids</div>
+        <p class="hn-desc">Your brain's own morphine and marijuana. One endocannabinoid, <strong>anandamide</strong>, is named after the Sanskrit word for <em>joy, bliss, and delight</em> — the feeling of being fully present in love.</p>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>"Anandamide — named after the Sanskrit word for joy, bliss, and delight. This is your brain in companionate love."</p>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">💡</div>
+      <div class="insight-body">
+        <h5>The Testosterone Suppression Loop</h5>
+        <p>Oxytocin and vasopressin suppress testosterone. Testosterone suppresses them in return. This is why: (1) most couples have less sex as passionate love evolves; (2) men with naturally high testosterone are less likely to marry; (3) single men have more testosterone than married men; (4) if a marriage becomes unstable, vasopressin drops and testosterone rises.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: TESTOSTERONE -->
+<section id="s4">
+  <div class="section-label">Sexual Drive</div>
+  <h2>Testosterone: The <span class="gold">Here & Now</span> Drive</h2>
+  <p>Though testosterone is classified as a Here & Now chemical for sexual attraction, it operates differently from love. Helen Fisher compares it to <em class="highlight">hunger</em> — it creates a general appetite, not a specific craving for one person.</p>
+
+  <div class="story-block">
+    <div class="story-tag">From the Book</div>
+    <p>The night Samantha first met Shawn, she was on day thirteen of her menstrual cycle.</p>
+    <p>Shawn wiped a clear space in the steamed-over bathroom mirror, ran his fingers through his black hair, smiled. "This'll work," he said.</p>
+    <p>"Wait. Hold still," said Samantha. She swept a lock off his forehead. "This'll make you look so handsome."</p>
+    <p>"And then . . ."</p>
+    <p>"Down, boy," said Samantha, and she gave him a peck on the cheek.</p>
+  </div>
+
+  <p style="margin-top:1rem;">Day 13–14 of a woman's menstrual cycle is peak ovulation — and peak testosterone. The timing wasn't coincidental. Testosterone drove attraction. But it cannot drive commitment.</p>
+
+  <div class="testo-bar">
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Female testosterone across a 28-day cycle (illustrative)</div>
+    <div class="cycle-label"><span>Day 1</span><span>Day 28</span></div>
+    <div class="cycle-bar-wrap">
+      <span class="cycle-peak" style="left:46%">🔥 Day 13–14 Peak</span>
+      <div class="cycle-fill" style="width:100%;background:linear-gradient(to right, rgba(74,158,142,0.3) 0%, rgba(201,168,76,0.4) 40%, var(--dopamine) 46%, rgba(201,168,76,0.4) 52%, rgba(74,158,142,0.3) 100%);"></div>
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem;">Testosterone peaks at ovulation (days 13–14), driving general sexual desire — not specific attachment.</div>
+  </div>
+
+  <div class="molecule-split" style="margin-top:2rem;">
+    <div class="molecule-card dopamine">
+      <div class="mol-icon">🌶️</div>
+      <div class="mol-title red">Testosterone-driven desire</div>
+      <div class="mol-subtitle">Non-specific, general appetite</div>
+      <ul class="mol-list red">
+        <li>Like hunger — any food satisfies</li>
+        <li>"Nearly anyone will do"</li>
+        <li>Not overwhelming — people don't die from it</li>
+        <li>Not exclusive attachment</li>
+      </ul>
+    </div>
+    <div class="molecule-card hn">
+      <div class="mol-icon">🫂</div>
+      <div class="mol-title teal">Oxytocin/Vasopressin love</div>
+      <div class="mol-subtitle">Specific, exclusive attachment</div>
+      <ul class="mol-list teal">
+        <li>This person, not anyone</li>
+        <li>Anxiety when separated</li>
+        <li>Builds through shared time</li>
+        <li>Suppresses testosterone</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: LIFE APPLICATION -->
+<section id="s5">
+  <div class="section-label">Applying the Science</div>
+  <h2>What to <span class="gold">Do</span> With This</h2>
+  <p>Understanding this chemistry doesn't make love less meaningful. It makes it actionable. You can consciously build the conditions for each chemical system.</p>
+
+  <div class="apply-grid">
+    <div class="apply-card">
+      <div class="apply-icon">🔥</div>
+      <span class="tag dopa">Dopamine</span>
+      <h4>Recognise the "More" Trap</h4>
+      <p>When you feel restless in a stable relationship — like something is missing — check if it's dopamine speaking. Novelty-seeking is a chemical signal, not a verdict on your partner.</p>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🤝</div>
+      <span class="tag hn-tag">H&N</span>
+      <h4>Invest in Physical Closeness</h4>
+      <p>Touch, eye contact, shared meals, grooming — these are oxytocin triggers. They are not trivial; they are the literal chemistry of bonding. Prioritise them deliberately.</p>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">📅</div>
+      <span class="tag both">Transition</span>
+      <h4>Don't Panic at 12–18 Months</h4>
+      <p>The intensity fading is not failure — it is the invitation to build something deeper. The question is whether you've built enough H&N foundation to transition.</p>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🧘</div>
+      <span class="tag hn-tag">H&N</span>
+      <h4>Practice Present-Moment Presence</h4>
+      <p>You cannot enjoy what you have while chasing what's next. Anandamide — your bliss molecule — is activated in the present. Put the phone down. Be here.</p>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🗓️</div>
+      <span class="tag dopa">Dopamine</span>
+      <h4>Use Dopamine Constructively</h4>
+      <p>Introduce novelty within the relationship — new experiences, shared goals, travel. This keeps dopamine engaged without seeking it outside the relationship.</p>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">📊</div>
+      <span class="tag both">Awareness</span>
+      <h4>Monitor Stability Signals</h4>
+      <p>If a relationship becomes unstable, vasopressin drops and testosterone rises — a chemical drift away from commitment. Instability feeds itself. Tend to the bond proactively.</p>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-icon">🌍</div>
+    <div class="insight-body">
+      <h5>The Human Verdict</h5>
+      <p>A UN survey found that more than <strong>90% of men and women marry by age 49</strong>. Despite dopamine's constant search for more, the majority of humans arrange a significant part of their lives around finding companionate love — and keeping it. The biology of "enough" eventually wins.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: QUIZ -->
+<section id="s6" style="max-width:700px;">
+  <div class="section-label">Check Your Understanding</div>
+  <h2>Quick <span class="gold">Self-Test</span></h2>
+  <p>Three questions to lock in the concepts.</p>
+
+  <div class="quiz-section" id="quiz">
+    <div id="quizContent">
+      <!-- injected by JS -->
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuestion()">Next question →</button>
+  </div>
+</section>
+
+<footer>
+  Based on <span>The Molecule of More</span> by Daniel Z. Lieberman & Michael E. Long · Chapter: Love<br>
+  <span style="color:var(--muted);font-size:0.72rem;">Built as an interactive study guide</span>
+</footer>
+
+<script>
+  // ── PROGRESS BAR ──
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+
+    // Update nav dots
+    const sections = ['s0','s1','s2','s3','s4','s5','s6'];
+    const dots = document.querySelectorAll('.nav-dot');
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= window.innerHeight/2 && rect.bottom >= window.innerHeight/2) {
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[i]) dots[i].classList.add('active');
+      }
+    });
+  });
+
+  function scrollToSection(i) {
+    const ids = ['s0','s1','s2','s3','s4','s5','s6'];
+    const el = document.getElementById(ids[i]);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── QUIZ ──
+  const questions = [
+    {
+      q: "You're 2 years into a relationship and the initial excitement has faded. What does neuroscience say this means?",
+      options: [
+        "The relationship is failing and you need to find someone new",
+        "Dopamine has naturally receded — an invitation to build H&N companionate love",
+        "Your serotonin is permanently damaged",
+        "You never truly loved the person"
+      ],
+      correct: 1,
+      feedback: "The dopamine-driven passionate phase lasts only 12–18 months by design. Its fading is not failure — it's the transition point where H&N chemistry (oxytocin, vasopressin, serotonin) must take over to build something more enduring."
+    },
+    {
+      q: "What does the 'Rome vacation' analogy illustrate about dopamine?",
+      options: [
+        "That travel is bad for relationships",
+        "That Michelangelo's art is overrated",
+        "That dopaminergic people enjoy anticipation and planning more than the actual experience",
+        "That dinner reservations should always be booked in advance"
+      ],
+      correct: 2,
+      feedback: "The man standing before Michelangelo's masterpieces but thinking about dinner reservations illustrates that dopaminergic personalities — and people in passionate love — are wired for anticipation, not presence. The future always seems more exciting than the now."
+    },
+    {
+      q: "A male vole who is genetically promiscuous is given a gene that boosts vasopressin. What happens?",
+      options: [
+        "He becomes more aggressive toward other males",
+        "He mates with one female exclusively, ignoring all others",
+        "His testosterone rises and he seeks more partners",
+        "He stops producing dopamine entirely"
+      ],
+      correct: 1,
+      feedback: "Vasopressin acts like a 'good-husband hormone.' Even genetically promiscuous male voles became exclusively monogamous when vasopressin was boosted — demonstrating that long-term bonding has a direct chemical basis, not just a willpower or moral one."
+    }
+  ];
+
+  let current = 0;
+  let answered = false;
+
+  function renderQuestion() {
+    const q = questions[current];
+    const qEl = document.getElementById('quizContent');
+    qEl.innerHTML = `
+      <div class="quiz-q">${current+1}/${questions.length} — ${q.q}</div>
+      <div class="quiz-options">
+        ${q.options.map((opt,i) => `<button class="quiz-btn" onclick="answer(${i})">${opt}</button>`).join('')}
+      </div>
+    `;
+    document.getElementById('quizFeedback').style.display = 'none';
+    document.getElementById('quizNext').style.display = 'none';
+    answered = false;
+  }
+
+  function answer(i) {
+    if (answered) return;
+    answered = true;
+    const q = questions[current];
+    const btns = document.querySelectorAll('.quiz-btn');
+    btns.forEach((btn, idx) => {
+      if (idx === q.correct) btn.classList.add('correct');
+      else if (idx === i && i !== q.correct) btn.classList.add('wrong');
+      btn.style.pointerEvents = 'none';
+    });
+    const fb = document.getElementById('quizFeedback');
+    fb.textContent = q.feedback;
+    fb.style.display = 'block';
+    const next = document.getElementById('quizNext');
+    next.style.display = 'inline-block';
+    next.textContent = current < questions.length - 1 ? 'Next question →' : 'See summary ✓';
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current < questions.length) {
+      renderQuestion();
+    } else {
+      document.getElementById('quiz').innerHTML = `
+        <div style="text-align:center;padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🧠</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:0.8rem;color:var(--text)">You've got the chemistry.</div>
+          <p style="color:var(--muted);font-size:0.9rem;max-width:400px;margin:0 auto;">Remember: dopamine pushes you forward, H&N molecules ground you in the present. Long-lasting love is the conscious transition from one to the other.</p>
+        </div>
+      `;
+    }
+  }
+
+  renderQuestion();
+
+  // ── CHATGPT: single mega prompt ──
+  function openChatGPT() {
+    const megaPrompt = `I just studied "The Chemical Keys to Long-Lasting Love" from The Molecule of More. Please teach me everything about these topics in depth so I can truly understand and apply them to my life:
+
+1. DOPAMINE — THE ANTICIPATION MOLECULE
+- Why dopamine is NOT the pleasure molecule, but the anticipation molecule
+- Why it always wants MORE and is never satisfied with the present
+- The dopamine motto: "More" — tent → house → castle on the moon analogy
+- How dopamine fuels passionate/early love (12–18 months)
+- Why high-dopamine genes correlate with more sexual partners
+- How dopamine suppresses H&N circuits and vice versa
+
+2. H&N (HERE & NOW) MOLECULES
+- Serotonin: contentment, belonging — lower serotonin receptors in blood during passionate love (lab evidence)
+- Oxytocin: bonding through touch — more active in women — prairie vole experiment (injected oxytocin → bonded with nearby male)
+- Vasopressin: the "good-husband hormone," more active in men — promiscuous voles given vasopressin gene became exclusively monogamous
+- Endorphins: brain's own morphine
+- Anandamide: named from Sanskrit for joy, bliss, delight
+
+3. PASSIONATE LOVE vs COMPANIONATE LOVE
+- Helen Fisher's finding: passionate love lasts only 12–18 months
+- Passionate love = dopaminergic (exhilarating, idealized, future-looking)
+- Companionate love = H&N mediated (satisfying, peaceful, sensation-based)
+- Why they are chemically incompatible
+- The Rome vacation analogy: standing before Michelangelo's art but thinking about dinner reservations
+- Companionate love in animals: territory defence, grooming, shared parenting, anxiety when separated
+
+4. TESTOSTERONE — SEXUAL ATTRACTION
+- Testosterone drives general desire in both men and women
+- Women's testosterone peaks days 13–14 (ovulation) — why the Samantha/Shawn meeting timing matters
+- Helen Fisher's hunger analogy: desire is general, not person-specific
+- Testosterone suppresses oxytocin/vasopressin — men with high testosterone less likely to marry
+- Single men have more testosterone than married men
+- When marriage becomes unstable: vasopressin drops, testosterone rises
+
+5. THE SUPPRESSION LOOP
+- Oxytocin/vasopressin suppress testosterone
+- Testosterone suppresses oxytocin/vasopressin
+- This is the biological architecture of commitment vs promiscuity
+
+6. LIFE APPLICATION
+- Recognising the "More" trap in relationships, social media, ambition
+- Why fading excitement at 12–18 months is NOT failure but an invitation
+- How to activate H&N chemistry: touch, eye contact, shared presence
+- Using dopamine constructively within a relationship
+- UN statistic: 90%+ of people marry by 49 — H&N eventually wins
+- Anandamide requires NOW — how to stay present
+
+Explain each topic clearly, give real-world examples, and tell me how to apply each insight to my everyday life and relationships.`;
+    window.open('https://chat.openai.com/?q=' + encodeURIComponent(megaPrompt), '_blank');
+  }
+
+  // ── CHATGPT TOPICS (unused, kept for ref) ──
+  const gptTopics = [
+    { emoji: '🔥', label: 'Dopamine & Wanting', prompt: 'Explain how dopamine works as an anticipation molecule, not a pleasure molecule. Why does it always want more and never feel satisfied? Give me real-life examples and how to manage it.' },
+    { emoji: '🌿', label: 'H&N Molecules', prompt: 'Explain the Here and Now (H&N) molecules — serotonin, oxytocin, vasopressin, endorphins, and endocannabinoids (anandamide). How do they create satisfaction and lasting love? How are they different from dopamine?' },
+    { emoji: '❤️‍🔥', label: 'Passionate vs Companionate Love', prompt: 'What is the difference between passionate love and companionate love from a neuroscience perspective? Why does passionate love last only 12–18 months, and how can a couple successfully transition to companionate love?' },
+    { emoji: '🦦', label: 'Oxytocin & Bonding', prompt: 'How does oxytocin create long-term bonding in relationships? Explain the prairie vole experiments and what this means for human love and monogamy.' },
+    { emoji: '💪', label: 'Vasopressin & Commitment', prompt: 'What role does vasopressin play in male commitment and long-term bonding? Why does relationship instability cause vasopressin to drop and testosterone to rise? What does this mean practically?' },
+    { emoji: '🌶️', label: 'Testosterone & Desire', prompt: 'How does testosterone drive sexual desire differently from love? Why does Helen Fisher compare testosterone-driven desire to hunger? What is the relationship between testosterone, oxytocin, and commitment?' },
+    { emoji: '🧘', label: 'Practicing Present Moment', prompt: 'From a neuroscience perspective, why is being present in a relationship so important? How do H&N molecules require presence to activate? Give me practical exercises to shift from dopamine-mode to H&N mode in daily life and relationships.' },
+    { emoji: '📊', label: 'Dopamine in Daily Life', prompt: 'How does dopamine\'s "always wanting more" pattern show up in everyday life — social media, shopping, ambition, relationships? How can I use dopamine constructively while preventing it from making me perpetually dissatisfied?' },
+  ];
+
+</script>
+
+<!-- CHATGPT FAB — single direct button -->
+<button class="gpt-fab" onclick="openChatGPT()">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  Ask ChatGPT Everything
+</button>
+
+<style>
+  .gpt-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, #10a37f, #0d8a6b);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.75rem 1.4rem;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 24px rgba(16,163,127,0.35);
+    z-index: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .gpt-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(16,163,127,0.45); }
+
+  .gpt-panel {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 2rem;
+    width: 340px;
+    background: #18181c;
+    border: 1px solid rgba(16,163,127,0.25);
+    border-radius: 18px;
+    padding: 1.5rem;
+    z-index: 499;
+    box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .gpt-panel.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .gpt-panel-header { margin-bottom: 1.2rem; }
+
+  .gpt-panel-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #f0ede8;
+    margin-bottom: 0.2rem;
+  }
+
+  .gpt-panel-sub {
+    font-size: 0.72rem;
+    color: #7a7870;
+    letter-spacing: 0.02em;
+  }
+
+  .gpt-topic-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .gpt-topic-btn {
+    background: #1c1c24;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    color: #b0ada8;
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    transition: all 0.2s;
+  }
+
+  .gpt-topic-btn:hover {
+    border-color: rgba(16,163,127,0.5);
+    color: #f0ede8;
+    background: rgba(16,163,127,0.08);
+    transform: translateX(3px);
+  }
+
+  .gpt-topic-emoji { font-size: 1.1rem; flex-shrink: 0; }
+
+  @media (max-width: 420px) {
+    .gpt-panel { width: calc(100vw - 2rem); right: 1rem; }
+    .gpt-fab { right: 1rem; bottom: 1rem; }
+  }
+</style>
+</body>
+</html>
