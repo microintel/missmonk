@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Who's in Control of Your Brain?</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --border: #222226;
+    --text: #e8e6e0;
+    --muted: #7a7872;
+    --accent: #c8a96e;    /* warm gold — dopamine, desire, temptation */
+    --accent2: #7b61ff;   /* electric violet — the brain, conflict */
+    --danger: #e05c5c;
+    --white: #f5f3ef;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    width: 0%; z-index: 999; transition: width 0.1s linear;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 3px; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 52px;
+    background: rgba(13,13,15,0.88); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border); z-index: 100;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; }
+  .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+  .nav-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-pulse {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,97,255,0.08) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.15)} }
+
+  .hero-eyebrow {
+    font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.4rem;
+    border: 1px solid rgba(200,169,110,0.3); padding: 0.35rem 1rem; border-radius: 20px;
+    display: inline-block;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--white); margin-bottom: 1.5rem;
+  }
+  .hero h1 span { color: var(--accent2); }
+  .hero-sub {
+    max-width: 560px; font-size: 1.05rem; color: var(--muted);
+    margin-bottom: 2.5rem; line-height: 1.75;
+  }
+  .scroll-cue { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; animation: bob 2s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2rem; max-width: 860px; margin: 0 auto; }
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.8rem;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    color: var(--white); margin-bottom: 1.4rem; line-height: 1.2;
+  }
+  p { color: var(--text); margin-bottom: 1rem; font-size: 0.97rem; }
+  p strong { color: var(--white); }
+
+  /* ── REVEAL ANIMATION ── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── WHY CHAIN ── */
+  .why-chain { margin: 2.5rem 0; }
+  .why-row {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1rem 1.2rem; border-left: 2px solid var(--border);
+    margin-bottom: 0.2rem; transition: border-color 0.3s;
+    cursor: default;
+  }
+  .why-row:hover { border-color: var(--accent); }
+  .why-row:hover .why-q { color: var(--accent2); }
+  .why-q { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--muted); min-width: 56px; font-size: 0.85rem; padding-top: 2px; }
+  .why-text { font-size: 0.95rem; }
+  .why-arrow {
+    text-align: center; color: var(--muted); font-size: 1.1rem;
+    margin: 0.1rem 0 0.1rem 1.2rem; line-height: 1;
+  }
+  .why-end {
+    background: linear-gradient(135deg, rgba(123,97,255,0.12), rgba(200,169,110,0.08));
+    border: 1px solid rgba(123,97,255,0.3);
+    border-radius: 10px; padding: 1.2rem 1.4rem; margin-top: 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .why-end-icon { font-size: 1.6rem; }
+  .why-end-text { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); }
+  .why-end-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ── ARISTOTLE CARD ── */
+  .aristotle-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem; margin: 2rem 0;
+    position: relative; overflow: hidden;
+  }
+  .aristotle-card::before {
+    content: '"';
+    position: absolute; top: -0.5rem; left: 1.2rem;
+    font-size: 8rem; color: rgba(123,97,255,0.08);
+    font-family: 'Syne', sans-serif; line-height: 1;
+  }
+  .aristotle-name { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+  .aristotle-card blockquote { font-family: 'Syne', sans-serif; font-size: 1.15rem; color: var(--white); line-height: 1.5; font-style: italic; }
+
+  /* ── HAPPINESS DIAL ── */
+  .happiness-demo {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem; margin: 2rem 0; text-align: center;
+  }
+  .happiness-demo h3 { font-family: 'Syne', sans-serif; color: var(--white); margin-bottom: 0.6rem; }
+  .happiness-demo p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+  .option-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); padding: 0.8rem 1rem; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: 0.88rem; cursor: pointer;
+    transition: all 0.2s; text-align: left;
+  }
+  .option-btn:hover { border-color: var(--accent2); color: var(--white); background: rgba(123,97,255,0.06); }
+  .option-btn.selected { border-color: var(--accent); background: rgba(200,169,110,0.1); color: var(--accent); }
+  #choice-result { font-size: 0.9rem; color: var(--muted); min-height: 2rem; transition: all 0.3s; }
+  #choice-result.show { color: var(--accent2); }
+
+  /* ── CONFLICT SECTION ── */
+  .donut-conflict {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0;
+  }
+  .conflict-side {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; text-align: center; position: relative;
+    transition: transform 0.3s;
+  }
+  .conflict-side:hover { transform: translateY(-4px); }
+  .conflict-side.want { border-color: rgba(200,169,110,0.35); }
+  .conflict-side.want-not { border-color: rgba(224,92,92,0.35); }
+  .conflict-emoji { font-size: 2.8rem; margin-bottom: 0.6rem; }
+  .conflict-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
+  .conflict-side.want .conflict-label { color: var(--accent); }
+  .conflict-side.want-not .conflict-label { color: var(--danger); }
+  .conflict-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+  .conflict-vs {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
+    color: var(--border); grid-column: 1 / -1; margin: -0.5rem 0;
+  }
+
+  /* ── INSIGHT BOXES ── */
+  .insight-list { display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0; }
+  .insight-box {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem 1.4rem;
+    transition: border-color 0.2s;
+  }
+  .insight-box:hover { border-color: rgba(123,97,255,0.4); }
+  .insight-icon { font-size: 1.6rem; flex-shrink: 0; padding-top: 2px; }
+  .insight-title { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .insight-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── APPLY TO LIFE ── */
+  .apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+  .apply-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    border-top: 3px solid transparent; transition: all 0.25s;
+  }
+  .apply-card:nth-child(1) { border-top-color: var(--accent2); }
+  .apply-card:nth-child(2) { border-top-color: var(--accent); }
+  .apply-card:nth-child(3) { border-top-color: var(--danger); }
+  .apply-card:nth-child(4) { border-top-color: #4ecdc4; }
+  .apply-card:hover { transform: translateY(-3px); }
+  .apply-card h4 { font-family: 'Syne', sans-serif; color: var(--white); margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .apply-card p { font-size: 0.83rem; color: var(--muted); margin: 0; }
+
+  /* ── BRAIN TOGGLE QUIZ ── */
+  .quiz-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin: 2rem 0; }
+  .quiz-wrap h3 { font-family: 'Syne', sans-serif; color: var(--white); margin-bottom: 0.4rem; }
+  .quiz-wrap .quiz-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .quiz-q { margin-bottom: 1.5rem; }
+  .quiz-question { font-size: 0.95rem; color: var(--text); margin-bottom: 0.8rem; font-weight: 500; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .quiz-opt {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); padding: 0.75rem 1rem; border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 0.88rem; cursor: pointer;
+    text-align: left; transition: all 0.2s;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--accent2); color: var(--white); }
+  .quiz-opt.correct { border-color: #4ecdc4; background: rgba(78,205,196,0.08); color: #4ecdc4; }
+  .quiz-opt.wrong { border-color: var(--danger); background: rgba(224,92,92,0.08); color: var(--danger); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback { font-size: 0.82rem; margin-top: 0.5rem; min-height: 1.2rem; }
+  .quiz-feedback.ok { color: #4ecdc4; }
+  .quiz-feedback.no { color: var(--danger); }
+  #quiz-score { display: none; text-align: center; padding: 1.5rem; }
+  #quiz-score .score-num { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+  #quiz-score .score-label { color: var(--muted); font-size: 0.88rem; }
+  #retake-btn {
+    margin-top: 1rem; padding: 0.6rem 1.5rem; background: var(--accent2);
+    color: #fff; border: none; border-radius: 8px; font-family: 'Syne', sans-serif;
+    font-weight: 700; cursor: pointer; font-size: 0.88rem;
+  }
+
+  /* ── CHATGPT BUTTON ── */
+  .chatgpt-section {
+    text-align: center; padding: 4rem 2rem 6rem;
+    max-width: 720px; margin: 0 auto;
+  }
+  .chatgpt-section h2 { margin-bottom: 0.8rem; }
+  .chatgpt-section p { color: var(--muted); font-size: 0.92rem; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .topics-preview {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .topic-chip {
+    font-size: 0.75rem; padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border); border-radius: 20px; color: var(--muted);
+    background: var(--surface); letter-spacing: 0.03em;
+  }
+  .chatgpt-btn {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    background: linear-gradient(135deg, #10a37f, #0d8a6a);
+    color: #fff; font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1rem; padding: 1rem 2.2rem; border-radius: 50px;
+    text-decoration: none; border: none; cursor: pointer;
+    box-shadow: 0 0 30px rgba(16,163,127,0.25);
+    transition: all 0.25s;
+  }
+  .chatgpt-btn:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(16,163,127,0.4); }
+  .chatgpt-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-size: 0.75rem; color: var(--muted); }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:600px){
+    .donut-conflict { grid-template-columns: 1fr; }
+    .conflict-vs { display: none; }
+    .apply-grid { grid-template-columns: 1fr; }
+    .option-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <span class="nav-logo">Brain Control</span>
+  <ul class="nav-links">
+    <li><a href="#why-chain">The Why Game</a></li>
+    <li><a href="#aristotle">Aristotle</a></li>
+    <li><a href="#conflict">The Conflict</a></li>
+    <li><a href="#apply">Apply</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-pulse"></div>
+  <div class="hero-eyebrow">Chapter Breakdown</div>
+  <h1>Who's in <span>Control</span><br/>of Your Brain?</h1>
+  <p class="hero-sub">We believe we act for reasons. But our brains aren't wired for rational happiness — they're wired for wants, conflicts, and impulse. Here's what's actually running the show.</p>
+  <div class="scroll-cue">↓ scroll to explore</div>
+</section>
+
+<!-- WHY CHAIN -->
+<section id="why-chain">
+  <div class="reveal">
+    <div class="section-label">The Infinite Why</div>
+    <h2>Every action has a reason.<br/>But where does it end?</h2>
+    <p>Children do it instinctively. Philosophers do it on purpose. The <strong>"Why?" game</strong> exposes that most of what we do is not the real goal — it's a step toward something else. Follow the chain long enough and you reach the root.</p>
+
+    <div class="why-chain">
+      <div class="why-row">
+        <span class="why-q">Action</span>
+        <span class="why-text">I'm going to work today.</span>
+      </div>
+      <div class="why-arrow">↓</div>
+      <div class="why-row">
+        <span class="why-q">Why?</span>
+        <span class="why-text">Because I need to make money.</span>
+      </div>
+      <div class="why-arrow">↓</div>
+      <div class="why-row">
+        <span class="why-q">Why?</span>
+        <span class="why-text">To pay my bills and keep the electricity on.</span>
+      </div>
+      <div class="why-arrow">↓</div>
+      <div class="why-row">
+        <span class="why-q">Why?</span>
+        <span class="why-text">Because I want comfort, security, stability.</span>
+      </div>
+      <div class="why-arrow">↓</div>
+      <div class="why-row">
+        <span class="why-q">Why?</span>
+        <span class="why-text">Because those things make me feel good.</span>
+      </div>
+      <div class="why-arrow">↓</div>
+      <div class="why-end">
+        <span class="why-end-icon">✦</span>
+        <div>
+          <div class="why-end-text">Happiness</div>
+          <div class="why-end-sub">Aristotle's answer — the final destination of every chain of "why."</div>
+        </div>
+      </div>
+    </div>
+
+    <p>This isn't just a philosophical exercise. Try it on your own habits, purchases, relationships. The chain always terminates at a feeling — not a fact, not an object, not a status.</p>
+  </div>
+</section>
+
+<!-- ARISTOTLE -->
+<section id="aristotle">
+  <div class="reveal">
+    <div class="section-label">The Philosopher's Conclusion</div>
+    <h2>Aristotle's answer:<br/>Everything is for Happiness</h2>
+
+    <div class="aristotle-card">
+      <div class="aristotle-name">Aristotle — Nicomachean Ethics</div>
+      <blockquote>"Is there not some end of the things we do, which we desire for its own sake? Will not knowing it have a great influence on life?"</blockquote>
+    </div>
+
+    <p>Aristotle observed that while we do most things <strong>for the sake of something else</strong>, there must be a thing we seek for itself alone — something that doesn't need justification. He called it <strong>Eudaimonia</strong> (happiness, flourishing).</p>
+
+    <p>It's convincing. We pay bills → feel secure → feel happy. We brush teeth → avoid dentist → feel okay → happy. We suffer for worthy causes → feel proud → still, in some strange way, happy.</p>
+
+    <div class="happiness-demo">
+      <h3>The Happiness Test</h3>
+      <p>Try it yourself. Pick any goal — trace it back. Where does it end?</p>
+      <div class="option-grid">
+        <button class="option-btn" onclick="testHappiness(this,'Buying a car leads to status, convenience, freedom... which feel good. Happiness.')">🚗 Buy a new car</button>
+        <button class="option-btn" onclick="testHappiness(this,'Getting fit leads to confidence, health, longer life... which are desired because they feel fulfilling. Happiness.')">💪 Get fit</button>
+        <button class="option-btn" onclick="testHappiness(this,'Earning money leads to security, options, freedom... ultimately because that state feels good. Happiness.')">💰 Earn more money</button>
+        <button class="option-btn" onclick="testHappiness(this,'Being loved leads to belonging, security, meaning... all of which are desired because they make us feel deeply good. Happiness.')">❤️ Be loved</button>
+      </div>
+      <div id="choice-result">← Select any goal to trace its Why chain</div>
+    </div>
+
+    <p>Aristotle was onto something universal. But here's the twist — if happiness is the goal, <strong>why don't we always choose the happiest option?</strong></p>
+  </div>
+</section>
+
+<!-- EXCEPT WE DON'T -->
+<section id="reality">
+  <div class="reveal">
+    <div class="section-label">The Problem</div>
+    <h2>Except we don't choose<br/>rationally. At all.</h2>
+
+    <div class="insight-list">
+      <div class="insight-box">
+        <div class="insight-icon">🎲</div>
+        <div>
+          <div class="insight-title">"I just fell into it."</div>
+          <div class="insight-desc">Most people don't choose careers through systematic comparison. They fall in — through chance encounters, gut feelings, whatever opportunities showed up first. Rational maximization is exhausting and rarely done.</div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-icon">🏫</div>
+        <div>
+          <div class="insight-title">College on a gut feeling</div>
+          <div class="insight-desc">Ask people why they picked their college. The honest answer is often: "It just felt right." Not a spreadsheet. Not a happiness optimization. A vibe.</div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-icon">🧠</div>
+        <div>
+          <div class="insight-title">Rational decisions are costly</div>
+          <div class="insight-desc">Weighing all options takes enormous mental effort. And it rarely delivers the relief of certainty. So instead, we just do what we want — and justify it after.</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The brain doesn't run a happiness calculation before every decision. It runs on <strong>want</strong> — a messier, faster, more irrational system.</p>
+  </div>
+</section>
+
+<!-- THE CONFLICT -->
+<section id="conflict">
+  <div class="reveal">
+    <div class="section-label">The Core Tension</div>
+    <h2>The Donut Dilemma:<br/>wanting two opposite things at once</h2>
+
+    <p>Here's the sharpest example in the chapter. You see a donut. Two things happen simultaneously:</p>
+
+    <div class="donut-conflict">
+      <div class="conflict-side want">
+        <div class="conflict-emoji">🍩</div>
+        <div class="conflict-label">WANT to eat it</div>
+        <div class="conflict-sub">Dopamine. Pleasure. Craving. Reward circuitry firing.</div>
+      </div>
+      <div class="conflict-vs">VS</div>
+      <div class="conflict-side want-not">
+        <div class="conflict-emoji">🚫</div>
+        <div class="conflict-label">WANT to NOT eat it</div>
+        <div class="conflict-sub">Goals. Identity. Self-image. Long-term thinking.</div>
+      </div>
+    </div>
+
+    <p>Both are real wants. Both are happening in the same brain, at the same moment. This isn't weakness or stupidity — it's the fundamental design of the human mind. <strong>We contain contradictions.</strong></p>
+
+    <p>And this isn't just about food. It's about:</p>
+
+    <div class="insight-list">
+      <div class="insight-box">
+        <div class="insight-icon">📱</div>
+        <div>
+          <div class="insight-title">Want to use phone / want to be present</div>
+          <div class="insight-desc">You know you should put it down. You also know you want to scroll. Both are real.</div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-icon">💤</div>
+        <div>
+          <div class="insight-title">Want to sleep in / want to hit the gym</div>
+          <div class="insight-desc">7 AM you and 10 PM you have very different priorities — same person, different wants.</div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-icon">🗣️</div>
+        <div>
+          <div class="insight-title">Want to speak up / want to avoid conflict</div>
+          <div class="insight-desc">You want honesty and you want peace. The brain doesn't resolve these — it just picks one in the moment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY TO LIFE -->
+<section id="apply">
+  <div class="reveal">
+    <div class="section-label">Apply to Life</div>
+    <h2>What to do with<br/>this knowledge</h2>
+
+    <p>Understanding that your brain runs on competing wants — not rational happiness maximization — is genuinely useful. Here's how to use it:</p>
+
+    <div class="apply-grid">
+      <div class="apply-card">
+        <h4>🔍 Run the Why Chain</h4>
+        <p>Before a big decision, ask "why?" repeatedly. Uncover what you actually want — not the surface action.</p>
+      </div>
+      <div class="apply-card">
+        <h4>⚡ Name the Conflict</h4>
+        <p>When you feel stuck, identify the two wants fighting each other. Naming them reduces their power over you.</p>
+      </div>
+      <div class="apply-card">
+        <h4>🌅 Design for Tired-You</h4>
+        <p>Your 7 PM self is different from your 7 AM self. Set up environments so the right choice is the easy choice.</p>
+      </div>
+      <div class="apply-card">
+        <h4>🎯 Ask: What do I actually want?</h4>
+        <p>Not what you should want. Not what others want for you. What do <em>you</em> want? Then trace the Why to verify it's real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="reveal">
+    <div class="section-label">Check Your Understanding</div>
+    <h2>Quick Quiz</h2>
+
+    <div class="quiz-wrap">
+      <h3>How well did it land?</h3>
+      <div class="quiz-sub">4 questions. No tricks. Just reinforcing the ideas.</div>
+
+      <div id="quiz-body">
+        <div class="quiz-q" id="q1">
+          <div class="quiz-question">1. According to Aristotle, what lies at the end of every chain of "Why?"</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'q1',false)">Money</button>
+            <button class="quiz-opt" onclick="answer(this,'q1',true)">Happiness</button>
+            <button class="quiz-opt" onclick="answer(this,'q1',false)">Survival</button>
+            <button class="quiz-opt" onclick="answer(this,'q1',false)">Rationality</button>
+          </div>
+          <div class="quiz-feedback" id="fb-q1"></div>
+        </div>
+
+        <div class="quiz-q" id="q2">
+          <div class="quiz-question">2. The author says most people choose their careers by…</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'q2',false)">Carefully comparing options</button>
+            <button class="quiz-opt" onclick="answer(this,'q2',false)">Following a mentor's advice</button>
+            <button class="quiz-opt" onclick="answer(this,'q2',true)">Falling into it or gut feeling</button>
+            <button class="quiz-opt" onclick="answer(this,'q2',false)">Optimizing for happiness</button>
+          </div>
+          <div class="quiz-feedback" id="fb-q2"></div>
+        </div>
+
+        <div class="quiz-q" id="q3">
+          <div class="quiz-question">3. The donut example illustrates that we often…</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'q3',false)">Lack self-control</button>
+            <button class="quiz-opt" onclick="answer(this,'q3',true)">Hold two conflicting wants simultaneously</button>
+            <button class="quiz-opt" onclick="answer(this,'q3',false)">Always choose pleasure over goals</button>
+            <button class="quiz-opt" onclick="answer(this,'q3',false)">Are irrational by nature</button>
+          </div>
+          <div class="quiz-feedback" id="fb-q3"></div>
+        </div>
+
+        <div class="quiz-q" id="q4">
+          <div class="quiz-question">4. What does the book suggest we actually run on, instead of rational happiness-maximization?</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'q4',false)">Logic</button>
+            <button class="quiz-opt" onclick="answer(this,'q4',false)">Fear</button>
+            <button class="quiz-opt" onclick="answer(this,'q4',true)">Want — a messy, fast, irrational system</button>
+            <button class="quiz-opt" onclick="answer(this,'q4',false)">Habit alone</button>
+          </div>
+          <div class="quiz-feedback" id="fb-q4"></div>
+        </div>
+      </div>
+
+      <div id="quiz-score">
+        <div class="score-num" id="score-display">0/4</div>
+        <div class="score-label">correct answers</div>
+        <br/>
+        <button id="retake-btn" onclick="retakeQuiz()">Retake Quiz</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHATGPT BUTTON -->
+<div class="chatgpt-section reveal">
+  <div class="section-label">Go Deeper</div>
+  <h2>Ask ChatGPT about<br/>these ideas</h2>
+  <p>All the key topics from this chapter, packaged into one prompt. Open ChatGPT and explore further.</p>
+
+  <div class="topics-preview">
+    <span class="topic-chip">Why do humans do things?</span>
+    <span class="topic-chip">Aristotle's Happiness Theory</span>
+    <span class="topic-chip">Eudaimonia</span>
+    <span class="topic-chip">The infinite Why chain</span>
+    <span class="topic-chip">Rational vs irrational decision making</span>
+    <span class="topic-chip">Internal conflict & competing desires</span>
+    <span class="topic-chip">Dopamine and wanting</span>
+    <span class="topic-chip">Donut dilemma — simultaneous wants</span>
+    <span class="topic-chip">Why we fall into careers</span>
+    <span class="topic-chip">Brain-based motivation</span>
+    <span class="topic-chip">How to apply the Why chain in life</span>
+  </div>
+
+  <button class="chatgpt-btn" onclick="openChatGPT()">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.908 8.908 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z" fill="white"/>
+    </svg>
+    Ask ChatGPT about these topics
+  </button>
+</div>
+
+<footer>
+  Built from <em>The Molecule of More</em> — Who's In Control of Your Brain? &nbsp;·&nbsp; Dark SPA by Claude
+</footer>
+
+<script>
+  // ── PROGRESS BAR ──
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+  });
+
+  // ── REVEAL ON SCROLL ──
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── HAPPINESS TEST ──
+  function testHappiness(btn, msg) {
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const el = document.getElementById('choice-result');
+    el.textContent = '→ ' + msg;
+    el.classList.add('show');
+  }
+
+  // ── QUIZ ──
+  const answered = {};
+  let score = 0;
+  const total = 4;
+
+  function answer(btn, qid, correct) {
+    if (answered[qid]) return;
+    answered[qid] = true;
+    const fb = document.getElementById('fb-' + qid);
+    const opts = btn.closest('.quiz-options').querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.disabled = true);
+    if (correct) {
+      btn.classList.add('correct');
+      fb.textContent = '✓ Correct!';
+      fb.className = 'quiz-feedback ok';
+      score++;
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '✗ Not quite — try to recall the passage.';
+      fb.className = 'quiz-feedback no';
+      // highlight correct
+      opts.forEach(o => {
+        if(o.onclick.toString().includes('true')) o.classList.add('correct');
+      });
+    }
+    if (Object.keys(answered).length === total) {
+      setTimeout(showScore, 600);
+    }
+  }
+
+  function showScore() {
+    document.getElementById('quiz-body').style.display = 'none';
+    const sd = document.getElementById('quiz-score');
+    sd.style.display = 'block';
+    document.getElementById('score-display').textContent = score + '/' + total;
+  }
+
+  function retakeQuiz() {
+    score = 0;
+    Object.keys(answered).forEach(k => delete answered[k]);
+    document.querySelectorAll('.quiz-opt').forEach(o => {
+      o.disabled = false;
+      o.classList.remove('correct','wrong');
+    });
+    document.querySelectorAll('.quiz-feedback').forEach(f => { f.textContent=''; f.className='quiz-feedback'; });
+    document.getElementById('quiz-body').style.display = 'block';
+    document.getElementById('quiz-score').style.display = 'none';
+  }
+
+  // ── CHATGPT BUTTON ──
+  function openChatGPT() {
+    const topics = [
+      "Why do humans do things?",
+      "Aristotle's theory that Happiness (Eudaimonia) is the final end of all human action",
+      "The infinite 'Why?' chain — how every action traces back to a feeling",
+      "Why rational decision-making is exhausting and rarely done in practice",
+      "How people 'fall into' careers and make choices on gut feeling, not rational analysis",
+      "The concept of holding two conflicting desires simultaneously (e.g. wanting to eat a donut AND not eat it)",
+      "Dopamine, wanting, and the brain's motivation system",
+      "The difference between what we want and what makes us happy",
+      "Internal conflict and competing desires in human psychology",
+      "How to use the Why chain as a self-reflection tool in daily life",
+      "Designing habits and environments to align with long-term wants"
+    ];
+    const prompt = `I'm studying human motivation and decision-making from a book chapter called "Who's In Control of Your Brain?". Please help me explore and understand these topics deeply:\n\n${topics.map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\nFor each topic, give me a short insight, a real-world example, and one practical way to apply it in daily life. Make it conversational and actionable.`;
+    const encoded = encodeURIComponent(prompt);
+    window.open(`https://chatgpt.com/?q=${encoded}`, '_blank');
+  }
+</script>
+</body>
+</html>

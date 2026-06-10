@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phantom World — The Molecule of More</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --dopamine: #7c5cfc;
+    --dopamine-glow: rgba(124,92,252,0.18);
+    --hn: #3ecf8e;
+    --hn-glow: rgba(62,207,142,0.15);
+    --warn: #e8845a;
+    --text: #d4d4e8;
+    --text-dim: #7070a0;
+    --text-bright: #f0f0ff;
+    --card: #13131f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,92,252,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.6; }
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--dopamine);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0.85;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 8vw, 88px);
+    font-weight: 300;
+    color: var(--text-bright);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--dopamine);
+  }
+
+  .hero-sub {
+    max-width: 520px;
+    color: var(--text-dim);
+    font-size: 15px;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+
+  .scroll-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0 16px;
+    overflow-x: auto;
+  }
+
+  nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 14px 18px;
+    transition: color 0.2s;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+
+  nav a:hover { color: var(--dopamine); border-bottom-color: var(--dopamine); }
+
+  /* ── SECTIONS ── */
+  section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--dopamine);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 400;
+    color: var(--text-bright);
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  h2 em { font-style: italic; color: var(--dopamine); }
+
+  p {
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 300;
+    font-size: 15px;
+  }
+
+  strong {
+    color: var(--text-bright);
+    font-weight: 500;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: var(--border);
+    margin: 0 auto 80px;
+  }
+
+  /* ── MOLECULE CARD ── */
+  .molecule-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  @media (max-width: 500px) { .molecule-grid { grid-template-columns: 1fr; } }
+
+  .mol-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mol-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .mol-card.dopa::before { background: var(--dopamine); box-shadow: 0 0 12px var(--dopamine); }
+  .mol-card.hn::before   { background: var(--hn);       box-shadow: 0 0 12px var(--hn); }
+
+  .mol-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .mol-card.dopa .mol-label { color: var(--dopamine); }
+  .mol-card.hn   .mol-label { color: var(--hn); }
+
+  .mol-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+  }
+
+  .mol-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── CASE STUDY CARD ── */
+  .case-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 12px 12px 0;
+    padding: 28px;
+    margin: 32px 0;
+  }
+
+  .case-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--warn);
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+
+  .case-card p {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .case-card p strong { color: var(--text); font-style: normal; }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    margin: 36px 0;
+    padding-left: 28px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--dopamine);
+    background: var(--bg);
+  }
+
+  .tl-item.hn-phase .tl-dot {
+    border-color: var(--hn);
+  }
+
+  .tl-item.crash .tl-dot {
+    border-color: var(--warn);
+    background: var(--warn);
+  }
+
+  .tl-phase {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--dopamine);
+  }
+
+  .tl-item.hn-phase .tl-phase { color: var(--hn); }
+  .tl-item.crash .tl-phase    { color: var(--warn); }
+
+  .tl-text {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  /* ── HIGHLIGHT QUOTE ── */
+  .big-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 32px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-bright);
+    line-height: 1.4;
+    border-left: 2px solid var(--dopamine);
+    padding-left: 24px;
+    margin: 40px 0;
+  }
+
+  .big-quote span { color: var(--dopamine); }
+
+  /* ── SITCOM CARD ── */
+  .dialogue-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 32px 0;
+  }
+
+  .dialogue-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .dialogue-line {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+  }
+
+  .who {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--dopamine);
+    min-width: 80px;
+    padding-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+  }
+
+  .what { color: var(--text); font-style: italic; }
+
+  /* ── 3 SOLUTIONS GRID ── */
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 32px 0;
+  }
+
+  @media (max-width: 600px) { .solutions-grid { grid-template-columns: 1fr; } }
+
+  .sol-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    text-align: center;
+  }
+
+  .sol-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--dopamine);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .sol-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .sol-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .sol-card.recommended {
+    border-color: var(--hn);
+    position: relative;
+  }
+
+  .sol-card.recommended .sol-num { color: var(--hn); }
+
+  .rec-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--hn);
+    color: #0a0a0f;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ── APPLY-TO-LIFE CARDS ── */
+  .apply-grid {
+    display: grid;
+    gap: 14px;
+    margin: 32px 0;
+  }
+
+  .apply-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  .apply-icon {
+    font-size: 24px;
+    min-width: 36px;
+    text-align: center;
+    padding-top: 2px;
+  }
+
+  .apply-body {}
+
+  .apply-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 5px;
+  }
+
+  .apply-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── INTERACTIVE: WANTING vs LIKING SLIDER ── */
+  .wl-demo {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin: 32px 0;
+    text-align: center;
+  }
+
+  .wl-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .wl-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 28px; }
+
+  .wl-bar-wrap {
+    position: relative;
+    height: 8px;
+    background: var(--border);
+    border-radius: 8px;
+    margin: 0 0 28px;
+    overflow: visible;
+  }
+
+  .wl-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--dopamine), var(--hn));
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  .wl-thumb {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--dopamine);
+    cursor: grab;
+    transition: border-color 0.3s;
+  }
+
+  .wl-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .wl-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .wl-label.w { color: var(--dopamine); }
+  .wl-label.l { color: var(--hn); }
+
+  .wl-state {
+    font-size: 14px;
+    color: var(--text-dim);
+    min-height: 42px;
+    transition: opacity 0.3s;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 8px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--dopamine);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--dopamine);
+    transition: background 0.3s;
+  }
+
+  /* ── CHATGPT BUTTON ── */
+  .chatgpt-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+
+  .chatgpt-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chatgpt-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(124,92,252,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .chatgpt-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+  }
+
+  .chatgpt-box p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .topic-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(124,92,252,0.1);
+    border: 1px solid rgba(124,92,252,0.25);
+    color: var(--dopamine);
+  }
+
+  .topic-pill.hn {
+    background: rgba(62,207,142,0.08);
+    border-color: rgba(62,207,142,0.2);
+    color: var(--hn);
+  }
+
+  .btn-chatgpt {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--dopamine), #5b8cfc);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 36px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-chatgpt:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(124,92,252,0.35);
+  }
+
+  .btn-chatgpt svg {
+    width: 18px; height: 18px;
+    fill: white;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 32px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  footer span { color: var(--dopamine); }
+
+  /* ── UTILITY ── */
+  .hn-highlight {
+    color: var(--hn);
+    font-weight: 500;
+  }
+
+  .warn-highlight {
+    color: var(--warn);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">The Molecule of More · Chapter Insight</div>
+  <h1>We Live in a<br>World of <em>Phantoms</em></h1>
+  <p class="hero-sub">Why dopamine makes us chase things we don't actually enjoy — and how to stop falling for the illusion.</p>
+  <div class="scroll-hint">↓ scroll to explore</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#what-is-dopamine">Dopamine</a>
+  <a href="#chase">The Chase</a>
+  <a href="#wanting-vs-liking">Wanting vs Liking</a>
+  <a href="#buyer-remorse">Buyer's Remorse</a>
+  <a href="#solutions">Solutions</a>
+  <a href="#apply">Apply to Life</a>
+</nav>
+
+<!-- SECTION 1: WHAT IS DOPAMINE -->
+<section id="what-is-dopamine">
+  <div class="section-label">Section 01</div>
+  <h2>Dopamine is your <em>early-warning radar</em> — not a pleasure chemical</h2>
+
+  <p>Most people think dopamine = pleasure. That's wrong. Dopamine is an <strong>anticipation and wanting signal</strong>. It fires before you get something, not while you're enjoying it. Its job is to make you pursue anything that <em>might</em> help you survive.</p>
+
+  <div class="molecule-grid">
+    <div class="mol-card dopa">
+      <div class="mol-label">Dopamine System</div>
+      <div class="mol-title">Wanting</div>
+      <p class="mol-desc">Fires in anticipation. Lives in the future. Creates hunger, energy, excitement, pursuit. Shuts off once you get what you wanted.</p>
+    </div>
+    <div class="mol-card hn">
+      <div class="mol-label">H&N System</div>
+      <div class="mol-title">Liking</div>
+      <p class="mol-desc">Serotonin, Oxytocin, Anandamide. Lives in the present. Produces satisfaction, warmth, peace — but only if you're actually paying attention.</p>
+    </div>
+  </div>
+
+  <div class="big-quote">
+    Dopamine is like the little old lady who always buys toilet paper — it doesn't matter if she has a thousand rolls. <span>You can never have too much.</span>
+  </div>
+
+  <p>This is why the man on a diet still wants a hamburger even when he isn't hungry. His dopamine doesn't care about need. It cares about <strong>potential resource acquisition</strong>. Always has. Always will.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: THE CHASE (Andrew's story) -->
+<section id="chase">
+  <div class="section-label">Section 02</div>
+  <h2>The Chase: When <em>Wanting</em> Collapses on Arrival</h2>
+
+  <div class="case-card">
+    <div class="case-tag">Case Study · Andrew</div>
+    <p>Andrew pursued attractive women obsessively. The moment a woman agreed to come home with him — the chase over — <strong>he lost all interest</strong>. She even <em>looked different to him</em> in an instant. By the time they arrived at his apartment, he didn't want to be there anymore.</p>
+  </div>
+
+  <p>This isn't a character flaw. It's dopamine behaving exactly as designed. The anticipation circuit was running full-blast during the chase. The moment pursuit ended, <strong>dopamine switched off</strong>. The H&N system was supposed to take over — but Andrew never developed the ability to enjoy the present, so the crash felt like a void.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 1 — Dopamine Peak</div>
+      <div class="tl-text">Sees attractive woman. Dopamine fires. Everything else fades to gray. Total focus. Energy, enthusiasm, imagination.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 2 — Hunt Mode</div>
+      <div class="tl-text">The pursuit itself maintains dopamine. The future possibility keeps the signal alive. He tells himself he'll resist — but dopamine wins.</div>
+    </div>
+    <div class="tl-item crash">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 3 — Collapse</div>
+      <div class="tl-text">She says yes. Chase ends. Dopamine shuts down instantly. Future becomes present. H&N system has nothing to catch the fall.</div>
+    </div>
+    <div class="tl-item hn-phase">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 4 — What Could Have Been</div>
+      <div class="tl-text">If Andrew had trained his H&N attention — presence, noticing, real connection — the liking could have met the wanting. But it wasn't there.</div>
+    </div>
+  </div>
+
+  <p>The book notes something even more extreme: <strong>"He was losing interest the moment she agreed."</strong> Not even on arrival — just the confirmation was enough. The future collapsed into present-tense reality, and dopamine vanished.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: WANTING VS LIKING -->
+<section id="wanting-vs-liking">
+  <div class="section-label">Section 03</div>
+  <h2><em>Wanting</em> and Liking are produced<br>by two different brain systems</h2>
+
+  <p>This is the core insight of the chapter. You assume that the things you desperately want will be things you enjoy having. <strong>That assumption is almost always wrong.</strong> The wanting circuit is just a salesman — it makes promises the liking circuit has to fulfill. And the salesman doesn't care if the product delivers.</p>
+
+  <!-- INTERACTIVE SLIDER -->
+  <div class="wl-demo">
+    <div class="wl-title">Anticipation → Reality Transition</div>
+    <div class="wl-sub">Slide from pure wanting to pure liking and see what happens in the brain</div>
+    <div class="wl-labels">
+      <span class="wl-label w">◀ Wanting (Dopamine)</span>
+      <span class="wl-label l">Liking (H&N) ▶</span>
+    </div>
+    <input type="range" id="wlSlider" min="0" max="100" value="10">
+    <div class="wl-state" id="wlState">You haven't gotten what you want yet. Dopamine is surging — imagination is vivid, the future looks ideal, energy is high. But you're not tasting anything real.</div>
+  </div>
+
+  <div class="dialogue-card">
+    <div class="dialogue-header">The Office — Deangelo Vickers, on cake</div>
+    <div class="dialogue-line">
+      <span class="who">Deangelo</span>
+      <span class="what">I, for one, love the corners. <em>[eats a handful]</em> Why did I just do that? It's not even that good. I don't even want it.</span>
+    </div>
+    <div class="dialogue-line">
+      <span class="who">Deangelo</span>
+      <span class="what"><em>[throws it away, then reaches back in]</em> No. You know what? I've been good. I deserve this.</span>
+    </div>
+    <div class="dialogue-line">
+      <span class="who">Deangelo</span>
+      <span class="what">What am I doing? C'mon, Deangelo! <em>[yells at the cake]</em> No! No!</span>
+    </div>
+    <p style="font-size:12px; color:var(--text-dim); margin-top:14px; margin-bottom:0; font-style:normal;">This is not a joke — it's a textbook dopamine loop. Wanting fires before touching the cake. Liking is absent once he has it. Yet wanting fires again because the cake remains as a future possibility. He is arguing with his own dopamine.</p>
+  </div>
+
+  <p>The same thing drives <strong>doomscrolling</strong> (next post might be great), <strong>online shopping carts you never buy from</strong> (browsing feels better than owning), <strong>obsessive planning</strong> (trip research more exciting than the trip), and <strong>relationship fantasies</strong> (imagined intimacy more thrilling than real presence).</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4: BUYER'S REMORSE -->
+<section id="buyer-remorse">
+  <div class="section-label">Section 04</div>
+  <h2>Buyer's Remorse is a <em>Neurochemical Crash</em></h2>
+
+  <p>You've always been told buyer's remorse is about fear of wrong choices, guilt, or being sold to. The real explanation is more precise: <strong>the desire circuit broke its promise.</strong></p>
+
+  <div class="big-quote">
+    Dopamine told you that buying that expensive car would <span>overcome you with joy</span> and your life would never be the same. Except it didn't happen. It was never in a position to deliver that.
+  </div>
+
+  <p>Once you buy the car, it moves from <strong>extrapersonal space</strong> (far, future, dopaminergic) into <strong>peripersonal space</strong> (near, present, H&N territory). The dopamine thrill evaporates. Whether you feel good now depends on whether your H&N system finds genuine satisfaction in the actual object. Usually: not enough to compensate.</p>
+
+  <p>Notice how a new computer or jacket can avoid this trap — they stay partly dopaminergic because they point to a future: <em>"I'll be more productive... I'll look great when I wear this."</em> They maintain anticipatory value even after purchase.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 5: THREE SOLUTIONS -->
+<section id="solutions">
+  <div class="section-label">Section 05</div>
+  <h2>Three ways out of the dopamine trap</h2>
+  <p>These are the book's three explicit strategies. Only one of them actually solves the problem.</p>
+
+  <div class="solutions-grid">
+    <div class="sol-card">
+      <div class="sol-num">1</div>
+      <div class="sol-title">Chase the high</div>
+      <p class="sol-desc">Keep buying more. Keep pursuing. Dopamine stays elevated through perpetual novelty. Effective short-term. Escalating cost long-term.</p>
+    </div>
+    <div class="sol-card recommended">
+      <div class="rec-badge">Recommended</div>
+      <div class="sol-num">3</div>
+      <div class="sol-title">Train H&N transition</div>
+      <p class="sol-desc">Strengthen the ability to shift from dopamine desire into real liking. Presence. Mindfulness. Savoring. The hardest path — but the only lasting one.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-num">2</div>
+      <div class="sol-title">Buy less</div>
+      <p class="sol-desc">Avoid the crash by avoiding the acquisition. Minimalism and restraint. Reduces the cycle but doesn't teach you how to enjoy what you already have.</p>
+    </div>
+  </div>
+
+  <p>The book is unambiguous: <span class="warn-highlight">there is no guarantee that what you desperately want will be something you enjoy having.</span> The wanting and liking systems don't consult each other. You have to consciously bridge them yourself.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 6: APPLY TO LIFE -->
+<section id="apply">
+  <div class="section-label">Section 06</div>
+  <h2>How to actually use this in your life</h2>
+
+  <div class="apply-grid">
+    <div class="apply-card">
+      <div class="apply-icon">🔍</div>
+      <div class="apply-body">
+        <div class="apply-title">Notice the gap between wanting and liking in real time</div>
+        <p class="apply-desc">When you're excited about something, ask: "Am I actually enjoying this, or am I just anticipating it?" Dopamine-driven excitement feels real but is future-oriented. Catching this gap is the first move.</p>
+      </div>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">📱</div>
+      <div class="apply-body">
+        <div class="apply-title">Recognize the doomscroll loop</div>
+        <p class="apply-desc">You're not enjoying the scroll — you're searching for the next dopamine hit. Each swipe is Andrew walking to his apartment. The wanting is real; the liking never comes. Put the phone down before the next swipe, not after.</p>
+      </div>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🛒</div>
+      <div class="apply-body">
+        <div class="apply-title">Use the cart cooling rule</div>
+        <p class="apply-desc">Leave items in your shopping cart for 48 hours. You're testing whether the H&N system will sustain the desire after dopamine fades. Most cart abandonment is healthy — your real liking system correctly rejected the dopamine salesman's pitch.</p>
+      </div>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🍽️</div>
+      <div class="apply-body">
+        <div class="apply-title">Train your H&N attention daily</div>
+        <p class="apply-desc">Eat one meal with full attention — no phone, no planning tomorrow. Notice flavor, texture, temperature. This is H&N training. You're building the circuit that makes the present <em>actually satisfying</em>, not just theoretically nice.</p>
+      </div>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">💬</div>
+      <div class="apply-body">
+        <div class="apply-title">In relationships: catch the "she looked different" moment</div>
+        <p class="apply-desc">When a relationship moves from chase to commitment, or from new to familiar — and suddenly seems less exciting — that's the dopamine-to-H&N handoff. Most people mistake this neurochemical transition for falling out of love. It's not. It's the moment the real relationship can begin.</p>
+      </div>
+    </div>
+    <div class="apply-card">
+      <div class="apply-icon">🎯</div>
+      <div class="apply-body">
+        <div class="apply-title">To travel hopefully is better than to arrive — use this against yourself</div>
+        <p class="apply-desc">When you notice yourself planning the next thing while experiencing the current thing (chewing food while thinking about tomorrow), you've been hijacked. Name it. Return. The present is the only place H&N can operate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASK CHATGPT SECTION -->
+<div class="chatgpt-section">
+  <div class="chatgpt-box">
+    <h3>Go deeper with ChatGPT</h3>
+    <p>All the key concepts from this chapter — sent directly to ChatGPT as a structured prompt for deeper exploration and personal application.</p>
+
+    <div class="topics-list">
+      <span class="topic-pill">Dopamine wanting signal</span>
+      <span class="topic-pill">Anticipation vs satisfaction</span>
+      <span class="topic-pill">Andrew's case study</span>
+      <span class="topic-pill">Buyer's remorse neuroscience</span>
+      <span class="topic-pill">Wanting vs Liking brain systems</span>
+      <span class="topic-pill hn">H&N neurotransmitters</span>
+      <span class="topic-pill hn">Peripersonal vs extrapersonal</span>
+      <span class="topic-pill hn">H&N training techniques</span>
+      <span class="topic-pill">Dopamine & relationships</span>
+      <span class="topic-pill">Doomscroll dopamine loop</span>
+      <span class="topic-pill">Deangelo cake scene</span>
+      <span class="topic-pill hn">Present-moment liking</span>
+    </div>
+
+    <a class="btn-chatgpt" id="chatgptBtn" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg>
+      Ask ChatGPT About These Topics
+    </a>
+  </div>
+</div>
+
+<footer>
+  Based on <span>The Molecule of More</span> by Daniel Z. Lieberman & Michael E. Long · Chapter: Drugs
+</footer>
+
+<script>
+  // Scroll reveal
+  const sections = document.querySelectorAll('section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  sections.forEach(s => observer.observe(s));
+
+  // Wanting vs Liking slider
+  const slider = document.getElementById('wlSlider');
+  const stateEl = document.getElementById('wlState');
+
+  const states = [
+    { range: [0, 20], text: "You haven't gotten what you want yet. Dopamine is surging — imagination is vivid, the future looks ideal, energy is high. But you're not tasting anything real." },
+    { range: [21, 40], text: "You're close to getting it. Excitement peaks. This is when dopamine peaks hardest — the near-certain future. Your brain is already writing the story of how good it'll be." },
+    { range: [41, 60], text: "You got it. Dopamine begins to shut down. The H&N system is just waking up. This is the transition zone — the moment most people call 'disappointment' when it's actually just chemistry changing." },
+    { range: [61, 80], text: "H&N is running now. If you're paying attention — actually present, not planning the next thing — real satisfaction emerges here. Flavors, warmth, connection. This is liking." },
+    { range: [81, 100], text: "Full H&N engagement. You're in the present. Dopamine is quiet. This is where the real reward lives — not in the chase, but in the noticing. Most people never get here because dopamine pulls them forward again." }
+  ];
+
+  slider.addEventListener('input', function() {
+    const val = +this.value;
+    const match = states.find(s => val >= s.range[0] && val <= s.range[1]);
+    if (match) stateEl.textContent = match.text;
+    // hue-rotate the thumb
+    const pct = val / 100;
+    this.style.background = `linear-gradient(90deg, var(--dopamine) ${val}%, var(--border) ${val}%)`;
+  });
+
+  // ChatGPT button
+  const topics = [
+    "Dopamine as a wanting/anticipation signal (not a pleasure chemical)",
+    "Wanting vs Liking: two separate brain systems",
+    "Andrew's case: losing attraction the moment she agreed — dopamine shutting off",
+    "The H&N system: serotonin, oxytocin, anandamide — the here-and-now neurotransmitters",
+    "Buyer's remorse as a neurochemical crash, not just psychological regret",
+    "Extrapersonal vs peripersonal space in the dopamine model",
+    "Three solutions to buyer's remorse: chase more, buy less, or train H&N attention",
+    "The Deangelo cake scene as a dopamine loop example",
+    "Dopamine and relationships: why the chase feels better than the commitment",
+    "Doomscrolling and dopamine: why we scroll without enjoying",
+    "How to train H&N attention through present-moment practice",
+    "'To travel hopefully is better than to arrive' — what this means neurologically"
+  ];
+
+  const prompt = `I've been studying a chapter called "Why We Live in a World of Phantoms" from The Molecule of More. Here are the key topics I want to explore deeper and understand how to apply to my real life:\n\n${topics.map((t, i) => `${i + 1}. ${t}`).join('\n')}\n\nPlease help me:\n1. Explain which of these concepts are most important for daily life application\n2. Give me concrete exercises to train the H&N (liking) system\n3. Help me identify where in my own life dopamine might be hijacking my judgment\n4. Explain how this applies to habits, relationships, and productivity`;
+
+  document.getElementById('chatgptBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+    window.open(url, '_blank');
+  });
+</script>
+</body>
+</html>
