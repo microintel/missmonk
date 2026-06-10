@@ -142,7 +142,15 @@
           "Chapter 10.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-1.html",
           "Chapter 10.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-2.html"
         },
-        "Financial Ratios": {}
+        "Financial Ratios": {
+          "Introduction": "",
+          "Understanding of Various Ratios": "",
+          "Common Sizing": "",
+          "Key Performance Indicators": "",
+          "Ownership Structure of Stocks": "",
+          "Chapter 11.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-1.html",
+          "Chapter 11.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-2.html"
+        }
       },
       "Valuation of Stocks": {},
       "When to Buy & When to Sell?": {},
@@ -158,9 +166,14 @@
         "MONKEYS AND RATS AND WHY LOVE FADES": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c2.html",
         "ONE BRAIN, TWO WORLDS": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c3.html",
         "The Dark Side": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c4.html",
-        "THE CHEMICAL KEYS TO LONG-LASTING LOVE": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u5.html"
+        "THE CHEMICAL KEYS TO LONG-LASTING LOVE": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u5.html",
+        "DOPAMINE GETS YOU INTO BED . . . \rAND THEN GETS IN THE WAY": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u6.html"
       },
-      "DRUGS": {},
+      "DRUGS": {
+        "WHO’S IN CONTROL OF YOUR BRAIN?": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u7.html",
+        "HOW TO STAY ALIVE": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u8.html",
+        "WHY WE LIVE IN A WORLD OF PHANTOMS && WANTING VERSUS LIKING": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u9.html"
+      },
       "DOMINATION": {},
       "CREATIVITY AND MADNESS": {},
       "PROGRESS": {},
