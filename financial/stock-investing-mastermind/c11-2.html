@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZebraLearn · Chapter 7 · Common Sizing, KPIs & Ownership</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d12;
+    --bg2: #13131c;
+    --bg3: #1a1a28;
+    --surface: #1e1e2e;
+    --border: #2a2a40;
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --purple-dim: #3d2d6e;
+    --amber: #f59e0b;
+    --teal: #14b8a6;
+    --rose: #f43f5e;
+    --sky: #38bdf8;
+    --green: #22c55e;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --faint: #444460;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--purple), var(--amber));
+    width: 0%; z-index: 9999; transition: width 0.1s;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 3px; left: 0; right: 0; z-index: 900;
+    background: rgba(13,13,18,0.88); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0; padding: 0 2rem;
+    height: 56px;
+  }
+  .nav-logo { font-family: var(--font-display); font-size: 1.1rem; color: var(--purple-light); margin-right: auto; letter-spacing: -0.02em; }
+  .nav-links { display: flex; gap: 0.2rem; }
+  .nav-links a {
+    font-size: 0.78rem; font-weight: 500; color: var(--muted); text-decoration: none;
+    padding: 0.35rem 0.75rem; border-radius: 6px; transition: all 0.2s;
+    letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); background: var(--surface); }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+  .wide { max-width: 1060px; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,92,246,0.18) 0%, transparent 70%);
+    padding: 7rem 0 4rem;
+    position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b5cf6' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--purple);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--purple); }
+  h1.hero-title {
+    font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700; line-height: 1.15; letter-spacing: -0.03em;
+    margin-bottom: 1.5rem; color: var(--text);
+  }
+  h1.hero-title em { font-style: italic; color: var(--purple-light); }
+  .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 580px; margin-bottom: 2.5rem; }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 0.4rem 0.9rem; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  }
+  .pill.active { border-color: var(--purple-dim); background: rgba(139,92,246,0.1); color: var(--purple-light); }
+  .scroll-cue {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    color: var(--faint); font-size: 0.72rem; font-family: var(--font-mono); letter-spacing: 0.1em;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  /* ── SECTION HEADERS ── */
+  .section-tag {
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--purple);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-tag .num { color: var(--faint); }
+  h2.section-title {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700; line-height: 1.2; letter-spacing: -0.025em;
+    margin-bottom: 1rem; color: var(--text);
+  }
+  h2.section-title .accent { color: var(--purple-light); font-style: italic; }
+  .section-intro { color: var(--muted); font-size: 1rem; max-width: 640px; margin-bottom: 3rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem; transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--purple-dim); transform: translateY(-2px); }
+  .card-label {
+    font-family: var(--font-mono); font-size: 0.65rem; color: var(--purple);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .card-body { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── CALLOUT BOX ── */
+  .callout {
+    border-left: 3px solid var(--purple); background: rgba(139,92,246,0.07);
+    border-radius: 0 10px 10px 0; padding: 1.1rem 1.4rem; margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+  .callout.amber { border-color: var(--amber); background: rgba(245,158,11,0.07); }
+  .callout.teal { border-color: var(--teal); background: rgba(20,184,166,0.07); }
+  .callout.rose { border-color: var(--rose); background: rgba(244,63,94,0.07); }
+  .callout strong { color: var(--text); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 3rem 0; }
+
+  /* ── COMMON SIZING VISUAL ── */
+  .cs-visual {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; margin: 2rem 0;
+  }
+  .cs-label {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .bar-row { margin-bottom: 1rem; }
+  .bar-name { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+  .bar-track { background: var(--bg3); border-radius: 6px; height: 28px; position: relative; overflow: hidden; }
+  .bar-fill {
+    height: 100%; border-radius: 6px; display: flex; align-items: center; padding: 0 0.7rem;
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+    transition: width 1s cubic-bezier(0.16,1,0.3,1);
+  }
+  .bar-fill.cogs { background: linear-gradient(90deg, rgba(244,63,94,0.7), rgba(244,63,94,0.4)); color: #fca5a5; }
+  .bar-fill.opex { background: linear-gradient(90deg, rgba(245,158,11,0.7), rgba(245,158,11,0.4)); color: #fcd34d; }
+  .bar-fill.dep  { background: linear-gradient(90deg, rgba(56,189,248,0.7), rgba(56,189,248,0.4)); color: #bae6fd; }
+  .bar-fill.tax  { background: linear-gradient(90deg, rgba(139,92,246,0.7), rgba(139,92,246,0.4)); color: #c4b5fd; }
+  .bar-fill.net  { background: linear-gradient(90deg, rgba(34,197,94,0.7), rgba(34,197,94,0.4)); color: #86efac; }
+  .bar-fill.int  { background: linear-gradient(90deg, rgba(107,114,128,0.7), rgba(107,114,128,0.4)); color: #d1d5db; }
+
+  .year-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .year-tab {
+    font-size: 0.75rem; font-family: var(--font-mono); padding: 0.3rem 0.7rem;
+    border-radius: 6px; border: 1px solid var(--border); background: transparent;
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .year-tab.active { background: var(--purple-dim); border-color: var(--purple); color: var(--purple-light); }
+
+  /* ── CALCULATOR ── */
+  .calc-wrap {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; margin: 2rem 0;
+  }
+  .calc-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .calc-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .input-group label { font-size: 0.75rem; color: var(--muted); display: block; margin-bottom: 0.4rem; font-family: var(--font-mono); letter-spacing: 0.05em; }
+  .input-group input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--font-mono); font-size: 0.9rem; padding: 0.55rem 0.8rem; border-radius: 8px;
+    transition: border-color 0.2s; outline: none;
+  }
+  .input-group input:focus { border-color: var(--purple); }
+  .btn-calc {
+    background: var(--purple); color: #fff; border: none; border-radius: 8px;
+    padding: 0.65rem 1.4rem; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  .btn-calc:hover { background: var(--purple-light); }
+  .btn-calc:active { transform: scale(0.97); }
+  .results-table { margin-top: 1.5rem; width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .results-table th { text-align: left; padding: 0.5rem 0.8rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .results-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(42,42,64,0.5); }
+  .results-table tr:hover td { background: rgba(139,92,246,0.05); }
+  .pct-badge { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; padding: 0.15rem 0.5rem; border-radius: 5px; }
+  .pct-badge.high { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .pct-badge.med  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .pct-badge.low  { background: rgba(244,63,94,0.15);  color: #f87171; }
+  .pct-badge.neutral { background: rgba(56,189,248,0.12); color: #7dd3fc; }
+
+  /* ── BALANCE SHEET COMMON SIZE ── */
+  .donut-container { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; margin: 1.5rem 0; }
+  .donut-wrap { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
+  .donut-wrap canvas { width: 100%; height: 100%; }
+  .donut-legend { flex: 1; min-width: 200px; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.82rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── KPI SECTION ── */
+  .kpi-industries { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin: 2rem 0; }
+  .kpi-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.4rem; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0;
+    background: radial-gradient(circle at top left, rgba(139,92,246,0.15), transparent 70%);
+    transition: opacity 0.3s;
+  }
+  .kpi-card:hover::before, .kpi-card.active::before { opacity: 1; }
+  .kpi-card.active { border-color: var(--purple); }
+  .kpi-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+  .kpi-card-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .kpi-card-sub { font-size: 0.78rem; color: var(--muted); }
+  .kpi-detail {
+    background: var(--bg2); border: 1px solid var(--purple-dim); border-radius: 14px;
+    padding: 1.8rem; margin-top: 1.5rem; display: none;
+  }
+  .kpi-detail.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .kpi-metrics { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+  .kpi-metric-tag {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    padding: 0.3rem 0.8rem; border-radius: 100px;
+    background: rgba(139,92,246,0.12); border: 1px solid var(--purple-dim); color: var(--purple-light);
+  }
+  .kpi-compare-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.82rem; }
+  .kpi-compare-table th { text-align: left; padding: 0.4rem 0.6rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--border); }
+  .kpi-compare-table td { padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(42,42,64,0.4); color: var(--muted); }
+  .kpi-compare-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* ── OWNERSHIP ── */
+  .ownership-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+  .owner-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.4rem; text-align: center; transition: all 0.25s;
+  }
+  .owner-card:hover { border-color: var(--purple-dim); transform: translateY(-3px); }
+  .owner-card .icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .owner-card .name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .owner-card .desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .owner-card .signal {
+    display: inline-block; margin-top: 0.7rem; font-size: 0.7rem; font-family: var(--font-mono);
+    padding: 0.2rem 0.6rem; border-radius: 100px; background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3); color: #4ade80;
+  }
+  .owner-card .signal.warn { background: rgba(244,63,94,0.1); border-color: rgba(244,63,94,0.3); color: #f87171; }
+  .owner-card .signal.neutral { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); color: #7dd3fc; }
+
+  /* ── OWNERSHIP TRACKER SIMULATOR ── */
+  .ownership-sim {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; margin: 2rem 0;
+  }
+  .sim-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .sim-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .stacked-bar-wrap { margin: 1.5rem 0; }
+  .stacked-row { margin-bottom: 1rem; }
+  .stacked-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; font-family: var(--font-mono); }
+  .stacked-bar { display: flex; height: 32px; border-radius: 8px; overflow: hidden; }
+  .stacked-seg { display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-family: var(--font-mono); font-weight: 500; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); cursor: pointer; position: relative; }
+  .stacked-seg:hover::after {
+    content: attr(data-label); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--bg); border: 1px solid var(--border); padding: 0.3rem 0.6rem; border-radius: 6px;
+    font-size: 0.68rem; white-space: nowrap; z-index: 10; pointer-events: none;
+  }
+  .seg-promoter { background: rgba(139,92,246,0.75); color: #e9d5ff; }
+  .seg-dii      { background: rgba(20,184,166,0.75);  color: #ccfbf1; }
+  .seg-fii      { background: rgba(56,189,248,0.75);  color: #e0f2fe; }
+  .seg-public   { background: rgba(107,114,128,0.6);  color: #f3f4f6; }
+  .stacked-legend { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.8rem; }
+  .sl-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--muted); }
+  .sl-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── SIGNAL BOXES ── */
+  .signals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 2rem 0; }
+  .signal-box {
+    border-radius: 12px; padding: 1.2rem; border: 1px solid;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .signal-box.green { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.06); }
+  .signal-box.red   { border-color: rgba(244,63,94,0.3);  background: rgba(244,63,94,0.06); }
+  .signal-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .signal-text .signal-head { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .signal-text .signal-body { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── QUIZ ── */
+  #quiz { background: var(--bg2); }
+  .quiz-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; max-width: 680px; margin: 0 auto;
+  }
+  .quiz-q { font-size: 1rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.5; }
+  .quiz-q .q-num { font-family: var(--font-mono); color: var(--purple); font-size: 0.75rem; display: block; margin-bottom: 0.4rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .quiz-opt {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.75rem 1rem; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--purple-dim); background: rgba(139,92,246,0.06); }
+  .quiz-opt.correct { border-color: var(--green); background: rgba(34,197,94,0.1); color: #4ade80; }
+  .quiz-opt.wrong   { border-color: var(--rose);  background: rgba(244,63,94,0.1);  color: #f87171; }
+  .quiz-feedback { margin-top: 1rem; font-size: 0.88rem; color: var(--muted); display: none; padding: 0.9rem; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
+  .quiz-feedback.show { display: block; }
+  .quiz-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; align-items: center; }
+  .quiz-score { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+  .btn-next { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; transition: all 0.2s; }
+  .btn-next:hover { border-color: var(--purple); color: var(--purple-light); }
+  .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+  .progress-dots { display: flex; gap: 0.4rem; }
+  .progress-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); transition: background 0.3s; }
+  .progress-dot.done { background: var(--green); }
+  .progress-dot.current { background: var(--purple); }
+
+  /* ── SUMMARY METRICS ── */
+  .metrics-row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 2rem 0; }
+  .metric-chip {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1.2rem; flex: 1; min-width: 140px;
+  }
+  .metric-chip .m-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .metric-chip .m-value { font-size: 1.4rem; font-weight: 700; font-family: var(--font-display); color: var(--text); }
+  .metric-chip .m-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 1.5rem;
+    text-align: center; font-size: 0.8rem; color: var(--faint);
+    font-family: var(--font-mono);
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media(max-width: 640px) {
+    .nav-links a span { display: none; }
+    .nav-links a { padding: 0.35rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-logo">ZebraLearn · Ch7</div>
+  <div class="nav-links">
+    <a href="#common-sizing" class="active"><span>Common Sizing</span></a>
+    <a href="#kpis"><span>KPIs</span></a>
+    <a href="#ownership"><span>Ownership</span></a>
+    <a href="#quiz"><span>Quiz</span></a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Chapter 7 · Part 2</div>
+    <h1 class="hero-title">Reading Between<br><em>the Numbers</em></h1>
+    <p class="hero-sub">Common Sizing, Key Performance Indicators, and Ownership Structure — the three lenses that reveal what raw financial figures can never tell you alone.</p>
+    <div class="hero-pills">
+      <span class="pill active">7.3 Common Sizing</span>
+      <span class="pill active">7.4 KPIs</span>
+      <span class="pill active">7.5 Ownership Structure</span>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL ↓</div>
+</section>
+
+<!-- ══ COMMON SIZING ══ -->
+<section id="common-sizing">
+  <div class="container">
+    <div class="section-tag"><span class="num">7.3</span> Common Sizing</div>
+    <h2 class="section-title">Everything as a<br><span class="accent">Percentage of Revenue</span></h2>
+    <p class="section-intro">Raw numbers lie. ₹50 Cr net profit looks great — until you realise revenue was ₹5,000 Cr. Common sizing neutralises scale, letting you compare a company to itself across years and against peers.</p>
+
+    <div class="callout reveal">
+      <strong>Core Idea:</strong> Revenue = 100%. Every other line item is expressed as a % of revenue. When COGS shrinks as a percentage, gross profit grows — regardless of whether absolute numbers moved up or down.
+    </div>
+
+    <div class="cs-visual reveal">
+      <div class="cs-label">
+        <span>Income Statement — Common Size View</span>
+        <span style="color:var(--purple-light)">Revenue = 100%</span>
+      </div>
+
+      <div class="year-tabs" id="yearTabs">
+        <button class="year-tab active" data-year="0">FY 2019</button>
+        <button class="year-tab" data-year="1">FY 2020</button>
+        <button class="year-tab" data-year="2">FY 2021</button>
+        <button class="year-tab" data-year="3">FY 2022</button>
+      </div>
+
+      <div id="incomeBarChart"></div>
+    </div>
+
+    <div class="callout amber reveal">
+      <strong>What to watch:</strong> As COGS% declines over years, OPM% and Net Profit% rise. That's margin expansion — the hallmark of a company gaining pricing power or operational efficiency.
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:1.15rem; font-weight:600; margin-bottom:1rem;" class="reveal">Balance Sheet — Common Size</h3>
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:1.5rem;" class="reveal">Here, every asset is expressed as % of total assets, and every liability as % of total liabilities + equity.</p>
+
+    <div class="cs-visual reveal">
+      <div class="cs-label">Assets Side (% of Total Assets)</div>
+      <div id="assetBarChart"></div>
+    </div>
+
+    <div class="cs-visual reveal" style="margin-top:1rem;">
+      <div class="cs-label">Liabilities Side (% of Total Liabilities + Equity)</div>
+      <div id="liabBarChart"></div>
+    </div>
+
+    <div class="callout teal reveal">
+      <strong>Insight from the book:</strong> If receivables% is shrinking but inventory% is rising, the company is accumulating unsold goods — a warning sign even if top-line revenue is growing.
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- COMMON SIZE CALCULATOR -->
+    <h3 style="font-size:1.15rem; font-weight:600; margin-bottom:0.5rem;" class="reveal">🧮 Common Size Calculator</h3>
+    <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1.5rem;" class="reveal">Enter your own income statement figures. Everything gets auto-converted to % of Revenue.</p>
+
+    <div class="calc-wrap reveal">
+      <div class="calc-title">Income Statement → Common Size</div>
+      <div class="calc-sub">Enter amounts in any currency (₹ Cr, $M, etc.). Revenue is the base (= 100%).</div>
+      <div class="input-grid">
+        <div class="input-group"><label>Revenue (= 100%)</label><input type="number" id="c_revenue" placeholder="e.g. 2000" value="2000"></div>
+        <div class="input-group"><label>Cost of Goods Sold</label><input type="number" id="c_cogs" placeholder="e.g. 1400" value="1400"></div>
+        <div class="input-group"><label>Operating Expenses</label><input type="number" id="c_opex" placeholder="e.g. 200" value="200"></div>
+        <div class="input-group"><label>Depreciation</label><input type="number" id="c_dep" placeholder="e.g. 60" value="60"></div>
+        <div class="input-group"><label>Interest</label><input type="number" id="c_int" placeholder="e.g. 40" value="40"></div>
+        <div class="input-group"><label>Tax</label><input type="number" id="c_tax" placeholder="e.g. 75" value="75"></div>
+      </div>
+      <button class="btn-calc" onclick="calcCommonSize()">Calculate Common Size →</button>
+      <div id="calcResult" style="display:none;">
+        <table class="results-table" style="margin-top:1.5rem;">
+          <thead><tr><th>Line Item</th><th>Amount</th><th>% of Revenue</th><th>Health</th></tr></thead>
+          <tbody id="calcTableBody"></tbody>
+        </table>
+        <div id="calcInsight" class="callout" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+    <div class="metrics-row reveal">
+      <div class="metric-chip">
+        <div class="m-label">ROE Benchmark</div>
+        <div class="m-value" style="color:var(--green)">≥15%</div>
+        <div class="m-note">Or steadily increasing</div>
+      </div>
+      <div class="metric-chip">
+        <div class="m-label">ROCE Benchmark</div>
+        <div class="m-value" style="color:var(--amber)">≥12%</div>
+        <div class="m-note">Depends on capital structure</div>
+      </div>
+      <div class="metric-chip">
+        <div class="m-label">Absolute Numbers</div>
+        <div class="m-value" style="color:var(--rose);font-size:1.1rem;">Meaningless</div>
+        <div class="m-note">Without trend &amp; comparison</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ KPIs ══ -->
+<section id="kpis" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-tag"><span class="num">7.4</span> Key Performance Indicators</div>
+    <h2 class="section-title">Beyond Sales &amp; Profits —<br><span class="accent">What Actually Drives a Business</span></h2>
+    <p class="section-intro">Every industry has non-financial metrics that reveal operational health before profits show up in reports. Identifying and tracking the right KPIs separates sharp investors from noise-followers.</p>
+
+    <div class="callout reveal">
+      <strong>The Rule:</strong> We must first choose 3–4 factors we believe are crucial to the operation of the business. These KPIs should be tracked every quarter.
+    </div>
+
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:0.5rem;" class="reveal">Click an industry to explore its KPIs, comparison framework, and what to watch for:</p>
+
+    <div class="kpi-industries reveal" id="kpiIndustries">
+      <div class="kpi-card" data-kpi="hotels" onclick="selectKPI('hotels')">
+        <div class="kpi-icon">🏨</div>
+        <div class="kpi-card-title">Hotels</div>
+        <div class="kpi-card-sub">Rooms × Occupancy = Revenue story</div>
+      </div>
+      <div class="kpi-card" data-kpi="logistics" onclick="selectKPI('logistics')">
+        <div class="kpi-icon">🚚</div>
+        <div class="kpi-card-title">Logistics</div>
+        <div class="kpi-card-sub">Fleet, warehousing &amp; value-add mix</div>
+      </div>
+      <div class="kpi-card" data-kpi="banks" onclick="selectKPI('banks')">
+        <div class="kpi-icon">🏦</div>
+        <div class="kpi-card-title">Banks</div>
+        <div class="kpi-card-sub">Loan book, branches &amp; lending quality</div>
+      </div>
+      <div class="kpi-card" data-kpi="amc" onclick="selectKPI('amc')">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-card-title">Asset Management</div>
+        <div class="kpi-card-sub">AUM size, mix &amp; cost efficiency</div>
+      </div>
+    </div>
+
+    <div class="kpi-detail reveal" id="kpiDetail"></div>
+
+    <div class="divider"></div>
+
+    <!-- HOTEL COMPARISON MINI-SIM -->
+    <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:0.4rem;" class="reveal">🏨 Hotel KPI Comparison Tool</h3>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1.2rem;" class="reveal">Compare two hotel chains using core KPIs. Which is the stronger business?</p>
+
+    <div class="calc-wrap reveal">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:0.8rem; font-weight:600; color:var(--purple-light); margin-bottom:0.8rem; font-family:var(--font-mono);">HOTEL A</div>
+          <div class="input-grid" style="grid-template-columns:1fr;">
+            <div class="input-group"><label>No. of Rooms</label><input type="number" id="h1_rooms" value="10000"></div>
+            <div class="input-group"><label>Occupancy % (avg)</label><input type="number" id="h1_occ" value="68"></div>
+            <div class="input-group"><label>Avg Room Price (₹)</label><input type="number" id="h1_price" value="5000"></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; font-weight:600; color:var(--amber); margin-bottom:0.8rem; font-family:var(--font-mono);">HOTEL B</div>
+          <div class="input-grid" style="grid-template-columns:1fr;">
+            <div class="input-group"><label>No. of Rooms</label><input type="number" id="h2_rooms" value="18000"></div>
+            <div class="input-group"><label>Occupancy % (avg)</label><input type="number" id="h2_occ" value="55"></div>
+            <div class="input-group"><label>Avg Room Price (₹)</label><input type="number" id="h2_price" value="8000"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-calc" onclick="compareHotels()">Compare →</button>
+      <div id="hotelResult" style="display:none; margin-top:1.5rem;"></div>
+    </div>
+
+    <div class="callout amber reveal">
+      <strong>RevPAR = Revenue Per Available Room</strong> = Occupancy% × Average Room Price. This single metric captures both size and efficiency simultaneously — a KPI that's hard to game.
+    </div>
+  </div>
+</section>
+
+<!-- ══ OWNERSHIP ══ -->
+<section id="ownership">
+  <div class="container">
+    <div class="section-tag"><span class="num">7.5</span> Ownership Structure</div>
+    <h2 class="section-title">Who Owns the Stock <br><span class="accent">Matters as Much</span> as the Stock</h2>
+    <p class="section-intro">The ownership composition of a company reveals confidence levels, alignment of interests, and where "smart money" is flowing. It's a living signal that changes every quarter.</p>
+
+    <div class="ownership-grid reveal">
+      <div class="owner-card">
+        <div class="icon">👔</div>
+        <div class="name">Promoters</div>
+        <div class="desc">Original founders. Own a sizable portion. Still running the company is a strong indicator of alignment.</div>
+        <span class="signal">High holding = 🟢 Bullish</span>
+      </div>
+      <div class="owner-card">
+        <div class="icon">🏢</div>
+        <div class="name">Institutions</div>
+        <div class="desc">Mutual funds, insurance, offshore funds. Deep research teams. Called "smart money" for good reason.</div>
+        <span class="signal">Rising = 🟢 Confidence</span>
+      </div>
+      <div class="owner-card">
+        <div class="icon">🌟</div>
+        <div class="name">Significant Investors</div>
+        <div class="desc">Famous, seasoned investors. Enormous followership. Their entry signals thorough due diligence.</div>
+        <span class="signal neutral">Entry = Signal to study</span>
+      </div>
+      <div class="owner-card">
+        <div class="icon">👥</div>
+        <div class="name">Public</div>
+        <div class="desc">Retail investors with limited research time. High public ownership = weaker corporate governance pressure.</div>
+        <span class="signal warn">High = Less accountability</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- OWNERSHIP STACKED BAR SIM -->
+    <div class="ownership-sim reveal">
+      <div class="sim-title">Shareholding Trend Simulator</div>
+      <div class="sim-sub">Based on real Godawari Power & Ispat pattern from the book. Watch how ownership shifts quarterly.</div>
+
+      <div class="stacked-bar-wrap" id="stackedBars"></div>
+
+      <div class="stacked-legend">
+        <div class="sl-item"><div class="sl-dot" style="background:rgba(139,92,246,0.75)"></div>Promoters</div>
+        <div class="sl-item"><div class="sl-dot" style="background:rgba(20,184,166,0.75)"></div>DIIs (Domestic Institutional)</div>
+        <div class="sl-item"><div class="sl-dot" style="background:rgba(56,189,248,0.75)"></div>FIIs (Foreign Institutional)</div>
+        <div class="sl-item"><div class="sl-dot" style="background:rgba(107,114,128,0.6)"></div>Public</div>
+      </div>
+
+      <div id="ownershipInsight" class="callout teal" style="margin-top:1.5rem;"></div>
+    </div>
+
+    <h3 style="font-size:1.1rem; font-weight:600; margin:2rem 0 1rem;" class="reveal">Green &amp; Red Signals in Ownership</h3>
+    <div class="signals-grid reveal">
+      <div class="signal-box green">
+        <div class="signal-icon">📈</div>
+        <div class="signal-text">
+          <div class="signal-head">Promoter buying more</div>
+          <div class="signal-body">Promoters increasing stake = high conviction in company's future. Strongest internal signal.</div>
+        </div>
+      </div>
+      <div class="signal-box green">
+        <div class="signal-icon">🏦</div>
+        <div class="signal-text">
+          <div class="signal-head">Institutional holdings rising</div>
+          <div class="signal-body">More smart money accumulating = analysts have validated the business thesis.</div>
+        </div>
+      </div>
+      <div class="signal-box red">
+        <div class="signal-icon">⚠️</div>
+        <div class="signal-text">
+          <div class="signal-head">Rapid promoter selling</div>
+          <div class="signal-body">Small or gradual changes are fine. A sudden sharp drop in promoter stake in a short period is a red flag.</div>
+        </div>
+      </div>
+      <div class="signal-box red">
+        <div class="signal-icon">📉</div>
+        <div class="signal-text">
+          <div class="signal-head">Institutions consistently exiting</div>
+          <div class="signal-body">If smart money is leaving quarter after quarter, revisit your investment thesis immediately.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout reveal">
+      <strong>Track it like KPIs:</strong> Maintain a quarterly Excel sheet for shareholding patterns. When KPIs deteriorate AND ownership weakens simultaneously — that's the exit signal before it shows in financials.
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ QUIZ ══ -->
+<section id="quiz">
+  <div class="container">
+    <div class="section-tag"><span class="num">TEST</span> Knowledge Check</div>
+    <h2 class="section-title">What Did You<br><span class="accent">Actually Learn?</span></h2>
+    <p class="section-intro" style="margin-bottom:2rem;">10 questions covering Common Sizing, KPIs, and Ownership Structure.</p>
+
+    <div class="quiz-card">
+      <div class="progress-dots" id="quizDots" style="margin-bottom:1.5rem;"></div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-nav">
+        <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  ZebraLearn · Stock Investing Mastermind · Chapter 7 Part 2 · Common Sizing, KPIs &amp; Ownership
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   DATA
+══════════════════════════════════════ */
+
+const incomeData = {
+  labels: ['COGS %', 'Operating Exp %', 'Depreciation %', 'Interest %', 'Tax %', 'Net Profit %'],
+  years: ['FY 2019', 'FY 2020', 'FY 2021', 'FY 2022'],
+  values: [
+    [76, 7, 1, 1, 2, 5],    // FY2019
+    [72, 6, 2, 1, 2, 6],    // FY2020
+    [66, 6, 1, 1, 2, 8],    // FY2021
+    [60, 6, 1, 1, 3, 10],   // FY2022 — margin expansion
+  ],
+  colors: ['cogs','opex','dep','int','tax','net']
+};
+
+const assetData = {
+  labels: ['Plant, Property & Equip', 'Inventory', 'Receivables', 'Cash & Investments', 'Other Assets'],
+  values: [30, 28, 24, 12, 6],
+  colors: ['rgba(139,92,246,0.7)','rgba(244,63,94,0.7)','rgba(245,158,11,0.7)','rgba(20,184,166,0.7)','rgba(107,114,128,0.6)']
+};
+
+const liabData = {
+  labels: ['Accounts Payable', 'Equity', 'Long-term Debt', 'Short-term Debt', 'Other Liabilities'],
+  values: [60, 22, 10, 5, 3],
+  colors: ['rgba(139,92,246,0.7)','rgba(20,184,166,0.7)','rgba(56,189,248,0.7)','rgba(245,158,11,0.6)','rgba(107,114,128,0.5)']
+};
+
+const ownershipData = [
+  { q: 'Q1 FY20', promoter: 67, dii: 4, fii: 6, public: 23 },
+  { q: 'Q2 FY20', promoter: 67, dii: 5, fii: 5, public: 23 },
+  { q: 'Q3 FY20', promoter: 67, dii: 6, fii: 4, public: 23 },
+  { q: 'Q4 FY20', promoter: 67, dii: 7, fii: 3, public: 23 },
+  { q: 'Q1 FY21', promoter: 67, dii: 9, fii: 2, public: 22 },
+  { q: 'Q2 FY21', promoter: 67, dii: 11, fii: 2, public: 20 },
+];
+
+const kpiData = {
+  hotels: {
+    title: 'Hotels — KPI Framework',
+    icon: '🏨',
+    why: 'Hotel revenue is directly tied to how many rooms exist and how often they\'re filled. A hotel with 18,000 rooms but 50% occupancy can earn less per room than a 10,000-room chain at 70% occupancy.',
+    kpis: ['No. of Rooms', 'Occupancy Rate %', 'Average Room Price (ARR)', 'Revenue Per Available Room (RevPAR)', 'Revenue from F&B'],
+    formula: 'RevPAR = Occupancy% × Average Room Price',
+    comparison: [
+      ['Metric', 'Hotel A', 'Hotel B', 'Better'],
+      ['No. of Rooms', '10,000', '18,000', 'B (Scale)'],
+      ['Occupancy Rate', '68%', '55%', 'A (Efficiency)'],
+      ['Avg Room Price', '₹5,000', '₹8,000', 'B (Premium)'],
+      ['RevPAR', '₹3,400', '₹4,400', 'B (Overall)'],
+    ]
+  },
+  logistics: {
+    title: 'Logistics — KPI Framework',
+    icon: '🚚',
+    why: 'In logistics, scale (fleet & warehouse) drives commodity revenue, but margin comes from value-added services. An improving value-add revenue mix signals a quality business.',
+    kpis: ['Number of Trucks (Fleet Size)', 'Total Warehousing Space (sq ft)', 'PIN Codes Covered', 'Value-Added Services Revenue %', 'Fleet Utilization Rate'],
+    formula: 'Revenue Mix: 80% Commodity (low margin) + 20% Value-Add (high margin) = Target Structure',
+    comparison: [
+      ['Metric', 'Co. A', 'Co. B', 'Better'],
+      ['Fleet Size', '5,000 trucks', '3,200 trucks', 'A (Scale)'],
+      ['Warehouse Space', '2M sq ft', '3.5M sq ft', 'B (Storage)'],
+      ['PIN Codes', '18,000', '12,000', 'A (Reach)'],
+      ['Value-Add Revenue%', '35%', '18%', 'A (Margin quality)'],
+    ]
+  },
+  banks: {
+    title: 'Banks — KPI Framework',
+    icon: '🏦',
+    why: 'Banks grow by expanding their loan book, but quality matters. You must track which industries they lend to — a bank heavy in real-estate loans in a downturn carries hidden risk not visible in headline profits.',
+    kpis: ['Total Loan Book Size', 'No. of Branches', 'No. of Account Holders', 'Industry-wise Lending Mix %', 'NPA (Non-Performing Assets) %'],
+    formula: 'Gross NPA % = Bad Loans / Total Loan Book × 100 → Lower is better',
+    comparison: [
+      ['Metric', 'Bank A', 'Bank B', 'Better'],
+      ['Loan Book', '₹80,000 Cr', '₹1,20,000 Cr', 'B (Scale)'],
+      ['Branches', '4,200', '2,800', 'A (Reach)'],
+      ['Gross NPA%', '1.8%', '3.2%', 'A (Quality)'],
+      ['Retail Loan Mix', '65%', '40%', 'A (Diversified)'],
+    ]
+  },
+  amc: {
+    title: 'Asset Management — KPI Framework',
+    icon: '📊',
+    why: 'An AMC\'s profitability depends on AUM size and mix. Equity-heavy AUM earns higher fees than debt-heavy AUM. Tracking AUM quality is as important as AUM size.',
+    kpis: ['Assets Under Management (AUM) Total', 'Equity AUM % vs Debt AUM %', 'Cost-to-Income Ratio', 'SIP Inflows (monthly)', 'Number of Folios (unique investors)'],
+    formula: 'Revenue ∝ AUM × Expense Ratio; Equity AUM = higher-margin, Debt AUM = lower-margin',
+    comparison: [
+      ['Metric', 'AMC A', 'AMC B', 'Better'],
+      ['Total AUM', '₹3.2 L Cr', '₹1.8 L Cr', 'A (Scale)'],
+      ['Equity AUM %', '45%', '62%', 'B (Margin quality)'],
+      ['Cost Ratio', '0.55%', '0.82%', 'A (Efficiency)'],
+      ['SIP Inflows/mo', '₹1,800 Cr', '₹900 Cr', 'A (Growth)'],
+    ]
+  }
+};
+
+const quizData = [
+  { q: 'In a common-size income statement, what is Revenue always set to?', opts: ['0%', '50%', '100%', 'It varies'], ans: 2, feedback: 'Revenue is always the base = 100%. Every other item (COGS, expenses, net profit) is expressed as % of revenue, allowing meaningful comparisons across years and companies of different sizes.' },
+  { q: 'COGS% declines from 76% to 60% over 3 years. What does this imply?', opts: ['Revenue fell', 'Gross profit margin improved', 'The company took on more debt', 'Inventory increased'], ans: 1, feedback: 'If COGS as a % of revenue shrinks, it means cost per unit of revenue is falling — so gross profit margin is improving. This can reflect pricing power, supplier negotiations, or operational efficiency.' },
+  { q: 'Which statement about absolute numbers is TRUE according to the book?', opts: ['A 4% net profit margin is always good', 'Absolute numbers are meaningful in isolation', 'A 4% margin is meaningless without trend and peer comparison', 'Profits in ₹ Cr are always the best metric'], ans: 2, feedback: '"Absolute numbers, such as a 4 percent net profit margin, are meaningless." They must be studied over time and compared to competitors to have any analytical value.' },
+  { q: 'What is the minimum Return on Equity (ROE) the book recommends?', opts: ['5% or above', '10% or above', '15% or above', '20% or above'], ans: 2, feedback: 'The book states: "Return on Equity should be at least 15% or increasing." ROCE should be higher than 12%, though it depends on capital structure.' },
+  { q: 'Which KPI is most relevant for a Hotel company?', opts: ['AUM size', 'PIN codes covered', 'Occupancy Rate', 'Loan book size'], ans: 2, feedback: 'For hotels, Occupancy Rate tells you what % of rooms are actually being used. Combined with Number of Rooms and Average Room Price, it determines total revenue. Hotels → Rooms & Occupancy.' },
+  { q: 'In logistics, what makes Value-Added Services (VAS) significant?', opts: ['They require more trucks', 'They are high-margin business unlike commodity transport', 'They reduce PIN codes covered', 'They lower warehousing costs'], ans: 1, feedback: 'Warehousing and trucking are commodity businesses with thin margins. Value-Added Services are high-margin. A company where VAS is growing as % of revenue is building a more profitable, defensible business.' },
+  { q: 'Why are Institutional investors called "smart money"?', opts: ['They always make profits', 'They have invested significant time and resources in evaluating the investment', 'They are the largest shareholders', 'They never sell their holdings'], ans: 1, feedback: 'Institutions — mutual funds, insurance companies, offshore funds — have large analyst teams that spend enormous time researching before investing. Their entry/increase signals rigorous due diligence has been done.' },
+  { q: 'A promoter increases their ownership stake. What does this signal?', opts: ['The company is struggling financially', 'Promoters are bullish on the company — a huge plus', 'The company is about to raise funds', 'Public confidence is declining'], ans: 1, feedback: 'Promoter buying their own company\'s stock with personal money is a strong positive signal — they have the deepest knowledge of the business and are betting on it. The book calls this "a huge plus."' },
+  { q: 'What should you watch for in FII/DII trends according to the book?', opts: ['Only the absolute % they hold', 'Whether their holdings are increasing or decreasing each quarter', 'Their total portfolio size', 'The stock price they paid'], ans: 1, feedback: 'Direction matters more than absolute level. If DIIs are steadily increasing their stake over consecutive quarters, smart money is accumulating. If FIIs are consistently exiting, revisit your thesis.' },
+  { q: 'The book recommends using common sizing on a Balance Sheet too. What does it reveal?', opts: ['Annual sales growth', 'How assets and liabilities are composed as % of total assets', 'How many employees the company has', 'The company\'s P/E ratio'], ans: 1, feedback: 'On a Balance Sheet, every item is expressed as % of Total Assets. This reveals whether capital is concentrated in receivables, inventory, PPE, etc., and how that mix is evolving — often spotting problems before profits are affected.' },
+];
+
+/* ══════════════════════════════════════
+   INCOME BAR CHART
+══════════════════════════════════════ */
+let currentYear = 0;
+
+function renderIncomeChart(yearIdx) {
+  const data = incomeData.values[yearIdx];
+  const container = document.getElementById('incomeBarChart');
+  container.innerHTML = '';
+  incomeData.labels.forEach((label, i) => {
+    const pct = data[i];
+    const div = document.createElement('div');
+    div.className = 'bar-row';
+    div.innerHTML = `
+      <div class="bar-name"><span>${label}</span><span style="font-family:var(--font-mono);color:var(--purple-light)">${pct}%</span></div>
+      <div class="bar-track">
+        <div class="bar-fill ${incomeData.colors[i]}" style="width:0%" data-w="${pct}">${pct >= 8 ? pct+'%' : ''}</div>
+      </div>`;
+    container.appendChild(div);
+  });
+  setTimeout(() => {
+    container.querySelectorAll('.bar-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 80);
+}
+
+function renderStaticBars(data, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  data.labels.forEach((label, i) => {
+    const pct = data.values[i];
+    const div = document.createElement('div');
+    div.className = 'bar-row';
+    div.innerHTML = `
+      <div class="bar-name"><span>${label}</span><span style="font-family:var(--font-mono);color:var(--purple-light)">${pct}%</span></div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%; background:${data.colors[i]}; color:#fff; font-family:var(--font-mono); font-size:0.72rem;" data-w="${pct}">${pct >= 8 ? pct+'%' : ''}</div>
+      </div>`;
+    container.appendChild(div);
+  });
+  setTimeout(() => {
+    container.querySelectorAll('.bar-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 200);
+}
+
+document.getElementById('yearTabs').addEventListener('click', e => {
+  if (e.target.classList.contains('year-tab')) {
+    document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    currentYear = parseInt(e.target.dataset.year);
+    renderIncomeChart(currentYear);
+  }
+});
+
+/* ══════════════════════════════════════
+   COMMON SIZE CALCULATOR
+══════════════════════════════════════ */
+function calcCommonSize() {
+  const rev  = parseFloat(document.getElementById('c_revenue').value) || 1;
+  const cogs = parseFloat(document.getElementById('c_cogs').value) || 0;
+  const opex = parseFloat(document.getElementById('c_opex').value) || 0;
+  const dep  = parseFloat(document.getElementById('c_dep').value)  || 0;
+  const int_ = parseFloat(document.getElementById('c_int').value)  || 0;
+  const tax  = parseFloat(document.getElementById('c_tax').value)  || 0;
+
+  const ebitda = rev - cogs - opex;
+  const ebit   = ebitda - dep;
+  const pbt    = ebit - int_;
+  const net    = pbt - tax;
+
+  const rows = [
+    { label: 'Revenue', val: rev, pct: 100, health: 'neutral' },
+    { label: 'Cost of Goods Sold (COGS)', val: cogs, pct: (cogs/rev)*100, health: cogs/rev > 0.75 ? 'low' : cogs/rev > 0.6 ? 'med' : 'high' },
+    { label: 'Operating Expenses', val: opex, pct: (opex/rev)*100, health: 'neutral' },
+    { label: 'EBITDA', val: ebitda, pct: (ebitda/rev)*100, health: ebitda/rev > 0.2 ? 'high' : ebitda/rev > 0.1 ? 'med' : 'low' },
+    { label: 'Depreciation', val: dep, pct: (dep/rev)*100, health: 'neutral' },
+    { label: 'EBIT', val: ebit, pct: (ebit/rev)*100, health: 'neutral' },
+    { label: 'Interest', val: int_, pct: (int_/rev)*100, health: int_/rev < 0.02 ? 'high' : 'neutral' },
+    { label: 'PBT (Profit Before Tax)', val: pbt, pct: (pbt/rev)*100, health: 'neutral' },
+    { label: 'Tax', val: tax, pct: (tax/rev)*100, health: 'neutral' },
+    { label: 'Net Profit', val: net, pct: (net/rev)*100, health: net/rev > 0.1 ? 'high' : net/rev > 0.05 ? 'med' : 'low' },
+  ];
+
+  const tbody = document.getElementById('calcTableBody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    const badgeClass = r.health;
+    tr.innerHTML = `<td style="color:var(--text)">${r.label}</td>
+      <td style="font-family:var(--font-mono)">${r.val.toFixed(0)}</td>
+      <td><span class="pct-badge ${badgeClass}">${r.pct.toFixed(1)}%</span></td>
+      <td style="font-size:0.78rem;color:var(--muted)">${getHealthNote(r.label, r.pct, r.val)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const netPct = (net/rev)*100;
+  const cogsPct = (cogs/rev)*100;
+  const insight = document.getElementById('calcInsight');
+  insight.className = 'callout ' + (netPct > 10 ? 'teal' : netPct > 5 ? 'amber' : 'rose');
+  insight.innerHTML = `<strong>Analysis:</strong> Net Profit Margin is <strong>${netPct.toFixed(1)}%</strong>. COGS accounts for <strong>${cogsPct.toFixed(1)}%</strong> of revenue. ${cogsPct > 70 ? 'High COGS leaves thin margins — focus on operational leverage.' : cogsPct < 55 ? 'Low COGS% suggests strong pricing power or low cost operations.' : 'COGS is moderate — look for ways to improve gross margins further.'} ${netPct < 5 ? ' Net margin under 5% is concerning — track trend over time before concluding.' : netPct > 15 ? ' Excellent net margin above 15%.' : ''}`;
+
+  document.getElementById('calcResult').style.display = 'block';
+}
+
+function getHealthNote(label, pct, val) {
+  if (label === 'Net Profit') return pct > 10 ? '✓ Strong' : pct > 5 ? '→ Moderate' : '⚠ Thin';
+  if (label === 'Cost of Goods Sold (COGS)') return pct < 55 ? '✓ Low cost' : pct < 70 ? '→ Normal' : '⚠ High cost';
+  if (label === 'EBITDA') return pct > 20 ? '✓ Healthy' : pct > 10 ? '→ Moderate' : '⚠ Thin';
+  return '';
+}
+
+/* ══════════════════════════════════════
+   KPI INDUSTRY DETAIL
+══════════════════════════════════════ */
+function selectKPI(key) {
+  document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.kpi-card[data-kpi="${key}"]`).classList.add('active');
+
+  const d = kpiData[key];
+  const detail = document.getElementById('kpiDetail');
+  detail.className = 'kpi-detail show reveal visible';
+
+  const tableRows = d.comparison.slice(1).map(r =>
+    `<tr><td>${r[0]}</td><td style="font-family:var(--font-mono)">${r[1]}</td><td style="font-family:var(--font-mono)">${r[2]}</td><td style="color:var(--green)">${r[3]}</td></tr>`
+  ).join('');
+
+  detail.innerHTML = `
+    <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;">
+      <span style="font-size:1.8rem">${d.icon}</span>
+      <span style="font-weight:600;font-size:1.05rem">${d.title}</span>
+    </div>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">${d.why}</p>
+    <div style="font-size:0.8rem;font-weight:600;color:var(--purple-light);margin-bottom:0.5rem;font-family:var(--font-mono);letter-spacing:0.06em;">KEY METRICS TO TRACK</div>
+    <div class="kpi-metrics">${d.kpis.map(k => `<span class="kpi-metric-tag">${k}</span>`).join('')}</div>
+    <div class="callout amber" style="font-size:0.82rem;margin:1rem 0"><strong>Formula:</strong> ${d.formula}</div>
+    <table class="kpi-compare-table">
+      <thead><tr><th>Metric</th><th>Company A</th><th>Company B</th><th>Edge</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>`;
+}
+
+/* ══════════════════════════════════════
+   HOTEL COMPARISON
+══════════════════════════════════════ */
+function compareHotels() {
+  const h1r = parseFloat(document.getElementById('h1_rooms').value);
+  const h1o = parseFloat(document.getElementById('h1_occ').value)/100;
+  const h1p = parseFloat(document.getElementById('h1_price').value);
+  const h2r = parseFloat(document.getElementById('h2_rooms').value);
+  const h2o = parseFloat(document.getElementById('h2_occ').value)/100;
+  const h2p = parseFloat(document.getElementById('h2_price').value);
+
+  const h1revpar = h1o * h1p;
+  const h2revpar = h2o * h2p;
+  const h1totalRev = h1revpar * h1r * 365;
+  const h2totalRev = h2revpar * h2r * 365;
+
+  const fmt = n => n >= 1e7 ? (n/1e7).toFixed(1) + ' Cr' : n >= 1e5 ? (n/1e5).toFixed(1) + ' L' : n.toLocaleString();
+
+  const winner = h1revpar > h2revpar ? 'Hotel A' : h2revpar > h1revpar ? 'Hotel B' : 'Tied';
+  const totalWinner = h1totalRev > h2totalRev ? 'Hotel A' : 'Hotel B';
+
+  document.getElementById('hotelResult').style.display = 'block';
+  document.getElementById('hotelResult').innerHTML = `
+    <table class="results-table">
+      <thead><tr><th>KPI</th><th>Hotel A</th><th>Hotel B</th><th>Winner</th></tr></thead>
+      <tbody>
+        <tr><td>No. of Rooms</td><td style="font-family:var(--font-mono)">${h1r.toLocaleString()}</td><td style="font-family:var(--font-mono)">${h2r.toLocaleString()}</td><td style="color:var(--muted);font-size:0.78rem">${h1r > h2r ? '🟢 A (Scale)' : '🟢 B (Scale)'}</td></tr>
+        <tr><td>Occupancy Rate</td><td style="font-family:var(--font-mono)">${(h1o*100).toFixed(0)}%</td><td style="font-family:var(--font-mono)">${(h2o*100).toFixed(0)}%</td><td style="color:var(--muted);font-size:0.78rem">${h1o > h2o ? '🟢 A (Efficiency)' : '🟢 B (Efficiency)'}</td></tr>
+        <tr><td>Avg Room Price</td><td style="font-family:var(--font-mono)">₹${h1p.toLocaleString()}</td><td style="font-family:var(--font-mono)">₹${h2p.toLocaleString()}</td><td style="color:var(--muted);font-size:0.78rem">${h1p > h2p ? '🟢 A (Premium)' : '🟢 B (Premium)'}</td></tr>
+        <tr><td style="font-weight:600">RevPAR</td><td style="font-family:var(--font-mono);color:var(--purple-light)">₹${h1revpar.toLocaleString()}</td><td style="font-family:var(--font-mono);color:var(--amber)">₹${h2revpar.toLocaleString()}</td><td style="font-weight:600;color:var(--green)">🏆 ${winner}</td></tr>
+        <tr><td>Est. Annual Revenue</td><td style="font-family:var(--font-mono)">₹${fmt(h1totalRev)}</td><td style="font-family:var(--font-mono)">₹${fmt(h2totalRev)}</td><td style="color:var(--green);font-size:0.78rem">🏆 ${totalWinner}</td></tr>
+      </tbody>
+    </table>
+    <div class="callout teal" style="margin-top:1rem;font-size:0.85rem">
+      <strong>RevPAR Insight:</strong> RevPAR = Occupancy × Avg Price. ${winner === 'Hotel A' ? 'Hotel A\'s higher occupancy compensates for lower pricing.' : winner === 'Hotel B' ? 'Hotel B\'s premium pricing outweighs lower occupancy.' : 'Both hotels generate similar RevPAR from different strategies.'} This combined metric is better than judging rooms or price alone.
+    </div>`;
+}
+
+/* ══════════════════════════════════════
+   STACKED OWNERSHIP BARS
+══════════════════════════════════════ */
+function renderOwnershipBars() {
+  const container = document.getElementById('stackedBars');
+  container.innerHTML = '';
+  ownershipData.forEach(row => {
+    const div = document.createElement('div');
+    div.className = 'stacked-row';
+    div.innerHTML = `
+      <div class="stacked-label">${row.q}</div>
+      <div class="stacked-bar">
+        <div class="stacked-seg seg-promoter" style="width:${row.promoter}%" data-label="Promoters: ${row.promoter}%">${row.promoter >= 15 ? row.promoter+'%' : ''}</div>
+        <div class="stacked-seg seg-dii" style="width:${row.dii}%" data-label="DII: ${row.dii}%">${row.dii >= 8 ? row.dii+'%' : ''}</div>
+        <div class="stacked-seg seg-fii" style="width:${row.fii}%" data-label="FII: ${row.fii}%">${row.fii >= 8 ? row.fii+'%' : ''}</div>
+        <div class="stacked-seg seg-public" style="width:${row.public}%" data-label="Public: ${row.public}%">${row.public >= 8 ? row.public+'%' : ''}</div>
+      </div>`;
+    container.appendChild(div);
+  });
+
+  const last = ownershipData[ownershipData.length - 1];
+  const first = ownershipData[0];
+  const diiChange = last.dii - first.dii;
+  const fiiChange = last.fii - first.fii;
+  document.getElementById('ownershipInsight').innerHTML =
+    `<strong>Pattern observed:</strong> Promoter holding remained stable at ${last.promoter}% — a good sign. DII (Domestic Institutional) stake grew from ${first.dii}% → ${last.dii}% (+${diiChange}pp), signalling growing domestic institutional confidence. FII stake declined from ${first.fii}% → ${last.fii}% (${fiiChange}pp), consistent with the book's observation of FII halving before recovering.`;
+}
+
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+let qIdx = 0, score = 0, answered = false;
+
+function renderQuizDots() {
+  const dots = document.getElementById('quizDots');
+  dots.innerHTML = quizData.map((_, i) =>
+    `<div class="progress-dot ${i < qIdx ? 'done' : i === qIdx ? 'current' : ''}"></div>`
+  ).join('');
+}
+
+function renderQuestion() {
+  const q = quizData[qIdx];
+  document.getElementById('quizQ').innerHTML = `<span class="q-num">Q${qIdx+1} / ${quizData.length}</span>${q.q}`;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').className = 'quiz-feedback';
+  document.getElementById('btnNext').disabled = true;
+  answered = false;
+  renderQuizDots();
+  updateScore();
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[qIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, idx) => {
+    btn.onclick = null;
+    if (idx === q.ans) btn.classList.add('correct');
+    else if (idx === i) btn.classList.add('wrong');
+  });
+  if (i === q.ans) score++;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.feedback;
+  fb.classList.add('show');
+  document.getElementById('btnNext').disabled = false;
+  updateScore();
+}
+
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= quizData.length) {
+    showFinalScore();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showFinalScore() {
+  const pct = Math.round(score/quizData.length*100);
+  const grade = pct >= 90 ? '🏆 Expert' : pct >= 70 ? '📈 Solid' : pct >= 50 ? '📚 Keep studying' : '🔄 Review the chapter';
+  const card = document.querySelector('.quiz-card');
+  card.innerHTML = `
+    <div style="text-align:center;padding:1rem 0">
+      <div style="font-size:3rem;margin-bottom:1rem">${pct >= 70 ? '🎯' : '📚'}</div>
+      <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:0.5rem">${score} / ${quizData.length}</div>
+      <div style="color:var(--purple-light);font-size:1rem;margin-bottom:0.3rem">${pct}% — ${grade}</div>
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:2rem">Common Sizing · KPIs · Ownership Structure</div>
+      <button class="btn-calc" onclick="restartQuiz()">Retake Quiz</button>
+    </div>`;
+}
+
+function restartQuiz() {
+  qIdx = 0; score = 0; answered = false;
+  const card = document.querySelector('.quiz-card');
+  card.innerHTML = `
+    <div class="progress-dots" id="quizDots" style="margin-bottom:1.5rem;"></div>
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-options" id="quizOpts"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="quiz-nav">
+      <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>Next →</button>
+    </div>`;
+  renderQuestion();
+}
+
+function updateScore() {
+  const el = document.getElementById('quizScore');
+  if (el) el.textContent = `Score: ${score} / ${qIdx + (answered ? 1 : 0)}`;
+}
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL + PROGRESS BAR + NAV
+══════════════════════════════════════ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - innerHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  const sections = ['common-sizing', 'kpis', 'ownership', 'quiz'];
+  const links = document.querySelectorAll('.nav-links a');
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= 100 && rect.bottom >= 100) {
+        links.forEach(l => l.classList.remove('active'));
+        links[i]?.classList.add('active');
+      }
+    }
+  });
+});
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderIncomeChart(0);
+  renderStaticBars(assetData, 'assetBarChart');
+  renderStaticBars(liabData, 'liabBarChart');
+  renderOwnershipBars();
+  renderQuestion();
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+</script>
+</body>
+</html>
