@@ -1,5 +1,6 @@
 {
   "diploma": {
+  "CSE":{
     "sem1": {
       "engineering mathematics": {
         "matrix and determinants ": {
@@ -47,6 +48,7 @@
     "sem4": {},
     "sem5": {},
     "sem6": {}
+  }
   },
   "engineering": {},
   "Financial": {
