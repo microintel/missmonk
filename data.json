@@ -1,54 +1,54 @@
 {
   "diploma": {
-  "CSE":{
-    "sem1": {
-      "engineering mathematics": {
-        "matrix and determinants ": {
-          "Matrix and types": "",
-          "Algebra of Matrices (addition, \rsubtraction, scalar multiplication\rand multiplication)": "",
-          "Evaluation of determinants of a \rsquare matrix of order 2 and 3. \rSingular matrices": "",
-          "Cramer’s rule for solving system \rof linear equations involving 2\rand 3 variables": "",
-          "Adjoint and Inverse of the non-\rsingular matrices of order 2 and 3": "",
-          "Characteristic equation and Eigen \rvalues of a square matrix of order 2": "",
-          "Unit 1": "https://microintel.github.io/missmonk/diploma/sem1/maths/u1.html"
-        },
-        "STRAIGHT\tLINES": {
-          "Slope of a straight line": "",
-          "Intercepts of a straight line": "",
-          "Intercept form of a straight line": "",
-          "Slope-intercept form of a straight line": "",
-          "Slope-point form of a straight line": "",
-          "Two-point form of a straight line": "",
-          "General form of a straight line": "",
-          "Angle between two lines and conditions \rfor lines to be parallel and perpendicular": "",
-          "Equation of a straight line parallel to the \rgiven line": "",
-          "Equation of a straight line perpendicular \rto the given line": "",
-          "Unit 2": "https://microintel.github.io/missmonk/diploma/sem1/maths/u2.html"
-        }
-      },
-      "Fundamentals of Computer": {
-        "BASICS\tOF\tLOGIC\tDESIGN": {
-          "Introduction\tto\tnumber\tsystem.": {
-            "Binary, Octal, Decimal, Hexadecimal": {
-              "binary, octal hexadecimal decimal": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/foc/u1/binary-octal-decimal-hexadecimal.html\"/>"
-            }
+    "CSE": {
+      "sem1": {
+        "engineering mathematics": {
+          "matrix and determinants ": {
+            "Matrix and types": "",
+            "Algebra of Matrices (addition, \rsubtraction, scalar multiplication\rand multiplication)": "",
+            "Evaluation of determinants of a \rsquare matrix of order 2 and 3. \rSingular matrices": "",
+            "Cramer’s rule for solving system \rof linear equations involving 2\rand 3 variables": "",
+            "Adjoint and Inverse of the non-\rsingular matrices of order 2 and 3": "",
+            "Characteristic equation and Eigen \rvalues of a square matrix of order 2": "",
+            "Unit 1": "https://microintel.github.io/missmonk/diploma/sem1/maths/u1.html"
+          },
+          "STRAIGHT\tLINES": {
+            "Slope of a straight line": "",
+            "Intercepts of a straight line": "",
+            "Intercept form of a straight line": "",
+            "Slope-intercept form of a straight line": "",
+            "Slope-point form of a straight line": "",
+            "Two-point form of a straight line": "",
+            "General form of a straight line": "",
+            "Angle between two lines and conditions \rfor lines to be parallel and perpendicular": "",
+            "Equation of a straight line parallel to the \rgiven line": "",
+            "Equation of a straight line perpendicular \rto the given line": "",
+            "Unit 2": "https://microintel.github.io/missmonk/diploma/sem1/maths/u2.html"
           }
         },
-        "LOGIC\tCIRCUITS": {},
-        "INTRODUCTION\tTO\tCOMPUTER\tCONCEPTS": {},
-        "INTRODUCTION\tTO\tCOMPUTER\tORGANIZATION\t&\tOPERATING\tSYSTEM": {},
-        "INTRODUCTION\tTO\tCOMPUTER\tPROGRAMMING": {}
+        "Fundamentals of Computer": {
+          "BASICS\tOF\tLOGIC\tDESIGN": {
+            "Introduction\tto\tnumber\tsystem.": {
+              "Binary, Octal, Decimal, Hexadecimal": {
+                "binary, octal hexadecimal decimal": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/foc/u1/binary-octal-decimal-hexadecimal.html\"/>"
+              }
+            }
+          },
+          "LOGIC\tCIRCUITS": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tCONCEPTS": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tORGANIZATION\t&\tOPERATING\tSYSTEM": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tPROGRAMMING": {}
+        },
+        "Fundamentals of Electrical and electronics engineering": {},
+        "IT Skills": {},
+        "Environmental Sustainability": {}
       },
-      "Fundamentals of Electrical and electronics engineering": {},
-      "IT Skills": {},
-      "Environmental Sustainability": {}
-    },
-    "sem2": {},
-    "sem3": {},
-    "sem4": {},
-    "sem5": {},
-    "sem6": {}
-  }
+      "sem2": {},
+      "sem3": {},
+      "sem4": {},
+      "sem5": {},
+      "sem6": {}
+    }
   },
   "engineering": {},
   "Financial": {
@@ -180,6 +180,68 @@
       "CREATIVITY AND MADNESS": {},
       "PROGRESS": {},
       "HARMONY": {}
+    },
+    "The Psychology of Money": {
+    "No One's Crazy": {
+    "Chapter 1": ""
+    },
+    "Luck & Risk": {
+    "Chapter 2": ""
+    },
+    "Never Enough": {
+    "Chapter 3": ""
+    },
+    "Confounding Compounding": {
+    "Chapter 4": ""
+    },
+    "Getting Wealthy vs. Staying Wealthy": {
+    "Chapter 5": ""
+    },
+    "Tails, You Win": {
+    "Chapter 6": ""
+    },
+    "Freedom": {
+    "Chapter 7": ""
+    },
+    "Man in the Car Paradox": {
+    "Chapter 8": ""
+    },
+    "Wealth is What You Don't See": {
+    "Chapter 9": ""
+    },
+    "Save Money": {
+    "Chapter 10": ""
+    },
+    "Reasonable > Rational": {
+    "Chapter 11": ""
+    },
+    "Surprise!": {
+    "Chapter 12": ""
+    },
+    "Room for Error": {
+    "Chapter 13": ""
+    },
+    "You'll Change": {
+    "Chapter 14": ""
+    },
+    "Nothing's Free": {
+    "Chapter 15": ""
+    },
+    "You & Me": {
+    "Chapter 16": ""
+    },
+    "The Seduction of Pessimism": {
+    "Chapter 17": ""
+    },
+    "When You'll Believe Anything": {
+    "Chapter 18": ""
+    },
+    "All Together Now": {
+    "Chapter 19": ""
+    },
+    "Confessions": {
+    "Chapter 20": ""
+    }
     }
   },
   "Ancient Literature": {
