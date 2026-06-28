@@ -160,7 +160,7 @@
       "How to Grow your Money?": {}
     }
   },
-  "Psychology": {
+  "Values": {
     "THE MOLECULE OF MORE": {
       "UP VERSUS DOWN": {},
       "LOVE": {
@@ -182,66 +182,90 @@
       "HARMONY": {}
     },
     "The Psychology of Money": {
-    "No One's Crazy": {
-    "Chapter 1": ""
+      "No One's Crazy": {
+        "Chapter 1": ""
+      },
+      "Luck & Risk": {
+        "Chapter 2": ""
+      },
+      "Never Enough": {
+        "Chapter 3": ""
+      },
+      "Confounding Compounding": {
+        "Chapter 4": ""
+      },
+      "Getting Wealthy vs. Staying Wealthy": {
+        "Chapter 5": ""
+      },
+      "Tails, You Win": {
+        "Chapter 6": ""
+      },
+      "Freedom": {
+        "Chapter 7": ""
+      },
+      "Man in the Car Paradox": {
+        "Chapter 8": ""
+      },
+      "Wealth is What You Don't See": {
+        "Chapter 9": ""
+      },
+      "Save Money": {
+        "Chapter 10": ""
+      },
+      "Reasonable > Rational": {
+        "Chapter 11": ""
+      },
+      "Surprise!": {
+        "Chapter 12": ""
+      },
+      "Room for Error": {
+        "Chapter 13": ""
+      },
+      "You'll Change": {
+        "Chapter 14": ""
+      },
+      "Nothing's Free": {
+        "Chapter 15": ""
+      },
+      "You & Me": {
+        "Chapter 16": ""
+      },
+      "The Seduction of Pessimism": {
+        "Chapter 17": ""
+      },
+      "When You'll Believe Anything": {
+        "Chapter 18": ""
+      },
+      "All Together Now": {
+        "Chapter 19": ""
+      },
+      "Confessions": {
+        "Chapter 20": ""
+      }
     },
-    "Luck & Risk": {
-    "Chapter 2": ""
-    },
-    "Never Enough": {
-    "Chapter 3": ""
-    },
-    "Confounding Compounding": {
-    "Chapter 4": ""
-    },
-    "Getting Wealthy vs. Staying Wealthy": {
-    "Chapter 5": ""
-    },
-    "Tails, You Win": {
-    "Chapter 6": ""
-    },
-    "Freedom": {
-    "Chapter 7": ""
-    },
-    "Man in the Car Paradox": {
-    "Chapter 8": ""
-    },
-    "Wealth is What You Don't See": {
-    "Chapter 9": ""
-    },
-    "Save Money": {
-    "Chapter 10": ""
-    },
-    "Reasonable > Rational": {
-    "Chapter 11": ""
-    },
-    "Surprise!": {
-    "Chapter 12": ""
-    },
-    "Room for Error": {
-    "Chapter 13": ""
-    },
-    "You'll Change": {
-    "Chapter 14": ""
-    },
-    "Nothing's Free": {
-    "Chapter 15": ""
-    },
-    "You & Me": {
-    "Chapter 16": ""
-    },
-    "The Seduction of Pessimism": {
-    "Chapter 17": ""
-    },
-    "When You'll Believe Anything": {
-    "Chapter 18": ""
-    },
-    "All Together Now": {
-    "Chapter 19": ""
-    },
-    "Confessions": {
-    "Chapter 20": ""
-    }
+    "Universal Human Values": {
+      "Section I - Introduction to Value Education": {
+        "Chapter 1: Understanding Value Education": "",
+        "Chapter 2: Self-exploration as the Process for Value Education": "",
+        "Chapter 3: Basic Human Aspirations and their Fulfilment": "",
+        "Chapter 4: Understanding Happiness and Prosperity – Their Continuity and Programme for Fulfilment": ""
+      },
+      "Section II - Understanding the Harmony at Various Levels": {
+        "Chapter 5: Understanding the Human Being as Co-existence of the Self and the Body": "",
+        "Chapter 6: Harmony in the Self – Understanding Myself": "",
+        "Chapter 7: Harmony of the Self with the Body – Understanding Self-regulation and Health": "",
+        "Chapter 8: Harmony in the Family – Understanding Values in Human-Human Relationships": "",
+        "Chapter 9: Harmony in the Society – Understanding Universal Human Order": "",
+        "Chapter 10: Harmony in Nature – Understanding the Interconnectedness, Self-regulation and Mutual Fulfilment": "",
+        "Chapter 11: Harmony in Existence – Understanding Co-existence at Various Levels": ""
+      },
+      "Section III - Implications of the Right Understanding": {
+        "Chapter 12: The Basis for Universal Human Values and Ethical Human Conduct": "",
+        "Chapter 13: Professional Ethics in the light of Right Understanding": "",
+        "Chapter 14: Holistic Development towards Universal Human Order": "",
+        "Chapter 15: Vision for Holistic Technologies, Production Systems and Management Models": "",
+        "Chapter 16: Journey towards Universal Human Order – The Road Ahead": ""
+      }
     }
   },
   "Ancient Literature": {
