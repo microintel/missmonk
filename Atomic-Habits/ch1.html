@@ -1,1 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atomic Habits — Ch.1 Notes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
+  :root{
+    --bg:#181c16;
+    --bg-soft:#20251c;
+    --ink:#ece8dc;
+    --muted:#9aa190;
+    --ember:#e8802c;
+    --ember-soft:#c9672030;
+    --frost:#6fa3b0;
+    --line:rgba(236,232,220,0.12);
+    --maxw:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',Georgia,serif;
+    font-weight:600;
+    line-height:1.1;
+    margin:0 0 .4em;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---- Thermometer progress rail ---- */
+  #therm{
+    position:fixed;
+    z-index:50;
+    left:0; top:0;
+    width:100%;
+    height:5px;
+    background:var(--bg-soft);
+  }
+  #therm-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--frost),var(--ember));
+    transition:width .08s linear;
+  }
+  #therm-label{
+    position:fixed;
+    top:14px; right:16px;
+    z-index:50;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.75rem;
+    color:var(--muted);
+    background:rgba(24,28,22,0.85);
+    padding:5px 10px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    backdrop-filter:blur(4px);
+  }
+  #therm-label b{color:var(--ember); font-weight:500;}
+
+  /* ---- Layout ---- */
+  section{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:5.5rem 1.5rem 3rem;
+    border-bottom:1px solid var(--line);
+  }
+  section:last-child{border-bottom:none;}
+  .eyebrow{
+    display:inline-flex;
+    align-items:baseline;
+    gap:.5em;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.78rem;
+    letter-spacing:.08em;
+    color:var(--frost);
+    margin-bottom:1rem;
+  }
+  .eyebrow .deg{
+    font-size:1.15rem;
+    color:var(--ember);
+    font-weight:500;
+  }
+  p{color:var(--ink); margin:0 0 1em;}
+  .muted{color:var(--muted);}
+  .lede{font-size:1.08rem; color:var(--ink);}
+
+  /* ---- Hero ---- */
+  #hero{
+    padding-top:7rem;
+    text-align:left;
+    border-bottom:1px solid var(--line);
+  }
+  #hero h1{
+    font-size:clamp(2.1rem,6vw,3.2rem);
+    max-width:11ch;
+  }
+  #hero .sub{
+    color:var(--muted);
+    font-size:1.05rem;
+    max-width:48ch;
+    margin-top:1rem;
+  }
+  #hero .icecube{
+    margin-top:2.5rem;
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.85rem;
+    color:var(--muted);
+  }
+  #hero .icecube .track{
+    flex:1;
+    height:3px;
+    background:var(--bg-soft);
+    position:relative;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  #hero .icecube .track span{
+    position:absolute; inset:0;
+    width:14%;
+    background:linear-gradient(90deg,var(--frost),var(--ember));
+  }
+
+  /* ---- Cards / lists ---- */
+  .card{
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1.2rem 1.4rem;
+    margin:1rem 0;
+  }
+  .stat-row{
+    display:flex;
+    gap:1.5rem;
+    flex-wrap:wrap;
+    margin:1.4rem 0;
+  }
+  .stat{
+    flex:1 1 140px;
+    border-left:2px solid var(--ember);
+    padding-left:.8rem;
+  }
+  .stat .n{
+    font-family:'Fraunces',serif;
+    font-size:1.6rem;
+    display:block;
+  }
+  .stat .l{
+    font-size:.78rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+
+  /* ---- Compounding graph (SVG) ---- */
+  .graph-wrap{margin:1.5rem 0;}
+  .graph-wrap svg{width:100%; height:auto; display:block;}
+  .graph-caption{font-size:.8rem; color:var(--muted); margin-top:.5rem;}
+
+  /* Two column compounding */
+  .split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+    margin-top:1rem;
+  }
+  .split .col{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1rem 1.1rem;
+  }
+  .split .col.pos{border-top:3px solid var(--ember);}
+  .split .col.neg{border-top:3px solid var(--frost);}
+  .split h3{font-size:1rem; margin-bottom:.6rem;}
+  .split ul{margin:0; padding-left:1.1rem;}
+  .split li{margin-bottom:.6rem; font-size:.92rem; color:var(--muted);}
+  .split li b{color:var(--ink); font-weight:500;}
+
+  /* Plateau graph */
+  .plateau-labels{
+    display:flex; justify-content:space-between;
+    font-size:.75rem; color:var(--muted); margin-top:.4rem;
+  }
+
+  /* People examples */
+  .person-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1rem;
+    margin-top:1.2rem;
+  }
+  .person{
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1.1rem 1.3rem;
+  }
+  .person .name{
+    font-family:'Fraunces',serif;
+    font-size:1.1rem;
+    color:var(--ember);
+    margin-bottom:.3rem;
+  }
+  .person .role{
+    font-size:.78rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:.7rem;
+  }
+  .person .row{display:flex; gap:.6rem; margin-bottom:.5rem; font-size:.93rem;}
+  .person .row .tag{
+    flex-shrink:0;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem;
+    color:var(--frost);
+    padding-top:.15rem;
+    width:4.2em;
+  }
+
+  /* Problems accordion-ish list */
+  .problem{
+    margin:1.2rem 0;
+    padding-left:1rem;
+    border-left:2px solid var(--line);
+  }
+  .problem .num{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--ember);
+    font-size:.8rem;
+  }
+  .problem h3{font-size:1.05rem; margin:.3rem 0 .4rem;}
+  .problem p{color:var(--muted); font-size:.94rem;}
+
+  /* Final do / dont */
+  #final h2{font-size:1.9rem;}
+  .dodont{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+    margin-top:1.6rem;
+  }
+  .dodont .box{
+    border-radius:10px;
+    padding:1.2rem 1.3rem;
+  }
+  .dodont .do{background:var(--ember-soft); border:1px solid var(--ember);}
+  .dodont .dont{background:transparent; border:1px solid var(--frost);}
+  .dodont h3{
+    font-size:.85rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-family:'IBM Plex Mono',monospace;
+    margin-bottom:.8rem;
+  }
+  .dodont .do h3{color:var(--ember);}
+  .dodont .dont h3{color:var(--frost);}
+  .dodont ul{margin:0; padding-left:1.1rem;}
+  .dodont li{margin-bottom:.65rem; font-size:.92rem;}
+
+  .summary-list{list-style:none; padding:0; margin:1rem 0;}
+  .summary-list li{
+    display:flex; gap:.8rem;
+    margin-bottom:1rem;
+    font-size:.96rem;
+  }
+  .summary-list li::before{
+    content:"—";
+    color:var(--ember);
+    flex-shrink:0;
+  }
+
+  footer{
+    text-align:center;
+    padding:2.5rem 1.5rem 4rem;
+    color:var(--muted);
+    font-size:.8rem;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  @media (max-width:640px){
+    .split{grid-template-columns:1fr;}
+    .dodont{grid-template-columns:1fr;}
+    section{padding:4rem 1.2rem 2.5rem;}
+    #hero{padding-top:5.5rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    #therm-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="therm"><div id="therm-fill"></div></div>
+<div id="therm-label"><b id="deg-num">25</b>°F — reading in progress</div>
+
+<section id="hero">
+  <div class="eyebrow"><span class="deg">25°</span> START — THE ICE CUBE HASN'T MOVED YET</div>
+  <h1>Atomic Habits<br>Chapter 1</h1>
+  <p class="sub">Small habits are powerful. A tiny 1% change, done every day, matters more than one big effort. Read top to bottom — the bar above shows your progress toward "32°," the moment the ice finally melts.</p>
+  <div class="icecube">
+    <span>25°F</span>
+    <div class="track"><span></span></div>
+    <span>32°F</span>
+  </div>
+</section>
+
+<section id="cycling">
+  <div class="eyebrow"><span class="deg">26°</span> THE STORY</div>
+  <h2>British Cycling and the 1% rule</h2>
+  <p class="lede">In 2003, British Cycling was a joke. For 100 years, no British rider had won an Olympic gold or the Tour de France. One bike company even refused to sell them cycles — they didn't want to be linked to a losing team.</p>
+  <p>The new coach, Dave Brailsford, did not look for one big fix. He called his method <b>"the aggregation of marginal gains"</b> — break the sport into small parts, improve each part by just 1%, and let all those small gains add up. Better seats. Better grip on tyres. Warmer clothing. Better fabric. He even got the team truck painted white inside, just so dust would be easy to spot and clean.</p>
+  <div class="stat-row">
+    <div class="stat"><span class="n">60%</span><span class="l">gold medals won, 2008 Beijing</span></div>
+    <div class="stat"><span class="n">5</span><span class="l">Tour de France wins in 6 years</span></div>
+    <div class="stat"><span class="n">178</span><span class="l">world titles, 2007–2017</span></div>
+  </div>
+  <p class="muted">None of this came from one big win. It came from hundreds of small, boring improvements, added up over years.</p>
+</section>
+
+<section id="math">
+  <div class="eyebrow"><span class="deg">27°</span> THE MATH</div>
+  <h2>Why tiny changes add up</h2>
+  <p class="lede">If you get 1% better every day for a year, you don't end up just a little better — you end up nearly <b>37 times</b> better. If you get 1% worse every day, you fall almost to zero.</p>
+  <div class="graph-wrap">
+    <svg viewBox="0 0 600 220" preserveAspectRatio="xMidYMid meet">
+      <line x1="40" y1="10" x2="40" y2="190" stroke="var(--line)" stroke-width="1.5"/>
+      <line x1="40" y1="190" x2="580" y2="190" stroke="var(--line)" stroke-width="1.5"/>
+      <line x1="40" y1="140" x2="580" y2="140" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 4"/>
+      <path d="M40,140 C 200,138 340,120 580,20" fill="none" stroke="#e8802c" stroke-width="2.5"/>
+      <path d="M40,140 C 200,150 340,165 580,182" fill="none" stroke="#6fa3b0" stroke-width="2.5"/>
+      <text x="45" y="18" fill="#e8802c" font-size="12" font-family="IBM Plex Mono, monospace">1.01^365 = 37.8×</text>
+      <text x="45" y="205" fill="#6fa3b0" font-size="12" font-family="IBM Plex Mono, monospace">0.99^365 = 0.03×</text>
+      <text x="450" y="135" fill="#9aa190" font-size="11" font-family="IBM Plex Mono, monospace">day 1</text>
+    </svg>
+  </div>
+  <p class="graph-caption">Orange line: 1% better every day for a year. Grey-blue line: 1% worse every day. Same starting point, totally different result.</p>
+  <p>Habits work like compound interest on your effort. You barely notice them day to day. You only see the real result after looking back months or years later.</p>
+</section>
+
+<section id="compound-direction">
+  <div class="eyebrow"><span class="deg">28°</span> TWO DIRECTIONS</div>
+  <h2>This works both ways</h2>
+  <div class="split">
+    <div class="col pos">
+      <h3>Good compounding</h3>
+      <ul>
+        <li><b>Skills</b> add up — learning one thing well makes the next thing easier to learn.</li>
+        <li><b>Knowledge</b> adds up — every book you read makes the next book easier to understand.</li>
+        <li><b>Relationships</b> add up — small acts of kindness build strong, lasting connections.</li>
+      </ul>
+    </div>
+    <div class="col neg">
+      <h3>Bad compounding</h3>
+      <ul>
+        <li><b>Stress</b> adds up — small daily worries turn into real health problems over years.</li>
+        <li><b>Negative thinking</b> adds up — the more you repeat a thought, the more you believe it.</li>
+        <li><b>Anger</b> adds up — small irritations pile up until one small thing causes a big blow-up.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="plateau">
+  <div class="eyebrow"><span class="deg">29°</span> WHAT PROGRESS ACTUALLY LOOKS LIKE</div>
+  <h2>Why results feel slow, then sudden</h2>
+  <p class="lede">An ice cube in a 25° room shows no change as the room warms to 26, 27, 28, 29, 30, 31. Then at 32°, it suddenly melts. It looks instant. It was not. Every earlier degree was doing the work quietly.</p>
+  <div class="graph-wrap">
+    <svg viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+      <line x1="40" y1="10" x2="40" y2="180" stroke="var(--line)" stroke-width="1.5"/>
+      <line x1="40" y1="180" x2="580" y2="180" stroke="var(--line)" stroke-width="1.5"/>
+      <line x1="40" y1="180" x2="580" y2="30" stroke="#9aa190" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <path d="M40,180 C 250,178 400,165 480,120 C 520,95 550,50 580,25" fill="none" stroke="#e8802c" stroke-width="2.5"/>
+      <text x="150" y="60" fill="#9aa190" font-size="11" font-family="IBM Plex Mono, monospace">what you expect</text>
+      <text x="290" y="172" fill="#e8802c" font-size="11" font-family="IBM Plex Mono, monospace">what actually happens</text>
+    </svg>
+  </div>
+  <div class="plateau-labels"><span>time →</span><span>results ↑</span></div>
+  <p>The gap between the dashed "expected" line and the real curve is called the <b>Valley of Disappointment</b>. Most people give up right here — just before the results they worked for start to show.</p>
+  <div class="card">
+    <p style="margin:0" class="muted">Think of a stonecutter hitting a rock a hundred times with no crack showing. The hundred-and-first hit splits it — but it wasn't that last hit alone. It was all the hits before it. — Jacob Riis</p>
+  </div>
+</section>
+
+<section id="systems">
+  <div class="eyebrow"><span class="deg">30°</span> THE CORE IDEA</div>
+  <h2>Forget goals. Build systems.</h2>
+  <p class="lede"><b>Goal</b> = the result you want. <b>System</b> = what you do every day to get there. Everyone chasing a goal already wants the same thing as their rivals. The system is what actually makes the difference.</p>
+
+  <div class="person-grid">
+    <div class="person">
+      <div class="name">Vignesh</div>
+      <div class="role">Coaches a local cricket team</div>
+      <div class="row"><span class="tag">GOAL</span><span>Win the state-level trophy this year.</span></div>
+      <div class="row"><span class="tag">SYSTEM</span><span>How he picks players, plans each net practice, and reviews every match — win or lose.</span></div>
+    </div>
+    <div class="person">
+      <div class="name">Pranav</div>
+      <div class="role">Runs a small kirana-to-online grocery business</div>
+      <div class="row"><span class="tag">GOAL</span><span>Reach a target monthly sales number.</span></div>
+      <div class="row"><span class="tag">SYSTEM</span><span>How often he talks to customers, tries new offers, and fixes small problems every week.</span></div>
+    </div>
+    <div class="person">
+      <div class="name">Dhanush</div>
+      <div class="role">Preparing for a civics and Constitution exam</div>
+      <div class="row"><span class="tag">GOAL</span><span>Score above a target percentage.</span></div>
+      <div class="row"><span class="tag">SYSTEM</span><span>His daily revision time, regular practice tests, and weekly review of weak topics — no matter how one test goes.</span></div>
+    </div>
+  </div>
+  <p style="margin-top:1.2rem">Stop staring at the scoreboard. Just do the daily work — for all three, the result usually follows.</p>
+</section>
+
+<section id="problems">
+  <div class="eyebrow"><span class="deg">31°</span> WHY GOALS-ONLY THINKING FAILS</div>
+  <h2>Four problems with only chasing goals</h2>
+
+  <div class="problem">
+    <div class="num">01</div>
+    <h3>Winners and losers want the same thing</h3>
+    <p>Every cricket coach wants the trophy, just like Vignesh. Wanting it is not special. His daily practice plan is what could actually make the difference.</p>
+  </div>
+  <div class="problem">
+    <div class="num">02</div>
+    <h3>Hitting a goal fixes things only for now</h3>
+    <p>If Pranav hits his sales target once, but nothing changes in how he runs the business, the same problems will return next month. Fix the daily habits, not just this month's number.</p>
+  </div>
+  <div class="problem">
+    <div class="num">03</div>
+    <h3>Goals make you wait to feel good</h3>
+    <p>If Dhanush tells himself "I'll be happy only after the exam," he keeps postponing his own happiness. A good daily routine can feel satisfying right now, not just on result day.</p>
+  </div>
+  <div class="problem">
+    <div class="num">04</div>
+    <h3>Goals can cause a rise-and-fall pattern</h3>
+    <p>Effort built only around one big day often drops right after that day is over. Vignesh, Pranav, and Dhanush can all fall into this trap — unless they stay committed to the routine, not just the deadline.</p>
+  </div>
+</section>
+
+<section id="final">
+  <div class="eyebrow"><span class="deg">32°</span> BREAKTHROUGH</div>
+  <h2>Chapter summary</h2>
+  <ul class="summary-list">
+    <li>Habits work like compound interest — 1% better every day adds up to much more than it looks like at first.</li>
+    <li>Habits cut both ways — the same power that builds you up can also break you down.</li>
+    <li>Progress hides in a "Valley of Disappointment" before it shows up — you need patience, not just effort.</li>
+    <li>An atomic habit is a small habit that is part of a bigger system, like an atom is a small part of something bigger.</li>
+    <li>You don't rise to the level of your goals. You fall to the level of your systems.</li>
+  </ul>
+
+  <div class="dodont">
+    <div class="box do">
+      <h3>What to do</h3>
+      <ul>
+        <li>Pick one daily routine — practice, revision, sales calls — and stick to it, even on days it feels useless.</li>
+        <li>Judge yourself by direction, not today's result. Is your habit pointing the right way?</li>
+        <li>Expect a slow, flat stretch before results show. Keep going, like Vignesh's weekly drills or Dhanush's daily revision.</li>
+        <li>Look for small, boring 1% improvements around you, the way Brailsford's team did.</li>
+        <li>Set a goal once to pick a direction, then stop checking it daily. Put your energy into the routine instead.</li>
+      </ul>
+    </div>
+    <div class="box dont">
+      <h3>What not to do</h3>
+      <ul>
+        <li>Don't quit a habit just because a few weeks show no change. That's usually the Valley of Disappointment, not failure.</li>
+        <li>Don't treat one good result as the finish line — if Pranav hits a sales target once but changes nothing, the same problem returns.</li>
+        <li>Don't wait for a goal to "allow" you to feel happy. That keeps happiness always out of reach.</li>
+        <li>Don't ignore small bad habits just because one slip "doesn't matter." They add up too, just like good habits.</li>
+        <li>Don't copy someone's goal and think that explains their success. Copy their daily system instead.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>NOTES BASED ON "ATOMIC HABITS", CH.1 — JAMES CLEAR</footer>
+
+<script>
+  const fill = document.getElementById('therm-fill');
+  const degNum = document.getElementById('deg-num');
+  function update(){
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
+    const pct = scrollHeight > 0 ? Math.min(1, Math.max(0, scrollTop / scrollHeight)) : 0;
+    fill.style.width = (pct * 100) + '%';
+    degNum.textContent = Math.round(25 + pct * 7);
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+</script>
+
+</body>
+</html>
