@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Room Decides Your Habits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper-alt:#E1D8C0;
+    --ink:#1B2A4A;
+    --ink-soft:#42557a;
+    --cue:#E8873A;
+    --good:#3F6B45;
+    --warn:#B5482C;
+    --line: rgba(27,42,74,0.18);
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 34px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    color:var(--ink);
+    margin:0 0 .3em 0;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.03em;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px;}
+
+  /* Ruler progress bar */
+  #ruler{
+    position:fixed; top:0; left:0; width:100%; height:6px;
+    background:transparent; z-index:100;
+  }
+  #ruler-fill{
+    height:100%; width:0%;
+    background:var(--cue);
+    transition:width .1s linear;
+  }
+
+  /* Sheet header style for each section */
+  .sheet-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:4px 10px;
+    border-radius:2px;
+    margin-bottom:18px;
+    background:rgba(255,255,255,0.35);
+  }
+  .sheet-tag::before{content:"◆"; color:var(--cue); font-size:9px;}
+
+  section{
+    padding:64px 0;
+    border-bottom:1px solid var(--line);
+  }
+  section:last-of-type{border-bottom:none;}
+
+  /* HERO */
+  #hero{padding-top:56px;}
+  .hero-head{font-size:clamp(28px, 6vw, 46px); line-height:1.12;}
+  .hero-sub{font-size:17px; color:var(--ink-soft); max-width:56ch; margin-top:14px;}
+
+  /* Room map - signature interactive element */
+  .roommap-shell{
+    margin-top:34px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.4);
+    padding:18px;
+    border-radius:4px;
+  }
+  .roommap-caption{font-size:13px; color:var(--ink-soft); margin-bottom:12px;}
+  .room{
+    position:relative;
+    width:100%;
+    aspect-ratio: 4/3;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 23px, var(--line) 23px, var(--line) 24px),
+      repeating-linear-gradient(90deg, transparent, transparent 23px, var(--line) 23px, var(--line) 24px);
+    border:2px solid var(--ink);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .room .item{
+    position:absolute;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    background:transparent;
+    text-align:center;
+    padding:2px;
+    transition: background .5s ease, opacity .5s ease, transform .5s ease;
+  }
+  .item.guitar{ top:8%; left:6%; width:15%; height:34%; transform:rotate(-14deg); }
+  .item.table{ top:32%; left:38%; width:26%; height:34%; border-radius:50%; }
+  .item.door{ bottom:2%; left:42%; width:20%; height:8%; border-style:dashed; font-size:9px;}
+  .item.cue-a{ top:6%; right:6%; width:14%; height:16%; }
+  .item.cue-b{ top:26%; right:5%; width:14%; height:16%; }
+  .item.cue-c{ bottom:8%; right:8%; width:14%; height:16%; }
+  .item.cue-d{ bottom:8%; left:8%; width:14%; height:16%; }
+
+  .item.active{ background:var(--cue); color:#fff; opacity:1; }
+  .item.dim{ opacity:.28; }
+
+  .room-controls{
+    display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;
+  }
+  button.toggle-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    padding:9px 16px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:2px;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+  }
+  button.toggle-btn:hover{ background:var(--ink-soft); }
+  button.toggle-btn:active{ transform:scale(0.97); }
+  button.toggle-btn.is-off{
+    background:transparent;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+  }
+  #room-readout{
+    margin-top:12px;
+    font-size:14px;
+    min-height:24px;
+    color:var(--ink-soft);
+  }
+
+  /* Reveal on scroll */
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* Chart */
+  .chart-shell{ margin-top:28px; }
+  .bar-row{ margin-bottom:22px; }
+  .bar-label{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px; }
+  .bar-track{ height:16px; background:var(--paper-alt); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+  .bar-fill{ height:100%; width:0%; transition:width 1.1s cubic-bezier(.2,.7,.3,1); }
+  .bar-fill.soda{ background:var(--warn); }
+  .bar-fill.water{ background:var(--good); }
+  .bar-row.in .bar-fill.soda{ width:11.4%; }
+  .bar-row.in .bar-fill.water{ width:25.8%; }
+
+  p{ margin:0 0 16px 0; }
+  .lede{ font-size:17px; }
+
+  /* cards */
+  .cards{ display:grid; grid-template-columns:1fr; gap:16px; margin-top:24px; }
+  @media(min-width:640px){ .cards{ grid-template-columns:1fr 1fr 1fr; } }
+  .card{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.45);
+    border-radius:4px;
+    padding:18px;
+    cursor:pointer;
+    perspective:1000px;
+    min-height:210px;
+    position:relative;
+  }
+  .card-inner{
+    position:relative;
+    height:100%;
+    transition:transform .5s;
+    transform-style:preserve-3d;
+  }
+  .card.flipped .card-inner{ transform:rotateY(180deg); }
+  .card-face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .card-face.back{ transform:rotateY(180deg); }
+  .card-name{ font-family:'Fraunces', serif; font-size:19px; font-weight:600; }
+  .card-tag{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-soft); }
+  .card-body{ font-size:14.5px; margin-top:10px; }
+  .card-hint{ font-size:12px; color:var(--cue); font-family:'JetBrains Mono', monospace; margin-top:10px; }
+  .card-face.back .card-body{ color:var(--good); font-weight:500; }
+
+  /* context toggle */
+  .context-demo{
+    display:flex; gap:14px; margin-top:22px; flex-wrap:wrap;
+  }
+  .room-chip{
+    flex:1 1 220px;
+    border:1px solid var(--line);
+    padding:16px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.4);
+  }
+  .room-chip h4{ margin:0 0 8px 0; font-family:'Fraunces', serif; font-size:16px; }
+  .room-chip ul{ margin:0; padding-left:18px; font-size:14px; }
+
+  /* do dont */
+  .dd-grid{ display:grid; grid-template-columns:1fr; gap:18px; margin-top:26px; }
+  @media(min-width:640px){ .dd-grid{ grid-template-columns:1fr 1fr; } }
+  .dd-col{ border-radius:4px; padding:20px; }
+  .dd-col.do{ background:rgba(63,107,69,0.08); border:1px solid rgba(63,107,69,0.35); }
+  .dd-col.dont{ background:rgba(181,72,44,0.08); border:1px solid rgba(181,72,44,0.35); }
+  .dd-col h3{ font-size:19px; }
+  .dd-col.do h3{ color:var(--good); }
+  .dd-col.dont h3{ color:var(--warn); }
+  .dd-col ul{ margin:0; padding-left:0; list-style:none; }
+  .dd-col li{ font-size:14.5px; margin-bottom:10px; padding-left:22px; position:relative; }
+  .dd-col.do li::before{ content:"✓"; position:absolute; left:0; color:var(--good); font-weight:700; }
+  .dd-col.dont li::before{ content:"✕"; position:absolute; left:0; color:var(--warn); font-weight:700; }
+
+  /* summary */
+  .summary-list{ margin-top:20px; padding-left:20px; }
+  .summary-list li{ margin-bottom:10px; font-size:15px; }
+
+  footer{
+    text-align:center;
+    padding:34px 0 60px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="ruler"><div id="ruler-fill"></div></div>
+
+<div class="wrap">
+
+  <section id="hero">
+    <div class="sheet-tag">PLAN 00 — the big idea</div>
+    <h1 class="hero-head">You don't need more willpower.<br>You need a better room.</h1>
+    <p class="hero-sub">This page explains one idea from the book <em>Atomic Habits</em>: your surroundings shape your habits more than your motivation does. Simple words. Real examples. Things you can try today.</p>
+
+    <div class="roommap-shell reveal">
+      <div class="roommap-caption">Tap an object below. Watch what happens when a habit's cue is easy to see, versus hidden away.</div>
+      <div class="room" id="room">
+        <div class="item cue-a" data-key="a">Water<br>bottle</div>
+        <div class="item cue-b" data-key="b">Guitar</div>
+        <div class="item cue-c" data-key="c">Book</div>
+        <div class="item cue-d" data-key="d">Pills</div>
+        <div class="item table">Table</div>
+        <div class="item door">Door</div>
+      </div>
+      <div class="room-controls">
+        <button class="toggle-btn" id="hideBtn">Hide all cues (in drawers)</button>
+        <button class="toggle-btn is-off" id="showBtn">Put cues in plain sight</button>
+      </div>
+      <div id="room-readout" class="mono"></div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="sheet-tag reveal">PLAN 01 — why this works</div>
+    <h2 class="reveal">You act on what you see, not what you plan</h2>
+    <p class="reveal lede">Walk into a kitchen and see cookies on the counter — you eat one, even if you weren't hungry. Walk past a bookshelf tucked in a corner — you never open a book, even if you meant to. Nothing about your willpower changed. Only what was in front of your eyes changed.</p>
+    <p class="reveal">Out of all your senses, sight does the most work. Most of what your brain processes comes from your eyes. So a small change in what you <em>see</em> can cause a big change in what you <em>do</em> — without you even noticing it happening.</p>
+  </section>
+
+  <section id="proof">
+    <div class="sheet-tag reveal">PLAN 02 — proof from a real hospital</div>
+    <h2 class="reveal">The cafeteria that changed people's diets without saying a word</h2>
+    <p class="reveal lede">A doctor named Anne Thorndike ran a study in a hospital cafeteria. She didn't lecture anyone about eating healthy. She just moved things around: she added water next to the soda, and placed water baskets near every food counter. Soda stayed exactly where it was too. Nobody was told what to do.</p>
+    <div class="chart-shell reveal" id="chart">
+      <div class="bar-row" id="bar-soda">
+        <div class="bar-label"><span>Soda sales</span><span class="mono">−11.4%</span></div>
+        <div class="bar-track"><div class="bar-fill soda"></div></div>
+      </div>
+      <div class="bar-row" id="bar-water">
+        <div class="bar-label"><span>Bottled water sales</span><span class="mono">+25.8%</span></div>
+        <div class="bar-track"><div class="bar-fill water"></div></div>
+      </div>
+    </div>
+    <p class="reveal" style="margin-top:18px;">Over three months, soda sales dropped and water sales rose — just because water became easier to grab. This is the whole idea in one experiment: change what's around you, and behaviour follows on its own.</p>
+  </section>
+
+  <section id="examples">
+    <div class="sheet-tag reveal">PLAN 03 — make good cues obvious</div>
+    <h2 class="reveal">Three people, three small changes</h2>
+    <p class="reveal lede">Tap each card to see what changed — and what happened after.</p>
+    <div class="cards reveal">
+
+      <div class="card" data-card="1">
+        <div class="card-inner">
+          <div class="card-face front">
+            <div>
+              <div class="card-tag">BEFORE</div>
+              <div class="card-name">Vignesh</div>
+              <div class="card-body">His guitar stayed in its case, inside the closet. He wanted to practice daily but kept forgetting it existed.</div>
+            </div>
+            <div class="card-hint">Tap to see what he changed →</div>
+          </div>
+          <div class="card-face back">
+            <div>
+              <div class="card-tag">AFTER</div>
+              <div class="card-name">Vignesh</div>
+              <div class="card-body">He put the guitar on a stand in the middle of the living room. Now he sees it every time he walks by — and picks it up without deciding to.</div>
+            </div>
+            <div class="card-hint">Tap to flip back</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-card="2">
+        <div class="card-inner">
+          <div class="card-face front">
+            <div>
+              <div class="card-tag">BEFORE</div>
+              <div class="card-name">Pranav</div>
+              <div class="card-body">His medicine sat in the pantry, out of sight. He missed doses often — not from carelessness, just because he never saw the bottle.</div>
+            </div>
+            <div class="card-hint">Tap to see what he changed →</div>
+          </div>
+          <div class="card-face back">
+            <div>
+              <div class="card-tag">AFTER</div>
+              <div class="card-name">Pranav</div>
+              <div class="card-body">He moved the bottle to the bathroom counter, right next to the tap. Now it's part of brushing his teeth. He rarely misses a dose now.</div>
+            </div>
+            <div class="card-hint">Tap to flip back</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-card="3">
+        <div class="card-inner">
+          <div class="card-face front">
+            <div>
+              <div class="card-tag">BEFORE</div>
+              <div class="card-name">Dhanush</div>
+              <div class="card-body">He bought fruit often, but it sat in the fridge drawer. By the time he remembered, it had gone bad.</div>
+            </div>
+            <div class="card-hint">Tap to see what he changed →</div>
+          </div>
+          <div class="card-face back">
+            <div>
+              <div class="card-tag">AFTER</div>
+              <div class="card-name">Dhanush</div>
+              <div class="card-body">He put a bowl of fruit on the kitchen counter, right where he'd see it. He now eats fruit daily, without trying to "be disciplined."</div>
+            </div>
+            <div class="card-hint">Tap to flip back</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="context">
+    <div class="sheet-tag reveal">PLAN 04 — one space, one job</div>
+    <h2 class="reveal">A room can only teach you one habit at a time</h2>
+    <p class="reveal lede">If you scroll your phone in bed, watch TV at your study table, and eat snacks at your desk — every space starts to mean everything. Your brain gets confused about what each place is for.</p>
+    <p class="reveal">Give each space one clear job. Over time, that space starts to trigger that one habit automatically.</p>
+    <div class="context-demo reveal">
+      <div class="room-chip">
+        <h4 style="color:var(--warn);">Mixed-up room</h4>
+        <ul>
+          <li>Bed = sleeping + scrolling + snacking</li>
+          <li>Result: hard to fall asleep here</li>
+          <li>Desk = studying + gaming + eating</li>
+          <li>Result: hard to focus here</li>
+        </ul>
+      </div>
+      <div class="room-chip">
+        <h4 style="color:var(--good);">One-job room</h4>
+        <ul>
+          <li>Bed = only sleeping</li>
+          <li>Result: you feel sleepy the moment you lie down</li>
+          <li>Desk = only studying</li>
+          <li>Result: focus comes automatically</li>
+        </ul>
+      </div>
+    </div>
+    <p class="reveal" style="margin-top:18px;">Even in a small room, you can copy this: one chair only for reading, one corner only for exercise. Small zones work just as well as separate rooms.</p>
+  </section>
+
+  <section id="newplace">
+    <div class="sheet-tag reveal">PLAN 05 — a fresh start helps</div>
+    <h2 class="reveal">New places make new habits easier</h2>
+    <p class="reveal lede">It's hard to build a new habit where old habits already live. If you always watch videos on the couch, it's hard to suddenly "focus" on the same couch. A new place has no old cues pulling you back.</p>
+    <p class="reveal">Try a new café to read in. A different park bench to think in. A different aisle order at the grocery store. A fresh space makes the new habit yours from the very first day.</p>
+  </section>
+
+  <section id="dodont">
+    <div class="sheet-tag reveal">PLAN 06 — what to do, what to avoid</div>
+    <h2 class="reveal">In short</h2>
+    <div class="dd-grid reveal">
+      <div class="dd-col do">
+        <h3>Do this</h3>
+        <ul>
+          <li>Put good cues in plain sight — water bottle on the desk, fruit bowl on the counter.</li>
+          <li>Give each room or corner just one job.</li>
+          <li>Move bad-habit objects out of sight and out of reach.</li>
+          <li>Use a new place when starting a hard new habit.</li>
+          <li>Add more than one cue for habits you really want to stick — a note, an object, a reminder.</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h3>Don't do this</h3>
+        <ul>
+          <li>Don't rely only on willpower or motivation — it runs out.</li>
+          <li>Don't hide the things you want to do more of (guitar, books, medicine).</li>
+          <li>Don't mix habits in one space (bed for scrolling AND sleeping).</li>
+          <li>Don't expect a new habit to stick in a room full of old temptations.</li>
+          <li>Don't blame yourself for "lack of discipline" before checking your environment first.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="summary">
+    <div class="sheet-tag reveal">PLAN 07 — recap</div>
+    <h2 class="reveal">Remember this</h2>
+    <ul class="summary-list reveal">
+      <li>Small changes in your surroundings can lead to big changes in your habits over time.</li>
+      <li>Every habit starts with a cue. You notice cues that stand out — so make good cues loud and bad cues quiet.</li>
+      <li>Over time, a habit sticks not to one small cue, but to the whole space around it.</li>
+      <li>New habits are easier to build in a new place, because old cues aren't there to pull you back.</li>
+      <li>You're not stuck with your environment. You can design it.</li>
+    </ul>
+  </section>
+
+  <footer>Based on Chapter 6, "Motivation Is Overrated; Environment Often Matters More" — James Clear, Atomic Habits.</footer>
+
+</div>
+
+<script>
+  // Ruler / scroll progress
+  const rulerFill = document.getElementById('ruler-fill');
+  function updateRuler(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    rulerFill.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateRuler);
+  updateRuler();
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal, .bar-row');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+      }
+    });
+  }, {threshold:0.2});
+  revealEls.forEach(el=>io.observe(el));
+
+  // Room map interaction
+  const items = document.querySelectorAll('#room .item[data-key]');
+  const readout = document.getElementById('room-readout');
+  const hideBtn = document.getElementById('hideBtn');
+  const showBtn = document.getElementById('showBtn');
+
+  function setHidden(){
+    items.forEach(i=>{ i.classList.remove('active'); i.classList.add('dim'); });
+    hideBtn.classList.remove('is-off');
+    showBtn.classList.add('is-off');
+    readout.textContent = '→ Cues hidden away. These habits are easy to forget.';
+  }
+  function setVisible(){
+    items.forEach(i=>{ i.classList.remove('dim'); i.classList.add('active'); });
+    showBtn.classList.remove('is-off');
+    hideBtn.classList.add('is-off');
+    readout.textContent = '→ Cues are in plain sight. These habits now happen almost on their own.';
+  }
+  hideBtn.addEventListener('click', setHidden);
+  showBtn.addEventListener('click', setVisible);
+  setHidden();
+
+  // Flip cards
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      card.classList.toggle('flipped');
+    });
+  });
+</script>
+
+</body>
+</html>

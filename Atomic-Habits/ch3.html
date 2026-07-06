@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Habit Loop — How Habits Really Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F3ECDA;
+    --paper-2:#EAE1C8;
+    --card:#FFFDF6;
+    --ink:#232019;
+    --ink-soft:#5B5748;
+    --navy:#1E2A38;
+    --turmeric:#E1A73B;
+    --turmeric-soft:#F3D9A3;
+    --chili:#B34A2C;
+    --sage:#4F7A5C;
+    --rule: rgba(35,32,25,0.15);
+    --radius: 14px;
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--turmeric-soft); }
+
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    line-height:1.08;
+    margin:0 0 0.4em 0;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--chili);
+    font-weight:700;
+    display:block;
+    margin-bottom:0.6em;
+  }
+  p{margin:0 0 1em 0;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px;}
+
+  /* progress bar */
+  #progress{
+    position:fixed; top:0; left:0; height:4px; width:0%;
+    background:linear-gradient(90deg,var(--turmeric),var(--chili));
+    z-index:999; transition:width 0.08s linear;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:88vh;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+    padding:80px 22px 60px;
+    background:
+      radial-gradient(circle at 85% 8%, rgba(225,167,59,0.28), transparent 45%),
+      var(--paper);
+    border-bottom:1px solid var(--rule);
+    overflow:hidden;
+  }
+  .hero .bignum{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:clamp(5rem, 22vw, 9.5rem);
+    color:var(--navy);
+    line-height:0.85;
+    letter-spacing:-0.03em;
+    max-width:var(--maxw);
+    margin:0 auto;
+    width:100%;
+  }
+  .hero .bignum-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    max-width:var(--maxw); margin:6px auto 28px; width:100%;
+  }
+  .hero h1{
+    max-width:var(--maxw); margin:0 auto; width:100%;
+    font-size:clamp(1.9rem, 5.2vw, 3rem);
+  }
+  .hero .sub{
+    max-width:var(--maxw); margin:14px auto 0; width:100%;
+    color:var(--ink-soft); font-size:1.05rem; max-width:560px;
+  }
+  .box-door{
+    position:absolute; right:6%; top:14%; width:120px; opacity:0.5;
+  }
+  @media (max-width:640px){ .box-door{display:none;} }
+
+  /* SECTIONS */
+  section{ padding:64px 0; border-bottom:1px solid var(--rule); }
+  section.tight{padding:48px 0;}
+
+  .reveal{
+    opacity:0; transform:translateY(22px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:var(--radius);
+    padding:22px 22px;
+    box-shadow:0 1px 0 rgba(35,32,25,0.03);
+  }
+
+  /* CAT TIMER STRIP */
+  .cat-strip{
+    display:flex; align-items:center; gap:14px;
+    background:var(--navy); color:var(--paper);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin:20px 0 26px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .cat-strip .clock{
+    font-size:2rem; font-weight:700; color:var(--turmeric);
+    min-width:88px;
+  }
+  .cat-strip .label{ font-size:0.82rem; color:#C9CFD6; }
+  .chart-box{ background:var(--card); border:1px solid var(--rule); border-radius:var(--radius); padding:16px 12px 8px; margin:18px 0;}
+  .chart-box canvas{ max-height:260px; }
+  .chart-caption{ font-size:0.82rem; color:var(--ink-soft); font-family:'JetBrains Mono',monospace; margin-top:6px;}
+
+  /* DIAL — signature element */
+  .dial-section{ background:var(--paper-2); }
+  .dial-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:26px;
+  }
+  .dial-outer{
+    position:relative; width:min(320px, 78vw); aspect-ratio:1/1;
+  }
+  .dial-svg{ width:100%; height:100%; }
+  .dial-seg{
+    cursor:pointer;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    transform-origin:160px 160px;
+  }
+  .dial-seg:hover, .dial-seg.active{ filter:brightness(1.08); }
+  .dial-seg.active{ transform:scale(1.035); }
+  .dial-center{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; pointer-events:none;
+  }
+  .dial-center .arrow{ font-size:1.4rem; color:var(--card); }
+  .dial-label-text{
+    font-family:'JetBrains Mono',monospace; font-size:0.62rem; font-weight:700;
+    fill:var(--card); text-transform:uppercase; letter-spacing:0.06em;
+    pointer-events:none;
+  }
+  .dial-num{ font-family:'Fraunces',serif; font-weight:900; font-size:1.1rem; fill:rgba(255,253,246,0.85); pointer-events:none;}
+
+  .story-box{
+    width:100%; max-width:520px;
+    background:var(--card); border:1px solid var(--rule); border-radius:var(--radius);
+    padding:20px 22px; min-height:150px;
+  }
+  .story-box .who{
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--chili); font-weight:700;
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; display:block;
+  }
+  .story-box h3{ font-size:1.25rem; margin-bottom:8px; }
+  .dial-hint{ font-size:0.85rem; color:var(--ink-soft); text-align:center; }
+
+  /* FOUR LAWS */
+  .laws-toggle{
+    display:flex; gap:0; background:var(--card); border:1px solid var(--rule);
+    border-radius:999px; padding:4px; width:fit-content; margin:0 auto 30px;
+  }
+  .laws-toggle button{
+    border:none; background:transparent; padding:9px 20px; border-radius:999px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.88rem; cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .laws-toggle button.active{ background:var(--navy); color:var(--paper); }
+  .laws-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
+  @media (min-width:640px){ .laws-grid{ grid-template-columns:1fr 1fr; } }
+  .law-card{
+    border-radius:var(--radius); padding:20px; border:1px solid var(--rule);
+    background:var(--card);
+  }
+  .law-card .step{
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--ink-soft);
+  }
+  .law-card h3{ font-size:1.15rem; margin:6px 0 8px; }
+  .law-card p{ font-size:0.92rem; color:var(--ink-soft); margin:0; }
+  .law-card.good{ border-left:4px solid var(--sage); }
+  .law-card.bad{ border-left:4px solid var(--chili); }
+
+  /* TAKEAWAY */
+  .takeaway{ background:var(--navy); color:var(--paper); }
+  .takeaway h2{ color:var(--paper); }
+  .takeaway .sub{ color:#C9CFD6; max-width:560px; }
+  .ta-grid{ display:grid; grid-template-columns:1fr; gap:18px; margin-top:28px; }
+  @media (min-width:640px){ .ta-grid{ grid-template-columns:1fr 1fr; } }
+  .ta-card{
+    background:rgba(255,253,246,0.06);
+    border:1px solid rgba(255,253,246,0.14);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .ta-card .tag{
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.1em; padding:3px 10px;
+    border-radius:999px; display:inline-block; margin-bottom:12px;
+  }
+  .ta-card.do .tag{ background:rgba(79,122,92,0.35); color:#B7E0C4; }
+  .ta-card.dont .tag{ background:rgba(179,74,44,0.35); color:#F0BBA6; }
+  .ta-card ul{ margin:0; padding-left:18px; }
+  .ta-card li{ margin-bottom:9px; font-size:0.95rem; }
+  .ta-card li::marker{ color:var(--turmeric); }
+
+  footer{
+    padding:36px 22px 60px; text-align:center; color:var(--ink-soft);
+    font-size:0.82rem; font-family:'JetBrains Mono',monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .dial-seg{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="box-door" viewBox="0 0 100 140" fill="none">
+    <rect x="4" y="4" width="92" height="132" rx="4" stroke="#1E2A38" stroke-width="3" opacity="0.5"/>
+    <rect x="20" y="20" width="60" height="100" rx="2" stroke="#E1A73B" stroke-width="3" opacity="0.7"/>
+    <circle cx="70" cy="70" r="4" fill="#B34A2C" opacity="0.7"/>
+  </svg>
+  <span class="bignum">1898</span>
+  <span class="bignum-label">// THE YEAR EDWARD THORNDIKE LOCKED A CAT IN A BOX</span>
+  <h1>The Habit Loop</h1>
+  <p class="sub">A cat in a puzzle box explains why you check your phone without deciding to. Scroll down — every idea from the chapter is here, explained the plain way, with Vignesh, Pranav and Dhanush as your examples.</p>
+</div>
+
+<!-- THE CAT -->
+<section>
+  <div class="wrap reveal">
+    <span class="eyebrow">Step 1 — Where habits come from</span>
+    <h2>A cat, a box, and a lever</h2>
+    <p>In 1898, a psychologist named Edward Thorndike put a cat inside a box. The only way out was to press a hidden lever. The first time, the cat had no idea what to do. It scratched, pushed, clawed at everything — pure trial and error.</p>
+    <p>But something changed every time the cat got out. Watch the cat's escape time drop, trial after trial:</p>
+
+    <div class="cat-strip">
+      <div class="clock" id="catClock">160s</div>
+      <div class="label">Trial <span id="catTrial">1</span> of 24 — time for the cat to escape the box</div>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="catChart"></canvas>
+      <div class="chart-caption">// First 3 trials avg: 1.5 minutes. Last 3 trials avg: 6.3 seconds.</div>
+    </div>
+
+    <p>The cat wasn't getting smarter. It was building a <strong>habit</strong> — a mental shortcut for a problem it kept facing. That's the whole chapter in one sentence: <strong>a habit is a behaviour repeated so often it becomes automatic.</strong></p>
+  </div>
+</section>
+
+<!-- WHY BRAIN BUILDS HABITS -->
+<section class="tight">
+  <div class="wrap reveal">
+    <span class="eyebrow">Step 2 — Why your brain even bothers</span>
+    <h2>Habits are just your brain saving effort</h2>
+    <p>Your conscious mind can only focus on one thing properly at a time. So your brain hands off anything repetitive to autopilot. That's a habit. It's not laziness — it's efficiency.</p>
+    <div class="card">
+      <p style="margin:0;"><strong>Vignesh</strong> used to think hard every single morning about which route to take to college. After two months of the same route, he doesn't think about it at all — his hands just steer the bike. His brain freed up that thinking space for something else, like revising for his exam.</p>
+    </div>
+    <p style="margin-top:16px;">This is also why "habits kill freedom" is a myth. It's the opposite. <strong>Pranav</strong>, who has a fixed habit of packing his bag the night before, never scrambles in the morning — that habit gives him 15 calm extra minutes, not less freedom.</p>
+  </div>
+</section>
+
+<!-- HABIT LOOP DIAL -->
+<section class="dial-section">
+  <div class="wrap reveal">
+    <span class="eyebrow">Step 3 — The mechanism</span>
+    <h2>Every habit runs on 4 steps</h2>
+    <p>Cue → Craving → Response → Reward. This loop runs thousands of times a day without you noticing. Tap each part of the dial below to see it play out as a real story.</p>
+
+    <div class="dial-wrap">
+      <div class="dial-outer">
+        <svg class="dial-svg" viewBox="0 0 320 320">
+          <!-- Cue: top-left quadrant -->
+          <path class="dial-seg" data-key="cue" d="M160,160 L160,20 A140,140 0 0,0 20,160 Z" fill="#E1A73B"/>
+          <!-- Craving: top-right -->
+          <path class="dial-seg" data-key="craving" d="M160,160 L300,160 A140,140 0 0,0 160,20 Z" fill="#B34A2C"/>
+          <!-- Response: bottom-right -->
+          <path class="dial-seg" data-key="response" d="M160,160 L160,300 A140,140 0 0,0 300,160 Z" fill="#4F7A5C"/>
+          <!-- Reward: bottom-left -->
+          <path class="dial-seg" data-key="reward" d="M160,160 L20,160 A140,140 0 0,0 160,300 Z" fill="#1E2A38"/>
+
+          <text x="95" y="85" class="dial-num">1</text>
+          <text x="70" y="106" class="dial-label-text">CUE</text>
+
+          <text x="215" y="85" class="dial-num">2</text>
+          <text x="188" y="106" class="dial-label-text">CRAVING</text>
+
+          <text x="215" y="245" class="dial-num">3</text>
+          <text x="178" y="266" class="dial-label-text">RESPONSE</text>
+
+          <text x="95" y="245" class="dial-num">4</text>
+          <text x="70" y="266" class="dial-label-text">REWARD</text>
+        </svg>
+        <div class="dial-center"><span class="arrow" id="dialIcon">↻</span></div>
+      </div>
+
+      <p class="dial-hint" id="dialHint">Tap a slice of the dial to see the story ↑</p>
+
+      <div class="story-box" id="storyBox">
+        <span class="who">Waiting for a tap</span>
+        <h3>Pick a step above</h3>
+        <p style="color:var(--ink-soft); margin:0;">Cue, craving, response and reward — click any one to see a real example.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUR LAWS -->
+<section>
+  <div class="wrap reveal">
+    <span class="eyebrow">Step 4 — Turning the loop into a tool</span>
+    <h2>The Four Laws of Behaviour Change</h2>
+    <p>Once you know the loop, you can push each lever on purpose — to build a good habit, or break a bad one.</p>
+
+    <div class="laws-toggle">
+      <button class="active" data-mode="good">Build a good habit</button>
+      <button data-mode="bad">Break a bad habit</button>
+    </div>
+
+    <div class="laws-grid" id="lawsGrid"></div>
+  </div>
+</section>
+
+<!-- FINAL TAKEAWAY -->
+<section class="takeaway">
+  <div class="wrap reveal">
+    <span class="eyebrow" style="color:var(--turmeric);">Last step — the simple version</span>
+    <h2>What to do, and what not to do</h2>
+    <p class="sub">No theory this time — just the plain rules from this chapter.</p>
+
+    <div class="ta-grid">
+      <div class="ta-card do">
+        <span class="tag">Do this</span>
+        <ul>
+          <li>Notice the habits you already run on autopilot — most of your day is already habits, not decisions.</li>
+          <li>Make the cue for a good habit obvious. Dhanush keeps his gym shoes by the door, not in the cupboard.</li>
+          <li>Attach a small, real reward to the habit, so your brain wants to repeat it.</li>
+          <li>Start stupidly small. Two minutes of reading beats zero minutes of "I'll do it properly later."</li>
+          <li>Judge yourself by the system you follow daily, not one big goal far away.</li>
+        </ul>
+      </div>
+      <div class="ta-card dont">
+        <span class="tag">Don't do this</span>
+        <ul>
+          <li>Don't rely on willpower alone — Thorndike's cat didn't have willpower, it had repetition. So do you.</li>
+          <li>Don't hide the cue for a bad habit in plain sight. If chips are on the table, you will eat them.</li>
+          <li>Don't chase huge, effortful first steps. High friction kills a new habit before it starts.</li>
+          <li>Don't skip the "reward" step. A habit with no satisfaction attached will not survive.</li>
+          <li>Don't believe "I just need more motivation." Fix the cue and the friction first.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  based on "Atomic Habits" — chapter 3, how to build better habits in 4 simple steps
+</footer>
+
+<script>
+// ---------- progress bar ----------
+const progress = document.getElementById('progress');
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+}
+document.addEventListener('scroll', updateProgress);
+updateProgress();
+
+// ---------- reveal on scroll ----------
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+},{threshold:0.12});
+reveals.forEach(el=>io.observe(el));
+
+// ---------- cat data + chart + live counter tied to scroll ----------
+const catTimes = [160,30,90,60,15,28,20,30,22,11,15,20,12,10,14,10,8,8,5,10,8,6,6,7];
+const catClock = document.getElementById('catClock');
+const catTrialLabel = document.getElementById('catTrial');
+
+let catChart;
+const ctx = document.getElementById('catChart');
+if (window.Chart) {
+  catChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: catTimes.map((_,i)=> i+1),
+      datasets:[{
+        label:'Escape time (seconds)',
+        data: catTimes,
+        borderColor:'#B34A2C',
+        backgroundColor:'rgba(179,74,44,0.12)',
+        pointBackgroundColor:'#1E2A38',
+        pointRadius:3,
+        tension:0.25,
+        fill:true,
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ title:{ display:true, text:'Trial number', font:{family:'JetBrains Mono', size:10} }, grid:{ display:false } },
+        y:{ title:{ display:true, text:'Seconds to escape', font:{family:'JetBrains Mono', size:10} } }
+      }
+    }
+  });
+}
+
+// scrub the "clock" as the cat section is in view, tied to scroll position within section
+const catSection = catClock.closest('section');
+function updateCatClock(){
+  const rect = catSection.getBoundingClientRect();
+  const total = rect.height + window.innerHeight;
+  const passed = window.innerHeight - rect.top;
+  let pct = passed / total;
+  pct = Math.max(0, Math.min(1, pct));
+  const idx = Math.min(catTimes.length - 1, Math.floor(pct * catTimes.length));
+  catClock.textContent = catTimes[idx] + 's';
+  catTrialLabel.textContent = idx + 1;
+}
+document.addEventListener('scroll', updateCatClock);
+updateCatClock();
+
+// ---------- habit loop dial ----------
+const stories = {
+  cue:{
+    who:"Vignesh — phone buzz",
+    title:"1. Cue: something signals a reward is near",
+    text:"Vignesh's phone buzzes on the table. That buzz is the cue — a tiny signal that something worth checking has just happened."
+  },
+  craving:{
+    who:"Pranav — the itch to check",
+    title:"2. Craving: you want the feeling behind it",
+    text:"Pranav doesn't actually crave the message itself. He craves knowing — the small relief of not being left out. That want is the craving."
+  },
+  response:{
+    who:"Dhanush — the actual action",
+    title:"3. Response: the habit you perform",
+    text:"Dhanush picks up the phone and opens the app. This only happens because it's easy to do — one tap, phone already in his pocket. If the phone were locked in a drawer upstairs, he might not bother."
+  },
+  reward:{
+    who:"Vignesh — the payoff",
+    title:"4. Reward: the craving gets satisfied",
+    text:"Vignesh reads the message and feels settled. His brain quietly notes: 'checking the phone after a buzz = relief.' Next time it buzzes, the whole loop fires again, faster."
+  }
+};
+
+const dialHint = document.getElementById('dialHint');
+const storyBox = document.getElementById('storyBox');
+const segs = document.querySelectorAll('.dial-seg');
+
+segs.forEach(seg=>{
+  seg.addEventListener('click', ()=>{
+    segs.forEach(s=>s.classList.remove('active'));
+    seg.classList.add('active');
+    const key = seg.getAttribute('data-key');
+    const s = stories[key];
+    storyBox.innerHTML = `<span class="who">${s.who}</span><h3>${s.title}</h3><p style="color:var(--ink-soft); margin:0;">${s.text}</p>`;
+    dialHint.textContent = "Tap another slice to see the next step";
+  });
+});
+
+// ---------- four laws toggle ----------
+const lawsGrid = document.getElementById('lawsGrid');
+const toggleBtns = document.querySelectorAll('.laws-toggle button');
+
+const lawsGood = [
+  {step:"1st law · Cue", title:"Make it obvious", text:"Keep the trigger for the habit in plain sight. Dhanush keeps his water bottle on his study table, not in the fridge two rooms away."},
+  {step:"2nd law · Craving", title:"Make it attractive", text:"Pair the habit with something you already enjoy. Pranav only listens to his favourite podcast while jogging — so jogging feels good, not like a chore."},
+  {step:"3rd law · Response", title:"Make it easy", text:"Cut the effort needed to start. Vignesh sleeps in his gym clothes so there's zero friction to get up and walk to the ground."},
+  {step:"4th law · Reward", title:"Make it satisfying", text:"Give yourself an immediate, small win. Dhanush ticks a box on paper every time he studies for an hour — the tick itself feels good."}
+];
+const lawsBad = [
+  {step:"Inverted · Cue", title:"Make it invisible", text:"Hide the trigger for the bad habit. Pranav deletes the game app from his home screen so he doesn't see the icon and get tempted."},
+  {step:"Inverted · Craving", title:"Make it unattractive", text:"Attach a real downside in your mind. Vignesh reminds himself that late-night scrolling is the reason he's tired for his 7 AM class."},
+  {step:"Inverted · Response", title:"Make it difficult", text:"Add friction on purpose. Dhanush keeps his phone charging in another room at night, so checking it means physically getting up."},
+  {step:"Inverted · Reward", title:"Make it unsatisfying", text:"Make the cost visible right away. Pranav asks a friend to remind him out loud every time he skips a study session — a little embarrassment, on the spot."}
+];
+
+function renderLaws(mode){
+  const data = mode === 'good' ? lawsGood : lawsBad;
+  const cls = mode === 'good' ? 'good' : 'bad';
+  lawsGrid.innerHTML = data.map(l => `
+    <div class="law-card ${cls}">
+      <span class="step">${l.step}</span>
+      <h3>${l.title}</h3>
+      <p>${l.text}</p>
+    </div>
+  `).join('');
+}
+toggleBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    toggleBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLaws(btn.getAttribute('data-mode'));
+  });
+});
+renderLaws('good');
+</script>
+
+</body>
+</html>
