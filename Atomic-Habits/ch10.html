@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why We Do What We Do — A Simple Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#14261E;
+    --bg-soft:#1C3128;
+    --paper:#F2ECDD;
+    --amber:#E8A33D;
+    --rose:#C97064;
+    --sage:#7C9885;
+    --line: rgba(242,236,221,0.14);
+    --maxw: 860px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--paper);
+    font-family:'Sora', sans-serif;
+    line-height:1.6;
+    font-size:17px;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    line-height:1.15;
+    margin:0 0 .5em 0;
+  }
+  .label{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.72rem;
+    color:var(--amber);
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  section{padding:64px 0;}
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(232,163,61,0.12), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(201,112,100,0.10), transparent 45%),
+      var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .hero h1{font-size:clamp(2.1rem, 5vw, 3.4rem); max-width:11ch;}
+  .hero p.sub{font-size:1.1rem; max-width:52ch; color:rgba(242,236,221,0.8);}
+  .hero .tag-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:28px;}
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.75rem;
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:999px;
+    color:var(--sage);
+  }
+  .scroll-hint{margin-top:48px; font-size:.85rem; color:rgba(242,236,221,0.5);}
+
+  section + section{border-top:1px solid var(--line);}
+  .kicker{display:flex; align-items:baseline; gap:12px; margin-bottom:18px;}
+  .kicker .num{font-family:'IBM Plex Mono',monospace; color:var(--rose); font-size:.9rem;}
+
+  p{color:rgba(242,236,221,0.86);}
+  .story-box{
+    background:var(--bg-soft);
+    border-left:3px solid var(--amber);
+    padding:20px 22px;
+    border-radius:4px;
+    margin:22px 0;
+    font-size:.98rem;
+  }
+  .story-box b{color:var(--amber);}
+
+  /* Motive -> craving cards */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px;}
+  @media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
+  .motive-card{
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .motive-card .m{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--sage); text-transform:uppercase; letter-spacing:.08em;}
+  .motive-card .c{font-family:'Fraunces',serif; font-size:1.15rem; margin-top:4px;}
+
+  /* LOOP DIAGRAM */
+  .loop-section{background:var(--bg-soft);}
+  .person-tabs{display:flex; gap:10px; margin:22px 0 30px; flex-wrap:wrap;}
+  .ptab{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.85rem;
+    padding:9px 16px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--paper);
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .ptab.active{background:var(--amber); color:var(--bg); border-color:var(--amber); font-weight:600;}
+  .ptab:hover{border-color:var(--amber);}
+
+  .loop-wrap{
+    display:flex;
+    gap:32px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .loop-svg-holder{width:280px; flex-shrink:0; margin:0 auto;}
+  svg{width:100%; height:auto; display:block;}
+  .loop-node{cursor:pointer;}
+  .loop-node circle{
+    fill:var(--bg);
+    stroke:var(--line);
+    stroke-width:2;
+    transition: all .25s ease;
+  }
+  .loop-node.active circle{
+    fill:var(--amber);
+    stroke:var(--amber);
+  }
+  .loop-node text{
+    fill:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-anchor:middle;
+    pointer-events:none;
+  }
+  .loop-node.active text{fill:var(--bg); font-weight:600;}
+  .loop-path{fill:none; stroke:var(--line); stroke-width:2; stroke-dasharray:4 5;}
+
+  .loop-detail{flex:1; min-width:260px;}
+  .loop-detail .step-label{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px;}
+  .loop-detail p{font-size:1.05rem; min-height:70px;}
+
+  /* Reframe tabs */
+  .reframe-tabs{display:flex; gap:8px; margin:20px 0; flex-wrap:wrap;}
+  .rtab{
+    font-family:'IBM Plex Mono',monospace; font-size:.8rem;
+    padding:8px 14px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg-soft); color:var(--paper); cursor:pointer;
+  }
+  .rtab.active{border-color:var(--sage); color:var(--sage);}
+  .reframe-panel{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:10px;
+    padding:20px; display:none;
+  }
+  .reframe-panel.active{display:block;}
+  .before-after{display:flex; gap:16px; flex-wrap:wrap; margin-top:10px;}
+  .ba-box{flex:1; min-width:220px; padding:14px; border-radius:8px;}
+  .ba-box.before{background:rgba(201,112,100,0.12); border:1px solid rgba(201,112,100,0.3);}
+  .ba-box.after{background:rgba(124,152,133,0.14); border:1px solid rgba(124,152,133,0.35);}
+  .ba-box .tiny{font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; opacity:.8;}
+
+  /* chart */
+  .chart-wrap{background:var(--bg-soft); border:1px solid var(--line); border-radius:10px; padding:22px; margin-top:24px;}
+  .bar-row{display:flex; align-items:center; gap:12px; margin:10px 0;}
+  .bar-name{width:80px; font-family:'IBM Plex Mono',monospace; font-size:.8rem; flex-shrink:0;}
+  .bar-track{flex:1; background:rgba(242,236,221,0.08); border-radius:6px; height:22px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:6px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; font-size:.72rem; font-family:'IBM Plex Mono',monospace; color:var(--bg); font-weight:600;}
+
+  /* Do / Dont */
+  .dodont{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px;}
+  @media(max-width:640px){.dodont{grid-template-columns:1fr;}}
+  .dd-col{border-radius:12px; padding:20px 22px;}
+  .dd-col.do{background:rgba(124,152,133,0.14); border:1px solid rgba(124,152,133,0.35);}
+  .dd-col.dont{background:rgba(201,112,100,0.12); border:1px solid rgba(201,112,100,0.3);}
+  .dd-col h3{font-size:1.2rem;}
+  .dd-col ul{padding-left:20px; margin:12px 0 0;}
+  .dd-col li{margin-bottom:10px; font-size:.96rem;}
+
+  /* cheat sheet */
+  .laws-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px;}
+  @media(max-width:800px){.laws-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.laws-grid{grid-template-columns:1fr;}}
+  .law-card{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:10px;
+    padding:16px; font-size:.88rem;
+  }
+  .law-card .num{font-family:'Fraunces',serif; font-size:1.6rem; color:var(--amber);}
+  .law-card .title{font-weight:600; margin:6px 0 8px;}
+  .law-card .inv{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); color:var(--rose); font-size:.82rem;}
+
+  footer{padding:40px 0 60px; text-align:center;}
+  footer .label{display:block; margin-bottom:6px;}
+  footer p{font-size:.85rem; color:rgba(242,236,221,0.5);}
+
+  ::selection{background:var(--amber); color:var(--bg);}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="label">Atomic Habits · Chapter 10</span>
+    <h1>Your habits are not random.<br>They are predictions.</h1>
+    <p class="sub">Every habit — good or bad — starts the same way: your brain sees a cue, guesses what will happen, and feels a craving. Learn how this loop works, using three simple examples, and what to actually do about it.</p>
+    <div class="tag-row">
+      <span class="tag">Vignesh</span>
+      <span class="tag">Pranav</span>
+      <span class="tag">Dhanush</span>
+    </div>
+    <p class="scroll-hint">↓ Scroll down. Takes about 5 minutes.</p>
+  </div>
+</section>
+
+<section id="story">
+  <div class="wrap">
+    <div class="kicker"><span class="num">01</span><h2>A dinner in Istanbul</h2></div>
+    <p>James Clear (the author) once had dinner with seven people in Turkey. He was the only one who had never smoked. Half the others had quit — and most of them quit using the same trick: they changed the way they <em>thought</em> about smoking.</p>
+    <div class="story-box">
+      One friend told him: <b>"Stop lying to yourself. You don't actually enjoy this. You don't need it."</b> Once he stopped seeing smoking as a reward, he stopped wanting it.
+    </div>
+    <p>This is the big idea of this chapter: <b>you don't crave the habit itself — you crave the feeling you expect it will give you.</b> Change what you expect, and you change the craving.</p>
+  </div>
+</section>
+
+<section id="motives">
+  <div class="wrap">
+    <div class="kicker"><span class="num">02</span><h2>Every habit hides a deeper need</h2></div>
+    <p>Nobody is born wanting to check Instagram. But everybody is born wanting things like approval, connection, and safety. Habits are just the modern tools we use to get those old, ancient needs met.</p>
+    <div class="grid-2">
+      <div class="motive-card"><div class="m">Ancient need</div><div class="c">Win social approval</div></div>
+      <div class="motive-card"><div class="m">Modern habit</div><div class="c">Posting on Instagram</div></div>
+      <div class="motive-card"><div class="m">Ancient need</div><div class="c">Reduce uncertainty</div></div>
+      <div class="motive-card"><div class="m">Modern habit</div><div class="c">Googling a question</div></div>
+      <div class="motive-card"><div class="m">Ancient need</div><div class="c">Connect with others</div></div>
+      <div class="motive-card"><div class="m">Modern habit</div><div class="c">Scrolling Facebook</div></div>
+      <div class="motive-card"><div class="m">Ancient need</div><div class="c">Achieve status</div></div>
+      <div class="motive-card"><div class="m">Modern habit</div><div class="c">Playing video games</div></div>
+    </div>
+    <p style="margin-top:18px;">The habit changes over time. The underlying need behind it almost never does.</p>
+  </div>
+</section>
+
+<section id="loop" class="loop-section">
+  <div class="wrap">
+    <div class="kicker"><span class="num">03</span><h2>The 4-step loop behind every habit</h2></div>
+    <p>Tap each step below. See how the exact same loop plays out differently for three people — one trying to quit smoking, one trying to exercise, and one trying to stop doom-scrolling.</p>
+
+    <div class="person-tabs">
+      <button class="ptab active" data-person="pranav">Pranav — wants to quit smoking</button>
+      <button class="ptab" data-person="dhanush">Dhanush — wants to exercise daily</button>
+      <button class="ptab" data-person="vignesh">Vignesh — wants to stop late-night scrolling</button>
+    </div>
+
+    <div class="loop-wrap">
+      <div class="loop-svg-holder">
+        <svg viewBox="0 0 260 260">
+          <path class="loop-path" d="M 130 40 A 90 90 0 0 1 220 130"></path>
+          <path class="loop-path" d="M 220 130 A 90 90 0 0 1 130 220"></path>
+          <path class="loop-path" d="M 130 220 A 90 90 0 0 1 40 130"></path>
+          <path class="loop-path" d="M 40 130 A 90 90 0 0 1 130 40"></path>
+
+          <g class="loop-node active" data-step="cue">
+            <circle cx="130" cy="40" r="34"></circle>
+            <text x="130" y="44">CUE</text>
+          </g>
+          <g class="loop-node" data-step="prediction">
+            <circle cx="220" cy="130" r="34"></circle>
+            <text x="220" y="126">PREDIC-</text>
+            <text x="220" y="140">TION</text>
+          </g>
+          <g class="loop-node" data-step="feeling">
+            <circle cx="130" cy="220" r="34"></circle>
+            <text x="130" y="224">FEELING</text>
+          </g>
+          <g class="loop-node" data-step="action">
+            <circle cx="40" cy="130" r="34"></circle>
+            <text x="40" y="126">CRAVING</text>
+            <text x="40" y="140">/ ACTION</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="loop-detail">
+        <div class="step-label" id="step-label">Cue</div>
+        <p id="step-text">Loading…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reframe">
+  <div class="wrap">
+    <div class="kicker"><span class="num">04</span><h2>Change the prediction, change the craving</h2></div>
+    <p>You cannot delete a craving. But you can change what a cue predicts. Try flipping "have to" into "get to" — same task, new meaning. Pick a name to see it in action.</p>
+
+    <div class="reframe-tabs">
+      <button class="rtab active" data-r="vignesh">Vignesh</button>
+      <button class="rtab" data-r="pranav">Pranav</button>
+      <button class="rtab" data-r="dhanush">Dhanush</button>
+    </div>
+
+    <div class="reframe-panel active" id="panel-vignesh">
+      <p><b>Situation:</b> Vignesh has to save money instead of buying new sneakers every month.</p>
+      <div class="before-after">
+        <div class="ba-box before"><div class="tiny">Old thought</div><p style="margin:6px 0 0;">"I have to stop spending. It feels like giving something up."</p></div>
+        <div class="ba-box after"><div class="tiny">New thought</div><p style="margin:6px 0 0;">"I get to keep more of my own money. Every rupee saved this month buys me more freedom next month."</p></div>
+      </div>
+    </div>
+    <div class="reframe-panel" id="panel-pranav">
+      <p><b>Situation:</b> Pranav wants to stop reaching for a cigarette when he's stressed.</p>
+      <div class="before-after">
+        <div class="ba-box before"><div class="tiny">Old thought</div><p style="margin:6px 0 0;">"Smoking calms my nerves. I need it to relax."</p></div>
+        <div class="ba-box after"><div class="tiny">New thought</div><p style="margin:6px 0 0;">"Smoking doesn't calm me — it's the only reason I feel anxious in the first place. Without it, there's nothing to relieve."</p></div>
+      </div>
+    </div>
+    <div class="reframe-panel" id="panel-dhanush">
+      <p><b>Situation:</b> Dhanush dreads his 6 AM run.</p>
+      <div class="before-after">
+        <div class="ba-box before"><div class="tiny">Old thought</div><p style="margin:6px 0 0;">"I need to go run. It's tiring and I lose an hour of sleep."</p></div>
+        <div class="ba-box after"><div class="tiny">New thought</div><p style="margin:6px 0 0;">"It's time to build endurance and get fast. Every run makes tomorrow's version of me stronger."</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ritual">
+  <div class="wrap">
+    <div class="kicker"><span class="num">05</span><h2>Build a "motivation ritual"</h2></div>
+    <p>Do something small you enjoy right before a hard habit. Repeat it enough times, and that small enjoyable thing becomes the on-switch for feeling ready.</p>
+    <div class="chart-wrap">
+      <p style="margin-top:0; font-size:.9rem;">How many times each person repeated their ritual before it "clicked" and started working automatically:</p>
+      <div class="bar-row"><div class="bar-name">Vignesh</div><div class="bar-track"><div class="bar-fill" style="width:60%; background:var(--amber);">12 times</div></div></div>
+      <div class="bar-row"><div class="bar-name">Pranav</div><div class="bar-track"><div class="bar-fill" style="width:85%; background:var(--rose);">18 times</div></div></div>
+      <div class="bar-row"><div class="bar-name">Dhanush</div><div class="bar-track"><div class="bar-fill" style="width:45%; background:var(--sage);">9 times</div></div></div>
+      <p style="font-size:.82rem; margin-bottom:0;">Example: Dhanush puts on his running shoes and stretches for 2 minutes every morning before his run — even on days he doesn't feel like running. After about 9 days, just tying his shoelaces started to put him in "run mode."</p>
+    </div>
+  </div>
+</section>
+
+<section id="dodont">
+  <div class="wrap">
+    <div class="kicker"><span class="num">06</span><h2>What to do, and what not to do</h2></div>
+    <div class="dodont">
+      <div class="dd-col do">
+        <h3>✓ Do this</h3>
+        <ul>
+          <li>Ask "what am I really trying to feel right now?" before acting on a craving.</li>
+          <li>Rewrite "I have to" as "I get to" for one hard task today.</li>
+          <li>Link a habit you enjoy right before a habit you find hard (e.g. music before a workout).</li>
+          <li>Write down the real benefits of quitting a bad habit — health, money, time, respect.</li>
+          <li>Notice the cue that triggers a bad habit, not just the habit itself.</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h3>✗ Don't do this</h3>
+        <ul>
+          <li>Don't rely only on willpower — it fades faster than a changed belief.</li>
+          <li>Don't tell yourself a habit is "impossible to quit" — that belief itself keeps it alive.</li>
+          <li>Don't ignore the environment — the same cue almost always leads to the same craving.</li>
+          <li>Don't expect one reframe to work instantly — it takes repeats to feel automatic.</li>
+          <li>Don't confuse the habit with the need — chasing the wrong habit never satisfies the real need.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cheatsheet">
+  <div class="wrap">
+    <div class="kicker"><span class="num">07</span><h2>Cheat sheet: the 4 laws</h2></div>
+    <p>This chapter is part of Law 2. Here's how all 4 laws work, for building good habits and breaking bad ones.</p>
+    <div class="laws-grid">
+      <div class="law-card">
+        <div class="num">1</div>
+        <div class="title">Make it obvious</div>
+        Notice your habits. Say out loud when and where you'll do it. Put cues where you can see them.
+        <div class="inv">Break it: make it invisible — hide the cue.</div>
+      </div>
+      <div class="law-card">
+        <div class="num">2</div>
+        <div class="title">Make it attractive</div>
+        Pair it with something you enjoy. Join people who already do it. Reframe the meaning.
+        <div class="inv">Break it: make it unattractive — list the real downsides.</div>
+      </div>
+      <div class="law-card">
+        <div class="num">3</div>
+        <div class="title">Make it easy</div>
+        Reduce the steps between you and the habit.
+        <div class="inv">Break it: make it difficult — add friction.</div>
+      </div>
+      <div class="law-card">
+        <div class="num">4</div>
+        <div class="title">Make it satisfying</div>
+        Give yourself an immediate small reward.
+        <div class="inv">Break it: make it unsatisfying — add an immediate cost.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="label">The takeaway</span>
+  <p>A craving is just a feeling you expect a habit to give you. Change the expectation, and the craving changes with it.</p>
+</footer>
+
+<script>
+  const loopData = {
+    pranav: {
+      cue: "Pranav feels stressed after an argument at work.",
+      prediction: "His brain predicts: \"A cigarette will calm me down right now.\"",
+      feeling: "He feels a pull, a slight anxious itch — the craving to smoke.",
+      action: "He lights a cigarette. Relief lasts a few minutes, then the stress and the craving both come back."
+    },
+    dhanush: {
+      cue: "Dhanush's alarm rings at 6 AM.",
+      prediction: "His brain predicts: \"Running now will make me feel strong and clear-headed all day.\"",
+      feeling: "He feels a small spark of motivation, even though he's sleepy.",
+      action: "He puts on his shoes and goes for a run. Afterward he feels proud and alert."
+    },
+    vignesh: {
+      cue: "Vignesh picks up his phone in bed at night.",
+      prediction: "His brain predicts: \"Scrolling will help me relax and stop thinking about tomorrow.\"",
+      feeling: "He feels a mild boredom-anxiety mix — the urge to check something, anything.",
+      action: "He scrolls for an hour, sleeps late, and feels tired the next morning."
+    }
+  };
+
+  let currentPerson = "pranav";
+  let currentStep = "cue";
+  const stepTitles = {cue: "Cue", prediction: "Prediction", feeling: "Feeling", action: "Craving / Action"};
+
+  function render(){
+    document.getElementById("step-label").textContent = stepTitles[currentStep];
+    document.getElementById("step-text").textContent = loopData[currentPerson][currentStep];
+  }
+
+  document.querySelectorAll(".ptab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".ptab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      currentPerson = btn.dataset.person;
+      render();
+    });
+  });
+
+  document.querySelectorAll(".loop-node").forEach(node=>{
+    node.addEventListener("click", ()=>{
+      document.querySelectorAll(".loop-node").forEach(n=>n.classList.remove("active"));
+      node.classList.add("active");
+      currentStep = node.dataset.step;
+      render();
+    });
+  });
+
+  document.querySelectorAll(".rtab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".rtab").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".reframe-panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("panel-"+btn.dataset.r).classList.add("active");
+    });
+  });
+
+  render();
+</script>
+
+</body>
+</html>

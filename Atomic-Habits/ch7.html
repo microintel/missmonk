@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 · The Secret to Self-Control | Atomic Habits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#F4F0E8;
+    --ink-dim:#B7B2A9;
+    --bg:#17161A;
+    --bg-alt:#1F1D22;
+    --card:#26242B;
+    --line:#39363F;
+    --cue:#E8623F;
+    --cue-dim:#7A3E2E;
+    --calm:#4FA79E;
+    --calm-dim:#2E5F5A;
+    --gold:#D9A441;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--cue);color:#17161A;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+
+  /* progress rail */
+  #rail{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cue),var(--calm));width:0%;z-index:999;transition:width .1s linear;}
+
+  header.top{
+    position:fixed;top:0;left:0;right:0;z-index:900;
+    background:rgba(23,22,26,.75);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  header.top .brand{font-family:'Fraunces',serif;font-size:1rem;color:var(--ink-dim);}
+  header.top .brand b{color:var(--ink);}
+  header.top .chip{
+    font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);
+    border:1px solid var(--gold);padding:4px 10px;border-radius:20px;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:120px 24px 80px;position:relative;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 20%, rgba(232,98,63,.10), transparent 45%),
+               radial-gradient(circle at 80% 70%, rgba(79,167,158,.10), transparent 45%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--ink-dim);
+    letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px;
+  }
+  .eyebrow span{color:var(--cue);}
+  .hero h1{
+    font-size:clamp(2.3rem,6.5vw,4.4rem);line-height:1.04;max-width:820px;
+  }
+  .hero h1 em{font-style:italic;color:var(--calm);}
+  .hero p.lede{
+    max-width:600px;color:var(--ink-dim);font-size:1.08rem;margin-top:22px;
+  }
+
+  .stat-face{
+    display:flex;gap:0;margin-top:56px;border:1px solid var(--line);
+    border-radius:var(--radius);overflow:hidden;max-width:640px;
+  }
+  .stat-face .half{flex:1;padding:28px 22px;position:relative;}
+  .stat-face .half:first-child{background:rgba(232,98,63,.08);border-right:1px solid var(--line);}
+  .stat-face .half:last-child{background:rgba(79,167,158,.08);}
+  .stat-face .num{font-family:'Fraunces',serif;font-size:clamp(2.4rem,7vw,3.6rem);font-weight:700;}
+  .stat-face .half:first-child .num{color:var(--cue);}
+  .stat-face .half:last-child .num{color:var(--calm);}
+  .stat-face .cap{font-size:.85rem;color:var(--ink-dim);margin-top:6px;}
+  .stat-face .vs{
+    position:absolute;top:50%;left:100%;transform:translate(-50%,-50%);
+    width:34px;height:34px;border-radius:50%;background:var(--bg);
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink-dim);z-index:2;
+  }
+  .scroll-cue{margin-top:60px;color:var(--ink-dim);font-size:.8rem;display:flex;align-items:center;gap:8px;}
+  .scroll-cue i{animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* SECTION generic */
+  section{padding:90px 0;}
+  .kicker{
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--calm);
+    text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;
+  }
+  h2.title{font-size:clamp(1.7rem,4vw,2.5rem);max-width:640px;margin-bottom:18px;}
+  p.body-text{color:var(--ink-dim);max-width:680px;font-size:1.02rem;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* highlight box mirrors the book's own pink-highlighted lines */
+  .highlight-box{
+    margin:26px 0;padding:20px 22px;border-left:3px solid var(--gold);
+    background:rgba(217,164,65,.08);border-radius:6px;font-size:1rem;color:var(--ink);
+  }
+
+  /* story split */
+  .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;align-items:start;}
+  .story-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;
+  }
+  .story-card h3{font-size:1.1rem;margin-bottom:10px;color:var(--ink);}
+  .story-card .tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:14px;}
+  .tag.bad{background:rgba(232,98,63,.15);color:var(--cue);}
+  .tag.good{background:rgba(79,167,158,.15);color:var(--calm);}
+  .story-card ul{padding-left:18px;color:var(--ink-dim);font-size:.95rem;}
+  .story-card li{margin-bottom:6px;}
+
+  /* spiral / autocatalytic loop */
+  .loop-wrap{display:flex;gap:50px;margin-top:44px;flex-wrap:wrap;align-items:center;}
+  .loop-diagram{width:min(360px,90vw);aspect-ratio:1;position:relative;flex-shrink:0;}
+  .loop-node{
+    position:absolute;width:130px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:12px 14px;font-size:.85rem;text-align:center;color:var(--ink);
+  }
+  .loop-node i{display:block;font-size:1.3rem;color:var(--cue);margin-bottom:4px;}
+  .loop-fact{flex:1;min-width:260px;}
+  .loop-fact .big-num{font-family:'Fraunces',serif;font-size:3.2rem;color:var(--cue);line-height:1;}
+  .loop-fact .unit{font-family:'JetBrains Mono',monospace;color:var(--ink-dim);font-size:.85rem;}
+
+  /* SIGNATURE: craving room */
+  .room-section{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .char-tabs{display:flex;gap:10px;margin:36px 0 30px;flex-wrap:wrap;}
+  .char-tab{
+    display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:30px;
+    border:1px solid var(--line);background:var(--card);color:var(--ink-dim);cursor:pointer;
+    font-size:.9rem;transition:all .25s ease;
+  }
+  .char-tab i{font-size:1.1rem;}
+  .char-tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .room-panel{display:none;}
+  .room-panel.active{display:block;}
+  .room-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;}
+  .room-scene{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;min-height:300px;position:relative;
+  }
+  .room-scene .role{font-size:.85rem;color:var(--ink-dim);margin-bottom:16px;}
+  .cue-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;
+    background:rgba(232,98,63,.06);transition:all .3s ease;
+  }
+  .cue-item.removed{
+    background:rgba(79,167,158,.06);opacity:.55;
+  }
+  .cue-item .cue-info{display:flex;align-items:center;gap:12px;}
+  .cue-item .cue-info i{font-size:1.3rem;color:var(--cue);width:24px;text-align:center;}
+  .cue-item.removed .cue-info i{color:var(--calm);}
+  .cue-item .cue-label{font-size:.92rem;}
+  .cue-item .cue-sub{font-size:.75rem;color:var(--ink-dim);}
+  .toggle-btn{
+    font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:6px 12px;border-radius:20px;
+    border:1px solid var(--cue);color:var(--cue);background:transparent;cursor:pointer;white-space:nowrap;
+  }
+  .cue-item.removed .toggle-btn{border-color:var(--calm);color:var(--calm);}
+
+  .meter-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .meter-label{font-size:.85rem;color:var(--ink-dim);margin-bottom:10px;}
+  .meter-track{height:16px;border-radius:10px;background:var(--bg);overflow:hidden;border:1px solid var(--line);}
+  .meter-fill{height:100%;background:linear-gradient(90deg,var(--calm),var(--cue));width:100%;transition:width .5s ease, background .5s ease;border-radius:10px;}
+  .meter-num{font-family:'Fraunces',serif;font-size:2.6rem;margin-top:14px;}
+  .meter-msg{font-size:.9rem;color:var(--ink-dim);margin-top:8px;min-height:44px;}
+
+  /* self-control chart */
+  .chart-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;margin-top:36px;
+  }
+  .chart-card canvas{max-height:280px;}
+
+  /* invisible checklist */
+  .invis-list{margin-top:36px;display:grid;gap:14px;}
+  .invis-item{
+    display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;
+  }
+  .invis-item .who{
+    width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--bg);border:1px solid var(--line);font-family:'Fraunces',serif;font-weight:600;
+  }
+  .invis-item .txt strong{display:block;font-size:.95rem;}
+  .invis-item .txt span{font-size:.85rem;color:var(--ink-dim);}
+  .invis-item .arrow{color:var(--calm);font-size:1.2rem;}
+
+  /* do dont */
+  .dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;}
+  .dd-card{border-radius:var(--radius);padding:26px;border:1px solid var(--line);}
+  .dd-card.do{background:rgba(79,167,158,.07);}
+  .dd-card.dont{background:rgba(232,98,63,.07);}
+  .dd-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:1.1rem;font-family:'Fraunces',serif;}
+  .dd-head i{font-size:1.3rem;}
+  .dd-card.do .dd-head i{color:var(--calm);}
+  .dd-card.dont .dd-head i{color:var(--cue);}
+  .dd-card ul{list-style:none;}
+  .dd-card li{display:flex;gap:10px;margin-bottom:12px;font-size:.94rem;color:var(--ink-dim);}
+  .dd-card li i{margin-top:3px;flex-shrink:0;}
+  .dd-card.do li i{color:var(--calm);}
+  .dd-card.dont li i{color:var(--cue);}
+
+  footer{padding:50px 0 70px;text-align:center;color:var(--ink-dim);font-size:.85rem;border-top:1px solid var(--line);}
+  footer b{color:var(--ink);}
+
+  @media (max-width:760px){
+    .story-grid{grid-template-columns:1fr;}
+    .room-layout{grid-template-columns:1fr;}
+    .dd-grid{grid-template-columns:1fr;}
+    .loop-wrap{flex-direction:column;}
+    .stat-face{flex-direction:column;}
+    .stat-face .half:first-child{border-right:none;border-bottom:1px solid var(--line);}
+    .stat-face .vs{top:100%;left:50%;transform:translate(-50%,-50%);}
+  }
+</style>
+</head>
+<body>
+
+<div id="rail"></div>
+<header class="top">
+  <div class="brand"><b>Atomic Habits</b> · Explainer Series</div>
+  <div class="chip">CH. 07</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Chapter Seven <span>·</span> The Inversion of the 1st Law</div>
+    <h1>The secret to self-control isn't <em>willpower.</em><br>It's your environment.</h1>
+    <p class="lede">People who look "disciplined" aren't fighting temptation all day — they've just built a life with less temptation in it. Here's the science behind why, told through Vignesh, Pranav and Dhanush.</p>
+
+    <div class="stat-face">
+      <div class="half">
+        <div class="num">90%</div>
+        <div class="cap">of heroin users relapse after normal rehab — same environment, same cues.</div>
+      </div>
+      <div class="vs">vs</div>
+      <div class="half">
+        <div class="num">5%</div>
+        <div class="cap">of Vietnam soldiers relapsed after coming home — the whole environment changed.</div>
+      </div>
+    </div>
+
+    <div class="scroll-cue"><i class="bi bi-arrow-down"></i> scroll to see why</div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section id="story">
+  <div class="wrap reveal">
+    <div class="kicker">The Vietnam Discovery</div>
+    <h2 class="title">Same addiction. Two completely different endings.</h2>
+    <p class="body-text">In 1971, researchers found that a shocking number of U.S. soldiers in Vietnam were addicted to heroin. Everyone expected them to relapse once home. Instead, almost all of them quit — nearly overnight. Nothing about their willpower changed. Their <em>surroundings</em> did.</p>
+
+    <div class="highlight-box">
+      The addiction didn't vanish because the soldiers became stronger people. It vanished because every cue that triggered the habit — easy access, war stress, addicted friends, being far from home — disappeared the moment they landed back in the US.
+    </div>
+
+    <div class="story-grid">
+      <div class="story-card">
+        <span class="tag bad">Old environment</span>
+        <h3>Same neighbourhood, same rehab story</h3>
+        <p style="color:var(--ink-dim);font-size:.95rem;margin-bottom:10px;">A typical user gets clean in a clinic, then goes straight back to the same street, same friends, same triggers.</p>
+        <ul>
+          <li>Same people who use around them</li>
+          <li>Same shop, same route, same room</li>
+          <li>Every cue still switched "on"</li>
+        </ul>
+      </div>
+      <div class="story-card">
+        <span class="tag good">New environment</span>
+        <h3>Vietnam soldiers, back home</h3>
+        <p style="color:var(--ink-dim);font-size:.95rem;margin-bottom:10px;">Different city, different friends, no war stress, no easy access. The habit had nothing left to attach to.</p>
+        <ul>
+          <li>No familiar triggers around</li>
+          <li>No cue-carrying friend circle</li>
+          <li>The context changed, so the habit changed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUE INDUCED WANTING -->
+<section id="cue-loop" style="background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap reveal">
+    <div class="kicker">Why This Happens In The Brain</div>
+    <h2 class="title">A habit is never really forgotten. It just goes quiet.</h2>
+    <p class="body-text">Once a habit is carved into the brain, the urge to act comes back the instant the old cue reappears — even years later. Scientists showed addicts a photo of cocaine for just 33 milliseconds — far too fast to consciously notice — and their brain's reward pathway still lit up. They wanted it before they knew they'd seen it.</p>
+
+    <div class="loop-wrap">
+      <div class="loop-diagram" id="loopDiagram"></div>
+      <div class="loop-fact">
+        <div class="big-num">33<span class="unit"> ms</span></div>
+        <p class="body-text" style="margin-top:8px;">is all it takes for a single glimpse of a cue to spark craving — before your conscious mind even registers what it saw. This is why bad habits are <b style="color:var(--ink);">autocatalytic</b>: the habit feeds the feeling it's supposed to numb, in an endless loop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNATURE: CRAVING ROOM -->
+<section class="room-section" id="craving-room">
+  <div class="wrap reveal">
+    <div class="kicker">Try It Yourself</div>
+    <h2 class="title">Design the room. Watch the craving drop.</h2>
+    <p class="body-text">Remove the cue, and the urge usually fades with it — you don't need more willpower, just a better-arranged room. Pick a character and start switching off their triggers.</p>
+
+    <div class="char-tabs">
+      <div class="char-tab active" data-char="vignesh"><i class="bi bi-code-slash"></i> Vignesh · coder & investor</div>
+      <div class="char-tab" data-char="pranav"><i class="bi bi-graph-up-arrow"></i> Pranav · the investor</div>
+      <div class="char-tab" data-char="dhanush"><i class="bi bi-cup-hot"></i> Dhanush · the chill one</div>
+    </div>
+
+    <div class="room-layout">
+
+      <!-- Vignesh room -->
+      <div class="room-panel active" data-panel="vignesh">
+        <div class="room-scene">
+          <div class="role">Vignesh is trying to finish a coding project without getting distracted.</div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-phone"></i><div><div class="cue-label">Phone buzzing beside keyboard</div><div class="cue-sub">Every notification pulls his eyes away</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-window-stack"></i><div><div class="cue-label">Ten browser tabs of social media</div><div class="cue-sub">One click away from a scroll spiral</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-bar-chart"></i><div><div class="cue-label">Stock ticker app pinned to screen</div><div class="cue-sub">Checks prices instead of writing code</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-cup-straw"></i><div><div class="cue-label">Snack drawer under the desk</div><div class="cue-sub">Munching becomes a reflex, not a choice</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pranav room -->
+      <div class="room-panel" data-panel="pranav">
+        <div class="room-scene">
+          <div class="role">Pranav wants to stop checking his portfolio every ten minutes.</div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-graph-up"></i><div><div class="cue-label">Trading app on the home screen</div><div class="cue-sub">One tap and he's staring at red or green</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-tv"></i><div><div class="cue-label">Business news playing all day</div><div class="cue-sub">Every headline feels urgent to act on</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-whatsapp"></i><div><div class="cue-label">"Hot tips" WhatsApp group pinged</div><div class="cue-sub">Peer pressure to react instantly</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-bell"></i><div><div class="cue-label">Price-alert push notifications</div><div class="cue-sub">Designed to make him open the app</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dhanush room -->
+      <div class="room-panel" data-panel="dhanush">
+        <div class="room-scene">
+          <div class="role">Dhanush wants to stop late-night TV and junk food binges.</div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-tv-fill"></i><div><div class="cue-label">TV remote sitting on the couch</div><div class="cue-sub">Picking it up needs zero effort</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-controller"></i><div><div class="cue-label">Game console left switched on</div><div class="cue-sub">"Just one more match" every night</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-bag"></i><div><div class="cue-label">Chips packet open on the table</div><div class="cue-sub">Hand reaches in without thinking</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+          <div class="cue-item" data-cost="25">
+            <div class="cue-info"><i class="bi bi-phone-vibrate"></i><div><div class="cue-label">Phone lying right on the couch</div><div class="cue-sub">Endless reels the moment he sits</div></div></div>
+            <button class="toggle-btn">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="meter-card">
+        <div class="meter-label">CRAVING LEVEL</div>
+        <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+        <div class="meter-num mono" id="meterNum">100%</div>
+        <div class="meter-msg" id="meterMsg">All four cues are visible — the urge stays switched on all day.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELF CONTROL CHART -->
+<section id="self-control-chart">
+  <div class="wrap reveal">
+    <div class="kicker">The Real Difference</div>
+    <h2 class="title">"Disciplined" people aren't stronger. They're just less exposed.</h2>
+    <p class="body-text">When scientists studied people with great self-control, they weren't superhuman at resisting urges — they simply spent far less of their day inside tempting situations in the first place. Less exposure means less willpower is ever needed.</p>
+    <div class="chart-card">
+      <canvas id="exposureChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- MAKE IT INVISIBLE -->
+<section id="invisible" style="background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap reveal">
+    <div class="kicker">The Fix &mdash; Inversion of the 1st Law</div>
+    <h2 class="title">Make it obvious → Make it invisible</h2>
+    <p class="body-text">You can't out-willpower a bad habit forever. The far easier move is to remove the cue that starts it. One small change, and the whole habit often fades on its own.</p>
+
+    <div class="invis-list">
+      <div class="invis-item">
+        <div class="who">V</div>
+        <div class="txt"><strong>Vignesh</strong><span>leaves his phone in another room while coding</span></div>
+        <i class="bi bi-arrow-right-circle arrow"></i>
+      </div>
+      <div class="invis-item">
+        <div class="who">P</div>
+        <div class="txt"><strong>Pranav</strong><span>turns off price alerts and checks his portfolio once a day, not every ten minutes</span></div>
+        <i class="bi bi-arrow-right-circle arrow"></i>
+      </div>
+      <div class="invis-item">
+        <div class="who">D</div>
+        <div class="txt"><strong>Dhanush</strong><span>moves the TV out of the living room couch-view and keeps snacks out of sight</span></div>
+        <i class="bi bi-arrow-right-circle arrow"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DO / DONT SUMMARY -->
+<section id="summary">
+  <div class="wrap reveal">
+    <div class="kicker">Chapter Summary</div>
+    <h2 class="title">What to do — and what to avoid</h2>
+
+    <div class="dd-grid">
+      <div class="dd-card do">
+        <div class="dd-head"><i class="bi bi-check-circle"></i> Do this</div>
+        <ul>
+          <li><i class="bi bi-dot"></i> Fill out a Habits Scorecard — write down your daily habits so you notice them.</li>
+          <li><i class="bi bi-dot"></i> Remove the cue that triggers a bad habit, instead of just resisting it.</li>
+          <li><i class="bi bi-dot"></i> Design your space so good habits are the easy, obvious option.</li>
+          <li><i class="bi bi-dot"></i> Accept that a habit never fully disappears — plan your environment around that.</li>
+          <li><i class="bi bi-dot"></i> Spend energy on your surroundings, not on fighting temptation daily.</li>
+        </ul>
+      </div>
+      <div class="dd-card dont">
+        <div class="dd-head"><i class="bi bi-x-circle"></i> Don't do this</div>
+        <ul>
+          <li><i class="bi bi-dot"></i> Don't rely on willpower alone — it runs out fast, every single day.</li>
+          <li><i class="bi bi-dot"></i> Don't blame yourself as "lacking discipline" — it's usually the environment.</li>
+          <li><i class="bi bi-dot"></i> Don't return to the exact same triggers and expect a different result.</li>
+          <li><i class="bi bi-dot"></i> Don't use shame or scare-tactics on yourself — stress often triggers the very habit you're fighting.</li>
+          <li><i class="bi bi-dot"></i> Don't keep tempting cues "just in sight" — out of sight really is out of mind.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Based on <b>Atomic Habits</b> by James Clear — Chapter 7, "The Secret to Self-Control." Made for easy reading, with Vignesh, Pranav and Dhanush.</div>
+</footer>
+
+<script>
+// scroll progress
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById('rail').style.width=pct+'%';
+});
+
+// reveal on scroll
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// loop diagram build (4 nodes in a circle with connecting arcs)
+const loopData=[
+  {icon:'bi-emoji-frown',label:'Feel bad'},
+  {icon:'bi-cup-straw',label:'Reach for habit'},
+  {icon:'bi-clock-history',label:'Short relief'},
+  {icon:'bi-arrow-repeat',label:'Feel bad again'}
+];
+const loopEl=document.getElementById('loopDiagram');
+const R=140;
+loopData.forEach((n,i)=>{
+  const angle=(i/loopData.length)*2*Math.PI - Math.PI/2;
+  const x=50+ (R/3.6)*Math.cos(angle);
+  const y=50+ (R/3.6)*Math.sin(angle);
+  const div=document.createElement('div');
+  div.className='loop-node';
+  div.style.left=`calc(${x}% - 65px)`;
+  div.style.top=`calc(${y}% - 40px)`;
+  div.innerHTML=`<i class="bi ${n.icon}"></i>${n.label}`;
+  loopEl.appendChild(div);
+});
+const svgNS="http://www.w3.org/2000/svg";
+const svg=document.createElementNS(svgNS,"svg");
+svg.setAttribute("width","100%");svg.setAttribute("height","100%");
+svg.style.position="absolute";svg.style.top="0";svg.style.left="0";svg.style.zIndex="-1";
+const circle=document.createElementNS(svgNS,"circle");
+circle.setAttribute("cx","50%");circle.setAttribute("cy","50%");circle.setAttribute("r","28%");
+circle.setAttribute("fill","none");circle.setAttribute("stroke","#39363F");circle.setAttribute("stroke-width","2");
+circle.setAttribute("stroke-dasharray","6 8");
+svg.appendChild(circle);
+loopEl.appendChild(svg);
+
+// craving room interactivity
+const chars=document.querySelectorAll('.char-tab');
+const panels=document.querySelectorAll('.room-panel');
+chars.forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    chars.forEach(t=>t.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`.room-panel[data-panel="${tab.dataset.char}"]`).classList.add('active');
+    updateMeterForActivePanel();
+  });
+});
+
+function updateMeterForActivePanel(){
+  const activePanel=document.querySelector('.room-panel.active');
+  const items=activePanel.querySelectorAll('.cue-item');
+  let removedCost=0;
+  items.forEach(it=>{ if(it.classList.contains('removed')) removedCost+=parseInt(it.dataset.cost); });
+  const craving=Math.max(100-removedCost,0);
+  document.getElementById('meterFill').style.width=craving+'%';
+  document.getElementById('meterNum').textContent=craving+'%';
+  const msgs={
+    100:"All cues are visible — the urge stays switched on all day.",
+    75:"One cue gone. The craving already feels a little quieter.",
+    50:"Halfway there. Focus is getting easier without a fight.",
+    25:"Almost every trigger is out of sight — barely any urge left.",
+    0:"Room redesigned. No cue, no craving — no willpower needed."
+  };
+  document.getElementById('meterMsg').textContent = msgs[craving] !== undefined ? msgs[craving] : "Fewer cues around — the craving is fading.";
+}
+
+document.querySelectorAll('.cue-item').forEach(item=>{
+  const btn=item.querySelector('.toggle-btn');
+  btn.addEventListener('click',()=>{
+    item.classList.toggle('removed');
+    btn.textContent = item.classList.contains('removed') ? 'Bring back' : 'Remove';
+    updateMeterForActivePanel();
+  });
+});
+updateMeterForActivePanel();
+
+// exposure chart
+const ctx=document.getElementById('exposureChart');
+new Chart(ctx,{
+  type:'bar',
+  data:{
+    labels:['Vignesh (phone always near desk)','Pranav (checks app hourly)','Dhanush (TV in eyeline)','Same 3, after redesigning room'],
+    datasets:[{
+      label:'Minutes per day spent near a tempting cue',
+      data:[210,180,240,35],
+      backgroundColor:['#E8623F','#E8623F','#E8623F','#4FA79E'],
+      borderRadius:8,
+      maxBarThickness:60
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#B7B2A9',font:{family:'Inter'}},grid:{display:false}},
+      y:{ticks:{color:'#B7B2A9',font:{family:'JetBrains Mono'}},grid:{color:'#39363F'}}
+    }
+  }
+});
+</script>
+</body>
+</html>

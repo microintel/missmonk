@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 8 — How to Make a Habit Irresistible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#150e1b;
+  --bg-alt:#1f1428;
+  --bg-alt2:#271933;
+  --ink:#f4ede4;
+  --muted:#b7a8c4;
+  --dopamine:#ff3e7f;
+  --dopamine-soft:rgba(255,62,127,.18);
+  --reward:#ffc145;
+  --need:#6ee7b7;
+  --line:rgba(244,237,228,.12);
+  --line-strong:rgba(244,237,228,.22);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--dopamine); color:#150e1b;}
+.mono{font-family:'JetBrains Mono',monospace;}
+h1,h2,h3{font-family:'Fraunces',serif; font-weight:700; letter-spacing:-.01em;}
+em{font-style:italic; color:var(--dopamine);}
+.wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+section{padding:100px 0;}
+@media(max-width:640px){section{padding:64px 0;} .wrap{padding:0 20px;}}
+
+/* reveal on scroll */
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .8s ease, transform .8s ease;}
+.reveal.visible{opacity:1; transform:translateY(0);}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 28px; background:rgba(21,14,27,.75); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+nav .tag{font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem;}
+nav .tag span{color:var(--dopamine);}
+nav .steps{display:none; gap:18px; font-size:.78rem; color:var(--muted);}
+@media(min-width:760px){nav .steps{display:flex;}}
+nav .steps a{color:var(--muted); text-decoration:none; transition:color .2s;}
+nav .steps a:hover{color:var(--ink);}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+  position:relative; padding-top:80px;
+}
+.hero::before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(circle at 18% 20%, var(--dopamine-soft), transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(255,193,69,.12), transparent 40%);
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.12em;
+  color:var(--reward); text-transform:uppercase; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+}
+.eyebrow .dot{width:8px; height:8px; border-radius:50%; background:var(--dopamine); box-shadow:0 0 12px 3px var(--dopamine);}
+.hero h1{font-size:clamp(2.4rem, 6vw, 4.4rem); line-height:1.04; max-width:780px;}
+.hero p.lede{margin-top:26px; font-size:clamp(1rem,2vw,1.2rem); color:var(--muted); max-width:600px;}
+
+/* peck demo */
+.peck-demo{
+  margin-top:48px; display:flex; align-items:center; gap:28px; flex-wrap:wrap;
+  background:var(--bg-alt); border:1px solid var(--line); border-radius:20px; padding:22px 26px;
+}
+.beak-btn{
+  position:relative; width:110px; height:110px; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, #3a2a49, #211530 70%);
+  border:1px solid var(--line-strong); cursor:pointer; flex:none;
+  display:flex; align-items:center; justify-content:center;
+}
+.beak-btn .dots{display:flex; gap:6px;}
+.beak-btn .rd{width:14px; height:14px; border-radius:50%; background:var(--dopamine); box-shadow:0 0 0 rgba(255,62,127,.6);}
+.beak-btn.pulse .rd{animation:peckglow .45s ease;}
+@keyframes peckglow{
+  0%{transform:scale(1); box-shadow:0 0 0 rgba(255,62,127,.6);}
+  40%{transform:scale(1.5); box-shadow:0 0 18px 6px rgba(255,62,127,.7);}
+  100%{transform:scale(1); box-shadow:0 0 0 rgba(255,62,127,0);}
+}
+.peck-copy{flex:1; min-width:220px;}
+.peck-count{font-family:'JetBrains Mono',monospace; font-size:2rem; color:var(--dopamine);}
+.peck-copy p{color:var(--muted); font-size:.92rem; margin-top:4px;}
+
+/* ---------- generic section header ---------- */
+.sec-head{max-width:640px; margin-bottom:48px;}
+.sec-head .eyebrow{color:var(--muted);}
+.sec-head h2{font-size:clamp(1.7rem,4vw,2.6rem);}
+.sec-head p{color:var(--muted); margin-top:14px;}
+
+/* card */
+.card{
+  background:var(--bg-alt); border:1px solid var(--line); border-radius:20px; padding:28px;
+}
+
+/* ---------- dopamine simulator (signature) ---------- */
+.sim-panel{
+  background:var(--bg-alt); border:1px solid var(--line-strong); border-radius:24px; padding:32px;
+  box-shadow:0 0 60px -20px var(--dopamine-soft);
+}
+.sim-tabs{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:26px;}
+.sim-tab{
+  font-family:'JetBrains Mono',monospace; font-size:.78rem; padding:9px 14px; border-radius:999px;
+  border:1px solid var(--line-strong); background:transparent; color:var(--muted); cursor:pointer;
+  transition:all .2s;
+}
+.sim-tab.active{background:var(--dopamine); color:#1a0a12; border-color:var(--dopamine); font-weight:700;}
+.sim-chart-wrap{position:relative;}
+.sim-labels{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:10px;}
+.sim-labels span:nth-child(1){color:var(--reward);}
+.sim-labels span:nth-child(2){color:var(--dopamine);}
+canvas#simCanvas{width:100%; height:220px; display:block;}
+.sim-caption{margin-top:18px; font-size:.94rem; color:var(--muted); min-height:66px;}
+.sim-caption b{color:var(--ink);}
+
+/* ---------- wanting vs liking ---------- */
+.wl-grid{display:grid; gap:20px; grid-template-columns:1fr; margin-top:8px;}
+@media(min-width:640px){.wl-grid{grid-template-columns:1fr 1fr;}}
+.wl-bar-row{margin:18px 0;}
+.wl-bar-label{display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:8px; color:var(--muted);}
+.wl-bar-label b{color:var(--ink);}
+.wl-bar-track{height:16px; border-radius:999px; background:rgba(244,237,228,.06); overflow:hidden;}
+.wl-bar-fill{height:100%; width:0%; border-radius:999px; transition:width 1.4s cubic-bezier(.2,.9,.2,1);}
+.wl-bar-fill.want{background:linear-gradient(90deg, var(--dopamine), #ff8fb4);}
+.wl-bar-fill.like{background:linear-gradient(90deg, var(--reward), #ffdf94);}
+
+/* ---------- supernormal grid ---------- */
+.sn-grid{display:grid; gap:18px; grid-template-columns:1fr; margin-top:8px;}
+@media(min-width:640px){.sn-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:960px){.sn-grid{grid-template-columns:1fr 1fr 1fr;}}
+.sn-card{padding:22px; border-radius:16px; background:var(--bg-alt); border:1px solid var(--line);}
+.sn-card .who{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--reward); text-transform:uppercase; letter-spacing:.06em;}
+.sn-card h3{font-size:1.1rem; margin:10px 0 8px; font-family:'Inter',sans-serif; font-weight:700;}
+.sn-card p{color:var(--muted); font-size:.9rem;}
+
+/* ---------- temptation bundling / bike demo ---------- */
+.bundle-flex{display:flex; flex-direction:column; gap:28px;}
+@media(min-width:800px){.bundle-flex{flex-direction:row; align-items:stretch;}}
+.bundle-flex .card{flex:1;}
+.bike-demo{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.bike-icon{font-size:3.4rem; transform-origin:center;}
+.screen{
+  width:100%; max-width:260px; aspect-ratio:16/10; border-radius:14px; background:#0c0810;
+  display:flex; align-items:center; justify-content:center; border:1px solid var(--line-strong);
+  font-family:'JetBrains Mono',monospace; font-size:.9rem; color:var(--muted); text-align:center; padding:12px;
+}
+.screen.playing{color:var(--need); border-color:var(--need); box-shadow:0 0 24px -6px rgba(110,231,183,.4);}
+input[type=range]{width:100%; accent-color:var(--dopamine); margin-top:6px;}
+.speed-label{font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--muted); display:flex; justify-content:space-between; width:100%; max-width:260px;}
+
+/* ---------- builder ---------- */
+.char-tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px;}
+.char-tab{
+  padding:12px 18px; border-radius:14px; border:1px solid var(--line-strong); background:var(--bg-alt);
+  color:var(--muted); cursor:pointer; font-weight:600; transition:all .25s; text-align:left;
+}
+.char-tab .name{color:var(--ink); font-family:'Fraunces',serif; font-size:1.05rem; display:block;}
+.char-tab .role{font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; font-family:'JetBrains Mono',monospace;}
+.char-tab.active{border-color:var(--dopamine); background:linear-gradient(160deg, rgba(255,62,127,.14), transparent);}
+.char-tab.active .role{color:var(--dopamine);}
+
+.formula-card{position:relative; overflow:hidden;}
+.step{display:flex; gap:16px; align-items:flex-start; padding:16px 0; border-bottom:1px dashed var(--line);}
+.step:last-child{border-bottom:none;}
+.step .badge{
+  font-family:'JetBrains Mono',monospace; font-size:.7rem; padding:4px 9px; border-radius:999px; flex:none; margin-top:2px;
+}
+.badge.need{background:rgba(110,231,183,.15); color:var(--need);}
+.badge.want{background:rgba(255,62,127,.15); color:var(--dopamine);}
+.step p{font-size:.98rem;}
+.step p b{color:var(--ink);}
+.unlock-btn{
+  margin-top:20px; font-family:'JetBrains Mono',monospace; font-size:.85rem; padding:12px 20px;
+  border-radius:12px; border:1px solid var(--need); background:transparent; color:var(--need); cursor:pointer;
+  transition:all .2s; width:100%;
+}
+.unlock-btn:hover{background:rgba(110,231,183,.1);}
+.unlock-btn.done{background:var(--need); color:#0b1f16; border-color:var(--need);}
+.reward-line{
+  margin-top:14px; padding:14px; border-radius:12px; text-align:center; font-family:'JetBrains Mono',monospace;
+  font-size:.88rem; color:var(--muted); background:rgba(244,237,228,.04); border:1px solid var(--line);
+  transition:all .35s;
+}
+.reward-line.unlocked{color:var(--dopamine); border-color:var(--dopamine); background:rgba(255,62,127,.1); box-shadow:0 0 30px -10px var(--dopamine-soft);}
+
+/* ---------- do / dont ---------- */
+.dd-grid{display:grid; gap:20px; grid-template-columns:1fr;}
+@media(min-width:700px){.dd-grid{grid-template-columns:1fr 1fr;}}
+.dd-card{border-radius:20px; padding:26px; border:1px solid var(--line);}
+.dd-card.do{background:linear-gradient(160deg, rgba(110,231,183,.09), transparent); border-color:rgba(110,231,183,.35);}
+.dd-card.dont{background:linear-gradient(160deg, rgba(255,62,127,.09), transparent); border-color:rgba(255,62,127,.35);}
+.dd-card h3{font-family:'JetBrains Mono',monospace; font-size:.85rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px;}
+.dd-card.do h3{color:var(--need);}
+.dd-card.dont h3{color:var(--dopamine);}
+.dd-card ul{list-style:none;}
+.dd-card li{padding:10px 0; border-top:1px solid var(--line); font-size:.94rem; color:var(--muted);}
+.dd-card li:first-child{border-top:none;}
+.dd-card li b{color:var(--ink); font-weight:600;}
+
+footer{padding:50px 0 80px; text-align:center; color:var(--muted); font-size:.85rem;}
+footer b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="tag">08 <span>·</span> Irresistible</div>
+  <div class="steps">
+    <a href="#dopamine">Dopamine Loop</a>
+    <a href="#bundling">Bundling</a>
+    <a href="#builder">Build Yours</a>
+    <a href="#summary">Do / Don't</a>
+  </div>
+</nav>
+
+<section class="hero wrap">
+  <div class="eyebrow"><span class="dot"></span>Chapter 8 · Atomic Habits</div>
+  <h1>How to make a habit <em>irresistible</em>.</h1>
+  <p class="lede">A baby gull pecks harder at a fake beak with three red dots than at its real mother. Your brain does the same trick with anything shiny — an app, a screen, a plate of fries. This is the science of why.</p>
+
+  <div class="peck-demo">
+    <button class="beak-btn" id="beakBtn" aria-label="Tap the beak">
+      <div class="dots">
+        <div class="rd"></div><div class="rd"></div><div class="rd"></div>
+      </div>
+    </button>
+    <div class="peck-copy">
+      <div class="peck-count mono" id="peckCount">0</div>
+      <p>pecks. Real gull chicks peck a red dot for food. Give them <b>three</b> big red dots on a fake beak, and they peck faster and harder — even though it's cardboard. Tap the beak and watch what a bigger reward signal does.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="stimuli">
+  <div class="sec-head">
+    <div class="eyebrow">Supernormal Stimuli</div>
+    <h2>Vignesh and the three-dot beak</h2>
+    <p>Vignesh writes code for a living and tracks his money closely. His phone's stock ticker isn't a plain number — it's red and green, pulsing, refreshing every second, with alerts that buzz his pocket. That's not an accident. It's an exaggerated cue, built to be more attractive than a real market ever needs to be.</p>
+  </div>
+  <div class="sn-grid">
+    <div class="sn-card">
+      <div class="who">Nature's version</div>
+      <h3>Three red dots on a beak</h3>
+      <p>Herring gull chicks peck harder at a fake beak with three oversized red dots than at their real parent. The exaggerated cue overrides the real one.</p>
+    </div>
+    <div class="sn-card">
+      <div class="who">Vignesh's version</div>
+      <h3>A ticker that never stops</h3>
+      <p>Live colour-coded prices, push alerts, and a red/green flash on every tick. His brain treats each flash like a red dot — worth checking, right now.</p>
+    </div>
+    <div class="sn-card">
+      <div class="who">Everyone's version</div>
+      <h3>The "like" counter</h3>
+      <p>A notification badge, a slot-machine pull, a bag of chips engineered for the "bliss point" — all heightened versions of a normal reward.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="dopamine">
+  <div class="sec-head">
+    <div class="eyebrow">The Real Engine</div>
+    <h2>It's not the reward. It's the anticipation.</h2>
+    <p>Dopamine doesn't spike when Pranav sees his portfolio go up. It spikes a second <b>before</b> — the moment he opens the app, expecting good news. Wanting and liking are two different systems, and wanting is by far the bigger one.</p>
+  </div>
+
+  <div class="sim-panel">
+    <div class="sim-tabs" id="simTabs">
+      <button class="sim-tab active" data-mode="A">First time</button>
+      <button class="sim-tab" data-mode="B">Habit learned</button>
+      <button class="sim-tab" data-mode="C">Cue, no reward</button>
+      <button class="sim-tab" data-mode="D">Reward arrives late</button>
+    </div>
+    <div class="sim-chart-wrap">
+      <canvas id="simCanvas" width="800" height="220"></canvas>
+      <div class="sim-labels"><span>Cue</span><span>Craving</span><span>Response</span><span>Reward</span></div>
+    </div>
+    <div class="sim-caption" id="simCaption"></div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="sec-head">
+    <div class="eyebrow">Wanting vs Liking</div>
+    <h2>Your brain has a huge "want" engine, and a tiny "like" engine</h2>
+    <p>The nucleus accumbens — a key reward hub — is almost entirely devoted to wanting. Only a sliver of it handles actual liking.</p>
+  </div>
+  <div class="card">
+    <div class="wl-bar-row">
+      <div class="wl-bar-label"><span>Nucleus accumbens active during <b>wanting</b></span><span class="mono" id="wPct">0%</span></div>
+      <div class="wl-bar-track"><div class="wl-bar-fill want" id="wantBar"></div></div>
+    </div>
+    <div class="wl-bar-row">
+      <div class="wl-bar-label"><span>Nucleus accumbens active during <b>liking</b></span><span class="mono" id="lPct">0%</span></div>
+      <div class="wl-bar-track"><div class="wl-bar-fill like" id="likeBar"></div></div>
+    </div>
+    <p style="color:var(--muted); font-size:.9rem; margin-top:6px;">This is why Dhanush keeps opening an app he doesn't even enjoy much anymore. He still <em>wants</em> to check it — the liking faded, but the craving didn't.</p>
+  </div>
+</section>
+
+<section class="wrap reveal" id="bundling">
+  <div class="sec-head">
+    <div class="eyebrow">Temptation Bundling</div>
+    <h2>Pair what you need with what you want</h2>
+    <p>An engineering student in Dublin wired his exercise bike to his TV — Netflix only played if he kept pedalling. Dhanush tries the same trick below.</p>
+  </div>
+  <div class="bundle-flex">
+    <div class="card">
+      <h3 style="font-family:'Inter',sans-serif; margin-bottom:10px;">Dhanush's hacked bike</h3>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:18px;">Drag the slider to pedal. Below a certain speed, the show pauses — no exceptions.</p>
+      <div class="bike-demo">
+        <div class="bike-icon" id="bikeIcon">🚲</div>
+        <div class="screen" id="screen">⏸ Paused<br>keep pedalling, Dhanush</div>
+        <div class="speed-label"><span>0 km/h</span><span id="speedVal">0 km/h</span><span>30 km/h</span></div>
+        <input type="range" id="speedSlider" min="0" max="30" value="0">
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-family:'Inter',sans-serif; margin-bottom:10px;">Why it works</h3>
+      <p style="color:var(--muted); font-size:.94rem; margin-bottom:14px;">This uses <b style="color:var(--ink)">Premack's Principle</b>: a behaviour you already do a lot (watching Netflix) can reinforce a behaviour you rarely do (cycling). Over time, the two feel like one action.</p>
+      <p style="color:var(--muted); font-size:.94rem;">The formula from the book:</p>
+      <ol style="margin:14px 0 0 20px; color:var(--muted); font-size:.94rem; line-height:1.8;">
+        <li>After <b style="color:var(--ink)">[current habit]</b>, I will do <b style="color:var(--need)">[habit I need]</b>.</li>
+        <li>After <b style="color:var(--need)">[habit I need]</b>, I get to do <b style="color:var(--dopamine)">[habit I want]</b>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="builder">
+  <div class="sec-head">
+    <div class="eyebrow">Try It Yourself</div>
+    <h2>Build a temptation-bundling formula</h2>
+    <p>Pick a character. See how a "need" and a "want" get chained together — then unlock the reward yourself.</p>
+  </div>
+
+  <div class="char-tabs" id="charTabs">
+    <button class="char-tab active" data-char="vignesh">
+      <span class="name">Vignesh</span><span class="role">coder · finance</span>
+    </button>
+    <button class="char-tab" data-char="pranav">
+      <span class="name">Pranav</span><span class="role">investor</span>
+    </button>
+    <button class="char-tab" data-char="dhanush">
+      <span class="name">Dhanush</span><span class="role">chill</span>
+    </button>
+  </div>
+
+  <div class="card formula-card">
+    <div class="step">
+      <span class="badge need" id="stepNeedBadge">NEED</span>
+      <p id="stepNeed"></p>
+    </div>
+    <div class="step">
+      <span class="badge want" id="stepWantBadge">WANT</span>
+      <p id="stepWant"></p>
+    </div>
+    <button class="unlock-btn" id="unlockBtn">Do the need habit →</button>
+    <div class="reward-line" id="rewardLine">Locked. The want habit unlocks after the need habit is done.</div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="summary">
+  <div class="sec-head">
+    <div class="eyebrow">Chapter 8 Summary</div>
+    <h2>What to do — and what to avoid</h2>
+  </div>
+  <div class="dd-grid">
+    <div class="dd-card do">
+      <h3>Do</h3>
+      <ul>
+        <li><b>Pair a want with a need.</b> Bundle a habit you're avoiding with one you already crave.</li>
+        <li><b>Notice the anticipation.</b> The urge before an action is the real driver — use it on purpose.</li>
+        <li><b>Make good habits visually rewarding.</b> A streak, a chart, a small ritual — give your brain something to look forward to.</li>
+        <li><b>Question your cues.</b> Ask why an app or food feels irresistible before assuming it's just "willpower."</li>
+      </ul>
+    </div>
+    <div class="dd-card dont">
+      <h3>Don't</h3>
+      <ul>
+        <li><b>Don't confuse wanting with liking.</b> Craving a habit doesn't mean it's still making you happy.</li>
+        <li><b>Don't chase every supernormal stimulus.</b> Junk food, endless feeds, and hyper-designed apps are built to be over-attractive, not good for you.</li>
+        <li><b>Don't skip the "need" step.</b> If the want comes first, the bundle stops working.</li>
+        <li><b>Don't rely on willpower alone.</b> Redesign the cue instead of fighting the craving head-on.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Chapter 8 · <b>How to Make a Habit Irresistible</b> — from <i>Atomic Habits</i> by James Clear.
+</footer>
+
+<script>
+// ---------- reveal on scroll ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} });
+}, {threshold:.12});
+revealEls.forEach(el=>io.observe(el));
+
+// ---------- peck demo ----------
+let peckCount = 0;
+const beakBtn = document.getElementById('beakBtn');
+const peckCountEl = document.getElementById('peckCount');
+beakBtn.addEventListener('click', ()=>{
+  peckCount++;
+  peckCountEl.textContent = peckCount;
+  beakBtn.classList.remove('pulse'); void beakBtn.offsetWidth; beakBtn.classList.add('pulse');
+});
+
+// ---------- dopamine simulator ----------
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+function fitCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 220 * dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', ()=>{ fitCanvas(); draw(); });
+
+const N = 80;
+function baseline(){
+  const a = [];
+  for(let i=0;i<N;i++) a.push(50 + Math.sin(i*0.6)*2.2);
+  return a;
+}
+function addBump(arr, center, width, height){
+  for(let i=0;i<arr.length;i++){
+    const d = (i-center)/width;
+    arr[i] += height*Math.exp(-d*d);
+  }
+}
+function scenarioData(mode){
+  const a = baseline();
+  // quarters: 0-20 cue, 20-40 craving, 40-60 response, 60-80 reward
+  if(mode==='A'){ addBump(a, 70, 6, 42); }
+  else if(mode==='B'){ addBump(a, 28, 9, 40); }
+  else if(mode==='C'){ addBump(a, 26, 8, 38); addBump(a, 66, 8, -26); }
+  else if(mode==='D'){ addBump(a, 26, 7, 34); addBump(a, 54, 6, -14); addBump(a, 74, 6, 30); }
+  return a;
+}
+let current = scenarioData('A');
+let target = scenarioData('A');
+let animStart = null;
+const DUR = 650;
+
+function lerpArr(from,to,t){
+  const out = [];
+  for(let i=0;i<from.length;i++) out.push(from[i] + (to[i]-from[i])*t);
+  return out;
+}
+function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+
+function draw(ts){
+  if(animStart===null) animStart = ts;
+  const t = Math.min(1, (ts-animStart)/DUR);
+  const data = lerpArr(current, target, ease(t));
+
+  const w = canvas.getBoundingClientRect().width;
+  const h = 220;
+  ctx.clearRect(0,0,w,h);
+
+  // quarter dividers
+  ctx.strokeStyle = 'rgba(244,237,228,0.08)';
+  ctx.lineWidth = 1;
+  for(let q=1; q<4; q++){
+    const x = w*q/4;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+  }
+  // baseline
+  ctx.strokeStyle = 'rgba(244,237,228,0.15)';
+  ctx.setLineDash([4,4]);
+  const zeroY = h - (50/100)*h*0.9 - h*0.05;
+  ctx.beginPath(); ctx.moveTo(0,zeroY); ctx.lineTo(w,zeroY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // path
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    const x = (i/(N-1))*w;
+    const y = h - (v/100)*h*0.9 - h*0.05;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#ff3e7f';
+  ctx.lineWidth = 3;
+  ctx.shadowColor = 'rgba(255,62,127,.7)';
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // fill under curve
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(255,62,127,.25)');
+  grad.addColorStop(1,'rgba(255,62,127,0)');
+  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  if(t<1) requestAnimationFrame(draw);
+}
+
+const captions = {
+  A: "First time around: dopamine only spikes <b>after</b> the reward, because Vignesh has no idea yet what checking the app will bring.",
+  B: "Once the habit is learned: dopamine spikes right after the cue — before the response even happens. The reward itself barely moves the needle, because it was already expected.",
+  C: "Cue shows up, but no reward comes: craving builds, then dopamine drops below baseline. That dip is disappointment — and it makes the next reward feel even better.",
+  D: "Reward shows up late: craving rises, dips a little as the wait drags on, then spikes again when the reward finally lands. The brain says, \"I knew I was right — do this again.\""
+};
+const simCaption = document.getElementById('simCaption');
+function setMode(mode){
+  current = lerpArr(current, target, 1); // freeze current at latest interpolated state approx
+  current = scenarioDataSnapshot();
+  target = scenarioData(mode);
+  animStart = null;
+  simCaption.innerHTML = captions[mode];
+  requestAnimationFrame(draw);
+}
+function scenarioDataSnapshot(){
+  // recompute current displayed curve conservatively as target of previous call
+  return target;
+}
+document.getElementById('simTabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.sim-tab');
+  if(!btn) return;
+  document.querySelectorAll('.sim-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  setMode(btn.dataset.mode);
+});
+fitCanvas();
+simCaption.innerHTML = captions['A'];
+requestAnimationFrame(draw);
+
+// ---------- wanting vs liking bars ----------
+const wlObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.getElementById('wantBar').style.width = '100%';
+      document.getElementById('likeBar').style.width = '10%';
+      document.getElementById('wPct').textContent = '100%';
+      document.getElementById('lPct').textContent = '10%';
+      wlObserver.disconnect();
+    }
+  });
+}, {threshold:.4});
+wlObserver.observe(document.getElementById('wantBar'));
+
+// ---------- bike demo ----------
+const slider = document.getElementById('speedSlider');
+const speedVal = document.getElementById('speedVal');
+const screenEl = document.getElementById('screen');
+const bikeIcon = document.getElementById('bikeIcon');
+slider.addEventListener('input', ()=>{
+  const v = parseInt(slider.value,10);
+  speedVal.textContent = v + ' km/h';
+  if(v >= 12){
+    screenEl.classList.add('playing');
+    screenEl.innerHTML = '▶ Playing<br>keep it up!';
+    bikeIcon.style.animation = `spin ${Math.max(0.15, 1.4 - v*0.04)}s linear infinite`;
+  } else {
+    screenEl.classList.remove('playing');
+    screenEl.innerHTML = '⏸ Paused<br>keep pedalling, Dhanush';
+    bikeIcon.style.animation = 'none';
+  }
+});
+const styleTag = document.createElement('style');
+styleTag.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(styleTag);
+
+// ---------- builder ----------
+const chars = {
+  vignesh: {
+    need: "After Vignesh opens his laptop, he will <b>review his weekly budget sheet for 2 minutes</b>.",
+    want: "After that, he gets to <b>check crypto and stock prices</b> for as long as he wants.",
+    reward: "Budget reviewed → market check unlocked. Vignesh's money habit and his craving now travel together."
+  },
+  pranav: {
+    need: "After his morning tea, Pranav will <b>read one page of a company's annual report</b>.",
+    want: "After that, he gets to <b>check today's market gossip and stock news</b>.",
+    reward: "One page read → gossip unlocked. The boring research now rides on the back of a craving he already has."
+  },
+  dhanush: {
+    need: "After he picks up the remote, Dhanush will <b>do 10 squats</b> — no shortcuts.",
+    want: "After that, he gets to <b>watch one episode</b>, guilt-free.",
+    reward: "Squats done → show unlocked. Just like the hacked bike, effort now comes before comfort."
+  }
+};
+let currentChar = 'vignesh';
+function renderChar(key){
+  document.getElementById('stepNeed').innerHTML = chars[key].need;
+  document.getElementById('stepWant').innerHTML = chars[key].want;
+  const btn = document.getElementById('unlockBtn');
+  const line = document.getElementById('rewardLine');
+  btn.classList.remove('done');
+  btn.textContent = 'Do the need habit →';
+  line.classList.remove('unlocked');
+  line.textContent = "Locked. The want habit unlocks after the need habit is done.";
+}
+document.getElementById('charTabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.char-tab');
+  if(!btn) return;
+  document.querySelectorAll('.char-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentChar = btn.dataset.char;
+  renderChar(currentChar);
+});
+document.getElementById('unlockBtn').addEventListener('click', (e)=>{
+  e.target.classList.add('done');
+  e.target.textContent = 'Done ✓';
+  const line = document.getElementById('rewardLine');
+  line.classList.add('unlocked');
+  line.textContent = chars[currentChar].reward;
+});
+renderChar('vignesh');
+</script>
+</body>
+</html>
