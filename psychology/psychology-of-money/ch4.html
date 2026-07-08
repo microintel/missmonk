@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Snowball Effect — Chapter 4: Compounding</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ice-0:#f3f7fa;
+    --ice-1:#dceaf2;
+    --ice-deep:#0e2a3d;
+    --frost:#9fc6d8;
+    --ember:#d9622b;
+    --ember-soft:#f4a261;
+    --ink:#10222c;
+    --paper:#fbfaf6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Iowan Old Style','Georgia',serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  .display{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:800;
+    letter-spacing:-0.02em;
+  }
+  .mono{
+    font-family:'SF Mono','Courier New',monospace;
+    letter-spacing:0.02em;
+  }
+  section{
+    padding:5rem 1.5rem;
+    max-width:880px;
+    margin:0 auto;
+  }
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:linear-gradient(180deg,var(--ice-deep) 0%, #163a52 60%, #1d4760 100%);
+    color:var(--ice-0);
+    overflow:hidden;
+    padding:6rem 1.5rem;
+    max-width:none;
+  }
+  .hero canvas#snowCanvas{
+    position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0;
+  }
+  .hero-inner{position:relative; z-index:1; max-width:880px; margin:0 auto; width:100%;}
+  .eyebrow{
+    text-transform:uppercase;
+    font-size:0.78rem;
+    letter-spacing:0.18em;
+    color:var(--ember-soft);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:700;
+    margin-bottom:1.2rem;
+  }
+  h1.display{
+    font-size:clamp(2.4rem,7vw,4.6rem);
+    margin:0 0 1rem 0;
+    line-height:1.02;
+  }
+  h1.display em{
+    font-style:normal;
+    color:var(--ember-soft);
+  }
+  .hero p.lede{
+    font-family:'Iowan Old Style',Georgia,serif;
+    font-size:clamp(1.05rem,2vw,1.3rem);
+    color:var(--ice-1);
+    max-width:36ch;
+    margin-top:1.5rem;
+  }
+  .scroll-cue{
+    margin-top:3rem;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.8rem;
+    color:var(--frost);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+
+  h2.display{
+    font-size:clamp(1.7rem,4vw,2.4rem);
+    margin:0 0 0.4rem 0;
+    color:var(--ice-deep);
+  }
+  .section-num{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.2em;
+    color:var(--ember);
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:0.6rem;
+    display:block;
+  }
+  p{font-size:1.07rem; color:#2b3c45;}
+  .lead-text{font-size:1.18rem; color:var(--ink);}
+
+  hr.divider{
+    border:none;
+    border-top:1px solid #d8e2e6;
+    margin:0 auto;
+    max-width:880px;
+  }
+
+  /* CARD */
+  .card{
+    background:var(--ice-0);
+    border:1px solid var(--ice-1);
+    border-radius:4px;
+    padding:1.8rem;
+    margin:2rem 0;
+  }
+  .card-label{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.75rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:700;
+    margin-bottom:0.8rem;
+  }
+
+  /* ICE AGE LOOP DIAGRAM */
+  .loop-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.6rem;
+    align-items:center;
+    justify-content:center;
+    margin:1.5rem 0;
+  }
+  .loop-step{
+    background:var(--ice-deep);
+    color:var(--ice-0);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.82rem;
+    padding:0.6rem 0.9rem;
+    border-radius:3px;
+    text-align:center;
+    flex:1 1 130px;
+    min-width:110px;
+  }
+  .loop-arrow{
+    font-size:1.3rem;
+    color:var(--ember);
+  }
+
+  /* CALCULATOR */
+  .calc-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  @media(max-width:560px){.calc-grid{grid-template-columns:1fr;}}
+  .calc-field label{
+    display:block;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:#5c6f78;
+    margin-bottom:0.35rem;
+  }
+  .calc-field input[type=range]{
+    width:100%;
+    accent-color:var(--ember);
+  }
+  .calc-field .val{
+    font-family:'SF Mono',monospace;
+    font-weight:700;
+    color:var(--ice-deep);
+    font-size:1rem;
+  }
+  .result-banner{
+    margin-top:1.4rem;
+    background:var(--ice-deep);
+    color:var(--ice-0);
+    border-radius:4px;
+    padding:1.2rem 1.4rem;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  .result-banner .big{
+    font-size:clamp(1.6rem,4vw,2.2rem);
+    font-weight:800;
+    color:var(--ember-soft);
+  }
+  .result-banner .small{font-size:0.85rem; color:var(--frost); margin-top:0.3rem;}
+
+  .chart-box{
+    background:#fff;
+    border:1px solid var(--ice-1);
+    border-radius:4px;
+    padding:1rem 1rem 0.5rem;
+    margin:1.5rem 0;
+  }
+  .chart-box canvas{max-height:340px;}
+  .chart-caption{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.82rem;
+    color:#5c6f78;
+    text-align:center;
+    margin-top:0.5rem;
+  }
+
+  /* stat row */
+  .stat-row{
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin:1.6rem 0;
+  }
+  .stat{
+    flex:1 1 150px;
+    background:#fff;
+    border:1px solid var(--ice-1);
+    border-left:4px solid var(--ember);
+    padding:1rem;
+  }
+  .stat .num{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:800;
+    font-size:1.5rem;
+    color:var(--ice-deep);
+  }
+  .stat .lab{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.78rem;
+    color:#5c6f78;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+
+  blockquote{
+    border-left:3px solid var(--ember);
+    margin:1.6rem 0;
+    padding:0.2rem 0 0.2rem 1.2rem;
+    font-style:italic;
+    color:#33464f;
+  }
+
+  /* SUMMARY */
+  .summary{
+    background:var(--ice-deep);
+    color:var(--ice-0);
+    max-width:none;
+    padding:5rem 1.5rem 6rem;
+  }
+  .summary-inner{max-width:880px; margin:0 auto;}
+  .summary h2{color:var(--ember-soft);}
+  .summary-list{
+    list-style:none;
+    margin:1.8rem 0 0;
+    padding:0;
+  }
+  .summary-list li{
+    display:flex;
+    gap:1rem;
+    padding:1rem 0;
+    border-top:1px solid rgba(255,255,255,0.12);
+    font-size:1.02rem;
+  }
+  .summary-list li:first-child{border-top:none;}
+  .summary-list .tag{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:800;
+    color:var(--ember-soft);
+    flex:0 0 28px;
+  }
+  footer{
+    text-align:center;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:0.78rem;
+    color:var(--frost);
+    padding:2rem 1.5rem 3rem;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <canvas id="snowCanvas"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow">The Psychology of Money — Chapter 4</span>
+    <h1 class="display">A little snow,<br>if it <em>lasts</em>,<br>becomes an ice age.</h1>
+    <p class="lede">It took five ice ages and one Indian SIP statement to teach the same lesson: you don't need a storm. You need time, and something small that refuses to melt.</p>
+    <div class="scroll-cue">↓ scroll to begin</div>
+  </div>
+</header>
+
+<!-- 1. THE ICE AGE -->
+<section>
+  <span class="section-num">01 — The Geology</span>
+  <h2 class="display">Why does an ice age happen?</h2>
+  <p class="lead-text">For a century, scientists guessed: a shifting mountain range, a volcano gone quiet. Grand causes for a grand result. They were all wrong.</p>
+  <p>In the early 1900s, Serbian scientist Milutin Milanković traced ice ages to the Earth's gentle wobble toward the sun. A Russian meteorologist, Wladimir Köppen, found the real trigger hiding inside that theory: not brutal winters, but a summer that simply never got warm enough to melt last winter's snow.</p>
+
+  <div class="card">
+    <div class="card-label">The feedback loop</div>
+    <div class="loop-wrap">
+      <div class="loop-step">Cool summer</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">Snow survives</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">More snow sticks next winter</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">Sunlight reflected, not absorbed</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">Colder still</div>
+    </div>
+  </div>
+
+  <blockquote>"It is not necessarily the amount of snow that causes ice sheets but the fact that snow, however little, lasts." — Gwen Schultz, glaciologist</blockquote>
+
+  <p>Within a few hundred years, a layer of snow nobody would notice becomes a continent buried under ice. No single force did it. The same small effect, repeating on itself, did.</p>
+</section>
+
+<hr class="divider">
+
+<!-- 2. BUFFETT -->
+<section>
+  <span class="section-num">02 — The Investor</span>
+  <h2 class="display">Buffett's secret isn't skill. It's a 75-year-old snowball.</h2>
+  <p class="lead-text">Warren Buffett's net worth is roughly <strong>$84.5 billion</strong>. Of that, <strong>$84.2 billion</strong> arrived after his 50th birthday — and most of it after he turned 65.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">10</div><div class="lab">Age he started investing seriously</div></div>
+    <div class="stat"><div class="num">22%</div><div class="lab">His average annual return</div></div>
+    <div class="stat"><div class="num">75 yrs</div><div class="lab">Years he let it compound</div></div>
+  </div>
+
+  <p>Run the thought experiment Morgan Housel runs in the book: keep Buffett's 22% return, but give him a normal life — invest a modest amount in his 20s, retire at 60 to play golf. His fortune would not be $84.5 billion. It would be roughly <strong>$11.9 million</strong> — 99.9% smaller. The skill barely changed. The runway did.</p>
+
+  <div class="chart-box">
+    <canvas id="buffettChart"></canvas>
+    <div class="chart-caption">Same 22% return. The only variable that changes is how long the snowball is allowed to roll.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 3. INDIA EXAMPLE -->
+<section>
+  <span class="section-num">03 — Bringing It Home</span>
+  <h2 class="display">The same snowball, in rupees</h2>
+  <p class="lead-text">You don't need Buffett's returns to see Buffett's lesson. A plain Indian SIP (Systematic Investment Plan) in an equity mutual fund, averaging a realistic <strong>12% annually</strong>, makes the same point.</p>
+
+  <p>Meet two savers. <strong>Riya</strong> starts a SIP of ₹5,000/month at age 25. <strong>Aman</strong> starts the exact same ₹5,000/month SIP at age 35 — just ten years later — and both stop contributing and let it ride at 60.</p>
+
+  <div class="chart-box">
+    <canvas id="sipChart"></canvas>
+    <div class="chart-caption">₹5,000/month, 12% annual return, compounded monthly, until age 60.</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">₹1.65 Cr</div><div class="lab">Riya's corpus (started at 25)</div></div>
+    <div class="stat"><div class="num">₹49.9 L</div><div class="lab">Aman's corpus (started at 35)</div></div>
+    <div class="stat"><div class="num">3.3×</div><div class="lab">Riya's advantage from 10 extra years</div></div>
+  </div>
+
+  <p>Riya invested only ₹6 lakh more in total than Aman across her extra ten years — but ends up with over <strong>₹1 crore more</strong>. None of that gap comes from picking better funds. All of it comes from giving the snow ten extra winters to stay on the ground.</p>
+</section>
+
+<hr class="divider">
+
+<!-- 4. INTERACTIVE CALCULATOR -->
+<section>
+  <span class="section-num">04 — Try It Yourself</span>
+  <h2 class="display">Build your own snowball</h2>
+  <p class="lead-text">Adjust the monthly SIP, the return, and most importantly — the years. Watch which lever actually moves the mountain.</p>
+
+  <div class="card">
+    <div class="card-label">Your inputs</div>
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label>Monthly investment <span class="val" id="sipVal">₹5,000</span></label>
+        <input type="range" id="sipInput" min="1000" max="50000" step="1000" value="5000">
+      </div>
+      <div class="calc-field">
+        <label>Expected annual return <span class="val" id="rateVal">12%</span></label>
+        <input type="range" id="rateInput" min="6" max="20" step="1" value="12">
+      </div>
+      <div class="calc-field">
+        <label>Starting age <span class="val" id="ageVal">25</span></label>
+        <input type="range" id="ageInput" min="18" max="50" step="1" value="25">
+      </div>
+      <div class="calc-field">
+        <label>Investing until age <span class="val" id="endVal">60</span></label>
+        <input type="range" id="endInput" min="40" max="65" step="1" value="60">
+      </div>
+    </div>
+
+    <div class="result-banner">
+      <div class="big" id="corpusOut">₹1,65,00,000</div>
+      <div class="small" id="subOut">Total invested: ₹—  ·  Growth from compounding: ₹—</div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <canvas id="liveChart"></canvas>
+    <div class="chart-caption">Orange = what compounding adds on top of your own contributions (shown in blue).</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 5. WHY IT'S COUNTERINTUITIVE -->
+<section>
+  <span class="section-num">05 — Why We Miss This</span>
+  <h2 class="display">Linear brains in an exponential world</h2>
+  <p class="lead-text">Add 8 nine times in your head — eight seconds, you'll get 72. Multiply 8 by itself nine times and most people freeze. The answer is 134,217,728.</p>
+  <p>Our intuition runs on addition. Compounding runs on multiplication. That mismatch is why Bill Gates, in 2004, publicly wondered why anyone would need a gigabyte of Gmail storage — and why it's why most of us underestimate a 10-year SIP and overestimate a hot stock tip. We chase a single big jump and ignore the small thing that just needs to be left alone.</p>
+
+  <div class="chart-box">
+    <canvas id="storageChart"></canvas>
+    <div class="chart-caption">Hard drive capacity, 1950–2019. The line looks flat for 40 years — until it isn't.</div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="summary">
+  <div class="summary-inner">
+    <span class="section-num" style="color:var(--ember-soft)">Chapter 4 — In Short</span>
+    <h2 class="display">Summary: The Power of Compounding</h2>
+    <p style="color:var(--ice-1)">Morgan Housel's central claim in this chapter: extraordinary outcomes — five ice ages, an $84.5 billion fortune, a 100-million-fold leap in hard drive storage — rarely come from extraordinary force. They come from an ordinary effect that is allowed to feed on itself, for a very long time.</p>
+    <ul class="summary-list">
+      <li><span class="tag">01</span><span>Buffett's fortune is less about being a great investor and more about being a decent investor for <strong>75 years</strong>. Time, not skill, did most of the work.</span></li>
+      <li><span class="tag">02</span><span>Jim Simons earned <strong>3× Buffett's returns</strong> but has far less wealth — because he only had half the runway. Returns matter less than how long you sustain them.</span></li>
+      <li><span class="tag">03</span><span>In Indian terms: a SIP started at <strong>25</strong> beats one started at <strong>35</strong> by over <strong>3×</strong>, even with identical contributions and returns. The ten "boring" early years are the real engine.</span></li>
+      <li><span class="tag">04</span><span>Compounding is unintuitive because our brains think in addition (8+8+8…), not multiplication (8×8×8…). This is why we underestimate patient savings and overestimate hot tips.</span></li>
+      <li><span class="tag">05</span><span>The practical lesson: chase <strong>returns you can sustain for decades</strong>, not the highest return you can find for a year. Consistency that survives market crashes, job changes, and boredom beats brilliance that doesn't last.</span></li>
+      <li><span class="tag">06</span><span>As the book puts it — the best investing book might just be one page, titled <em>Shut Up And Wait.</em></span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>Adapted from <em>The Psychology of Money</em> by Morgan Housel, Chapter 4 — figures localized to India for illustration.</footer>
+
+<script>
+/* ---------- Snow particle background in hero ---------- */
+(function(){
+  const canvas = document.getElementById('snowCanvas');
+  const ctx = canvas.getContext('2d');
+  const hero = document.querySelector('.hero');
+  let w,h,flakes=[];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = hero.offsetWidth;
+    h = canvas.height = hero.offsetHeight;
+  }
+  function init(){
+    resize();
+    const count = Math.min(70, Math.floor(w/14));
+    flakes = Array.from({length:count}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*2.4+0.6,
+      vy: Math.random()*0.5+0.15,
+      vx: (Math.random()-0.5)*0.3,
+      o: Math.random()*0.5+0.3
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(243,247,250,1)';
+    flakes.forEach(f=>{
+      ctx.globalAlpha = f.o;
+      ctx.beginPath();
+      ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+      ctx.fill();
+      if(!reduced){
+        f.y += f.vy;
+        f.x += f.vx;
+        if(f.y > h){ f.y=-5; f.x=Math.random()*w; }
+      }
+    });
+    ctx.globalAlpha=1;
+    if(!reduced) requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', init);
+  init();
+  draw();
+})();
+
+/* ---------- Chart helpers ---------- */
+const iceDeep = '#0e2a3d';
+const ember = '#d9622b';
+const emberSoft = '#f4a261';
+const frost = '#9fc6d8';
+
+function fmtINR(n){
+  if(n>=1e7) return '₹' + (n/1e7).toFixed(2) + ' Cr';
+  if(n>=1e5) return '₹' + (n/1e5).toFixed(2) + ' L';
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+
+function sipSeries(monthly, annualRatePct, years){
+  const r = annualRatePct/100/12;
+  const months = years*12;
+  let balance=0, invested=0;
+  const yearly=[];
+  for(let m=1;m<=months;m++){
+    balance = balance*(1+r) + monthly;
+    invested += monthly;
+    if(m%12===0) yearly.push({year:m/12, balance, invested});
+  }
+  return yearly;
+}
+
+/* ---------- Buffett chart ---------- */
+new Chart(document.getElementById('buffettChart'), {
+  type:'line',
+  data:{
+    labels:['Age 10','30','50','60','65','75','89'],
+    datasets:[
+      {label:'Actual path (started age 10)', data:[0,9.3,400,1500,9000,40000,84500], borderColor:ember, backgroundColor:'transparent', tension:0.35, pointRadius:3},
+      {label:'Hypothetical (started age 30, stopped 60)', data:[null,0.025,2.6,11.9,11.9,11.9,11.9], borderColor:frost, backgroundColor:'transparent', borderDash:[6,4], tension:0.35, pointRadius:3}
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{position:'bottom', labels:{font:{family:'Helvetica Neue, Arial, sans-serif', size:11}}}},
+    scales:{
+      y:{title:{display:true, text:'Net worth ($ millions, log-ish scale)'}, type:'logarithmic'},
+      x:{title:{display:true, text:'Age'}}
+    }
+  }
+});
+
+/* ---------- SIP comparison chart (Riya vs Aman) ---------- */
+const riya = sipSeries(5000,12,35); // 25 to 60
+const aman = sipSeries(5000,12,25); // 35 to 60, padded
+const amanPadded = Array(10).fill(null).concat(aman.map(d=>({...d, year:d.year+10})));
+
+new Chart(document.getElementById('sipChart'), {
+  type:'line',
+  data:{
+    labels: riya.map(d=>25+d.year),
+    datasets:[
+      {label:'Riya — started age 25', data:riya.map(d=>d.balance), borderColor:ember, tension:0.3, pointRadius:0, borderWidth:2.5},
+      {label:'Aman — started age 35', data: amanPadded.map(d=>d? d.balance : null), borderColor:iceDeep, tension:0.3, pointRadius:0, borderWidth:2.5}
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{position:'bottom', labels:{font:{family:'Helvetica Neue, Arial, sans-serif', size:11}}},
+      tooltip:{callbacks:{label:(ctx)=> ctx.dataset.label+': '+fmtINR(ctx.raw)}}
+    },
+    scales:{
+      y:{title:{display:true,text:'Corpus value'}, ticks:{callback:(v)=>fmtINR(v)}},
+      x:{title:{display:true,text:'Age'}}
+    }
+  }
+});
+
+/* ---------- Storage exponential chart ---------- */
+new Chart(document.getElementById('storageChart'), {
+  type:'line',
+  data:{
+    labels:['1950','1960','1970','1980','1990','1999','2003','2006','2011','2017','2019'],
+    datasets:[{
+      label:'Hard drive capacity (MB)',
+      data:[3.5,20,70,150,400,6000,120000,250000,4000000,60000000,100000000],
+      borderColor:ember, backgroundColor:'rgba(217,98,43,0.08)', fill:true, tension:0.3, pointRadius:2
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{type:'logarithmic', title:{display:true,text:'Capacity (MB, log scale)'}},
+      x:{title:{display:true,text:'Year'}}
+    }
+  }
+});
+
+/* ---------- Live interactive calculator ---------- */
+const sipInput = document.getElementById('sipInput');
+const rateInput = document.getElementById('rateInput');
+const ageInput = document.getElementById('ageInput');
+const endInput = document.getElementById('endInput');
+const sipVal = document.getElementById('sipVal');
+const rateVal = document.getElementById('rateVal');
+const ageVal = document.getElementById('ageVal');
+const endVal = document.getElementById('endVal');
+const corpusOut = document.getElementById('corpusOut');
+const subOut = document.getElementById('subOut');
+
+let liveChart;
+function renderLive(){
+  const monthly = +sipInput.value;
+  const rate = +rateInput.value;
+  let startAge = +ageInput.value;
+  let endAge = +endInput.value;
+  if(endAge <= startAge){ endAge = startAge+1; endInput.value = endAge; }
+  const years = endAge - startAge;
+
+  sipVal.textContent = '₹'+monthly.toLocaleString('en-IN');
+  rateVal.textContent = rate+'%';
+  ageVal.textContent = startAge;
+  endVal.textContent = endAge;
+
+  const series = sipSeries(monthly, rate, years);
+  const finalBal = series.length? series[series.length-1].balance : 0;
+  const finalInv = series.length? series[series.length-1].invested : 0;
+  const growth = finalBal - finalInv;
+
+  corpusOut.textContent = fmtINR(finalBal);
+  subOut.textContent = 'Total invested: '+fmtINR(finalInv)+'  ·  Growth from compounding: '+fmtINR(growth);
+
+  const labels = series.map(d=>startAge+d.year);
+  const investedData = series.map(d=>d.invested);
+  const growthData = series.map(d=>d.balance-d.invested);
+
+  if(liveChart){
+    liveChart.data.labels = labels;
+    liveChart.data.datasets[0].data = investedData;
+    liveChart.data.datasets[1].data = growthData;
+    liveChart.update();
+  } else {
+    liveChart = new Chart(document.getElementById('liveChart'), {
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {label:'Your contributions', data:investedData, borderColor:iceDeep, backgroundColor:'rgba(14,42,61,0.15)', fill:true, tension:0.25, pointRadius:0},
+          {label:'Compounding growth', data:growthData, borderColor:ember, backgroundColor:'rgba(217,98,43,0.2)', fill:true, tension:0.25, pointRadius:0}
+        ]
+      },
+      options:{
+        responsive:true,
+        scales:{
+          y:{stacked:true, title:{display:true,text:'Value'}, ticks:{callback:(v)=>fmtINR(v)}},
+          x:{title:{display:true,text:'Age'}}
+        },
+        plugins:{legend:{position:'bottom', labels:{font:{family:'Helvetica Neue, Arial, sans-serif', size:11}}}}
+      }
+    });
+  }
+}
+[sipInput,rateInput,ageInput,endInput].forEach(el=>el.addEventListener('input', renderLive));
+renderLive();
+</script>
+</body>
+</html>

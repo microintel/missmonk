@@ -1,1 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychology of Money — No One's Crazy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f4ef;
+    --cream: #ede8e0;
+    --gold: #c8a84b;
+    --rust: #b85c38;
+    --sage: #4a7c59;
+    --muted: #7a7470;
+    --card: #ffffff;
+    --border: #ddd8d0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 1.5rem 3rem;
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(200,168,75,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(184,92,56,0.10) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.4rem;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    max-width: 700px;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #b0a99e;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: #6e6760;
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    animation: bob 2s ease-in-out infinite;
+  }
+
+  .hero-scroll svg { width: 20px; height: 20px; }
+
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ── MAIN WRAPPER ── */
+  .main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ── SECTION ── */
+  .section {
+    padding: 5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 1.4rem;
+    color: var(--ink);
+  }
+
+  .section p {
+    color: #3a3530;
+    font-size: 1.02rem;
+    max-width: 680px;
+    margin-bottom: 1rem;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pullquote {
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.5rem;
+    margin: 2.5rem 0;
+    background: var(--cream);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .pullquote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-style: italic;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ── EXPERIENCE CARDS ── */
+  .experience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .exp-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .exp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .exp-card.gold::before { background: var(--gold); }
+  .exp-card.rust::before { background: var(--rust); }
+  .exp-card.sage::before { background: var(--sage); }
+
+  .exp-card .era {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .exp-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .exp-card p {
+    font-size: 0.88rem;
+    color: #5a5550;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── INTERACTIVE SIMULATOR ── */
+  .simulator {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .sim-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.4rem;
+    color: var(--paper);
+  }
+
+  .sim-desc {
+    font-size: 0.88rem;
+    color: #8a837a;
+    margin-bottom: 2rem;
+  }
+
+  .sim-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 520px) { .sim-controls { grid-template-columns: 1fr; } }
+
+  .sim-group label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .sim-group select {
+    width: 100%;
+    padding: 0.55rem 0.8rem;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: var(--paper);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c8a84b'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+  }
+
+  .sim-group select:focus { outline: none; border-color: var(--gold); }
+
+  .sim-result {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .sim-result-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+
+  .sim-result-text {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #d4cec9;
+  }
+
+  .sim-result-text strong { color: var(--paper); }
+
+  /* ── CHARTS ── */
+  .chart-wrap {
+    margin-top: 2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem 1.5rem 1.2rem;
+  }
+
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .chart-subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.6rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  canvas { width: 100% !important; }
+
+  /* ── BAR COMPARISON ── */
+  .bar-chart { margin-top: 1.2rem; }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .bar-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    width: 130px;
+    flex-shrink: 0;
+    text-align: right;
+    line-height: 1.3;
+  }
+
+  .bar-track {
+    flex: 1;
+    background: var(--cream);
+    border-radius: 4px;
+    height: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: #fff;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bar-fill.gold-fill { background: var(--gold); }
+  .bar-fill.rust-fill { background: var(--rust); }
+  .bar-fill.sage-fill { background: var(--sage); }
+  .bar-fill.ink-fill { background: var(--ink); }
+
+  /* ── LOTTERY VISUAL ── */
+  .lottery-visual {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .lottery-pill {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pill-spend { background: var(--rust); color: #fff; }
+  .pill-win { background: var(--sage); color: #fff; }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 1.8rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem;
+    top: 0.4rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+
+  .tl-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+  }
+
+  .tl-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .tl-item p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* ── SUMMARY ── */
+  .summary-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5rem 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .summary-inner { max-width: 760px; margin: 0 auto; }
+
+  .summary-section .section-label { color: var(--gold); }
+
+  .summary-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    margin-bottom: 2rem;
+    color: var(--paper);
+  }
+
+  .takeaways {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .takeaway {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 1.4rem;
+  }
+
+  .takeaway .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.8rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+
+  .takeaway h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    color: var(--paper);
+  }
+
+  .takeaway p {
+    font-size: 0.85rem;
+    color: #8a837a;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .final-line {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-style: italic;
+    color: #b0a99e;
+    text-align: center;
+  }
+
+  .final-line em { color: var(--gold); font-style: normal; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">The Psychology of Money · Chapter 1</p>
+  <h1>No One's <em>Crazy</em></h1>
+  <p class="hero-sub">Your financial decisions are shaped by experiences no spreadsheet can capture — and that's perfectly human.</p>
+  <div class="hero-scroll">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    Scroll to explore
+  </div>
+</section>
+
+<main class="main">
+
+  <!-- SECTION 1: THE CORE IDEA -->
+  <section class="section fade-in">
+    <p class="section-label">The Core Idea</p>
+    <h2>We all learned money from completely different worlds</h2>
+    <p>People raised in poverty think about risk and reward differently than children of wealthy bankers. Someone who survived hyperinflation sees bonds as a threat. Someone who grew up in a booming stock market sees equities as obvious. Neither is wrong — they're just products of experience.</p>
+
+    <div class="pullquote">
+      <p>"Your personal experiences with money make up maybe 0.00000001% of what's happened in the world, but maybe 80% of how you think the world works."</p>
+    </div>
+
+    <p>This is why equally intelligent people can look at the same economic data and reach completely opposite conclusions. It's not about education or IQ — it's about the dumb luck of when and where you were born.</p>
+  </section>
+
+  <!-- SECTION 2: EXPERIENCE CARDS -->
+  <section class="section fade-in">
+    <p class="section-label">Different Worlds, Different Lessons</p>
+    <h2>The same event looks different from every window</h2>
+    <p>Here are real examples from the chapter — groups of people who experienced the same era of history in radically different ways, and drew lasting conclusions from it.</p>
+
+    <div class="experience-grid">
+      <div class="exp-card gold">
+        <div class="era">Born 1970 · USA</div>
+        <h3>The Boom Generation</h3>
+        <p>Experienced the S&P 500 grow nearly <strong>10× (inflation-adjusted)</strong> during their teens and 20s. To them, stocks are wealth machines. Investing seems obvious.</p>
+      </div>
+      <div class="exp-card rust">
+        <div class="era">Born 1950 · USA</div>
+        <h3>The Stagnant Market</h3>
+        <p>The market went <strong>nowhere for 20 years</strong> in their formative period. To them, stocks felt risky and unreliable. A cautious approach made perfect sense.</p>
+      </div>
+      <div class="exp-card sage">
+        <div class="era">Born 1960 · USA</div>
+        <h3>The Inflation Survivor</h3>
+        <p>Saw prices <strong>triple in their 20s</strong>. They remember gas lines and shrinking paychecks. Inflation is a living fear, not an abstract statistic.</p>
+      </div>
+      <div class="exp-card gold">
+        <div class="era">Born 1990 · USA</div>
+        <h3>The Stable Generation</h3>
+        <p>Inflation has been <strong>low their entire life</strong>. It barely registers as a concept. Saving feels natural — they've never watched money quietly disappear.</p>
+      </div>
+      <div class="exp-card rust">
+        <div class="era">WWII Era · Germany & Japan</div>
+        <h3>The Wiped Out</h3>
+        <p>Local stock markets were <strong>bombed into rubble</strong>. Capital and trust were destroyed simultaneously. No wonder caution defined a generation's finances.</p>
+      </div>
+      <div class="exp-card sage">
+        <div class="era">WWII Era · USA</div>
+        <h3>The American Exception</h3>
+        <p>While the world burned, the US market <strong>doubled</strong> between 1941–1945. Americans emerged from war as economic optimists. Europeans did not.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: INTERACTIVE SIMULATOR -->
+  <section class="section fade-in">
+    <p class="section-label">Interactive Experience</p>
+    <h2>What would your financial worldview look like?</h2>
+    <p>Choose a birth decade and background to see what economic reality shaped you — and why your money instincts make perfect sense, even if they differ wildly from someone born just 10 years apart.</p>
+
+    <div class="simulator">
+      <p class="sim-title">Your Financial DNA Simulator</p>
+      <p class="sim-desc">Selections update the perspective below in real time.</p>
+
+      <div class="sim-controls">
+        <div class="sim-group">
+          <label>Birth Decade</label>
+          <select id="birthDecade">
+            <option value="1930">1930s</option>
+            <option value="1950">1950s</option>
+            <option value="1960">1960s</option>
+            <option value="1970" selected>1970s</option>
+            <option value="1980">1980s</option>
+            <option value="1990">1990s</option>
+          </select>
+        </div>
+        <div class="sim-group">
+          <label>Economic Background</label>
+          <select id="background">
+            <option value="poor">Low Income</option>
+            <option value="middle" selected>Middle Class</option>
+            <option value="wealthy">Wealthy Family</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sim-result">
+        <div class="sim-result-label">YOUR FINANCIAL WORLDVIEW</div>
+        <div class="sim-result-text" id="simOutput">Loading perspective...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: STOCK MARKET CHART -->
+  <section class="section fade-in">
+    <p class="section-label">Real Data</p>
+    <h2>Two people, one market, opposite conclusions</h2>
+    <p>The chart below illustrates how the S&P 500 (inflation-adjusted) looked during the formative years of someone born in 1950 vs. someone born in 1970. Same index. Completely different takeaway.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">S&P 500 — Inflation-Adjusted Returns by Formative Window</div>
+      <div class="chart-subtitle">Index normalized to 100 at start of each cohort's teen years</div>
+      <canvas id="spChart" height="260"></canvas>
+    </div>
+
+    <div class="chart-wrap" style="margin-top:1.5rem;">
+      <div class="chart-title">Unemployment Rate by Group — November 2009</div>
+      <div class="chart-subtitle">Same national recession, radically different personal realities</div>
+      <div class="bar-chart" id="unemploymentBars"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: LOTTERY -->
+  <section class="section fade-in">
+    <p class="section-label">The Lottery Example</p>
+    <h2>Buying a dream, not a ticket</h2>
+    <p>Americans spend more on lottery tickets than on movies, video games, music, sporting events, and books <em>combined</em>. The heaviest buyers? The lowest-income households.</p>
+
+    <div class="lottery-visual">
+      <span class="lottery-pill pill-spend">$412 avg/year · lowest-income households</span>
+      <span class="lottery-pill pill-win">4× more than highest-income households</span>
+      <span class="lottery-pill pill-spend">40% can't cover $400 emergency</span>
+    </div>
+
+    <div class="pullquote">
+      <p>"We are paying for a dream, and you may not understand that because you are already living a dream."</p>
+    </div>
+
+    <p>It's not irrational to the people buying. For those with no realistic path to wealth, a $2 ticket is the only affordable unit of hope. The logic is deeply human — even if the math is terrible.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Annual Lottery Spending vs. Entertainment Categories</div>
+      <div class="chart-subtitle">US Consumer Spending · approximate figures</div>
+      <div class="bar-chart" id="lotteryBars"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: TIMELINE — How New This All Is -->
+  <section class="section fade-in">
+    <p class="section-label">Historical Context</p>
+    <h2>We are all newbies at this</h2>
+    <p>The financial tools and concepts we treat as normal are shockingly recent. No wonder we make mistakes — there's almost no accumulated wisdom to draw from.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">600 BC</div>
+        <h4>First Currency — King Alyattes of Lydia</h4>
+        <p>Money itself is ancient. But modern personal finance is a newborn compared to this.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1940</div>
+        <h4>First Social Security Check ($22.54)</h4>
+        <p>Ida May Fuller received $22.54 — equivalent to ~$416 today. Retirement as a right barely existed.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1940s</div>
+        <h4>Pre-WWII: Most Americans Worked Until Death</h4>
+        <p>Labor force participation for men 65+ was above 50%. Retirement was a luxury concept, not an expectation.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1970s</div>
+        <h4>Consumer Debt Takes Off Post-GI Bill</h4>
+        <p>Mortgages, credit cards, car loans — widespread borrowing only normalized after WWII.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1978</div>
+        <h4>401(k) Created</h4>
+        <p>The backbone of American retirement savings didn't exist until 1978. That's younger than many working adults today.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1993</div>
+        <h4>Index Funds Go Mainstream</h4>
+        <p>Widespread index fund access is less than 50 years old. Vanguard's retail funds changed everything — recently.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1998</div>
+        <h4>Roth IRA Born</h4>
+        <p>The Roth IRA — arguably the most powerful retirement tool for young savers — is barely old enough to drink.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- SUMMARY -->
+<div class="summary-section">
+  <div class="summary-inner">
+    <p class="section-label">Chapter Summary</p>
+    <h2>Key Takeaways</h2>
+
+    <div class="takeaways">
+      <div class="takeaway">
+        <div class="num">01</div>
+        <h4>No one is crazy</h4>
+        <p>Every financial decision makes sense to the person making it, based on what they've lived through. Judgment without understanding their experience is unfair.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">02</div>
+        <h4>Experience > Education</h4>
+        <p>You can read about the Great Depression, but you won't change your behavior the way someone who lived it did. Emotional memory is more powerful than textbook knowledge.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">03</div>
+        <h4>Birth year is destiny (somewhat)</h4>
+        <p>Research shows investment decisions are heavily anchored to economic conditions during your early adult life — not your IQ or sophistication.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">04</div>
+        <h4>Modern finance is an infant</h4>
+        <p>Index funds, 401(k)s, widespread mortgages, and Roth IRAs are all younger than 50 years. We are all winging it with brand-new tools.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">05</div>
+        <h4>Context before judgment</h4>
+        <p>Before calling someone's money decision crazy — lottery tickets, avoiding stocks, living paycheck to paycheck — ask what world they grew up in.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">06</div>
+        <h4>Humility is the starting point</h4>
+        <p>Your view of money reflects your tiny slice of history. Staying curious about other people's worldviews makes you a better investor, partner, and person.</p>
+      </div>
+    </div>
+
+    <p class="final-line">
+      "We all do crazy stuff with money, because we're all relatively new to this game — and what looks <em>crazy to you</em> might make perfect sense to me."
+    </p>
+  </div>
+</div>
+
+<footer>The Psychology of Money · Morgan Housel · Chapter 1 Summary &amp; Visual Guide</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ── INTERSECTION OBSERVER for fade-in ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── S&P CHART ──
+const spCtx = document.getElementById('spChart').getContext('2d');
+
+// Approximate relative index values for each cohort's 15-year formative window
+const years = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+const labels = years.map(y => `Year ${y+1}`);
+
+// 1950s cohort (teen years ~1963-1977) — flat/stagnant real returns
+const cohort1950 = [100,99,104,103,106,108,102,101,96,89,84,80,83,87,90];
+// 1970s cohort (teen years ~1983-1997) — massive bull run
+const cohort1970 = [100,108,120,136,148,152,162,174,190,210,230,250,285,320,360];
+
+new Chart(spCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Born 1950 (formative years: flat market)',
+        data: cohort1950,
+        borderColor: '#b85c38',
+        backgroundColor: 'rgba(184,92,56,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        borderWidth: 2.5
+      },
+      {
+        label: 'Born 1970 (formative years: bull market)',
+        data: cohort1970,
+        borderColor: '#4a7c59',
+        backgroundColor: 'rgba(74,124,89,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        borderWidth: 2.5
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { family: 'Inter', size: 12 }, color: '#3a3530' } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label.split('(')[0].trim()}: ${ctx.parsed.y} (index)`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#ede8e0' }, ticks: { color: '#7a7470', font: { size: 11 } } },
+      y: {
+        grid: { color: '#ede8e0' },
+        ticks: { color: '#7a7470', font: { size: 11 } },
+        title: { display: true, text: 'Inflation-Adjusted Index (base 100)', color: '#7a7470', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ── UNEMPLOYMENT BARS ──
+const unemploymentData = [
+  { label: 'Nat\'l Average (Nov 2009)', pct: 10, fill: 'ink-fill' },
+  { label: 'White Women 45+, College Degree', pct: 4, fill: 'sage-fill' },
+  { label: 'All Adults (approx)', pct: 10, fill: 'gold-fill' },
+  { label: 'Black Males 16–19, No Diploma', pct: 49, fill: 'rust-fill' },
+];
+
+const uContainer = document.getElementById('unemploymentBars');
+unemploymentData.forEach(d => {
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  row.innerHTML = `
+    <div class="bar-label">${d.label}</div>
+    <div class="bar-track">
+      <div class="bar-fill ${d.fill}" style="width:0%" data-target="${d.pct * 2}%">${d.pct}%</div>
+    </div>`;
+  uContainer.appendChild(row);
+});
+
+// ── LOTTERY BARS ──
+const lotteryData = [
+  { label: 'Lottery Tickets', pct: 100, fill: 'rust-fill', note: '$105B' },
+  { label: 'Video Games', pct: 55, fill: 'gold-fill', note: '$57B' },
+  { label: 'Movies', pct: 43, fill: 'sage-fill', note: '$45B' },
+  { label: 'Music', pct: 20, fill: 'ink-fill', note: '$21B' },
+  { label: 'Sporting Events', pct: 18, fill: 'gold-fill', note: '$19B' },
+  { label: 'Books', pct: 10, fill: 'sage-fill', note: '$10B' },
+];
+
+const lContainer = document.getElementById('lotteryBars');
+lotteryData.forEach(d => {
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  row.innerHTML = `
+    <div class="bar-label">${d.label}</div>
+    <div class="bar-track">
+      <div class="bar-fill ${d.fill}" style="width:0%" data-target="${d.pct}%">${d.note}</div>
+    </div>`;
+  lContainer.appendChild(row);
+});
+
+// Animate bars on scroll into view
+const barObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.target; }, 200);
+      });
+      barObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.bar-chart').forEach(el => barObserver.observe(el));
+
+// ── SIMULATOR ──
+const perspectives = {
+  '1930': {
+    poor: `You grew up during the <strong>Great Depression</strong>. Hunger and unemployment shaped everything. Banks failed. You keep cash hidden at home. You've never trusted the stock market — it wiped people out. Debt is terrifying. You save obsessively and spend reluctantly, even decades after things improved.`,
+    middle: `The Depression defined your childhood even if your family survived it. You watched neighbors lose homes. You believe in <strong>hard work and frugality</strong> above all else. You're suspicious of credit, nervous about equities, and you save more than your income probably requires.`,
+    wealthy: `Like JFK, the Depression meant extra gardeners on the estate. Your family's <strong>wealth grew</strong>. You heard about hardship but didn't feel it. You entered adulthood trusting capital, investing early, and seeing the market as a long-term friend — because for you, it always was.`
+  },
+  '1950': {
+    poor: `Your formative years were the <strong>stagflation 1960s-70s</strong>. Prices kept rising. Paychecks shrank in real terms. Stocks went nowhere for decades. You learned that hard assets and cash were safer than paper. You're still skeptical of equities and wary of inflation eating your savings.`,
+    middle: `You came of age in the <strong>flat-market era</strong>. The S&P barely moved in real terms during your 20s. You saved in bonds, CDs, and real estate. You weren't lazy — you were rational, given what you'd seen. Stock market optimists confused you for years.`,
+    wealthy: `Your family's wealth was managed conservatively and survived the flat markets. You watched interest rates soar to 20%+ in the early 80s, making bonds <strong>wildly profitable</strong>. You became a bond investor, and it worked — much like Bill Gross, whose timing was everything.`
+  },
+  '1960': {
+    poor: `Inflation during your teens hit <strong>threefold price increases</strong>. Gas lines. Evaporating paychecks. You lived the silent tax on the poor that inflation represents. You buy gold, pay off debt fast, and deeply distrust governments that print money. That instinct was earned.`,
+    middle: `You remember when a dollar meant less year after year. You developed a healthy <strong>fear of inflation</strong> that most millennials find baffling. You bought a home early and paid it down aggressively. Not because you read a finance book — because you lived through the alternative.`,
+    wealthy: `Inflation stung but didn't break you. Your family's assets — real estate, equities — kept pace. You understood early that <strong>owning things beats holding cash</strong>. That insight proved enormously valuable as markets recovered through the 80s and 90s.`
+  },
+  '1970': {
+    poor: `The <strong>1980s–90s bull market</strong> happened around you but not for you. You couldn't invest — survival came first. The prosperity others talk about felt distant. You relate more to lottery buyers than index fund investors. Not irrational: just a different life with different options.`,
+    middle: `Your teens and 20s coincided with one of history's <strong>greatest bull markets</strong>. Stocks tripled, then tripled again. Investing felt natural and obvious. You probably started a 401(k) early. To you, "just buy index funds" is common sense. To someone born in 1950, it sounds reckless.`,
+    wealthy: `The 80s and 90s were extraordinary for your family's capital. The market's <strong>10× real return</strong> during your formative years confirmed what you were taught: markets reward patience. You entered your career with deep confidence in equities that people from other eras genuinely couldn't share.`
+  },
+  '1980': {
+    poor: `The 90s boom was happening all around you, but not in your neighborhood. You saw wealth on TV. College tuition was <strong>rising faster than wages</strong>. Debt became normalized. You took out loans that seemed manageable and found out later they weren't. The system felt rigged — because sometimes it was.`,
+    middle: `You grew up in prosperity, graduated into the <strong>dot-com crash or 2008 crisis</strong>. Your first major market experience was a crash. That's left a mark. You're more cautious than your parents expected, and you distrust market cheerleaders more than your peers who entered the workforce in calmer times.`,
+    wealthy: `Family wealth survived the downturns. You were taught to see crashes as <strong>buying opportunities</strong>, not disasters. You have the long-term perspective that financial advisors recommend but that only experience — or wealth as a safety net — can truly provide.`
+  },
+  '1990': {
+    poor: `You've known little but <strong>low inflation and digital everything</strong>. But low rates didn't mean easy money for you — housing costs soared. Student debt normalized. Gig work replaced stable employment. Your parents say you're irresponsible; you say the game changed and they didn't notice.`,
+    middle: `Inflation has never been a real concern in your life. The <strong>2008 crash happened when you were a teenager</strong> — old enough to notice, young enough not to have lost savings. You're comfortable with apps, crypto, and robo-advisors. Traditional finance advice feels out of date because your world genuinely is different.`,
+    wealthy: `Every crash has been a footnote in your family's long-term wealth story. Markets recover. <strong>Compound interest is your inheritance</strong>. You've never had to choose between saving and eating. That shapes a financial worldview that is genuinely hard for others without that safety net to adopt.`
+  }
+};
+
+function updateSim() {
+  const decade = document.getElementById('birthDecade').value;
+  const bg = document.getElementById('background').value;
+  document.getElementById('simOutput').innerHTML = perspectives[decade][bg];
+}
+
+document.getElementById('birthDecade').addEventListener('change', updateSim);
+document.getElementById('background').addEventListener('change', updateSim);
+updateSim();
+</script>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychology of Money — Never Enough</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#12100e;
+  --paper:#f6f3ef;
+  --cream:#eee8df;
+  --gold:#c8a030;
+  --enough:#4a7c59;
+  --greed:#b84040;
+  --warn:#d4803a;
+  --muted:#7a7470;
+  --card:#ffffff;
+  --border:#ddd8cf;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:4rem 1.5rem 3rem;background:var(--ink);color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 70%,rgba(200,160,48,0.14) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;
+}
+
+/* Goalpost animation */
+.goalpost-wrap{margin-bottom:2rem;width:180px;height:60px;position:relative;margin-left:auto;margin-right:auto}
+.goalpost-track{
+  width:100%;height:8px;background:rgba(255,255,255,0.08);
+  border-radius:4px;position:absolute;top:50%;transform:translateY(-50%);
+}
+.goalpost-runner{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--gold);position:absolute;top:50%;transform:translateY(-50%);
+  box-shadow:0 0 12px rgba(200,160,48,0.6);
+  animation:run 3s ease-in-out infinite;
+}
+.goalpost-post{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:4px;height:40px;background:rgba(255,255,255,0.25);border-radius:2px;
+  animation:postmove 3s ease-in-out infinite;
+}
+.goalpost-post::before,.goalpost-post::after{
+  content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:14px;height:3px;background:rgba(255,255,255,0.25);border-radius:2px;
+}
+.goalpost-post::before{top:-2px} .goalpost-post::after{bottom:-2px}
+
+@keyframes run{
+  0%{left:0%} 60%{left:72%} 65%{left:65%} 70%{left:72%} 100%{left:0%}
+}
+@keyframes postmove{
+  0%,59%{right:0} 60%,100%{right:-30px}
+}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.6rem,7vw,5rem);
+  font-weight:700;line-height:1.1;max-width:620px;margin-bottom:1rem;
+}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{
+  font-size:clamp(0.9rem,2.2vw,1.15rem);
+  color:#9a9390;max-width:480px;margin-bottom:2.5rem;font-weight:300;
+}
+.hero-quote{
+  border:1px solid rgba(200,160,48,0.3);border-radius:10px;
+  padding:1rem 1.8rem;max-width:420px;margin-bottom:2.5rem;
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(1rem,2.2vw,1.2rem);color:#d4cdc6;
+}
+.hero-quote cite{
+  display:block;font-style:normal;font-family:'DM Mono',monospace;
+  font-size:0.68rem;letter-spacing:0.1em;color:var(--gold);margin-top:0.5rem;
+}
+.hero-scroll{
+  color:#5e5a58;font-family:'DM Mono',monospace;font-size:0.72rem;
+  letter-spacing:0.12em;display:flex;flex-direction:column;align-items:center;gap:0.4rem;
+  animation:bob 2s ease-in-out infinite;
+}
+.hero-scroll svg{width:18px;height:18px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* LAYOUT */
+.main{max-width:920px;margin:0 auto;padding:0 1.5rem}
+.section{padding:5rem 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:0.68rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:0.8rem;
+}
+.section h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.55rem,4vw,2.3rem);
+  font-weight:700;line-height:1.25;margin-bottom:1.3rem;
+}
+.section p{color:#3a3530;font-size:1rem;max-width:700px;margin-bottom:1rem}
+
+.pullquote{
+  border-left:3px solid var(--gold);padding:1rem 1.5rem;
+  margin:2.5rem 0;background:var(--cream);border-radius:0 8px 8px 0;
+}
+.pullquote p{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.05rem,2.5vw,1.3rem);
+  font-style:italic;color:var(--ink);margin:0;
+}
+
+/* PROFILE CARDS */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2rem}
+@media(max-width:600px){.profile-grid{grid-template-columns:1fr}}
+
+.profile-card{
+  border-radius:12px;padding:1.8rem;border:1.5px solid;
+  position:relative;overflow:hidden;
+}
+.profile-card.gupta{border-color:rgba(184,64,64,0.3);background:rgba(184,64,64,0.05)}
+.profile-card.madoff{border-color:rgba(184,64,64,0.25);background:rgba(184,64,64,0.04)}
+
+.profile-card .tag{
+  font-family:'DM Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--greed);margin-bottom:0.6rem;
+}
+.profile-card h3{
+  font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:0.8rem;
+}
+.profile-stat{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:0.4rem 0;border-bottom:1px solid rgba(0,0,0,0.07);
+  font-size:0.85rem;
+}
+.profile-stat:last-of-type{border-bottom:none}
+.profile-stat .label{color:var(--muted)}
+.profile-stat .value{font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--ink)}
+.profile-stat .value.red{color:var(--greed)}
+.profile-stat .value.green{color:var(--enough)}
+
+/* ENOUGH METER */
+.enough-sim{
+  background:var(--ink);color:var(--paper);
+  border-radius:14px;padding:2.5rem;margin-top:2rem;
+}
+.enough-sim h3{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:0.3rem}
+.enough-sim .desc{font-size:0.85rem;color:#8a837a;margin-bottom:2rem}
+
+.meter-group{margin-bottom:1.8rem}
+.meter-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  color:var(--gold);margin-bottom:0.5rem;letter-spacing:0.08em;
+}
+.meter-track{
+  width:100%;height:28px;background:rgba(255,255,255,0.07);
+  border-radius:6px;position:relative;overflow:hidden;
+}
+.meter-fill{
+  height:100%;border-radius:6px;
+  display:flex;align-items:center;padding:0 0.8rem;
+  font-family:'DM Mono',monospace;font-size:0.75rem;color:#fff;
+  transition:width 0.6s cubic-bezier(0.22,1,0.36,1),background 0.6s;
+}
+.meter-danger{
+  position:absolute;right:0;top:0;bottom:0;
+  width:2px;background:var(--greed);opacity:0.8;
+}
+.meter-danger-label{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--greed);
+  white-space:nowrap;
+}
+
+.sim-sliders{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+@media(max-width:500px){.sim-sliders{grid-template-columns:1fr}}
+.sl-group label{
+  display:block;font-family:'DM Mono',monospace;font-size:0.68rem;
+  letter-spacing:0.1em;color:var(--gold);margin-bottom:0.4rem;
+}
+.sl-group input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer}
+.sl-group .val{font-family:'DM Mono',monospace;font-size:1rem;color:var(--paper);margin-top:0.3rem}
+
+.sim-verdict{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;padding:1.2rem 1.4rem;margin-top:1rem;
+}
+.sim-verdict .verdict-label{
+  font-family:'DM Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.12em;color:var(--gold);margin-bottom:0.4rem;
+}
+.sim-verdict .verdict-text{font-size:0.92rem;color:#d4cec9;line-height:1.6}
+.sim-verdict .verdict-text strong{color:#fff}
+
+/* COMPARISON LADDER */
+.ladder{margin:2rem 0}
+.ladder-item{
+  display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;
+  position:relative;
+}
+.ladder-icon{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--cream);border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;flex-shrink:0;
+}
+.ladder-body{flex:1}
+.ladder-name{font-size:0.9rem;font-weight:500;color:var(--ink)}
+.ladder-salary{
+  font-family:'DM Mono',monospace;font-size:0.78rem;
+  color:var(--muted);
+}
+.ladder-bar-wrap{width:120px;flex-shrink:0}
+.ladder-bar{
+  height:8px;border-radius:4px;background:var(--enough);
+  transition:width 1s cubic-bezier(0.22,1,0.36,1);
+}
+.ladder-feel{
+  font-family:'DM Mono',monospace;font-size:0.65rem;
+  width:60px;flex-shrink:0;text-align:right;
+  letter-spacing:0.05em;
+}
+.feel-rich{color:var(--enough)}
+.feel-broke{color:var(--greed)}
+.feel-mid{color:var(--warn)}
+
+.ladder-connector{
+  width:2px;height:14px;background:var(--border);
+  margin-left:17px;margin-bottom:0;
+}
+
+/* CANVAS */
+canvas{width:100%!important}
+.chart-wrap{
+  margin-top:2rem;background:var(--card);
+  border:1px solid var(--border);border-radius:12px;
+  padding:1.8rem 1.5rem 1.2rem;
+}
+.chart-title{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:0.25rem}
+.chart-subtitle{font-size:0.78rem;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:1.4rem}
+
+/* RULES GRID */
+.rules-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.2rem;margin-top:2rem;
+}
+.rule-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:1.6rem;
+  border-top:3px solid var(--gold);
+}
+.rule-num{
+  font-family:'DM Mono',monospace;font-size:0.68rem;
+  letter-spacing:0.15em;color:var(--gold);margin-bottom:0.5rem;
+}
+.rule-card h3{
+  font-family:'Playfair Display',serif;font-size:1.05rem;
+  margin-bottom:0.5rem;line-height:1.3;
+}
+.rule-card p{font-size:0.87rem;color:#4a4540;line-height:1.6;margin:0}
+
+/* INVALUABLE */
+.invaluable-grid{
+  display:flex;flex-wrap:wrap;gap:0.7rem;margin-top:1.5rem;
+}
+.inv-chip{
+  padding:0.5rem 1.1rem;border-radius:24px;
+  font-size:0.88rem;border:1.5px solid;
+  transition:transform 0.2s,box-shadow 0.2s;
+  cursor:default;
+}
+.inv-chip:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+.inv-chip.c1{border-color:rgba(74,124,89,0.5);color:var(--enough);background:rgba(74,124,89,0.08)}
+.inv-chip.c2{border-color:rgba(200,160,48,0.5);color:#9a7820;background:rgba(200,160,48,0.08)}
+.inv-chip.c3{border-color:rgba(61,127,191,0.5);color:#3d7fbf;background:rgba(61,127,191,0.08)}
+.inv-chip.c4{border-color:rgba(184,64,64,0.4);color:var(--greed);background:rgba(184,64,64,0.06)}
+
+/* SUMMARY */
+.summary-section{
+  background:var(--ink);color:var(--paper);
+  padding:5rem 1.5rem;margin-top:4rem;
+}
+.summary-inner{max-width:780px;margin:0 auto}
+.summary-section .section-label{color:var(--gold)}
+.summary-section h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.55rem,4vw,2.3rem);margin-bottom:2rem;color:var(--paper);
+}
+.takeaways{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1.2rem;margin-bottom:2.5rem;
+}
+.takeaway{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;padding:1.4rem;
+}
+.takeaway .num{
+  font-family:'DM Mono',monospace;font-size:1.7rem;
+  color:var(--gold);line-height:1;margin-bottom:0.5rem;
+}
+.takeaway h4{font-family:'Playfair Display',serif;font-size:0.98rem;margin-bottom:0.35rem;color:var(--paper)}
+.takeaway p{font-size:0.83rem;color:#8a837a;line-height:1.55;margin:0}
+
+.final-quote{
+  border-top:1px solid rgba(255,255,255,0.1);padding-top:2.5rem;text-align:center;
+}
+.final-quote p{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.1rem,2.8vw,1.45rem);
+  font-style:italic;color:#b0a99e;line-height:1.6;margin:0;
+}
+.final-quote em{color:var(--gold);font-style:normal}
+
+footer{
+  text-align:center;padding:2rem;
+  font-family:'DM Mono',monospace;font-size:0.68rem;
+  color:var(--muted);letter-spacing:0.1em;
+}
+
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-in.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">The Psychology of Money · Chapter 3</p>
+
+  <div class="goalpost-wrap">
+    <div class="goalpost-track"></div>
+    <div class="goalpost-runner"></div>
+    <div class="goalpost-post"></div>
+  </div>
+
+  <h1>Never <em>Enough</em></h1>
+  <p class="hero-sub">The goalpost keeps moving. The one word that can stop it — and the people who never found it.</p>
+
+  <div class="hero-quote">
+    "Yes, but I have something he will never have… enough."
+    <cite>— Joseph Heller, to Kurt Vonnegut</cite>
+  </div>
+
+  <div class="hero-scroll">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    Scroll to explore
+  </div>
+</section>
+
+<main class="main">
+
+  <!-- SECTION 1: CORE IDEA -->
+  <section class="section fade-in">
+    <p class="section-label">The Core Idea</p>
+    <h2>Having more doesn't satisfy — it raises the threshold</h2>
+    <p>At a party, Joseph Heller learns that their billionaire host made more in a single day than Heller earned from <em>Catch-22</em> in its entire history. His response is one of the most quietly powerful ideas in personal finance: <em>enough</em>.</p>
+    <p>For a critical part of society — including many of the wealthiest — the concept of enough has ceased to exist. The goalpost doesn't just move. It sprints ahead faster than you can run.</p>
+
+    <div class="pullquote">
+      <p>"Happiness, as it's said, is just results minus expectations."</p>
+    </div>
+
+    <p>When expectations rise as fast — or faster — than results, no amount of success produces satisfaction. And when satisfaction disappears, risk-taking escalates. That's when everything goes wrong.</p>
+  </section>
+
+  <!-- SECTION 2: CASE STUDIES -->
+  <section class="section fade-in">
+    <p class="section-label">Case Studies</p>
+    <h2>Two men who had everything — and lost it all chasing more</h2>
+    <p>Rajat Gupta and Bernie Madoff weren't desperate criminals. They were enormously successful, legitimately wealthy, and genuinely powerful. And they threw it away — not out of need, but out of want.</p>
+
+    <div class="profile-grid">
+      <div class="profile-card gupta">
+        <div class="tag">● The Insider</div>
+        <h3>Rajat Gupta</h3>
+        <div class="profile-stat"><span class="label">Origin</span><span class="value">Orphaned in Kolkata slums</span></div>
+        <div class="profile-stat"><span class="label">Peak role</span><span class="value">CEO, McKinsey</span></div>
+        <div class="profile-stat"><span class="label">Net worth (2008)</span><span class="value green">~$100M</span></div>
+        <div class="profile-stat"><span class="label">Passive income @ 5%</span><span class="value green">$600/hr, 24/7</span></div>
+        <div class="profile-stat"><span class="label">What he wanted</span><span class="value red">$1B+ (billionaire circle)</span></div>
+        <div class="profile-stat"><span class="label">What he did</span><span class="value red">Insider trading tips</span></div>
+        <div class="profile-stat"><span class="label">Illegal profits</span><span class="value red">~$17M</span></div>
+        <div class="profile-stat"><span class="label">Outcome</span><span class="value red">Prison. Career gone.</span></div>
+      </div>
+      <div class="profile-card madoff">
+        <div class="tag">● The Schemer</div>
+        <h3>Bernie Madoff</h3>
+        <div class="profile-stat"><span class="label">Legitimate business</span><span class="value">Market maker, hugely successful</span></div>
+        <div class="profile-stat"><span class="label">Daily trading volume</span><span class="value green">$740M (9% of NYSE)</span></div>
+        <div class="profile-stat"><span class="label">Legitimate income</span><span class="value green">$25M–$50M/year</span></div>
+        <div class="profile-stat"><span class="label">What he wanted</span><span class="value red">Even more</span></div>
+        <div class="profile-stat"><span class="label">What he built</span><span class="value red">Largest Ponzi scheme in history</span></div>
+        <div class="profile-stat"><span class="label">Duration of fraud</span><span class="value red">~20 years</span></div>
+        <div class="profile-stat"><span class="label">Victims' losses</span><span class="value red">~$65 billion</span></div>
+        <div class="profile-stat"><span class="label">Outcome</span><span class="value red">150 years. Prison. Death there.</span></div>
+      </div>
+    </div>
+
+    <div class="pullquote" style="margin-top:2rem">
+      <p>"To make money they didn't have and didn't need, they risked what they did have and did need. And that's foolish. It is just plain foolish." — Warren Buffett on LTCM</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ENOUGH SIMULATOR -->
+  <section class="section fade-in">
+    <p class="section-label">Interactive</p>
+    <h2>Your personal "enough" meter</h2>
+    <p>Adjust your wealth and your ambition. Watch the gap between them — that gap is the danger zone where risk-taking escalates and rationality dissolves.</p>
+
+    <div class="enough-sim">
+      <h3>The Enough Meter</h3>
+      <p class="desc">Move the sliders and watch where satisfaction ends and danger begins.</p>
+
+      <div class="sim-sliders">
+        <div class="sl-group">
+          <label>Current Wealth Level</label>
+          <input type="range" id="wealthSlider" min="1" max="10" value="5" step="1">
+          <div class="val" id="wealthVal">Comfortable ($1M–$5M)</div>
+        </div>
+        <div class="sl-group">
+          <label>Ambition / Comparison Peer</label>
+          <input type="range" id="ambitionSlider" min="1" max="10" value="7" step="1">
+          <div class="val" id="ambitionVal">Billionaire circle</div>
+        </div>
+      </div>
+
+      <div class="meter-group">
+        <div class="meter-label">
+          <span>SATISFACTION</span>
+          <span id="satPct">—</span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-fill" id="satFill" style="width:0%"></div>
+          <div class="meter-danger" style="right:25%"></div>
+          <div class="meter-danger-label">RISK ZONE</div>
+        </div>
+      </div>
+
+      <div class="meter-group">
+        <div class="meter-label">
+          <span>RISK APPETITE</span>
+          <span id="riskPct">—</span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-fill" id="riskFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="sim-verdict">
+        <div class="verdict-label">DIAGNOSIS</div>
+        <div class="verdict-text" id="verdict">Adjust the sliders to see your profile.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: SOCIAL COMPARISON LADDER -->
+  <section class="section fade-in">
+    <p class="section-label">The Trap</p>
+    <h2>Social comparison has no ceiling</h2>
+    <p>The "rich" baseball player feels broke next to Mike Trout. Trout feels modest next to top hedge fund managers. The managers eye Buffett. Buffett looks up at Bezos. The ceiling doesn't exist — which means the game can never be won.</p>
+
+    <div class="ladder" id="ladderWrap">
+      <div class="ladder-item">
+        <div class="ladder-icon">⚾</div>
+        <div class="ladder-body">
+          <div class="ladder-name">Rookie Baseball Player</div>
+          <div class="ladder-salary">$500,000 / year</div>
+        </div>
+        <div class="ladder-bar-wrap"><div class="ladder-bar" style="width:0%" data-target="15%"></div></div>
+        <div class="ladder-feel feel-rich">Feels rich</div>
+      </div>
+      <div class="ladder-connector"></div>
+      <div class="ladder-item">
+        <div class="ladder-icon">🏆</div>
+        <div class="ladder-body">
+          <div class="ladder-name">Mike Trout</div>
+          <div class="ladder-salary">$36M / year</div>
+        </div>
+        <div class="ladder-bar-wrap"><div class="ladder-bar" style="width:0%" data-target="35%"></div></div>
+        <div class="ladder-feel feel-mid">Feels average</div>
+      </div>
+      <div class="ladder-connector"></div>
+      <div class="ladder-item">
+        <div class="ladder-icon">📈</div>
+        <div class="ladder-body">
+          <div class="ladder-name">Top Hedge Fund Manager</div>
+          <div class="ladder-salary">$340M+ / year</div>
+        </div>
+        <div class="ladder-bar-wrap"><div class="ladder-bar" style="width:0%" data-target="55%"></div></div>
+        <div class="ladder-feel feel-mid">Feels modest</div>
+      </div>
+      <div class="ladder-connector"></div>
+      <div class="ladder-item">
+        <div class="ladder-icon">🦁</div>
+        <div class="ladder-body">
+          <div class="ladder-name">Warren Buffett</div>
+          <div class="ladder-salary">+$3.5B wealth gain in 2018</div>
+        </div>
+        <div class="ladder-bar-wrap"><div class="ladder-bar" style="width:0%;background:var(--warn)" data-target="75%"></div></div>
+        <div class="ladder-feel feel-mid">Still looking up</div>
+      </div>
+      <div class="ladder-connector"></div>
+      <div class="ladder-item">
+        <div class="ladder-icon">🚀</div>
+        <div class="ladder-body">
+          <div class="ladder-name">Jeff Bezos</div>
+          <div class="ladder-salary">+$24B wealth gain in 2018</div>
+        </div>
+        <div class="ladder-bar-wrap"><div class="ladder-bar" style="width:0%;background:var(--greed)" data-target="100%"></div></div>
+        <div class="ladder-feel feel-broke">The ceiling</div>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      <p>"The only way to win is to not fight to begin with — to accept that you might have enough, even if it's less than those around you."</p>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Wealth vs. Satisfaction — The Diminishing Returns Curve</div>
+      <div class="chart-subtitle">Additional wealth delivers less additional happiness as you climb higher</div>
+      <canvas id="satisfactionChart" height="240"></canvas>
+    </div>
+  </section>
+
+  <!-- SECTION 5: 4 RULES -->
+  <section class="section fade-in">
+    <p class="section-label">The Framework</p>
+    <h2>Four truths about "enough"</h2>
+    <p>Housel lays out a clear framework for understanding why "enough" is so hard — and so essential.</p>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-num">RULE 01</div>
+        <h3>The goalpost must stop moving</h3>
+        <p>If expectations rise with results, extra effort produces no net satisfaction. When ambition outpaces fulfilment, the only response is to take greater and greater risk. The goalpost runs away faster than you can sprint.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">RULE 02</div>
+        <h3>Social comparison is the enemy</h3>
+        <p>The ceiling of social comparison is so high that no one ever reaches it. The rookie is broke next to Trout. Trout is modest next to hedge funds. The game can only be won by refusing to play it.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">RULE 03</div>
+        <h3>"Enough" is not too little</h3>
+        <p>Having enough isn't settling — it's recognising that the alternative is an insatiable appetite that pushes you to the point of regret. The inability to deny any dollar will eventually catch up with you.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">RULE 04</div>
+        <h3>Some things are never worth risking</h3>
+        <p>Reputation, freedom, family, love, happiness — these are invaluable. No financial gain justifies putting them on the table. The best time to stop taking risk is before you lose what money can't buy back.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: WHAT IS INVALUABLE -->
+  <section class="section fade-in">
+    <p class="section-label">What Can't Be Bought Back</p>
+    <h2>The things no amount of "more" is worth risking</h2>
+    <p>After prison, Gupta told the press he'd learned not to be "too attached" to his reputation. The author calls this the worst possible takeaway. These things don't have a price — which means no trade is ever worth making for them.</p>
+
+    <div class="invaluable-grid">
+      <span class="inv-chip c1">🛡️ Reputation</span>
+      <span class="inv-chip c2">🕊️ Freedom &amp; Independence</span>
+      <span class="inv-chip c3">👨‍👩‍👧 Family &amp; Friends</span>
+      <span class="inv-chip c1">❤️ Being Loved</span>
+      <span class="inv-chip c2">😌 Happiness</span>
+      <span class="inv-chip c3">🧘 Peace of Mind</span>
+      <span class="inv-chip c4">⏳ Time</span>
+      <span class="inv-chip c1">🤝 Trust</span>
+    </div>
+
+    <div class="pullquote" style="margin-top:2rem">
+      <p>"Your best shot at keeping these things is knowing when it's time to stop taking risks that might harm them. Knowing when you have enough."</p>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">What Gupta &amp; Madoff Actually Risked vs. Gained</div>
+      <div class="chart-subtitle">The trade: permanent losses for temporary, illegal gains</div>
+      <canvas id="tradeChart" height="220"></canvas>
+    </div>
+  </section>
+
+</main>
+
+<!-- SUMMARY -->
+<div class="summary-section">
+  <div class="summary-inner">
+    <p class="section-label">Chapter Summary</p>
+    <h2>Key Takeaways</h2>
+
+    <div class="takeaways">
+      <div class="takeaway">
+        <div class="num">01</div>
+        <h4>The word "enough" is a superpower</h4>
+        <p>Joseph Heller had it. Gupta and Madoff didn't. It's the single most powerful concept in financial well-being — and one of the rarest.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">02</div>
+        <h4>Wealth without enough is a trap</h4>
+        <p>$100M didn't satisfy Gupta. $50M/year didn't satisfy Madoff. More money without a sense of enough just raises the bar — it never fills the gap.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">03</div>
+        <h4>Social comparison has no finish line</h4>
+        <p>The only way to win the comparison game is to not play. Every rung reveals a higher one. The ceiling is infinite and unreachable.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">04</div>
+        <h4>Happiness = Results − Expectations</h4>
+        <p>If expectations keep rising with results, the math never closes. The route to happiness is controlling expectations, not endlessly increasing results.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">05</div>
+        <h4>Risking the irreplaceable is irrational</h4>
+        <p>Reputation, freedom, family, peace — these can't be rebuilt with money. No trade is worth making when these are on the table.</p>
+      </div>
+      <div class="takeaway">
+        <div class="num">06</div>
+        <h4>Enough isn't settling — it's arriving</h4>
+        <p>Knowing you have enough is not a surrender. It's the destination. It's what Heller had that the billionaire host never would.</p>
+      </div>
+    </div>
+
+    <div class="final-quote">
+      <p>"There is no reason to risk what you have and need for what you <em>don't have</em> and <em>don't need</em>."</p>
+    </div>
+  </div>
+</div>
+
+<footer>The Psychology of Money · Morgan Housel · Chapter 3 — Never Enough</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// FADE IN
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})
+},{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// LADDER ANIMATION
+const ladderObs=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){
+    document.querySelectorAll('.ladder-bar').forEach((b,i)=>{
+      setTimeout(()=>{b.style.width=b.dataset.target},i*200);
+    });
+    ladderObs.disconnect();
+  }
+},{threshold:0.2});
+if(document.getElementById('ladderWrap')) ladderObs.observe(document.getElementById('ladderWrap'));
+
+// ENOUGH SIMULATOR
+const wealthLevels=[
+  'Struggling (<$50K)','Working ($50K–$150K)','Stable ($150K–$500K)',
+  'Comfortable ($500K–$1M)','Comfortable ($1M–$5M)','Affluent ($5M–$20M)',
+  'Very Wealthy ($20M–$50M)','Ultra-Wealthy ($50M–$100M)',
+  'Centamillionaire ($100M+)','Billionaire ($1B+)'
+];
+const ambitionLevels=[
+  'Living within means','Matching peers','Upper-middle class',
+  'Top 1% income','Millionaire','Multi-millionaire',
+  'Billionaire circle','Top-10 hedge funds','Buffett-level',
+  'Bezos-level'
+];
+
+const wSlider=document.getElementById('wealthSlider');
+const aSlider=document.getElementById('ambitionSlider');
+
+function updateMeter(){
+  const w=parseInt(wSlider.value);
+  const a=parseInt(aSlider.value);
+  document.getElementById('wealthVal').textContent=wealthLevels[w-1];
+  document.getElementById('ambitionVal').textContent=ambitionLevels[a-1];
+
+  const sat=Math.max(0,Math.min(100,Math.round((w/a)*100*0.9)));
+  const risk=Math.max(5,Math.min(100,Math.round(((a-w+1)/10)*100)));
+
+  document.getElementById('satPct').textContent=sat+'%';
+  document.getElementById('riskPct').textContent=risk+'%';
+
+  const sf=document.getElementById('satFill');
+  sf.style.width=sat+'%';
+  sf.style.background=sat>66?'#4a7c59':sat>33?'#d4803a':'#b84040';
+
+  const rf=document.getElementById('riskFill');
+  rf.style.width=risk+'%';
+  rf.style.background=risk<40?'#4a7c59':risk<70?'#d4803a':'#b84040';
+
+  let verdict;
+  if(w>=a){
+    verdict='<strong>You have found enough.</strong> Your wealth exceeds or matches your ambition horizon. This is the rare and powerful state Heller described. Guard it — social comparison is always one conversation away.';
+  } else if(a-w<=2){
+    verdict='<strong>Close, but the goalpost is moving.</strong> Your wealth is nearly there, but ambition is just ahead. This is a healthy stretch — as long as the gap doesn\'t widen faster than you can close it.';
+  } else if(a-w<=5){
+    verdict='<strong>The gap is widening.</strong> Your ambition significantly outpaces your current wealth. This is where rationalisation begins — "just one more deal," "just a little more risk." Watch for this drift.';
+  } else {
+    verdict='<strong>Danger zone — the Gupta/Madoff territory.</strong> The gap between what you have and what you want is so large that the temptation to take outsized or even unethical risk becomes real. The goalpost has sprinted ahead.';
+  }
+  document.getElementById('verdict').innerHTML=verdict;
+}
+wSlider.addEventListener('input',updateMeter);
+aSlider.addEventListener('input',updateMeter);
+updateMeter();
+
+// SATISFACTION CURVE
+const satCtx=document.getElementById('satisfactionChart').getContext('2d');
+const wealthPts=['$0','$50K','$150K','$500K','$1M','$5M','$20M','$100M','$500M','$1B+'];
+const satPts=[0,45,62,73,80,85,88,90,91,91.5];
+const riskPts=[5,8,10,15,20,35,55,75,88,95];
+
+new Chart(satCtx,{
+  type:'line',
+  data:{
+    labels:wealthPts,
+    datasets:[
+      {
+        label:'Satisfaction',
+        data:satPts,
+        borderColor:'#4a7c59',backgroundColor:'rgba(74,124,89,0.1)',
+        fill:true,tension:0.5,borderWidth:2.5,pointRadius:4
+      },
+      {
+        label:'Risk Appetite (when "enough" is absent)',
+        data:riskPts,
+        borderColor:'#b84040',backgroundColor:'rgba(184,64,64,0.08)',
+        fill:true,tension:0.5,borderWidth:2.5,pointRadius:4,borderDash:[5,4]
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{labels:{font:{family:'Inter',size:12},color:'#3a3530'}},
+      tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(0)}`}}
+    },
+    scales:{
+      x:{grid:{color:'#ede8e0'},ticks:{color:'#7a7470',font:{size:11}}},
+      y:{
+        min:0,max:100,grid:{color:'#ede8e0'},
+        ticks:{color:'#7a7470',font:{size:11},callback:v=>v+'%'},
+        title:{display:true,text:'Relative Level (%)',color:'#7a7470',font:{size:11}}
+      }
+    }
+  }
+});
+
+// TRADE CHART
+const tradeCtx=document.getElementById('tradeChart').getContext('2d');
+new Chart(tradeCtx,{
+  type:'bar',
+  data:{
+    labels:['Reputation','Freedom','Career & Legacy','Peace of Mind','Relationships'],
+    datasets:[
+      {
+        label:'What was permanently lost',
+        data:[100,100,100,100,90],
+        backgroundColor:'rgba(184,64,64,0.75)',borderRadius:5
+      },
+      {
+        label:'What was illegally gained (temporary)',
+        data:[17,0,0,0,0],
+        backgroundColor:'rgba(200,160,48,0.6)',borderRadius:5
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{labels:{font:{family:'Inter',size:12},color:'#3a3530'}},
+      tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}% impact`}}
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{color:'#7a7470',font:{size:11}}},
+      y:{
+        max:110,grid:{color:'#ede8e0'},
+        ticks:{color:'#7a7470',font:{size:11},callback:v=>v+'%'},
+        title:{display:true,text:'Relative Impact (%)',color:'#7a7470',font:{size:11}}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
