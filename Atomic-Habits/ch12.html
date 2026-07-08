@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 12 · The Law of Least Effort — Atomic Habits Explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #0f1310;
+    --bg-soft: #141a15;
+    --surface: #1a221c;
+    --surface-2: #202a22;
+    --line: rgba(255,255,255,0.09);
+    --text: #eef3ee;
+    --text-dim: #9db09b;
+    --text-faint: #6d7d6e;
+    --flow: #57d6c1;      /* ease / water */
+    --flow-dim: rgba(87,214,193,0.15);
+    --friction: #e2864a;  /* effort / heat */
+    --friction-dim: rgba(226,134,74,0.15);
+    --radius: 14px;
+    --maxw: 780px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(87,214,193,0.08), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.65;
+  }
+  ::selection{background:var(--flow); color:#0a0f0b;}
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em; margin:0;}
+  p{margin:0 0 1em 0; color:var(--text);}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px;}
+  a{color:var(--flow);}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px; text-align:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--flow);
+    background:var(--flow-dim); border:1px solid rgba(87,214,193,0.3);
+    padding:6px 14px; border-radius:999px; margin-bottom:22px;
+  }
+  .hero h1{font-size:clamp(2.1rem, 6vw, 3.4rem); line-height:1.08; margin-bottom:18px;}
+  .hero .sub{
+    font-size:clamp(1.02rem, 2.4vw, 1.2rem); color:var(--text-dim);
+    max-width:560px; margin:0 auto 8px; font-weight:400;
+  }
+  .hero .sub em{color:var(--text); font-style:italic; font-family:'Fraunces',serif;}
+
+  /* ---------- hose demo (signature element) ---------- */
+  .hose-card{
+    margin:40px auto 0; max-width:640px;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:20px; padding:26px 20px 24px;
+  }
+  .hose-card svg{width:100%; height:auto; display:block;}
+  .hose-readout{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-top:6px; margin-bottom:14px; flex-wrap:wrap; gap:8px;
+  }
+  .hose-readout .flow-pct{font-family:'Fraunces',serif; font-size:2rem; color:var(--flow); font-weight:600;}
+  .hose-readout .flow-label{font-size:0.92rem; color:var(--text-dim); max-width:280px; text-align:right;}
+  .slider-row{display:flex; align-items:center; gap:12px; margin-top:10px;}
+  .slider-row label{font-size:0.82rem; color:var(--text-faint); white-space:nowrap; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:6px;
+    border-radius:999px;
+    background:linear-gradient(90deg, var(--flow), var(--friction));
+    outline:none; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:#fff; border:3px solid var(--bg); cursor:pointer;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.3);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:20px; height:20px; border-radius:50%;
+    background:#fff; border:3px solid var(--bg); cursor:pointer;
+  }
+
+  /* ---------- section base ---------- */
+  section{padding:52px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .kicker{
+    font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--text-faint); margin-bottom:10px;
+  }
+  h2.title{font-size:clamp(1.5rem, 4vw, 2rem); margin-bottom:16px;}
+  .lede{font-size:1.08rem; color:var(--text-dim);}
+
+  /* ---------- map illustration ---------- */
+  .map-row{display:flex; gap:18px; align-items:center; margin:24px 0; flex-wrap:wrap; justify-content:center;}
+  .map-box{
+    flex:1 1 200px; background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px; text-align:center;
+  }
+  .map-box svg{width:100%; max-width:160px; margin:0 auto 10px; display:block;}
+  .map-box .tag{font-size:0.8rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em; font-weight:700;}
+  .map-box .speed{font-family:'Fraunces',serif; font-size:1.3rem; color:var(--flow); margin-top:4px;}
+
+  /* ---------- character card ---------- */
+  .char-card{
+    display:flex; gap:14px; background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px 18px; margin:14px 0; align-items:flex-start;
+  }
+  .avatar{
+    flex:0 0 42px; width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:1rem; color:#0a0f0b;
+  }
+  .avatar.vignesh{background:var(--flow);}
+  .avatar.pranav{background:#8fb8ff;}
+  .avatar.dhanush{background:var(--friction);}
+  .char-card .name{font-weight:700; font-size:0.95rem; margin-bottom:2px;}
+  .char-card .role{font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;}
+  .char-card p{margin:0; font-size:0.95rem; color:var(--text-dim);}
+
+  /* ---------- effort simulator ---------- */
+  .sim-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin:24px 0;
+  }
+  .sim-chart-wrap{position:relative; height:220px; margin-bottom:14px;}
+  .sim-caption{
+    background:var(--surface-2); border-radius:10px; padding:12px 14px; margin-top:14px;
+    font-size:0.92rem; color:var(--text-dim); border-left:3px solid var(--flow);
+    transition:border-color .3s ease;
+  }
+  .sim-caption strong{color:var(--text);}
+
+  /* ---------- friction toggle cards ---------- */
+  .toggle-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; margin:12px 0; cursor:pointer; transition:border-color .2s ease, background .2s ease;
+    user-select:none;
+  }
+  .toggle-card:hover{border-color:rgba(87,214,193,0.35);}
+  .toggle-card .top-row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .toggle-card .name-line{display:flex; align-items:center; gap:10px;}
+  .toggle-card .name-line .name{font-weight:700; font-size:0.95rem;}
+  .status-pill{
+    font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    padding:4px 10px; border-radius:999px; white-space:nowrap;
+    background:var(--friction-dim); color:var(--friction); border:1px solid rgba(226,134,74,0.35);
+    transition:all .25s ease;
+  }
+  .toggle-card.on .status-pill{
+    background:var(--flow-dim); color:var(--flow); border-color:rgba(87,214,193,0.4);
+  }
+  .toggle-card .detail{font-size:0.88rem; color:var(--text-dim); margin-top:8px;}
+  .toggle-card .hint{font-size:0.76rem; color:var(--text-faint); margin-top:6px; font-style:italic;}
+
+  /* ---------- stat callout ---------- */
+  .stat-callout{
+    display:flex; align-items:center; gap:20px; background:var(--surface);
+    border:1px solid var(--line); border-radius:var(--radius); padding:20px; margin:24px 0;
+    flex-wrap:wrap;
+  }
+  .stat-callout .nums{display:flex; align-items:center; gap:12px; font-family:'Fraunces',serif; font-size:1.6rem; flex:0 0 auto;}
+  .stat-callout .nums .arrow{color:var(--flow); font-size:1.3rem;}
+  .stat-callout .old-num{color:var(--text-faint);}
+  .stat-callout .new-num{color:var(--flow);}
+  .stat-callout .desc{font-size:0.92rem; color:var(--text-dim); flex:1 1 220px;}
+
+  /* ---------- bar chart section ---------- */
+  .chart-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin:20px 0; height:300px; position:relative;
+  }
+
+  /* ---------- do / dont ---------- */
+  .dodont{display:grid; grid-template-columns:1fr; gap:16px; margin-top:20px;}
+  @media(min-width:640px){.dodont{grid-template-columns:1fr 1fr;}}
+  .dd-box{border-radius:var(--radius); padding:20px; border:1px solid var(--line);}
+  .dd-box.do{background:var(--flow-dim); border-color:rgba(87,214,193,0.3);}
+  .dd-box.dont{background:var(--friction-dim); border-color:rgba(226,134,74,0.3);}
+  .dd-box h3{font-family:'Inter'; font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px;}
+  .dd-box.do h3{color:var(--flow);}
+  .dd-box.dont h3{color:var(--friction);}
+  .dd-box ul{margin:0; padding-left:18px;}
+  .dd-box li{margin-bottom:9px; font-size:0.92rem; color:var(--text);}
+  .dd-box li:last-child{margin-bottom:0;}
+
+  /* ---------- summary ---------- */
+  .summary-list{list-style:none; margin:20px 0 0; padding:0;}
+  .summary-list li{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:0.96rem; color:var(--text-dim);
+  }
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-list .dot{flex:0 0 8px; width:8px; height:8px; border-radius:50%; background:var(--flow); margin-top:8px;}
+
+  /* ---------- footer ---------- */
+  footer{padding:40px 0 60px; text-align:center;}
+  footer .foot-note{font-size:0.82rem; color:var(--text-faint);}
+  footer .chap-nav{font-family:'Fraunces',serif; font-size:1rem; color:var(--text-dim); margin-bottom:10px;}
+
+  @media(min-width:768px){
+    .hero{padding:88px 0 50px;}
+    section{padding:70px 0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="eyebrow">Atomic Habits · Chapter 12</span>
+    <h1>The Law of Least Effort</h1>
+    <p class="sub">You don't do what's good for you. You do what's <em>easy</em>. The trick isn't more willpower — it's building a life where the right choice takes the least work.</p>
+
+    <div class="hose-card reveal">
+      <svg viewBox="0 0 400 130" id="hoseSvg">
+        <path id="hosePath" d="M 20 65 Q 200 65 380 65" stroke="#3a4a3d" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <path id="hosePathInner" d="M 20 65 Q 200 65 380 65" stroke="#0f1310" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <circle id="dot1" r="4.5" fill="#57d6c1"/>
+        <circle id="dot2" r="4.5" fill="#57d6c1"/>
+        <circle id="dot3" r="4.5" fill="#57d6c1"/>
+        <circle id="pinchMark" cx="200" cy="65" r="6" fill="none" stroke="#e2864a" stroke-width="2" opacity="0"/>
+      </svg>
+      <div class="hose-readout">
+        <span class="flow-pct" id="flowPct">100%</span>
+        <span class="flow-label" id="flowLabel">Wide open — the habit flows through with no resistance.</span>
+      </div>
+      <div class="slider-row">
+        <label>Bend the hose</label>
+        <input type="range" id="hoseSlider" min="0" max="100" value="0">
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION: shape of behavior -->
+  <section class="reveal">
+    <div class="kicker">Where this idea comes from</div>
+    <h2 class="title">Why continents shaped history</h2>
+    <p class="lede">In <em>Guns, Germs, and Steel</em>, Jared Diamond noticed something odd: Europe and Asia stretch east-west, while the Americas and Africa stretch north-south. That single detail changed the pace of human history.</p>
+    <p>Places on the same east-west line share similar climate, daylight, and rainfall. So once a farmer in France domesticated wheat, that same wheat could spread all the way to China with barely any changes needed. Moving north-south is different — walk from Kerala to Kashmir and the climate, soil, and seasons change completely. Every few hundred kilometres, farmers had to start over.</p>
+
+    <div class="map-row">
+      <div class="map-box">
+        <svg viewBox="0 0 100 70"><path d="M20 55 Q 15 30 30 15 Q 50 5 70 15 Q 85 25 80 45 Q 75 60 55 62 Q 35 63 20 55 Z" fill="#233028" stroke="#3a4a3d"/><line x1="15" y1="35" x2="90" y2="35" stroke="#57d6c1" stroke-width="2" marker-end="url(#arE)"/><line x1="15" y1="35" x2="90" y2="35" stroke="#57d6c1" stroke-width="2"/></svg>
+        <div class="tag">East ↔ West</div>
+        <div class="speed">Fast spread</div>
+      </div>
+      <div class="map-box">
+        <svg viewBox="0 0 100 70"><path d="M40 60 Q 30 40 38 22 Q 45 8 58 10 Q 68 14 65 30 Q 63 45 55 60 Q 48 66 40 60 Z" fill="#2f2620" stroke="#4a3a2c"/><line x1="50" y1="8" x2="50" y2="65" stroke="#e2864a" stroke-width="2"/></svg>
+        <div class="tag">North ↕ South</div>
+        <div class="speed" style="color:var(--friction)">Slow spread</div>
+      </div>
+    </div>
+    <p>Small head start, repeated for thousands of years, compounded into massive differences. That's the Law of Least Effort playing out on a civilizational scale: <strong>whatever needs the least adjustment spreads the farthest.</strong> Your daily habits work exactly the same way.</p>
+  </section>
+
+  <!-- SECTION: the law itself -->
+  <section class="reveal">
+    <div class="kicker">The core idea</div>
+    <h2 class="title">We are wired to be lazy — and that's not an insult</h2>
+    <p class="lede">Between two similar options, you will always drift toward the one that takes less energy. This isn't a character flaw. It's how brains conserve energy to survive.</p>
+
+    <div class="char-card">
+      <div class="avatar vignesh">V</div>
+      <div>
+        <div class="name">Vignesh</div>
+        <div class="role">Wants to get better at DSA before placements</div>
+        <p>Day 1, pumped up, he solves 10 problems. Day 4, tired after college, 10 problems feels like climbing a hill — so he skips it. Day 9, he's stopped opening the app at all.</p>
+      </div>
+    </div>
+    <p>The goal wasn't wrong. The <em>size</em> of the daily ask was. If Vignesh had committed to just 1 problem a day, he'd have kept going even on his worst days — and most days, he'd have solved more than 1 anyway, once he got started.</p>
+  </section>
+
+  <!-- SECTION: effort simulator -->
+  <section class="reveal">
+    <div class="kicker">Try it</div>
+    <h2 class="title">The harder a habit feels, the less likely you do it</h2>
+    <p class="lede">Drag the slider below. Watch what happens to the odds of actually doing the habit as the effort required goes up.</p>
+
+    <div class="sim-card">
+      <div class="sim-chart-wrap"><canvas id="effortChart"></canvas></div>
+      <div class="slider-row">
+        <label>Effort level</label>
+        <input type="range" id="effortSlider" min="1" max="10" value="2" step="1">
+      </div>
+      <div class="sim-caption" id="effortCaption">
+        <strong>Effort 2/10 — Dhanush:</strong> "Bro this takes two minutes, I'll just do it now."
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: hose metaphor / friction reduction -->
+  <section class="reveal">
+    <div class="kicker">How to fix it</div>
+    <h2 class="title">Don't force more water. Remove the bend.</h2>
+    <p class="lede">Look at the hose at the top of this page again. You have two ways to get more water through a kinked hose: crank the pressure up (that's willpower), or simply straighten the hose (that's environment design). The second option is easier and works every single day, not just the days you feel strong.</p>
+    <p>The place to start is your surroundings — your room, your phone, your daily route. Rearranging <em>things</em> is far more reliable than rearranging your <em>feelings</em>.</p>
+  </section>
+
+  <!-- SECTION: reduce friction for good habits -->
+  <section class="reveal">
+    <div class="kicker">Make good habits easy</div>
+    <h2 class="title">Tap each card to prime the environment</h2>
+    <p class="lede">Setting things up in advance removes the one moment where you're most likely to quit — the start.</p>
+
+    <div class="toggle-card" data-on="0" id="tc1">
+      <div class="top-row">
+        <div class="name-line"><div class="avatar vignesh" style="flex:0 0 30px;width:30px;height:30px;font-size:0.8rem;">V</div><span class="name">Vignesh — evening coding practice</span></div>
+        <span class="status-pill">High friction</span>
+      </div>
+      <div class="detail">Right now: opens laptop, waits for it to boot, hunts for the right website, then starts. By the time he's ready, he's lost the urge.</div>
+      <div class="hint">Tap to prime the environment →</div>
+    </div>
+
+    <div class="toggle-card" data-on="0" id="tc2">
+      <div class="top-row">
+        <div class="name-line"><div class="avatar pranav" style="flex:0 0 30px;width:30px;height:30px;font-size:0.8rem;">P</div><span class="name">Pranav — monthly investing</span></div>
+        <span class="status-pill">High friction</span>
+      </div>
+      <div class="detail">Right now: has to remember payday, open the app, type the amount, confirm. Some months he simply forgets.</div>
+      <div class="hint">Tap to prime the environment →</div>
+    </div>
+
+    <div class="toggle-card" data-on="0" id="tc3">
+      <div class="top-row">
+        <div class="name-line"><div class="avatar dhanush" style="flex:0 0 30px;width:30px;height:30px;font-size:0.8rem;">D</div><span class="name">Dhanush — morning gym</span></div>
+        <span class="status-pill">High friction</span>
+      </div>
+      <div class="detail">Right now: shoes are missing, gym bag isn't packed, water bottle needs filling — by the time he's ready, he's back in bed.</div>
+      <div class="hint">Tap to prime the environment →</div>
+    </div>
+  </section>
+
+  <!-- SECTION: increase friction for bad habits -->
+  <section class="reveal">
+    <div class="kicker">The reverse trick</div>
+    <h2 class="title">Make bad habits hard on purpose</h2>
+    <p class="lede">You can't always delete a bad habit. But you can add just enough friction that your lazy brain stops choosing it automatically.</p>
+
+    <div class="char-card">
+      <div class="avatar vignesh">V</div>
+      <div><div class="name">Vignesh</div><div class="role">Semester exams next week</div>
+      <p>He hands his phone to his roommate every evening from 7 to 10 PM. Not locked away forever — just far enough that grabbing it isn't a reflex anymore.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="avatar pranav">P</div>
+      <div><div class="name">Pranav</div><div class="role">Kept checking stock prices all day</div>
+      <p>He removed the trading app from his home screen and buried it inside a folder. Same app, three extra taps — enough friction that he now checks it twice a day instead of twenty times.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="avatar dhanush">D</div>
+      <div><div class="name">Dhanush</div><div class="role">Was binge-watching till 2 AM</div>
+      <p>He unplugs the router and puts it on top of the cupboard after dinner. Getting a chair to reach it is annoying enough that he usually just goes to sleep instead.</p></div>
+    </div>
+  </section>
+
+  <!-- SECTION: prime the room -->
+  <section class="reveal">
+    <div class="kicker">A daily reset</div>
+    <h2 class="title">"Reset the room" before you leave it</h2>
+    <p class="lede">An IT developer named Oswald Nuckols keeps every room ready for its next use — remote back on the stand, cushions straightened, toilet wiped while the shower warms up. Not because he loves cleaning, but because a ready room removes tomorrow's excuse.</p>
+    <p>Try it in an Indian household context: keep your study table cleared every night so tomorrow's session starts the moment you sit down, instead of starting with ten minutes of clearing clutter.</p>
+
+    <div class="stat-callout">
+      <div class="nums"><span class="old-num">19.2%</span><span class="arrow">→</span><span class="new-num">23.4%</span></div>
+      <div class="desc">When the UK government linked its tax form directly instead of sending people to a page where they had to click again to download it, response rates jumped by this much — from removing a single extra step.</div>
+    </div>
+  </section>
+
+  <!-- SECTION: chart before/after -->
+  <section class="reveal">
+    <div class="kicker">Putting it together</div>
+    <h2 class="title">What happens when friction drops</h2>
+    <p class="lede">Illustrative numbers, but the pattern is real: once each of them primed their environment, how often they actually followed through went up sharply — with the same amount of motivation as before.</p>
+    <div class="chart-card"><canvas id="barChart"></canvas></div>
+  </section>
+
+  <!-- DO / DONT -->
+  <section class="reveal">
+    <div class="kicker">Quick reference</div>
+    <h2 class="title">What to do — and what to avoid</h2>
+    <div class="dodont">
+      <div class="dd-box do">
+        <h3>Do</h3>
+        <ul>
+          <li>Set up your environment the night before, so the habit is one step away.</li>
+          <li>Put good habits directly on your daily path — gym on the way to college, not out of the way.</li>
+          <li>Add friction to bad habits: extra steps, extra distance, extra taps.</li>
+          <li>Reset your space after each use, so it's ready for next time.</li>
+          <li>Shrink the habit until it feels almost too easy to skip.</li>
+        </ul>
+      </div>
+      <div class="dd-box dont">
+        <h3>Don't</h3>
+        <ul>
+          <li>Rely on motivation alone to power you through a high-friction habit.</li>
+          <li>Keep temptations (phone, snacks, remote) within easy reach.</li>
+          <li>Start a hard habit in a chaotic or distracting environment.</li>
+          <li>Assume willpower will feel the same tomorrow as it does today.</li>
+          <li>Make good habits harder to start than they need to be.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="reveal">
+    <div class="kicker">Chapter summary</div>
+    <h2 class="title">In plain words</h2>
+    <ul class="summary-list">
+      <li><span class="dot"></span>People naturally choose whatever takes the least effort. That's not laziness — it's how brains save energy.</li>
+      <li><span class="dot"></span>Design your surroundings so the right choice is also the easiest one.</li>
+      <li><span class="dot"></span>Lower the friction on good habits — fewer steps, fewer decisions, everything ready in advance.</li>
+      <li><span class="dot"></span>Raise the friction on bad habits — extra steps make them easy to skip.</li>
+      <li><span class="dot"></span>Prime your environment ahead of time, so future-you doesn't have to fight for it.</li>
+    </ul>
+  </section>
+
+  <footer class="reveal">
+    <div class="chap-nav">Chapter 12 of 13 — Atomic Habits Explained</div>
+    <div class="foot-note">Make it easy, and you won't need to try so hard.</div>
+  </footer>
+
+</div>
+
+<script>
+// ---------- reveal on scroll ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target);} });
+}, {threshold:0.12});
+revealEls.forEach(el=>io.observe(el));
+
+// ---------- hose demo ----------
+const hoseSlider = document.getElementById('hoseSlider');
+const hosePath = document.getElementById('hosePath');
+const hosePathInner = document.getElementById('hosePathInner');
+const flowPct = document.getElementById('flowPct');
+const flowLabel = document.getElementById('flowLabel');
+const pinchMark = document.getElementById('pinchMark');
+const dots = [document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
+
+function hoseD(kink){
+  const midY = 65 + kink*0.55;
+  return `M 20 65 Q 200 ${midY} 380 65`;
+}
+
+function updateHose(val){
+  const kink = val; // 0-100
+  const d = hoseD(kink);
+  hosePath.setAttribute('d', d);
+  hosePathInner.setAttribute('d', d);
+  const innerWidth = Math.max(1.5, 9 - kink*0.075);
+  hosePathInner.setAttribute('stroke-width', innerWidth);
+  const flow = Math.max(3, 100 - kink);
+  flowPct.textContent = flow + '%';
+  flowPct.style.color = kink < 50 ? 'var(--flow)' : 'var(--friction)';
+
+  let label;
+  if(kink < 20) label = "Wide open — the habit flows through with no resistance.";
+  else if(kink < 50) label = "Some resistance — you'll need a bit of willpower some days.";
+  else if(kink < 80) label = "Tight bend — most days you'll end up skipping it.";
+  else label = "Fully pinched — almost nothing gets through, no matter how motivated you are.";
+  flowLabel.textContent = label;
+
+  pinchMark.setAttribute('cx', 200);
+  pinchMark.setAttribute('cy', 65 + kink*0.55);
+  pinchMark.setAttribute('opacity', kink > 15 ? Math.min(1, kink/60) : 0);
+
+  const dur = 1.1 + (kink/100)*2.6;
+  dots.forEach((dot,i)=>{
+    dot.style.offsetPath = `path('${d}')`;
+    dot.style.webkitOffsetPath = `path('${d}')`;
+    dot.style.animation = `flowmove ${dur}s linear infinite`;
+    dot.style.animationDelay = (i * dur/3) + 's';
+    dot.style.opacity = kink > 92 ? 0.15 : 1;
+  });
+}
+updateHose(0);
+hoseSlider.addEventListener('input', e=>updateHose(parseInt(e.target.value)));
+
+const styleTag = document.createElement('style');
+styleTag.textContent = `@keyframes flowmove{ from{offset-distance:0%;} to{offset-distance:100%;} }
+#dot1,#dot2,#dot3{offset-rotate:0deg; -webkit-offset-rotate:0deg;}`;
+document.head.appendChild(styleTag);
+
+// ---------- effort simulator chart ----------
+const effortCtx = document.getElementById('effortChart').getContext('2d');
+const effortLevels = [1,2,3,4,5,6,7,8,9,10];
+const likelihoods = effortLevels.map(e => Math.round(100/(1+ (e-1)*0.55)));
+
+const effortChart = new Chart(effortCtx, {
+  type:'line',
+  data:{
+    labels:effortLevels,
+    datasets:[
+      {
+        label:'Odds you actually do it',
+        data:likelihoods,
+        borderColor:'#57d6c1',
+        backgroundColor:'rgba(87,214,193,0.12)',
+        fill:true, tension:0.35, pointRadius:0, borderWidth:2.5
+      },
+      {
+        label:'Your habit',
+        data:effortLevels.map((e,i)=> e===2 ? likelihoods[i] : null),
+        borderColor:'#ffffff',
+        backgroundColor:'#ffffff',
+        pointRadius:7, pointHoverRadius:7, showLine:false
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+    scales:{
+      x:{ title:{display:true, text:'Effort required', color:'#9db09b'}, grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#9db09b'} },
+      y:{ title:{display:true, text:'Likelihood you do it (%)', color:'#9db09b'}, min:0, max:100, grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#9db09b'} }
+    }
+  }
+});
+
+const AP = String.fromCharCode(8217);
+const quotes = [
+  {max:2, name:"Dhanush", text:"Bro this takes two minutes, I" + AP + "ll just do it now."},
+  {max:4, name:"Vignesh", text:"Okay, I can fit this in before class. Let" + AP + "s go."},
+  {max:6, name:"Pranav", text:"Hmm, I" + AP + "ll do it... probably tonight."},
+  {max:8, name:"Vignesh", text:"I" + AP + "m tired, I" + AP + "ll catch up on this over the weekend."},
+  {max:10, name:"Dhanush", text:"Not today. Maybe not this week either."}
+];
+
+const effortSlider = document.getElementById('effortSlider');
+const effortCaption = document.getElementById('effortCaption');
+function updateEffort(val){
+  effortChart.data.datasets[1].data = effortLevels.map((e,i)=> e===val ? likelihoods[i] : null);
+  effortChart.update();
+  const q = quotes.find(q=>val<=q.max);
+  effortCaption.innerHTML = `<strong>Effort ${val}/10 — ${q.name}:</strong> "${q.text}"`;
+  document.querySelector('.sim-caption').style.borderLeftColor = val<=4 ? 'var(--flow)' : 'var(--friction)';
+}
+updateEffort(2);
+effortSlider.addEventListener('input', e=>updateEffort(parseInt(e.target.value)));
+
+// ---------- toggle cards ----------
+document.querySelectorAll('.toggle-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const on = card.dataset.on === '1';
+    card.dataset.on = on ? '0' : '1';
+    card.classList.toggle('on');
+    const pill = card.querySelector('.status-pill');
+    const hint = card.querySelector('.hint');
+    if(!on){
+      pill.textContent = 'Low friction ✓';
+      hint.textContent = 'Primed — tap again to undo.';
+    } else {
+      pill.textContent = 'High friction';
+      hint.textContent = 'Tap to prime the environment →';
+    }
+  });
+});
+
+// ---------- bar chart ----------
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+  type:'bar',
+  data:{
+    labels:['Vignesh — coding practice', 'Pranav — monthly investing', 'Dhanush — morning gym'],
+    datasets:[
+      { label:'Before (high friction)', data:[20,15,25], backgroundColor:'#e2864a', borderRadius:6 },
+      { label:'After (low friction)', data:[85,90,88], backgroundColor:'#57d6c1', borderRadius:6 }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{color:'#eef3ee', boxWidth:12, padding:16} } },
+    scales:{
+      x:{ grid:{display:false}, ticks:{color:'#9db09b', font:{size:11}} },
+      y:{ title:{display:true, text:'Follow-through rate (%)', color:'#9db09b'}, min:0, max:100, grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#9db09b'} }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

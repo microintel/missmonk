@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14 — Make Good Habits Inevitable, Bad Habits Impossible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#141210;
+    --ink-2:#1c1916;
+    --ink-3:#242019;
+    --paper:#f2ede2;
+    --paper-dim:#c9c0ad;
+    --brass:#c9982f;
+    --brass-soft:#e3b95a;
+    --clay:#b1543a;
+    --slate:#5c7f83;
+    --line:rgba(242,237,226,0.12);
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--paper);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:0.75rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:600;
+  }
+  a{color:var(--brass-soft);}
+
+  /* HERO */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .chapter-num{
+    font-family:'Fraunces',serif;
+    font-optical-sizing:auto;
+    font-weight:300;
+    font-size:clamp(7rem,26vw,13rem);
+    line-height:0.8;
+    color:transparent;
+    -webkit-text-stroke:1.5px rgba(201,152,47,0.45);
+    margin:0 0 8px 0;
+  }
+  .hero h1{
+    font-size:clamp(2rem,6vw,3.4rem);
+    line-height:1.08;
+    margin:0 0 22px 0;
+    max-width:11ch;
+  }
+  .hero p.sub{
+    font-size:1.05rem;
+    color:var(--paper-dim);
+    max-width:52ch;
+  }
+  .lock-visual{
+    position:absolute;
+    right:-40px;
+    top:50%;
+    transform:translateY(-50%);
+    width:280px;
+    height:280px;
+    opacity:0.14;
+    pointer-events:none;
+  }
+  @media(max-width:700px){.lock-visual{display:none;}}
+
+  /* SECTIONS */
+  section.block{padding:88px 0;border-bottom:1px solid var(--line);}
+  section.block.tight{padding:64px 0;}
+  h2.title{font-size:clamp(1.5rem,4vw,2.1rem);margin:10px 0 22px 0;}
+  p{color:var(--paper-dim);font-size:1.02rem;}
+  p.lead{color:var(--paper);font-size:1.12rem;}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* CHARACTER CARD */
+  .character{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--brass);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    margin:26px 0;
+  }
+  .character .badge{
+    flex-shrink:0;
+    width:42px;height:42px;
+    border-radius:50%;
+    background:var(--ink-3);
+    border:1px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;color:var(--brass-soft);
+  }
+  .character .name{font-weight:600;color:var(--paper);font-family:'Inter';font-size:0.95rem;}
+  .character p{margin:4px 0 0 0;font-size:0.98rem;}
+
+  /* QUOTE / PULL */
+  blockquote{
+    margin:34px 0;
+    padding:6px 0 6px 22px;
+    border-left:3px solid var(--clay);
+    font-family:'Fraunces',serif;
+    font-size:1.3rem;
+    font-weight:500;
+    color:var(--paper);
+    line-height:1.4;
+  }
+
+  /* DEMO: COMMITMENT LOCK */
+  .demo{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+    margin-top:30px;
+  }
+  .demo h3{font-size:1.15rem;margin:0 0 6px 0;}
+  .demo p.hint{margin:0 0 20px 0;font-size:0.92rem;}
+  .lock-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
+  .toggle-btn{
+    font-family:'Inter';font-weight:600;font-size:0.9rem;
+    background:var(--ink-3);
+    color:var(--paper);
+    border:1px solid var(--line);
+    padding:12px 18px;
+    border-radius:5px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .toggle-btn:hover{border-color:var(--brass);}
+  .toggle-btn.active{background:var(--brass);color:var(--ink);border-color:var(--brass);}
+  .lock-status{
+    flex:1;
+    min-width:220px;
+    padding:14px 16px;
+    border-radius:5px;
+    background:var(--ink);
+    border:1px dashed var(--line);
+    font-size:0.92rem;
+    color:var(--paper-dim);
+  }
+  .lock-status.locked{border-color:var(--brass);color:var(--brass-soft);}
+  .snack-btn{
+    margin-top:16px;
+    display:inline-block;
+    font-family:'Inter';font-weight:600;font-size:0.88rem;
+    background:transparent;
+    color:var(--clay);
+    border:1px solid var(--clay);
+    padding:10px 16px;
+    border-radius:5px;
+    cursor:pointer;
+  }
+  .snack-btn:disabled{
+    opacity:0.35;
+    cursor:not-allowed;
+    text-decoration:line-through;
+  }
+
+  /* ONETIME ACTIONS GRID */
+  .checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px;}
+  @media(max-width:560px){.checklist{grid-template-columns:1fr;}}
+  .check-item{
+    display:flex;gap:10px;align-items:flex-start;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:12px 14px;
+    cursor:pointer;
+    font-size:0.92rem;
+    color:var(--paper-dim);
+    transition:border-color .2s ease;
+  }
+  .check-item:hover{border-color:var(--brass);}
+  .check-item .box{
+    flex-shrink:0;width:18px;height:18px;margin-top:2px;
+    border:1px solid var(--paper-dim);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--ink);
+  }
+  .check-item.done{color:var(--paper);}
+  .check-item.done .box{background:var(--brass);border-color:var(--brass);}
+  .progress-line{margin-top:18px;font-size:0.88rem;color:var(--brass-soft);}
+
+  /* CHART */
+  .chart-box{background:var(--ink-2);border:1px solid var(--line);border-radius:6px;padding:22px;margin-top:28px;}
+  .chart-box canvas{max-height:280px;}
+  .legend-note{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:0.85rem;color:var(--paper-dim);}
+  .legend-note span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  /* AUTOPLAY DEMO */
+  .autoplay{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:6px;
+    padding:22px;margin-top:26px;
+  }
+  .autoplay .row{display:flex;align-items:center;justify-content:space-between;gap:14px;}
+  .countdown{
+    font-family:'Fraunces';font-size:2.4rem;color:var(--clay);min-width:60px;
+  }
+  .autoplay button{
+    font-family:'Inter';font-weight:600;font-size:0.88rem;
+    background:var(--ink-3);color:var(--paper);border:1px solid var(--line);
+    padding:10px 16px;border-radius:5px;cursor:pointer;
+  }
+  .autoplay button:hover{border-color:var(--slate);}
+
+  /* SUMMARY / DO DONT */
+  .dodont{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;}
+  @media(max-width:620px){.dodont{grid-template-columns:1fr;}}
+  .dodont .col{border-radius:6px;padding:22px;border:1px solid var(--line);}
+  .dodont .do{border-top:3px solid var(--brass);background:var(--ink-2);}
+  .dodont .dont{border-top:3px solid var(--clay);background:var(--ink-2);}
+  .dodont h3{font-size:1rem;margin:0 0 14px 0;text-transform:uppercase;letter-spacing:0.06em;font-family:'Inter';}
+  .dodont ul{margin:0;padding-left:18px;color:var(--paper-dim);font-size:0.95rem;}
+  .dodont li{margin-bottom:10px;}
+
+  footer{padding:60px 0 90px 0;text-align:center;}
+  footer p{font-size:0.85rem;color:var(--paper-dim);}
+
+  ::selection{background:var(--brass);color:var(--ink);}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <svg class="lock-visual" viewBox="0 0 100 100" fill="none" stroke="#c9982f" stroke-width="2">
+    <rect x="20" y="42" width="60" height="46" rx="4"/>
+    <path d="M32 42V28a18 18 0 0 1 36 0v14"/>
+    <circle cx="50" cy="62" r="6" fill="#c9982f" stroke="none"/>
+    <line x1="50" y1="68" x2="50" y2="78"/>
+  </svg>
+  <div class="wrap">
+    <div class="chapter-num">14</div>
+    <div class="eyebrow">Atomic Habits · Chapter 14</div>
+    <h1>Make good habits inevitable. Make bad habits impossible.</h1>
+    <p class="sub">You don't always need more willpower. Sometimes you just need to lock the door so temptation can't walk in. This chapter shows you how — with real stories, one demo you can try, and one chart that explains why automation beats motivation.</p>
+  </div>
+</section>
+
+<section class="block reveal">
+  <div class="wrap">
+    <div class="eyebrow">The story</div>
+    <h2 class="title">Victor Hugo locked away his own clothes</h2>
+    <p class="lead">In 1830, the writer Victor Hugo was a year late on a book. His publisher gave him six months. Hugo's fix was strange but brilliant: he had an assistant lock away all his clothes, leaving him only a shawl. With nothing to wear outside, he stayed in and wrote. <em>The Hunchback of Notre Dame</em> was finished two weeks early.</p>
+    <p>Hugo didn't try to become more disciplined. He made the bad habit — going out instead of writing — physically impossible. Psychologists call this a <strong style="color:var(--paper)">commitment device</strong>: a choice you make today that controls what you can do tomorrow.</p>
+
+    <div class="character">
+      <div class="badge">P</div>
+      <div>
+        <div class="name">Pranav's version of Hugo's trick</div>
+        <p>Pranav kept opening his trading app during work hours and making impulsive trades. So he did his own "lock the clothes" move — he removed saved login details and turned on a 30-minute app-lock timer. Now checking the market takes real effort, not one tap. He still trades, just not on impulse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block tight reveal">
+  <div class="wrap">
+    <div class="eyebrow">Try it yourself</div>
+    <h2 class="title">Build a tiny commitment device</h2>
+    <p>Below is Vignesh, who wants to stop ordering snacks online late at night. Lock his "buy now" button the way Hugo locked his clothes, and see what changes.</p>
+
+    <div class="demo">
+      <h3>Vignesh's late-night snack habit</h3>
+      <p class="hint">Tap "Lock it" to remove his saved card from the food app — a real commitment device people use.</p>
+      <div class="lock-row">
+        <button class="toggle-btn" id="lockBtn">Lock it 🔒</button>
+        <div class="lock-status" id="lockStatus">Card saved. Vignesh can order snacks in one tap, anytime he feels like it.</div>
+      </div>
+      <button class="snack-btn" id="snackBtn">Order snacks (1 tap)</button>
+    </div>
+  </div>
+</section>
+
+<section class="block reveal">
+  <div class="wrap">
+    <div class="eyebrow">The story</div>
+    <h2 class="title">The cash register that stopped stealing overnight</h2>
+    <p class="lead">John Patterson owned a small supply store in Ohio. It should have made money, but it didn't — his own employees were stealing from the open cash drawer. He bought two of the newly invented cash registers, which locked the cash and receipts after every sale.</p>
+    <p>Theft stopped that same week. In six months, his store went from losing money to earning the equivalent of over ₹80 lakh in profit today. He didn't lecture his staff on honesty — he made stealing impossible with a machine.</p>
+    <blockquote>The best way to break a bad habit is to make it impractical to do.</blockquote>
+    <p>This is the real power move: don't just make bad habits <em>harder</em> — automate the good behavior so it happens without anyone deciding anything.</p>
+
+    <div class="character">
+      <div class="badge">D</div>
+      <div>
+        <div class="name">Dhanush automates his savings</div>
+        <p>Dhanush kept meaning to save money but always "forgot" by month-end. He set up an auto-debit of ₹2,000 to a separate savings account the day his salary lands. He never has to decide to save again — it just happens, like Patterson's cash register.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block tight reveal">
+  <div class="wrap">
+    <div class="eyebrow">Why this works</div>
+    <h2 class="title">Willpower fades. Automation doesn't.</h2>
+    <p>If you rely on motivation alone, the effort you need to keep a habit going stays high forever — and some days you simply won't have it. Automate the habit once, and the ongoing effort drops toward zero.</p>
+    <div class="chart-box">
+      <canvas id="habitChart"></canvas>
+      <div class="legend-note">
+        <span><span class="dot" style="background:#b1543a"></span> Relying on willpower alone</span>
+        <span><span class="dot" style="background:#c9982f"></span> One automated onetime action</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block reveal">
+  <div class="wrap">
+    <div class="eyebrow">Onetime actions</div>
+    <h2 class="title">Small setups, done once, that pay you back forever</h2>
+    <p>These aren't daily habits — they're single decisions that quietly automate a better life. Tap the ones you'd actually do.</p>
+    <div class="checklist" id="checklist">
+      <div class="check-item" data-item="1"><div class="box">✓</div>Enrol in an automatic savings plan</div>
+      <div class="check-item" data-item="2"><div class="box">✓</div>Set up automatic bill pay</div>
+      <div class="check-item" data-item="3"><div class="box">✓</div>Delete one distracting app</div>
+      <div class="check-item" data-item="4"><div class="box">✓</div>Turn off non-essential notifications</div>
+      <div class="check-item" data-item="5"><div class="box">✓</div>Buy a decent water bottle for your desk</div>
+      <div class="check-item" data-item="6"><div class="box">✓</div>Get blackout curtains or an eye mask</div>
+      <div class="check-item" data-item="7"><div class="box">✓</div>Unsubscribe from tempting shopping emails</div>
+      <div class="check-item" data-item="8"><div class="box">✓</div>Set your phone to silent by default</div>
+    </div>
+    <div class="progress-line" id="progressLine">0 of 8 locked in.</div>
+  </div>
+</section>
+
+<section class="block tight reveal">
+  <div class="wrap">
+    <div class="eyebrow">The other side</div>
+    <h2 class="title">Automation can work against you too</h2>
+    <p>Technology cuts both ways. Auto-refilling your medicine is automation helping you. Auto-playing the next video is automation working <em>against</em> you — because stopping now takes more effort than continuing.</p>
+
+    <div class="autoplay">
+      <div class="row">
+        <div>
+          <strong style="color:var(--paper)">Up next plays in</strong>
+          <p style="margin:4px 0 0 0;font-size:0.9rem;">Vignesh only meant to watch one video.</p>
+        </div>
+        <div class="countdown" id="countdownNum">5</div>
+      </div>
+      <button id="stopAutoplay" style="margin-top:16px;">Cancel autoplay</button>
+      <p id="autoplayResult" style="margin-top:12px;font-size:0.9rem;"></p>
+    </div>
+  </div>
+</section>
+
+<section class="block reveal">
+  <div class="wrap">
+    <div class="eyebrow">Chapter summary</div>
+    <h2 class="title">What to do, what to avoid</h2>
+    <div class="dodont">
+      <div class="col do">
+        <h3 style="color:var(--brass-soft)">Do this</h3>
+        <ul>
+          <li>Create a commitment device for your worst habit — lock the "clothes," not just your resolve.</li>
+          <li>Find one onetime setup (savings auto-debit, app deletion) that pays off without daily effort.</li>
+          <li>Let technology automate good behaviour: auto bill-pay, auto refills, auto savings.</li>
+          <li>Make the bad habit take more steps than the good one.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h3 style="color:var(--clay)">Avoid this</h3>
+        <ul>
+          <li>Don't rely only on willpower for habits you repeat every single day — it runs out.</li>
+          <li>Don't leave autoplay, saved cards, and one-tap ordering switched on "by default."</li>
+          <li>Don't treat "I'll just have a little" as a real plan — Hugo didn't trust himself either.</li>
+          <li>Don't automate blindly — check occasionally that the automation still serves you.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Chapter 14 of the Atomic Habits explainer series — based on <em>Atomic Habits</em> by James Clear.</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:0.15});
+  reveals.forEach(el=>io.observe(el));
+
+  // Commitment lock demo
+  const lockBtn = document.getElementById('lockBtn');
+  const lockStatus = document.getElementById('lockStatus');
+  const snackBtn = document.getElementById('snackBtn');
+  let locked = false;
+  lockBtn.addEventListener('click', ()=>{
+    locked = !locked;
+    lockBtn.classList.toggle('active', locked);
+    lockBtn.textContent = locked ? 'Unlock 🔓' : 'Lock it 🔒';
+    if(locked){
+      lockStatus.textContent = "Card removed. Ordering now needs 12 digits typed by hand — Vignesh usually gives up.";
+      lockStatus.classList.add('locked');
+      snackBtn.disabled = true;
+      snackBtn.textContent = "Too much effort now — skipped ✔";
+    } else {
+      lockStatus.textContent = "Card saved. Vignesh can order snacks in one tap, anytime he feels like it.";
+      lockStatus.classList.remove('locked');
+      snackBtn.disabled = false;
+      snackBtn.textContent = "Order snacks (1 tap)";
+    }
+  });
+  snackBtn.addEventListener('click', ()=>{
+    if(!snackBtn.disabled){
+      snackBtn.textContent = "Ordered in 1 tap — that's the problem 😬";
+    }
+  });
+
+  // Checklist
+  const items = document.querySelectorAll('.check-item');
+  const progressLine = document.getElementById('progressLine');
+  function updateProgress(){
+    const done = document.querySelectorAll('.check-item.done').length;
+    progressLine.textContent = `${done} of ${items.length} locked in.`;
+  }
+  items.forEach(it=>{
+    it.addEventListener('click', ()=>{
+      it.classList.toggle('done');
+      updateProgress();
+    });
+  });
+
+  // Autoplay countdown demo
+  const countdownNum = document.getElementById('countdownNum');
+  const stopBtn = document.getElementById('stopAutoplay');
+  const autoplayResult = document.getElementById('autoplayResult');
+  let count = 5;
+  let stopped = false;
+  const timer = setInterval(()=>{
+    if(stopped) return;
+    count--;
+    if(count <= 0){
+      countdownNum.textContent = '0';
+      autoplayResult.textContent = "Next video started automatically — no decision was made. That's how a 10-minute break becomes an hour.";
+      clearInterval(timer);
+    } else {
+      countdownNum.textContent = count;
+    }
+  },1000);
+  stopBtn.addEventListener('click', ()=>{
+    stopped = true;
+    clearInterval(timer);
+    countdownNum.textContent = '✔';
+    autoplayResult.textContent = "Cancelled in time. That took a real decision — autoplay never asks for one.";
+  });
+
+  // Chart
+  const ctx = document.getElementById('habitChart');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Day 1','Week 1','Week 2','Month 1','Month 3','Month 6'],
+      datasets: [
+        {
+          label: 'Willpower alone',
+          data: [90, 70, 55, 40, 25, 15],
+          borderColor: '#b1543a',
+          backgroundColor: 'rgba(177,84,58,0.08)',
+          tension: 0.35,
+          fill: true,
+          pointRadius: 3
+        },
+        {
+          label: 'One automated action',
+          data: [40, 12, 8, 6, 5, 5],
+          borderColor: '#c9982f',
+          backgroundColor: 'rgba(201,152,47,0.1)',
+          tension: 0.35,
+          fill: true,
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        y:{ title:{ display:true, text:'Daily effort needed', color:'#c9c0ad' }, ticks:{color:'#c9c0ad'}, grid:{color:'rgba(242,237,226,0.06)'} },
+        x:{ ticks:{color:'#c9c0ad'}, grid:{display:false} }
+      }
+    }
+  });
+</script>
+</body>
+</html>
