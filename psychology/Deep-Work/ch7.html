@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work, Explained Simply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECE5D3;
+    --paper-line:#cfc4a6;
+    --ink:#232017;
+    --navy:#26344a;
+    --deep:#2f5233;
+    --deep-soft:#e3ead8;
+    --shallow:#b1401a;
+    --shallow-soft:#f3e0d4;
+    --gold:#a9822f;
+    --max:840px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Zilla Slab', serif;
+    line-height:1.6;
+    background-image:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 37px, var(--paper-line) 38px);
+  }
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-family:'Special Elite', monospace; font-weight:400; letter-spacing:-0.5px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--gold); margin-bottom:8px;
+  }
+  a{color:var(--navy);}
+
+  /* HERO */
+  header.hero{
+    padding:90px 0 60px;
+    border-bottom:3px solid var(--ink);
+    background:
+      linear-gradient(180deg, rgba(236,229,211,0.0), rgba(236,229,211,0.0)),
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 37px, var(--paper-line) 38px);
+    position:relative;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:56px;
+    background: linear-gradient(90deg, transparent 46px, var(--shallow) 47px, var(--shallow) 48px, transparent 49px);
+    opacity:0.55;
+  }
+  .hero-inner{padding-left:56px;}
+  h1.title{
+    font-size:clamp(34px,6vw,56px);
+    line-height:1.05;
+    margin:0 0 18px;
+  }
+  h1.title span{color:var(--shallow);}
+  .subtitle{font-size:19px; max-width:60ch; color:#3a3527;}
+  .source-tag{
+    margin-top:26px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+    color:#665f4c; border-top:1px dashed var(--paper-line); padding-top:14px;
+    max-width:60ch;
+  }
+
+  section{padding:56px 0; position:relative;}
+  section .hero-inner, section > .inner{padding-left:56px;}
+  section:not(header)::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:56px;
+    background: linear-gradient(90deg, transparent 46px, var(--shallow) 47px, var(--shallow) 48px, transparent 49px);
+    opacity:0.28;
+  }
+
+  .kicker-num{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--gold);
+    letter-spacing:1.5px; text-transform:uppercase;
+  }
+  h2.section-title{font-size:clamp(24px,4vw,32px); margin:6px 0 22px;}
+
+  /* deep vs shallow split */
+  .split{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:20px;
+  }
+  @media(max-width:640px){ .split{grid-template-columns:1fr;} }
+  .card{
+    border:2px solid var(--ink); padding:22px 20px; background:var(--paper);
+    position:relative;
+  }
+  .card.deep{border-color:var(--deep); background:var(--deep-soft);}
+  .card.shallow{border-color:var(--shallow); background:var(--shallow-soft);}
+  .card h3{margin:0 0 10px; font-size:19px;}
+  .card.deep h3{color:var(--deep);}
+  .card.shallow h3{color:var(--shallow);}
+  .card p{margin:0; font-size:15.5px;}
+  .stamp{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    padding:3px 8px; border:1px solid currentColor; margin-bottom:10px; letter-spacing:1px;
+  }
+
+  /* schedule mockup */
+  .schedule{
+    margin-top:26px; border:2px solid var(--ink); background:#fbf8ef;
+  }
+  .schedule-row{
+    display:grid; grid-template-columns:70px 1fr;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .schedule-row:last-child{border-bottom:none;}
+  .schedule-time{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:#665f4c;
+    padding:10px 8px; border-right:1px solid var(--paper-line);
+  }
+  .schedule-block{padding:10px 14px; font-size:14.5px;}
+  .schedule-block.deep{background:var(--deep-soft); border-left:5px solid var(--deep); font-weight:600; color:#1d3820;}
+  .schedule-block.shallow{background:var(--shallow-soft); border-left:5px solid var(--shallow); color:#6e2a11;}
+  .legend{margin-top:10px; font-family:'IBM Plex Mono',monospace; font-size:12px; display:flex; gap:22px; flex-wrap:wrap;}
+  .legend span::before{content:"■ "; }
+  .legend .l-deep{color:var(--deep);}
+  .legend .l-shallow{color:var(--shallow);}
+
+  /* strategy list */
+  .strategy{
+    border-left:4px solid var(--ink); padding:14px 0 14px 18px; margin-bottom:22px;
+  }
+  .strategy h3{margin:0 0 8px; font-size:19px;}
+  .strategy p{margin:0; font-size:15.5px;}
+  .strategy .why{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--gold);
+    margin-top:8px;
+  }
+
+  /* friends */
+  .friend-grid{display:grid; gap:20px; margin-top:20px;}
+  .friend{
+    border:2px solid var(--ink); background:#fbf8ef; padding:20px 22px;
+    display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+  }
+  @media(max-width:560px){ .friend{grid-template-columns:1fr;} }
+  .avatar{
+    width:52px; height:52px; border-radius:50%; border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Special Elite',monospace; font-size:20px; background:var(--gold); color:#fff;
+    flex-shrink:0;
+  }
+  .friend h3{margin:0 0 4px; font-size:18px;}
+  .friend .role{font-family:'IBM Plex Mono',monospace; font-size:12px; color:#665f4c; margin-bottom:10px;}
+  .friend p{margin:0 0 8px; font-size:15px;}
+  .friend .takeaway{
+    font-size:14px; background:var(--deep-soft); border-left:3px solid var(--deep);
+    padding:8px 12px; color:#1d3820;
+  }
+
+  /* do dont */
+  .dd-wrap{display:grid; grid-template-columns:1fr 1fr; gap:0; border:2px solid var(--ink); margin-top:22px;}
+  @media(max-width:640px){ .dd-wrap{grid-template-columns:1fr;} }
+  .dd-col{padding:20px 22px;}
+  .dd-col.do{background:var(--deep-soft); border-right:2px solid var(--ink);}
+  .dd-col.dont{background:var(--shallow-soft);}
+  @media(max-width:640px){ .dd-col.do{border-right:none; border-bottom:2px solid var(--ink);} }
+  .dd-col h3{margin:0 0 12px; font-size:18px;}
+  .dd-col.do h3{color:var(--deep);}
+  .dd-col.dont h3{color:var(--shallow);}
+  .dd-col ul{margin:0; padding-left:20px;}
+  .dd-col li{margin-bottom:8px; font-size:15px;}
+
+  footer{
+    padding:40px 0 70px; text-align:center;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#665f4c;
+  }
+  .final-line{
+    font-family:'Special Elite',monospace; font-size:22px; text-align:center;
+    margin:0 0 8px; color:var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="eyebrow">A plain-English guide</div>
+      <h1 class="title">Deep Work: <span>stop drowning</span> in the shallow stuff.</h1>
+      <p class="subtitle">Based on the introduction and Rule #4 ("Drain the Shallows") of Cal Newport's book <em>Deep Work</em>. No jargon — just the idea, the method, and what to actually do on Monday morning.</p>
+      <div class="source-tag">Source: Deep Work by Cal Newport — Introduction (the core idea) + Chapter, Rule #4 "Drain the Shallows" (the method)</div>
+    </div>
+  </div>
+</header>
+
+<section id="idea">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">01 — The Big Idea</div>
+    <h2 class="section-title">There are two kinds of work. Only one of them makes you valuable.</h2>
+    <p>Cal Newport splits your work day into two very different buckets. Almost everyone mixes them together without noticing — and that mix is quietly wasting your career.</p>
+
+    <div class="split">
+      <div class="card deep">
+        <span class="stamp">Deep Work</span>
+        <h3>Hard, focused, valuable</h3>
+        <p>Work that needs your full brain, done without distraction. It pushes your skills to their limit. It's hard to copy, hard to fake, and it's how you actually get better and produce things that matter — a report only you could write, code only you could design, a skill only you have.</p>
+      </div>
+      <div class="card shallow">
+        <span class="stamp">Shallow Work</span>
+        <h3>Easy, busy, replaceable</h3>
+        <p>Work that doesn't need much thinking — replying to chats, sitting in status meetings, forwarding emails, "quick calls." It feels productive because you're busy. But almost anyone could be trained to do it in a few weeks. It creates very little real value.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:22px;">Newport's core claim: the ability to focus deeply, without distraction, is becoming rare in a world full of notifications — and rare skills are valuable. If you can do deep work, you win. If your day is 90% shallow, you're busy but replaceable.</p>
+  </div></div>
+</section>
+
+<section id="drain">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">02 — Rule #4</div>
+    <h2 class="section-title">"Drain the Shallows"</h2>
+    <p>A company called 37signals once cut its work week from 5 days to 4. Nothing got worse — the team finished the same amount of important work. Why? Because the day off didn't remove deep work. It removed the shallow stuff: extra meetings, extra chatter, extra "just checking in" messages.</p>
+    <p>They then tried something bolder: giving employees a whole month with zero shallow obligations — no status meetings, no memos — just to think and build. That single month produced two ideas that turned into real, valuable products.</p>
+    <p><strong>The lesson:</strong> most of the shallow work filling your day feels urgent but isn't actually necessary. You can cut a lot of it with no real cost — and if you replace that freed-up time with deep work, you become more valuable, not less busy-looking.</p>
+    <p>Newport is careful to say: don't try to eliminate shallow work completely. You still need to answer emails and show up to some meetings. And nobody can do more than about 3–4 hours of true deep focus in a day anyway. The goal is simply to stop letting the easy stuff eat the hours that should belong to your best thinking.</p>
+  </div></div>
+</section>
+
+<section id="schedule">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">03 — The Core Method</div>
+    <h2 class="section-title">Plan every hour, on purpose</h2>
+    <p>Most people run their day on autopilot and are shocked when they see where the hours actually went (people also badly underestimate their TV time and overestimate their sleep — the same blind spot applies to work). Newport's fix: at the start of each day, sketch a rough block schedule. Give every half hour a job — deep work, shallow work, or rest. If something breaks the plan, just redraw the rest of the day. The point isn't to obey the schedule perfectly; it's to keep asking "what's the smartest use of my next hour?"</p>
+
+    <div class="schedule">
+      <div class="schedule-row"><div class="schedule-time">9:00</div><div class="schedule-block deep">Deep work — write the proposal, phone off</div></div>
+      <div class="schedule-row"><div class="schedule-time">11:00</div><div class="schedule-block shallow">Emails + quick replies (batched)</div></div>
+      <div class="schedule-row"><div class="schedule-time">11:30</div><div class="schedule-block deep">Deep work — hardest problem of the day</div></div>
+      <div class="schedule-row"><div class="schedule-time">1:00</div><div class="schedule-block shallow">Lunch + admin tasks</div></div>
+      <div class="schedule-row"><div class="schedule-time">2:00</div><div class="schedule-block shallow">Meetings / calls</div></div>
+      <div class="schedule-row"><div class="schedule-time">3:30</div><div class="schedule-block deep">Deep work — learning / focused practice</div></div>
+      <div class="schedule-row"><div class="schedule-time">5:00</div><div class="schedule-block shallow">Wrap up, plan tomorrow</div></div>
+    </div>
+    <div class="legend"><span class="l-deep">Deep block</span><span class="l-shallow">Shallow block</span></div>
+  </div></div>
+</section>
+
+<section id="strategies">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">04 — Four More Tools</div>
+    <h2 class="section-title">How to actually shrink the shallow pile</h2>
+
+    <div class="strategy">
+      <h3>Ask: "how long to train a stranger to do this?"</h3>
+      <p>For any task, ask how many months it would take to train a smart new graduate to do it. A quick answer (a week, a month) means it's shallow. A long answer (years) means it's deep and worth your time. Writing a real report = deep. Building a routine slideshow = shallow.</p>
+    </div>
+
+    <div class="strategy">
+      <h3>Set a "shallow work budget"</h3>
+      <p>Decide, in advance, what percent of your week can go to shallow tasks — for most jobs, somewhere around 30–50%. Once you have a number, you can say no to extra shallow requests because they'd break the budget, instead of feeling guilty every single time.</p>
+    </div>
+
+    <div class="strategy">
+      <h3>Fix your finish time</h3>
+      <p>Pick a hard stop — say, 5:30pm — and refuse to work past it. This forces you to protect your best hours and get ruthless about cutting anything that doesn't matter, because you simply don't have room for it anymore.</p>
+    </div>
+
+    <div class="strategy">
+      <h3>Make yourself harder to reach</h3>
+      <p>Not every message deserves a reply. Batch your emails, reply with a clear plan instead of a quick one-liner (so the back-and-forth ends faster), and let low-value, vague messages go unanswered. Being available for everything is not the same as being helpful.</p>
+    </div>
+  </div></div>
+</section>
+
+<section id="friends">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">05 — In Real Life</div>
+    <h2 class="section-title">Three friends, three habits</h2>
+
+    <div class="friend-grid">
+      <div class="friend">
+        <div class="avatar">P</div>
+        <div>
+          <h3>Pranav</h3>
+          <div class="role">Software developer</div>
+          <p>Pranav used to keep Slack open all day and jumped on every "quick call." His actual coding — the deep work — only happened after 6pm, when he was already tired. He started blocking 9–11am every day as phone-off coding time and only checks Slack on the hour.</p>
+          <div class="takeaway">Takeaway: schedule the deep block first, then let shallow work fill the gaps — not the other way around.</div>
+        </div>
+      </div>
+
+      <div class="friend">
+        <div class="avatar">V</div>
+        <div>
+          <h3>Vignesh</h3>
+          <div class="role">Small business owner</div>
+          <p>Vignesh replied to every WhatsApp message the second it arrived, thinking it made him look responsive. He was actually just interruptible all day. He set a rule: check messages 3 times a day, and reply with a full plan instead of a one-line answer, so conversations end faster.</p>
+          <div class="takeaway">Takeaway: fewer, better replies beat constant, quick ones — and they save you time later.</div>
+        </div>
+      </div>
+
+      <div class="friend">
+        <div class="avatar">M</div>
+        <div>
+          <h3>Mahadevaswamy</h3>
+          <div class="role">College student, exam prep</div>
+          <p>Mahadevaswamy "studied" for 6 hours a day but with his phone next to him, mostly re-reading notes — easy, low-effort work that felt productive. He switched to two 90-minute blocks of phone-in-another-room studying, doing hard practice problems only. He learned more in 3 hours than he used to in 6.</p>
+          <div class="takeaway">Takeaway: hours spent don't equal progress made. Focused hours do.</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section id="dodont">
+  <div class="wrap"><div class="inner">
+    <div class="kicker-num">06 — Summary</div>
+    <h2 class="section-title">What to do, what to stop doing</h2>
+
+    <div class="dd-wrap">
+      <div class="dd-col do">
+        <h3>✓ Do</h3>
+        <ul>
+          <li>Plan your day into blocks before it starts</li>
+          <li>Protect at least one distraction-free block for your hardest task</li>
+          <li>Batch emails/messages into 2–3 fixed times a day</li>
+          <li>Set a rough shallow-work budget and stick to it</li>
+          <li>Pick a firm stop time and defend it</li>
+          <li>Reply with a full plan, not a quick one-liner, to close conversations faster</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h3>✗ Don't</h3>
+        <ul>
+          <li>Don't leave your day totally unplanned and "see what happens"</li>
+          <li>Don't check messages the moment they arrive</li>
+          <li>Don't confuse being busy with doing valuable work</li>
+          <li>Don't try to be deep-focused for 8 hours straight — 3–4 real hours is a strong day</li>
+          <li>Don't say yes to every meeting or request out of guilt</li>
+          <li>Don't answer every message — some genuinely don't need a reply</li>
+        </ul>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<footer>
+  <p class="final-line">Protect a few deep hours. Let the rest go.</p>
+  <p>Summary notes for personal understanding — based on Cal Newport's <em>Deep Work</em>.</p>
+</footer>
+
+</body>
+</html>
