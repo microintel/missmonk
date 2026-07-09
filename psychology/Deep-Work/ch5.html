@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work — The Simple Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#132A2E;
+    --paper:#F4EFE4;
+    --panel:#0F2224;
+    --amber:#E8A33D;
+    --teal:#3C6E64;
+    --soft:#8FA69B;
+    --line: rgba(19,42,46,0.15);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    margin:0 0 0.4em 0;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:0.6em;
+    margin-bottom:1em;
+  }
+  .eyebrow::before{
+    content:"";
+    width:24px;height:1px;
+    background:var(--teal);
+    display:inline-block;
+  }
+  section{
+    padding:5rem 1.5rem;
+    max-width:760px;
+    margin:0 auto;
+  }
+  /* HERO */
+  .hero{
+    background:var(--panel);
+    color:var(--paper);
+    padding:6.5rem 1.5rem 5rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .eyebrow{color:var(--amber);}
+  .hero .eyebrow::before{background:var(--amber);}
+  .hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:2;}
+  .hero h1{
+    font-size:clamp(2.6rem,7vw,4.4rem);
+    font-weight:600;
+    line-height:1.02;
+    color:var(--paper);
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--amber);
+  }
+  .hero p.lede{
+    font-size:1.15rem;
+    max-width:34ch;
+    color:#D9D2C0;
+    margin-top:1.2rem;
+  }
+  .dial-wrap{
+    display:flex;
+    align-items:center;
+    gap:2.2rem;
+    margin-top:3rem;
+    flex-wrap:wrap;
+  }
+  .dial{
+    width:120px;height:120px;
+    border-radius:50%;
+    position:relative;
+    background:conic-gradient(var(--amber) 0deg 250deg, rgba(255,255,255,0.08) 250deg 360deg);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .dial::after{
+    content:"";
+    width:88px;height:88px;
+    border-radius:50%;
+    background:var(--panel);
+    position:absolute;
+  }
+  .dial span{
+    position:relative;z-index:2;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    text-align:center;
+    color:var(--paper);
+    line-height:1.3;
+  }
+  .dial-note{font-size:0.9rem;color:#B8AF9B;max-width:30ch;}
+  .dial-note b{color:var(--amber);font-weight:600;}
+
+  /* SECTIONS GENERAL */
+  h2{font-size:clamp(1.7rem,4vw,2.2rem);font-weight:600;}
+  p{margin:0 0 1rem 0;}
+  .lead-text{font-size:1.05rem;color:#3A4E4A;}
+
+  /* two idea cards */
+  .split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.2rem;
+    margin-top:2rem;
+  }
+  @media(max-width:640px){.split{grid-template-columns:1fr;}}
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:1.6rem;
+  }
+  .card h3{font-size:1.15rem;color:var(--teal);}
+  .card.dim{background:#EDE6D5;}
+  .card .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--amber);
+    background:var(--panel);
+    display:inline-block;
+    padding:0.25em 0.6em;
+    border-radius:3px;
+    margin-bottom:0.8em;
+  }
+
+  /* boredom section - dark */
+  .dark-section{
+    background:var(--panel);
+    color:var(--paper);
+    max-width:none;
+    padding:5rem 1.5rem;
+  }
+  .dark-section .inner{max-width:760px;margin:0 auto;}
+  .dark-section h2{color:var(--paper);}
+  .dark-section .eyebrow{color:var(--amber);}
+  .dark-section .eyebrow::before{background:var(--amber);}
+  .dark-section p{color:#CBC3AE;}
+
+  /* schedule blocks signature element */
+  .schedule{
+    display:flex;
+    height:46px;
+    border-radius:4px;
+    overflow:hidden;
+    margin:2.4rem 0 0.6rem;
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .blk{flex:1;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.05em;}
+  .blk.off{background:var(--teal);color:#EAF2EE;}
+  .blk.on{background:rgba(255,255,255,0.06);color:#9AA89F;}
+  .schedule-caption{font-size:0.78rem;color:#8FA69B;font-family:'IBM Plex Mono',monospace;}
+
+  /* training methods */
+  .methods{
+    counter-reset:m;
+    margin-top:2rem;
+    display:flex;
+    flex-direction:column;
+    gap:1.1rem;
+  }
+  .method{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:1rem;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1.1rem;
+  }
+  .method:last-child{border-bottom:none;}
+  .method .num{
+    counter-increment:m;
+    font-family:'Fraunces',serif;
+    font-size:1.9rem;
+    color:var(--amber);
+  }
+  .method .num::before{content: counter(m, decimal-leading-zero);}
+  .method h3{font-size:1.08rem;margin-bottom:0.3rem;color:var(--ink);}
+  .method p{margin:0;font-size:0.95rem;color:#4A5C56;}
+
+  /* do dont table */
+  .dodont{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    margin-top:2rem;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  @media(max-width:600px){.dodont{grid-template-columns:1fr;}}
+  .dodont > div{padding:1.5rem;}
+  .do-col{background:#EFF3EC;}
+  .dont-col{background:#F5E9E2;border-left:1px solid var(--line);}
+  @media(max-width:600px){.dont-col{border-left:none;border-top:1px solid var(--line);}}
+  .dodont h3{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+  .do-col h3{color:#3E7A5B;}
+  .dont-col h3{color:#B05A3A;}
+  .dodont ul{margin:0;padding-left:1.1rem;}
+  .dodont li{margin-bottom:0.6rem;font-size:0.94rem;}
+
+  /* friends */
+  .friends{
+    display:flex;
+    flex-direction:column;
+    gap:1.2rem;
+    margin-top:2rem;
+  }
+  .friend{
+    display:grid;
+    grid-template-columns:70px 1fr;
+    gap:1.1rem;
+    align-items:start;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:1.4rem;
+  }
+  .avatar{
+    width:52px;height:52px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.2rem;
+    color:#fff;
+  }
+  .friend h3{font-size:1.05rem;margin-bottom:0.25rem;}
+  .friend .role{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal);margin-bottom:0.5rem;display:block;}
+  .friend p{font-size:0.93rem;color:#4A5C56;margin:0;}
+
+  /* CTA */
+  .cta{
+    text-align:center;
+    background:var(--amber);
+    color:var(--panel);
+    max-width:none;
+    padding:4.5rem 1.5rem;
+  }
+  .cta-inner{max-width:600px;margin:0 auto;}
+  .cta h2{color:var(--panel);}
+  .cta p{color:#3B2A0F;}
+  .pill{
+    display:inline-block;
+    margin-top:1rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+    background:var(--panel);
+    color:var(--amber);
+    padding:0.8em 1.5em;
+    border-radius:30px;
+  }
+  footer{
+    text-align:center;
+    padding:2.5rem 1.5rem;
+    font-size:0.8rem;
+    color:var(--soft);
+    font-family:'IBM Plex Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Based on Deep Work by Cal Newport</div>
+    <h1>Your focus<br>is a <em>muscle.</em><br>Train it.</h1>
+    <p class="lede">A simple guide to the idea that changed how people work: real thinking happens away from distraction — and getting good at it takes practice, not motivation.</p>
+    <div class="dial-wrap">
+      <div class="dial"><span>MOST OF<br>THE DAY<br>= SHALLOW</span></div>
+      <p class="dial-note">On a normal day, most of your hours go to <b>shallow work</b> — email, messages, small tasks. Very little goes to work that actually moves your life forward.</p>
+    </div>
+  </div>
+</header>
+
+<!-- CHAPTER 1 IDEA -->
+<section>
+  <div class="eyebrow">The Big Idea</div>
+  <h2>Two kinds of work</h2>
+  <p class="lead-text">Every task you do falls into one of two buckets. Knowing the difference is the whole starting point of the book.</p>
+  <div class="split">
+    <div class="card">
+      <span class="tag">Deep Work</span>
+      <h3>Hard, focused, valuable</h3>
+      <p>Work done with full attention, no distraction, pushed to the edge of your ability. It creates new skills and real results — a report that actually solves a problem, code that actually works, an idea that's actually new.</p>
+    </div>
+    <div class="card dim">
+      <span class="tag">Shallow Work</span>
+      <h3>Easy, distracted, replaceable</h3>
+      <p>Work done while half-distracted — replying to chats, attending routine meetings, clearing small tasks. It feels busy but barely moves anything forward. Anyone could do it.</p>
+    </div>
+  </div>
+  <p style="margin-top:1.8rem;" class="lead-text">The world is full of phones, notifications and chat pings. This makes deep work rare. And whatever is rare and hard to copy becomes valuable — so the person who can still focus has a real advantage.</p>
+</section>
+
+<!-- BOREDOM SECTION -->
+<div class="dark-section">
+  <div class="inner">
+    <div class="eyebrow">Rule 2 · Embrace Boredom</div>
+    <h2>You can't switch on focus like a light</h2>
+    <p>Many people think focus is like flossing — something you already know how to do, but skip out of laziness. That's wrong. Focus is closer to a muscle. If you never train it, and you spend every spare moment glancing at your phone, that muscle stays weak — even if you "try hard" for one important meeting.</p>
+    <p>Researchers who studied heavy multitaskers found something surprising: people who constantly jump between tasks online get <em>worse</em> at focusing over time, even when they later want to concentrate. Their brains get used to constant novelty and start to crave it.</p>
+    <p>That is why boredom matters. Every time you feel a little bored — standing in line, waiting for a friend — and you resist grabbing your phone, you are quietly training the same muscle you need for deep work.</p>
+
+    <div class="schedule">
+      <div class="blk off">FOCUS</div>
+      <div class="blk off">FOCUS</div>
+      <div class="blk on">phone</div>
+      <div class="blk off">FOCUS</div>
+      <div class="blk off">FOCUS</div>
+      <div class="blk on">phone</div>
+    </div>
+    <p class="schedule-caption">Instead of a "digital detox day," schedule small internet blocks — and protect the gaps in between.</p>
+  </div>
+</div>
+
+<!-- METHODS -->
+<section>
+  <div class="eyebrow">How To Train It</div>
+  <h2>Four simple ways to build focus</h2>
+  <div class="methods">
+    <div class="method">
+      <div class="num"></div>
+      <div>
+        <h3>Schedule your internet time</h3>
+        <p>Pick fixed times when you're allowed to check your phone or browse. Outside those times, don't touch it — even for "just one quick thing." The waiting itself is the workout.</p>
+      </div>
+    </div>
+    <div class="method">
+      <div class="num"></div>
+      <div>
+        <h3>Give yourself a tighter deadline</h3>
+        <p>Take a task you'd normally give two hours, and force yourself to finish it in one. A short, real deadline removes the option of drifting off — you're forced into full intensity.</p>
+      </div>
+    </div>
+    <div class="method">
+      <div class="num"></div>
+      <div>
+        <h3>Think while you walk</h3>
+        <p>Use a walk, run, or commute — a time when your body is busy but your mind is free — to chew on one real problem. When your mind wanders, gently pull it back.</p>
+      </div>
+    </div>
+    <div class="method">
+      <div class="num"></div>
+      <div>
+        <h3>Practice deep memory work</h3>
+        <p>Something like memorizing a shuffled deck of cards forces total, unbroken attention. You don't need cards specifically — any task that demands full attention on purpose builds the same muscle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DO DONT -->
+<section>
+  <div class="eyebrow">Keep It Simple</div>
+  <h2>What to do, what to avoid</h2>
+  <div class="dodont">
+    <div class="do-col">
+      <h3>Do this</h3>
+      <ul>
+        <li>Plan a fixed block of quiet, focused time every day.</li>
+        <li>Let yourself feel bored sometimes — don't reach for the phone instantly.</li>
+        <li>Give real tasks a shorter, tighter deadline.</li>
+        <li>Pick one problem at a time and stay with it, even when it's hard.</li>
+        <li>Treat focus as a skill you build slowly, over weeks and months.</li>
+      </ul>
+    </div>
+    <div class="dont-col">
+      <h3>Avoid this</h3>
+      <ul>
+        <li>Don't check your phone at the very first sign of boredom.</li>
+        <li>Don't wait for one big "digital detox day" and call it done.</li>
+        <li>Don't multitask during your one important task of the day.</li>
+        <li>Don't expect deep focus overnight — it needs daily practice.</li>
+        <li>Don't switch to "just checking one message" during a focus block.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FRIENDS -->
+<section>
+  <div class="eyebrow">Seeing It In Action</div>
+  <h2>Three friends, three habits</h2>
+  <p class="lead-text">Here's how this could look for three ordinary people trying to build the focus habit.</p>
+  <div class="friends">
+    <div class="friend">
+      <div class="avatar" style="background:var(--teal);">P</div>
+      <div>
+        <span class="role">Internet blocks</span>
+        <h3>Pranav</h3>
+        <p>Pranav used to check messages every few minutes at work. Now he keeps a small notepad and writes down the next time he's "allowed" online — say, in 40 minutes. Between blocks, his phone stays in a drawer. His work hours feel longer, but his output has grown.</p>
+      </div>
+    </div>
+    <div class="friend">
+      <div class="avatar" style="background:var(--amber);">V</div>
+      <div>
+        <span class="role">Tight deadlines</span>
+        <h3>Vignesh</h3>
+        <p>Vignesh used to give himself a full day for a slide deck and still finish it late, distracted by chats. Now he sets a two-hour countdown timer, tells his manager the exact time it'll be ready, and works with total intensity until the timer runs out — no side tabs, no scrolling.</p>
+      </div>
+    </div>
+    <div class="friend">
+      <div class="avatar" style="background:#B05A3A;">M</div>
+      <div>
+        <span class="role">Thinking while walking</span>
+        <h3>Mahadevaswamy</h3>
+        <p>Mahadevaswamy takes the same walk to the bus stop every morning. Instead of scrolling his phone, he now uses those ten minutes to think through one real problem from work — turning "dead time" into some of his clearest thinking of the day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="cta-inner">
+    <h2>Start small, today</h2>
+    <p>You don't need a perfect system. Pick one method, one hour, and protect it from your phone. That's the whole beginning of deep work.</p>
+    <span class="pill">Focus is trained, not switched on</span>
+  </div>
+</div>
+
+<footer>Notes based on ideas from "Deep Work" by Cal Newport · for personal learning</footer>
+
+</body>
+</html>

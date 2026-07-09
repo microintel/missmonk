@@ -1,1 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work — Chapter One, Unpacked</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #16130f;
+    --bg-2: #1d1811;
+    --ink: #ece1c9;
+    --ink-dim: #b8ab8f;
+    --gold: #d7a84f;
+    --gold-dim: #8a6f3a;
+    --residue: #7c7566;
+    --teal: #3c5c5a;
+    --teal-bright: #6fa39d;
+    --rule: rgba(236,225,201,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.6;
+    font-size:18px;
+  }
+  ::selection{ background:var(--gold); color:#16130f; }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; margin:0; }
+  .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em; }
+  .wrap{ max-width:760px; margin:0 auto; padding:0 28px; }
 
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    overflow:hidden;
+    padding:80px 24px;
+    background:radial-gradient(ellipse at 50% 40%, #211b13 0%, #16130f 65%);
+  }
+  .lens{
+    position:relative;
+    width:260px;height:260px;
+    margin-bottom:44px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ray{
+    position:absolute;
+    top:50%;left:50%;
+    width:2px;
+    height:130px;
+    background:linear-gradient(to top, transparent, var(--gold-dim) 40%, var(--gold));
+    transform-origin:bottom center;
+    opacity:0.85;
+    animation:pulse 3.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:0.35; }
+    50%{ opacity:0.95; }
+  }
+  .core{
+    position:relative;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 24px 6px rgba(215,168,79,0.6), 0 0 60px 20px rgba(215,168,79,0.25);
+    animation:glow 3.2s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{ box-shadow:0 0 18px 4px rgba(215,168,79,0.45), 0 0 40px 14px rgba(215,168,79,0.15); }
+    50%{ box-shadow:0 0 30px 10px rgba(215,168,79,0.8), 0 0 80px 26px rgba(215,168,79,0.3); }
+  }
+  .eyebrow{ font-size:13px; color:var(--ink-dim); text-transform:uppercase; margin-bottom:18px; }
+  .hero h1{ font-size:clamp(2.2rem, 6vw, 3.6rem); line-height:1.08; max-width:14ch; }
+  .hero h1 em{ font-style:italic; color:var(--gold); }
+  .hero p.lede{ max-width:46ch; color:var(--ink-dim); margin-top:22px; font-size:1.05rem; }
+  .scroll-cue{ margin-top:56px; font-size:12px; color:var(--ink-dim); letter-spacing:0.15em; }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:96px 0; border-top:1px solid var(--rule); }
+  .kicker{ font-size:12px; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+  h2.section-title{ font-size:clamp(1.6rem,4vw,2.2rem); max-width:20ch; margin-bottom:22px; }
+  p{ color:var(--ink); }
+  .lead{ color:var(--ink-dim); font-size:1.05rem; max-width:58ch; }
+  blockquote{
+    margin:36px 0; padding:6px 0 6px 26px;
+    border-left:2px solid var(--gold);
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:1.25rem; color:var(--ink);
+  }
+  blockquote cite{ display:block; margin-top:10px; font-family:'IBM Plex Mono', monospace; font-style:normal; font-size:12px; color:var(--ink-dim); }
+
+  /* Three winners grid */
+  .winners{ display:grid; grid-template-columns:1fr; gap:18px; margin-top:36px; }
+  .winner-card{
+    border:1px solid var(--rule);
+    background:var(--bg-2);
+    border-radius:4px;
+    padding:22px 24px;
+    position:relative;
+  }
+  .winner-card .tag{ font-size:11px; color:var(--gold); text-transform:uppercase; margin-bottom:8px; }
+  .winner-card h3{ font-size:1.15rem; margin-bottom:6px; }
+  .winner-card .book-ref{ font-size:13px; color:var(--ink-dim); margin-bottom:10px; }
+  .winner-card p{ font-size:0.98rem; color:var(--ink-dim); margin:0; }
+  .friend-name{ color:var(--ink); font-family:'Fraunces',serif; font-weight:600; }
+
+  /* Equation */
+  .equation-box{
+    margin:36px 0; padding:30px 26px;
+    background:var(--bg-2); border:1px solid var(--rule); border-radius:4px;
+    text-align:center;
+  }
+  .equation{ font-family:'IBM Plex Mono', monospace; font-size:1.15rem; color:var(--gold); }
+  .equation .label{ font-size:12px; color:var(--ink-dim); display:block; margin-top:6px; }
+
+  /* Attention residue visual */
+  .residue-demo{ margin:40px 0; }
+  .track{ display:flex; align-items:center; gap:0; height:46px; border-radius:4px; overflow:hidden; border:1px solid var(--rule);}
+  .seg{ height:100%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; }
+  .seg.focus{ background:var(--gold); color:#16130f; flex:3; }
+  .seg.residue{ background:var(--residue); color:#16130f; flex:1; }
+  .seg.new-task{ background:var(--teal); color:var(--ink); flex:2; }
+  .residue-caption{ font-size:13px; color:var(--ink-dim); margin-top:10px; }
+
+  /* Two columns do/dont */
+  .verdict{ display:grid; grid-template-columns:1fr; gap:16px; margin-top:30px; }
+  .verdict-col{ border:1px solid var(--rule); border-radius:4px; padding:24px; background:var(--bg-2); }
+  .verdict-col h3{ font-size:1rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px; }
+  .verdict-col.do h3{ color:var(--gold); }
+  .verdict-col.dont h3{ color:var(--residue); }
+  .verdict-col ul{ margin:0; padding:0; list-style:none; }
+  .verdict-col li{ padding:9px 0; border-top:1px solid var(--rule); font-size:0.96rem; color:var(--ink-dim); }
+  .verdict-col li:first-child{ border-top:none; }
+  .verdict-col li b{ color:var(--ink); font-weight:600; }
+
+  .dorsey-callout{
+    margin-top:30px; padding:22px 24px; border:1px dashed var(--rule); border-radius:4px;
+    background:transparent; font-size:0.95rem; color:var(--ink-dim);
+  }
+  .dorsey-callout b{ color:var(--teal-bright); }
+
+  footer{ padding:60px 0 90px; text-align:center; color:var(--ink-dim); font-size:13px; }
+
+  @media(min-width:640px){
+    .winners{ grid-template-columns:1fr 1fr 1fr; }
+    .verdict{ grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="eyebrow mono">Deep Work · Chapter One</div>
+  <div class="lens" aria-hidden="true">
+    <div class="ray" style="transform:rotate(0deg)"></div>
+    <div class="ray" style="transform:rotate(30deg)"></div>
+    <div class="ray" style="transform:rotate(60deg)"></div>
+    <div class="ray" style="transform:rotate(90deg)"></div>
+    <div class="ray" style="transform:rotate(120deg)"></div>
+    <div class="ray" style="transform:rotate(150deg)"></div>
+    <div class="ray" style="transform:rotate(180deg)"></div>
+    <div class="ray" style="transform:rotate(210deg)"></div>
+    <div class="ray" style="transform:rotate(240deg)"></div>
+    <div class="ray" style="transform:rotate(270deg)"></div>
+    <div class="ray" style="transform:rotate(300deg)"></div>
+    <div class="ray" style="transform:rotate(330deg)"></div>
+    <div class="core"></div>
+  </div>
+  <h1>Let your mind become a <em>lens</em>.</h1>
+  <p class="lede">Cal Newport's argument, boiled down: the economy now pays a premium for people who can focus without flinching. Everyone else competes for what's left.</p>
+  <div class="scroll-cue mono">scroll ↓</div>
+</section>
+
+<div class="wrap">
+
+<section id="restructuring">
+  <div class="kicker mono">01 — The Great Restructuring</div>
+  <h2 class="section-title">Technology didn't destroy jobs. It split them.</h2>
+  <p class="lead">Economists Brynjolfsson and McAfee argue machines aren't erasing work evenly — they're dividing it. Three groups end up on the winning side. Newport illustrates each with a real person; here's the same idea mapped onto three friends instead.</p>
+
+  <div class="winners">
+    <div class="winner-card">
+      <div class="tag mono">The High-Skilled</div>
+      <h3>Pranav</h3>
+      <div class="book-ref">stand-in for Nate Silver</div>
+      <p>Wins by working <i>with</i> intelligent machines — pulling signal out of data, tools, and systems too complex for casual use. The machine is his precondition, not his rival.</p>
+    </div>
+    <div class="winner-card">
+      <div class="tag mono">The Superstar</div>
+      <h3>Vignesh</h3>
+      <div class="book-ref">stand-in for David Hansson</div>
+      <p>Wins because remote collaboration made talent a global market. Once clients can compare everyone, they hire the best — not the nearest. Small skill gaps become huge income gaps.</p>
+    </div>
+    <div class="winner-card">
+      <div class="tag mono">The Owner</div>
+      <h3>Mahadevaswamy</h3>
+      <div class="book-ref">stand-in for John Doerr</div>
+      <p>Wins through capital, not craft — funding the machines rather than operating them. Newport is honest that this route isn't really teachable. The other two are.</p>
+    </div>
+  </div>
+</section>
+
+<section id="abilities">
+  <div class="kicker mono">02 — Two Core Abilities</div>
+  <h2 class="section-title">Only two skills open the accessible doors.</h2>
+  <p class="lead">Pranav's and Vignesh's paths — high-skill and superstar — both run through the same two abilities. Mahadevaswamy's path (capital) is set aside; Newport says he has no shortcut for that one.</p>
+
+  <blockquote>
+    1. The ability to quickly master hard things.<br>
+    2. The ability to produce at an elite level — in quality and speed.
+    <cite>— Cal Newport, Deep Work</cite>
+  </blockquote>
+
+  <p class="lead">Both abilities, Newport argues, are downstream of one deeper skill: the capacity to concentrate without fracture. That's deep work.</p>
+</section>
+
+<section id="learning">
+  <div class="kicker mono">03 — Why Focus Builds Skill</div>
+  <h2 class="section-title">Mastery is a myelin problem.</h2>
+  <p class="lead">Deliberate practice (Ericsson) requires isolating one skill and hammering it with full attention. Neuroscience gives the mechanism: repeated, undistracted firing of a circuit wraps it in myelin, an insulation that makes the skill faster and more automatic. Split attention — Slack open, feed open — fires too many circuits at once to insulate any of them.</p>
+  <p class="lead" style="margin-top:14px;">So for Pranav to actually get fast at the data tools, or Vignesh to actually ship something reputation-making, distraction isn't a minor tax. It's the thing that prevents the skill from forming at all.</p>
+</section>
+
+<section id="output">
+  <div class="kicker mono">04 — Why Focus Multiplies Output</div>
+  <h2 class="section-title">The productivity most people ignore.</h2>
+  <div class="equation-box">
+    <div class="equation">High-Quality Work Produced = Time Spent × Intensity of Focus
+      <span class="label mono">Newport's productivity law</span>
+    </div>
+  </div>
+  <p class="lead">This is why Adam Grant, batching teaching and research into separate uninterrupted blocks, out-produces colleagues who work longer but more fractured hours. The lever isn't more hours — it's fewer interruptions per hour.</p>
+
+  <div class="residue-demo">
+    <div class="track">
+      <div class="seg focus">FOCUSED WORK</div>
+      <div class="seg residue">RESIDUE</div>
+      <div class="seg new-task">NEW TASK — WEAKENED</div>
+    </div>
+    <p class="residue-caption">Sophie Leroy's "attention residue": switch tasks before finishing, and part of your mind stays behind. The next task runs on whatever attention is left over.</p>
+  </div>
+</section>
+
+<section id="exception">
+  <div class="kicker mono">05 — The Exception</div>
+  <h2 class="section-title">What about the Jack Dorseys?</h2>
+  <p class="lead">Some people thrive while constantly interrupted — usually senior executives whose actual job is rapid decision-making on inputs others have already gone deep on. That's a narrow, specific role.</p>
+  <div class="dorsey-callout">
+    <b>Rule of specificity:</b> don't borrow a CEO's fragmented schedule as evidence your own job doesn't need depth. Unless distraction is provably central to your specific role, depth is the safer bet.
+  </div>
+</section>
+
+<section id="verdict">
+  <div class="kicker mono">06 — So, Practically</div>
+  <h2 class="section-title">What to do — and what to stop doing.</h2>
+  <div class="verdict">
+    <div class="verdict-col do">
+      <h3 class="mono">Do</h3>
+      <ul>
+        <li><b>Protect long, unbroken blocks</b> for the one hard task that matters most (like Pranav ring-fencing data work).</li>
+        <li><b>Finish before switching</b> — or consciously close the loop — to avoid attention residue.</li>
+        <li><b>Batch shallow admin</b> (email, messages) into set windows instead of letting it interleave.</li>
+        <li><b>Treat depth as a trainable skill</b> — start with shorter deep blocks and extend them, the way Vignesh would rehearse a hard build.</li>
+        <li><b>Pick one lane deliberately</b> — high-skill mastery or superstar-level output — rather than splitting effort across both.</li>
+      </ul>
+    </div>
+    <div class="verdict-col dont">
+      <h3 class="mono">Don't</h3>
+      <ul>
+        <li><b>Don't check messages "just quickly"</b> mid-task — a glance still plants residue even without replying.</li>
+        <li><b>Don't mistake busyness for depth.</b> Thirty context-switched hours can produce less than four focused ones.</li>
+        <li><b>Don't copy an executive's fragmented calendar</b> if your job isn't decision-triage at that level.</li>
+        <li><b>Don't wait for motivation or the "right mood"</b> — deliberate practice depends on repetition, not inspiration.</li>
+        <li><b>Don't assume talent alone saves you</b> — Newport's whole point is that unmyelinated talent still loses to focused effort.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer class="mono">Based on Chapter 1, <i>Deep Work</i> by Cal Newport — "Deep Work Is Valuable"</footer>
+
+</body>
+</html>

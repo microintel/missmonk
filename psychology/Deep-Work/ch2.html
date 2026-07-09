@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work — Reading Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151b;
+    --surface:#1b202a;
+    --surface-2:#232937;
+    --ink:#e9e6de;
+    --muted:#8b93a3;
+    --amber:#e8a33d;
+    --rust:#b5544a;
+    --line:#2c3341;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace; letter-spacing:0.06em;}
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:500; margin:0;}
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+
+  /* HERO */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 82% 20%, rgba(232,163,61,0.10), transparent 45%),
+      repeating-linear-gradient(115deg, rgba(181,84,74,0.05) 0px, rgba(181,84,74,0.05) 1px, transparent 1px, transparent 22px);
+    pointer-events:none;
+  }
+  .eyebrow{color:var(--amber); font-size:0.75rem; text-transform:uppercase; margin-bottom:18px;}
+  .hero h1{font-size:clamp(2.6rem, 7vw, 5rem); line-height:1.02; max-width:11ch;}
+  .hero p.lede{max-width:52ch; color:var(--muted); font-size:1.1rem; margin-top:24px;}
+  .hero .src{margin-top:40px; font-size:0.72rem; color:#5c6473;}
+
+  section{padding:88px 0; border-bottom:1px solid var(--line);}
+  .kicker{color:var(--amber); font-size:0.72rem; text-transform:uppercase; margin-bottom:10px; display:block;}
+  h2.title{font-size:clamp(1.6rem,3.4vw,2.3rem); max-width:16ch; margin-bottom:14px;}
+  .intro{color:var(--muted); max-width:62ch; margin-bottom:48px;}
+
+  /* CH 1 / CH 2 cards */
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .duo .card{background:var(--surface); padding:32px;}
+  .duo .num{font-family:'IBM Plex Mono'; color:var(--amber); font-size:0.8rem;}
+  .duo h3{font-size:1.3rem; margin:10px 0 14px;}
+  .duo p{color:#c3c8d1; font-size:0.95rem;}
+  .duo ul{margin:14px 0 0; padding-left:18px; color:#c3c8d1; font-size:0.92rem;}
+  .duo li{margin-bottom:8px;}
+
+  /* Forces grid */
+  .forces{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .force{background:var(--surface); padding:28px; position:relative;}
+  .force .tag{font-family:'IBM Plex Mono'; font-size:0.68rem; color:var(--muted); text-transform:uppercase;}
+  .force h3{font-size:1.15rem; margin:8px 0 10px;}
+  .force p{color:#c3c8d1; font-size:0.9rem; margin:0;}
+
+  /* Spectrum */
+  .spectrum-wrap{margin-top:20px;}
+  .spectrum{
+    position:relative;
+    height:6px;
+    border-radius:4px;
+    background:linear-gradient(90deg, var(--rust), var(--surface-2) 45%, var(--amber));
+    margin:70px 0 20px;
+  }
+  .spectrum .end-label{position:absolute; top:-30px; font-size:0.72rem; font-family:'IBM Plex Mono'; color:var(--muted); text-transform:uppercase;}
+  .spectrum .end-label.left{left:0;}
+  .spectrum .end-label.right{right:0;}
+  .pin{
+    position:absolute; top:50%; transform:translate(-50%,-50%);
+    width:16px; height:16px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--ink); cursor:pointer;
+    transition:transform 0.15s ease;
+  }
+  .pin:hover, .pin.active{transform:translate(-50%,-50%) scale(1.3); border-color:var(--amber);}
+  .pin .name{
+    position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+    font-family:'IBM Plex Mono'; font-size:0.72rem; color:var(--ink); white-space:nowrap;
+  }
+  .cards3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:56px;}
+  .friend-card{
+    background:var(--surface); border:1px solid var(--line); padding:22px;
+    opacity:0.45; transition:opacity 0.2s ease, border-color 0.2s ease;
+  }
+  .friend-card.active{opacity:1; border-color:var(--amber);}
+  .friend-card .tag{font-family:'IBM Plex Mono'; font-size:0.68rem; color:var(--amber); text-transform:uppercase;}
+  .friend-card h3{font-size:1.1rem; margin:8px 0 10px;}
+  .friend-card p{font-size:0.88rem; color:#c3c8d1; margin:0;}
+
+  /* Do / Dont */
+  .verdict{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .verdict .col{background:var(--surface); padding:32px;}
+  .verdict h3{font-size:1.1rem; margin-bottom:16px;}
+  .verdict.do h3{color:var(--amber);}
+  .verdict .col.dont h3{color:var(--rust);}
+  .verdict ul{list-style:none; padding:0; margin:0;}
+  .verdict li{padding:10px 0; border-top:1px solid var(--line); font-size:0.92rem; color:#c3c8d1;}
+  .verdict li:first-child{border-top:none;}
+  .verdict li::before{content:"→ "; color:var(--muted);}
+  .col.dont li::before{content:"✕ "; color:var(--rust);}
+  .col.do li::before{content:"✓ "; color:var(--amber);}
+
+  footer{padding:48px 0; text-align:center; color:#5c6473; font-size:0.78rem;}
+
+  @media (max-width:720px){
+    .duo, .forces, .verdict, .cards3{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow mono">Reading Notes · Deep Work, Cal Newport</span>
+    <h1>Deep work is<br>valuable, rare,<br>and yours to take.</h1>
+    <p class="lede">The world keeps making shallow work easier and deep work harder. That's not an argument against depth — it's the reason depth is about to become the rarest, most rewarded skill you have.</p>
+    <p class="src mono">Based on Ch.1 "Deep Work Is Valuable" (summarized from general knowledge of the book) and Ch.2 "Deep Work Is Rare" (from the uploaded chapter).</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker mono">The Argument, In Two Halves</span>
+    <h2 class="title">Why it matters, then why nobody does it</h2>
+    <p class="intro">Newport builds a two-step case. First he argues deep work is undervalued relative to its payoff. Then he explains why, despite that payoff, almost no one — and almost no company — actually protects time for it.</p>
+
+    <div class="duo">
+      <div class="card">
+        <span class="num">Ch. 1</span>
+        <h3>Deep Work Is Valuable</h3>
+        <p>In an economy shifting toward automation and machine intelligence, two abilities separate the people who thrive: the ability to quickly master hard, complex things, and the ability to produce at an elite level in both quality and speed.</p>
+        <ul>
+          <li>Both abilities depend on deep, undistracted concentration — not raw hours logged.</li>
+          <li>Shallow, fragmented attention can't build new skill or push out top-tier output; it can only maintain what already exists.</li>
+          <li>The people winning today (from elite programmers to career switchers) are the ones who treat focus itself as the skill to train.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="num">Ch. 2</span>
+        <h3>Deep Work Is Rare</h3>
+        <p>If depth is this valuable, businesses should be building entire cultures around it. Instead they're doing the opposite — open floor plans, always-on messaging, mandatory social media — all of which fragment attention.</p>
+        <ul>
+          <li>These habits persist not because they help the bottom line, but because their damage is nearly impossible to measure.</li>
+          <li>Newport calls this measurement gap the "metric black hole" — and it's the root cause behind everything below.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker mono">From Chapter 2</span>
+    <h2 class="title">Four forces quietly working against your focus</h2>
+    <p class="intro">None of these forces are evil. They're just easier than depth, and nothing forces anyone to notice the cost — because the cost is invisible.</p>
+
+    <div class="forces">
+      <div class="force">
+        <span class="tag">01 · The Root Cause</span>
+        <h3>The Metric Black Hole</h3>
+        <p>It's nearly impossible to measure how much a distracted habit costs a business, or how much a deep one would have earned. Without a number to point to, depth loses every argument by default.</p>
+      </div>
+      <div class="force">
+        <span class="tag">02 · The Default</span>
+        <h3>Principle of Least Resistance</h3>
+        <p>Without clear feedback on what actually helps, people and teams drift toward whatever feels easiest in the moment — answering the email now, joining the standing meeting — even when it costs more later.</p>
+      </div>
+      <div class="force">
+        <span class="tag">03 · The Substitute</span>
+        <h3>Busyness as Proxy for Productivity</h3>
+        <p>When your job has no clear scoreboard, visible busyness becomes the stand-in for real value. Looking occupied starts to matter more than producing anything hard to make.</p>
+      </div>
+      <div class="force">
+        <span class="tag">04 · The Ideology</span>
+        <h3>The Cult of "The Internet"</h3>
+        <p>Any behavior gets a free pass once it's tagged "digital" or "online" — tweeting, posting, staying reachable — regardless of whether it was ever weighed against what it displaces.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker mono">Putting It Somewhere Real</span>
+    <h2 class="title">Where three friends sit on the spectrum</h2>
+    <p class="intro">Click a name. Same forces, three different everyday shapes.</p>
+
+    <div class="spectrum-wrap">
+      <div class="spectrum" id="spectrum">
+        <span class="end-label left">Shallow · reactive</span>
+        <span class="end-label right">Deep · protected</span>
+        <div class="pin" style="left:18%" data-target="pranav"><span class="name">Pranav</span></div>
+        <div class="pin" style="left:52%" data-target="vignesh"><span class="name">Vignesh</span></div>
+        <div class="pin" style="left:84%" data-target="mahadevaswamy"><span class="name">Mahadevaswamy</span></div>
+      </div>
+    </div>
+
+    <div class="cards3">
+      <div class="friend-card" id="card-pranav">
+        <span class="tag">Least Resistance</span>
+        <h3>Pranav</h3>
+        <p>Keeps every group chat open all day and replies within seconds because it "feels responsive." His actual project work gets touched in five-minute scraps between pings — busy every hour, finished with almost nothing by the end of the week.</p>
+      </div>
+      <div class="friend-card" id="card-vignesh">
+        <span class="tag">Busyness as Proxy</span>
+        <h3>Vignesh</h3>
+        <p>Fills his calendar with recurring syncs and status meetings so it always looks full. It photographs well to a manager, but the hard technical problem he's meant to be solving hasn't moved in three weeks.</p>
+      </div>
+      <div class="friend-card" id="card-mahadevaswamy">
+        <span class="tag">Escaping the Cult of the Internet</span>
+        <h3>Mahadevaswamy</h3>
+        <p>Muted notifications, closed the extra tabs, blocked two-hour slots on the calendar and defended them like meetings. Colleagues found it odd at first — nobody does that — but he shipped the thing everyone else was stuck on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker mono">The Takeaway</span>
+    <h2 class="title">What to actually do about it</h2>
+    <p class="intro">The book's real claim: none of the shallow habits above are necessary. They just went unchallenged. You can challenge them.</p>
+
+    <div class="verdict">
+      <div class="col do">
+        <h3>Do</h3>
+        <ul>
+          <li>Block real, protected stretches of time for your hardest work — treat them as unmovable as a meeting.</li>
+          <li>Let messages and email batch up; check them on your schedule, not theirs.</li>
+          <li>Judge your day by what you finished, not by how busy or reachable you looked.</li>
+          <li>Ask of any new tool or habit: what does this cost me, not just what does it offer.</li>
+          <li>Treat boredom and slow starts as normal friction on the way into focus, not a sign to switch tasks.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h3>Don't</h3>
+        <ul>
+          <li>Don't mistake a full calendar or a fast reply time for real productivity.</li>
+          <li>Don't adopt a habit just because it's "how everyone works now" or because it's digital.</li>
+          <li>Don't leave chat and notifications on by default while doing your most important work.</li>
+          <li>Don't let easiest-in-the-moment become your default filter for how to spend your attention.</li>
+          <li>Don't assume a distracting habit is harmless just because nobody can point to a number proving otherwise.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Notes drawn from the uploaded Chapter 2 text and a general summary of Chapter 1's core argument.
+</footer>
+
+<script>
+  const pins = document.querySelectorAll('.pin');
+  const cards = document.querySelectorAll('.friend-card');
+  function setActive(target){
+    pins.forEach(p => p.classList.toggle('active', p.dataset.target === target));
+    cards.forEach(c => c.classList.toggle('active', c.id === 'card-' + target));
+  }
+  pins.forEach(p => {
+    p.addEventListener('mouseenter', () => setActive(p.dataset.target));
+    p.addEventListener('click', () => setActive(p.dataset.target));
+  });
+</script>
+
+</body>
+</html>

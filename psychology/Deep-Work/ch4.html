@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rule #1 — Work Deeply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1B2D;
+    --ink-2:#132238;
+    --line:#6FA8C9;
+    --line-dim:#3B5C74;
+    --paper:#EDE6D6;
+    --brass:#C9922C;
+    --text:#E9EEF3;
+    --muted:#8CA0B3;
+    --serif:'Fraunces', serif;
+    --sans:'IBM Plex Sans', sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--brass); color:var(--ink);}
+
+  /* Blueprint grid texture */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-dim) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-dim) 1px, transparent 1px);
+    background-size:48px 48px;
+    opacity:0.08;
+  }
+
+  .wrap{position:relative; z-index:1; max-width:1040px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:88px 0 60px;
+    border-bottom:1px solid var(--line-dim);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--line);
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:''; width:28px; height:1px; background:var(--line);
+  }
+  h1.title{
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(42px, 7vw, 84px);
+    line-height:1.02;
+    margin-top:18px;
+    letter-spacing:-0.01em;
+  }
+  h1.title em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--brass);
+  }
+  .hero-sub{
+    max-width:620px;
+    margin-top:22px;
+    color:var(--muted);
+    font-size:17px;
+  }
+  .hero-meta{
+    margin-top:36px;
+    display:flex; gap:32px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12px; color:var(--line);
+  }
+  .hero-meta span b{color:var(--text); font-weight:500; display:block; font-family:var(--sans); font-size:14px; margin-top:2px;}
+
+  /* ---------- BLUEPRINT CORRIDOR (signature element) ---------- */
+  section.corridor{
+    padding:70px 0 90px;
+    border-bottom:1px solid var(--line-dim);
+  }
+  .corridor-label{
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:8px;
+  }
+  h2{
+    font-family:var(--serif); font-weight:600; font-size:clamp(28px,4vw,40px);
+    letter-spacing:-0.01em; margin-bottom:14px;
+  }
+  .corridor-intro{color:var(--muted); max-width:680px; margin-bottom:44px; font-size:15.5px;}
+
+  .rooms{
+    display:flex;
+    border:1px solid var(--line-dim);
+    overflow-x:auto;
+    position:relative;
+  }
+  .room{
+    flex:1 1 0;
+    min-width:170px;
+    padding:22px 18px 26px;
+    border-right:1px dashed var(--line-dim);
+    position:relative;
+    transition:background .25s ease;
+  }
+  .room:last-child{border-right:none;}
+  .room:hover{background:rgba(111,168,201,0.06);}
+  .room .no{
+    font-family:var(--mono); font-size:11px; color:var(--line-dim);
+  }
+  .room h3{
+    font-family:var(--serif); font-size:19px; font-weight:600; margin:10px 0 8px;
+    color:var(--text);
+  }
+  .room p{font-size:13.2px; color:var(--muted); line-height:1.55;}
+  .room.chamber{
+    background:linear-gradient(180deg, rgba(201,146,44,0.10), transparent);
+    border-right:none;
+  }
+  .room.chamber h3{color:var(--brass);}
+  .dim-line{
+    display:flex; align-items:center; margin-top:10px; color:var(--line-dim);
+    font-family:var(--mono); font-size:10px;
+  }
+  .dim-line::before, .dim-line::after{content:''; flex:1; height:1px; background:var(--line-dim);}
+  .dim-line span{padding:0 6px;}
+
+  .corridor-note{
+    margin-top:18px; font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+
+  /* ---------- CORE IDEA ---------- */
+  section.idea{
+    padding:70px 0; border-bottom:1px solid var(--line-dim);
+    display:grid; grid-template-columns:1.1fr 1fr; gap:56px;
+  }
+  @media (max-width:760px){ section.idea{grid-template-columns:1fr;} }
+  .idea p{color:var(--muted); margin-bottom:14px; font-size:15.5px;}
+  .idea strong{color:var(--text); font-weight:600;}
+  .willpower-box{
+    border:1px solid var(--line-dim);
+    padding:26px;
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--line);
+    align-self:start;
+  }
+  .willpower-box .eq{color:var(--brass); font-size:15px; margin-bottom:12px; display:block;}
+  .willpower-box ul{list-style:none; margin-top:14px;}
+  .willpower-box li{padding:6px 0; border-top:1px solid var(--line-dim); color:var(--muted);}
+  .willpower-box li:first-child{border-top:none;}
+
+  /* ---------- PHILOSOPHIES ---------- */
+  section.philosophies{padding:70px 0; border-bottom:1px solid var(--line-dim);}
+  .phil-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line-dim);
+    border:1px solid var(--line-dim);
+    margin-top:38px;
+  }
+  @media (max-width:860px){ .phil-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .phil-grid{grid-template-columns:1fr;} }
+  .phil-card{
+    background:var(--ink); padding:26px 22px; min-height:280px;
+    display:flex; flex-direction:column;
+  }
+  .phil-card .tag{font-family:var(--mono); font-size:11px; color:var(--brass); letter-spacing:.08em; text-transform:uppercase;}
+  .phil-card h3{font-family:var(--serif); font-size:22px; font-weight:600; margin:10px 0 4px;}
+  .phil-card .who{font-family:var(--mono); font-size:12px; color:var(--line); margin-bottom:12px;}
+  .phil-card p{font-size:13.5px; color:var(--muted); flex:1;}
+  .phil-card .fit{
+    margin-top:14px; padding-top:12px; border-top:1px dashed var(--line-dim);
+    font-size:12px; color:var(--muted);
+  }
+  .phil-card .fit b{color:var(--text); font-weight:500;}
+
+  /* ---------- STRATEGIES ---------- */
+  section.strategies{padding:70px 0; border-bottom:1px solid var(--line-dim);}
+  .strat-list{margin-top:34px;}
+  .strat{
+    display:grid; grid-template-columns:220px 1fr; gap:28px;
+    padding:24px 0; border-top:1px solid var(--line-dim);
+  }
+  @media (max-width:660px){ .strat{grid-template-columns:1fr; gap:8px;} }
+  .strat:last-child{border-bottom:1px solid var(--line-dim);}
+  .strat h4{font-family:var(--serif); font-size:20px; font-weight:600; color:var(--text);}
+  .strat .strat-sub{font-family:var(--mono); font-size:11px; color:var(--line); margin-top:6px;}
+  .strat p{color:var(--muted); font-size:14.5px;}
+
+  /* ---------- FRIENDS CASE STUDIES ---------- */
+  section.friends{padding:70px 0; border-bottom:1px solid var(--line-dim);}
+  .friends-note{
+    font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:36px;
+    border-left:2px solid var(--brass); padding-left:12px;
+  }
+  .friend-cards{display:flex; flex-direction:column; gap:1px; background:var(--line-dim); border:1px solid var(--line-dim);}
+  .friend{
+    background:var(--ink);
+    padding:26px 28px;
+    display:grid; grid-template-columns:160px 1fr 200px; gap:24px; align-items:center;
+  }
+  @media (max-width:760px){ .friend{grid-template-columns:1fr; gap:10px;} }
+  .friend .name{font-family:var(--serif); font-size:22px; font-weight:600;}
+  .friend .role{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:4px;}
+  .friend .desc{font-size:14px; color:var(--muted);}
+  .friend .assign{
+    font-family:var(--mono); font-size:11px; text-align:right;
+    color:var(--brass); border-left:1px dashed var(--line-dim); padding-left:16px;
+  }
+  @media (max-width:760px){ .friend .assign{text-align:left; border-left:none; padding-left:0; border-top:1px dashed var(--line-dim); padding-top:10px;} }
+  .friend .assign b{display:block; color:var(--brass); font-size:14px; font-family:var(--sans); font-weight:600; margin-bottom:3px;}
+
+  /* ---------- DO / DON'T ---------- */
+  section.verdict{padding:70px 0 100px;}
+  .verdict-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line-dim);
+    border:1px solid var(--line-dim); margin-top:38px;
+  }
+  @media (max-width:700px){ .verdict-grid{grid-template-columns:1fr;} }
+  .vcol{background:var(--ink); padding:30px 30px 34px;}
+  .vcol h3{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    margin-bottom:20px; display:flex; align-items:center; gap:10px;
+  }
+  .vcol.do h3{color:var(--brass);}
+  .vcol.dont h3{color:#C97070;}
+  .vcol ul{list-style:none;}
+  .vcol li{
+    padding:12px 0; border-top:1px solid var(--line-dim); font-size:14.5px; color:var(--muted);
+    padding-left:20px; position:relative;
+  }
+  .vcol li:first-child{border-top:none;}
+  .vcol li::before{
+    position:absolute; left:0; top:12px; font-family:var(--mono); font-size:12px;
+  }
+  .vcol.do li::before{content:'+'; color:var(--brass);}
+  .vcol.dont li::before{content:'–'; color:#C97070;}
+  .vcol li b{color:var(--text); font-weight:600;}
+
+  footer{
+    padding:36px 0 60px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--line-dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Cal Newport — Deep Work · Part 2</div>
+    <h1 class="title">Rule № 1<br><em>Work Deeply</em></h1>
+    <p class="hero-sub">Deep work doesn't happen because you decide to focus harder. It happens when you build a structure — a room, a rhythm, a ritual — that needs less willpower to enter than the one you're standing in now.</p>
+    <div class="hero-meta">
+      <span>The obstacle <b>Finite willpower</b></span>
+      <span>The model <b>The Eudaimonia Machine</b></span>
+      <span>The fix <b>Routines, not resolve</b></span>
+    </div>
+  </header>
+
+  <section class="corridor">
+    <div class="corridor-label">The blueprint</div>
+    <h2>A building with no hallway</h2>
+    <p class="corridor-intro">Architect David Dewane designed the Eudaimonia Machine as five rooms in a straight line — no shared corridor, so you can't skip ahead. You walk through inspiration, then argument, then research, then admin, before you're even allowed near the deep work chamber. The order is the point: depth has to be earned room by room.</p>
+
+    <div class="rooms">
+      <div class="room">
+        <div class="no">01</div>
+        <h3>Gallery</h3>
+        <p>Displays of finished deep work. Built to seed "healthy stress and peer pressure" the moment you walk in.</p>
+        <div class="dim-line"><span>inspire</span></div>
+      </div>
+      <div class="room">
+        <div class="no">02</div>
+        <h3>Salon</h3>
+        <p>Coffee, couches, argument. A mood "between intense curiosity and brooding" — where ideas get worked over.</p>
+        <div class="dim-line"><span>debate</span></div>
+      </div>
+      <div class="room">
+        <div class="no">03</div>
+        <h3>Library</h3>
+        <p>"The hard drive of the machine." Every past project's research and output, archived and ready to draw on.</p>
+        <div class="dim-line"><span>gather</span></div>
+      </div>
+      <div class="room">
+        <div class="no">04</div>
+        <h3>Office</h3>
+        <p>Desks, a whiteboard, an admin on hand. Where the shallow, low-intensity chores get cleared out of the way.</p>
+        <div class="dim-line"><span>clear</span></div>
+      </div>
+      <div class="room chamber">
+        <div class="no">05</div>
+        <h3>Deep Work Chamber</h3>
+        <p>6×10 ft, 18 inches of soundproofing. 90 minutes in, 90 minutes off, repeated 2–3 times — the day's real output.</p>
+        <div class="dim-line"><span>produce</span></div>
+      </div>
+    </div>
+    <p class="corridor-note">You probably don't have this building. The strategies below exist to simulate its effect anyway.</p>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Why good intentions aren't enough</h2>
+      <p>A 2012 study wired 205 adults with beepers that interrupted them at random to ask what they were craving. <strong>Desire turned out to be the norm, not the exception</strong> — and the fifth most common urge, right behind food and sleep, was to check email, browse, or otherwise escape hard work.</p>
+      <p>Worse: willpower isn't character, it's fuel. Roy Baumeister's research shows it depletes with use, like a muscle tiring over the day. That's why "just concentrate harder" fails by 3 p.m. — you're not weak-willed, you're out of tank.</p>
+      <p>The fix isn't more resolve. It's <strong>routines that require less willpower to start</strong>, so there's less tank to spend in the first place.</p>
+    </div>
+    <div class="willpower-box">
+      <span class="eq">ad hoc focus → fails</span>
+      willpower spent deciding <em>when</em> and <em>whether</em> to go deep, every single time.
+      <ul>
+        <li>Ritual removes the "when"</li>
+        <li>Location removes the "where"</li>
+        <li>Philosophy removes the "how often"</li>
+        <li>Scoreboard removes the "is this working"</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="philosophies">
+    <div class="corridor-label">Four blueprints</div>
+    <h2>Pick a depth philosophy</h2>
+    <p class="corridor-intro">There's no universal schedule for deep work — only a match, or mismatch, between a philosophy and your actual obligations.</p>
+    <div class="phil-grid">
+      <div class="phil-card">
+        <div class="tag">Monastic</div>
+        <h3>Eliminate the shallow</h3>
+        <div class="who">Donald Knuth · Neal Stephenson</div>
+        <p>Cut shallow obligations almost entirely. Works only when your value to the world is one discrete, individualized thing — Knuth hasn't used email since 1990.</p>
+        <div class="fit"><b>Fits:</b> a singular, well-defined body of work with no need for broad accessibility.</div>
+      </div>
+      <div class="phil-card">
+        <div class="tag">Bimodal</div>
+        <h3>Split your calendar</h3>
+        <div class="who">Carl Jung · Adam Grant</div>
+        <p>Alternate full monastic stretches (a day or more — never just an hour) with periods of total openness. Jung retreated to Bollingen; Grant batched teaching into one semester.</p>
+        <div class="fit"><b>Fits:</b> roles needing real engagement with others, but with enough flexibility to disappear in blocks.</div>
+      </div>
+      <div class="phil-card">
+        <div class="tag">Rhythmic</div>
+        <h3>Same time, every day</h3>
+        <div class="who">Jerry Seinfeld's chain · Brian Chappell</div>
+        <p>Fixed daily slot, tracked visually — "don't break the chain." Chappell wrote a dissertation at 5 a.m. before a full-time job, and called the routine "guilt-free."</p>
+        <div class="fit"><b>Fits:</b> standard jobs where you can't vanish for days, but can protect an hour.</div>
+      </div>
+      <div class="phil-card">
+        <div class="tag">Journalistic</div>
+        <h3>Fit it wherever it fits</h3>
+        <div class="who">Walter Isaacson · Cal Newport</div>
+        <p>Drop into deep mode the instant a gap opens — a canceled meeting, a nap, a free afternoon. Requires practice and real confidence in the work's importance.</p>
+        <div class="fit"><b>Fits:</b> experienced deep workers with unpredictable, fragmented schedules.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strategies">
+    <div class="corridor-label">Reinforcements</div>
+    <h2>Five more strategies from the rule</h2>
+    <div class="strat-list">
+      <div class="strat">
+        <div>
+          <h4>Ritualize</h4>
+          <div class="strat-sub">Caro · Darwin</div>
+        </div>
+        <p>Fix where you'll work and for how long, how you'll work once there (internet ban, output targets), and how you'll support your brain (coffee, food, a walk). A ritual replaces "should I start now?" with "it's time."</p>
+      </div>
+      <div class="strat">
+        <div>
+          <h4>Make grand gestures</h4>
+          <div class="strat-sub">J.K. Rowling · Bill Gates' Think Weeks</div>
+        </div>
+        <p>Spend real money or effort on a radical change of scene, and the task's perceived importance jumps — which drops the resistance to starting. Rowling finished <em>Deathly Hallows</em> in a hotel suite she never meant to keep.</p>
+      </div>
+      <div class="strat">
+        <div>
+          <h4>Don't work alone</h4>
+          <div class="strat-sub">Bell Labs · Building 20</div>
+        </div>
+        <p>Separate serendipity from depth rather than mixing them: gather ideas in shared hubs, then retreat to a private spoke to think. Sometimes a "whiteboard partner" pushes you deeper than solitude would.</p>
+      </div>
+      <div class="strat">
+        <div>
+          <h4>Execute like a business</h4>
+          <div class="strat-sub">4DX framework</div>
+        </div>
+        <p>One wildly important goal → track the lead measure (hours of deep work, not results) → keep a visible scoreboard → review it weekly. Newport doubled his paper output the year he ran this.</p>
+      </div>
+      <div class="strat">
+        <div>
+          <h4>Be lazy</h4>
+          <div class="strat-sub">The shutdown ritual</div>
+        </div>
+        <p>End the workday completely — no evening email — and run a fixed shutdown routine (review tasks, plan tomorrow, say a closing phrase). Downtime restores attention, seeds unconscious insight, and evening work is usually low-value anyway.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="friends">
+    <div class="corridor-label">Applying the blueprint</div>
+    <h2>Three friends, three philosophies</h2>
+    <p class="friends-note">Illustrative pairings, not verified biographies — a way to think through which philosophy suits which kind of week.</p>
+    <div class="friend-cards">
+      <div class="friend">
+        <div>
+          <div class="name">Pranav</div>
+          <div class="role">fixed 9-to-5, low flexibility</div>
+        </div>
+        <div class="desc">Can't vanish for a day without raising eyebrows at work, but can reliably protect the same early hour before the inbox opens.</div>
+        <div class="assign"><b>Rhythmic</b>same slot daily, tracked like Seinfeld's chain — no negotiating with himself each morning.</div>
+      </div>
+      <div class="friend">
+        <div>
+          <div class="name">Vignesh</div>
+          <div class="role">flexible, project-driven work</div>
+        </div>
+        <div class="desc">Has stretches of real control over his calendar and does his best thinking when fully immersed for a full day or more, not in fragments.</div>
+        <div class="assign"><b>Bimodal</b>batch a few full days of monastic focus, stay open the rest of the month.</div>
+      </div>
+      <div class="friend">
+        <div>
+          <div class="name">Mahadevaswamy</div>
+          <div class="role">unpredictable, meeting-heavy schedule</div>
+        </div>
+        <div class="desc">Meetings shift constantly and few days look alike — but he's experienced enough to drop into focus the moment a gap appears.</div>
+        <div class="assign"><b>Journalistic</b>grab depth opportunistically, the way Isaacson wrote between magazine deadlines.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="verdict">
+    <div class="corridor-label">The takeaway</div>
+    <h2>What to do — and what to stop doing</h2>
+    <div class="verdict-grid">
+      <div class="vcol do">
+        <h3>Do</h3>
+        <ul>
+          <li><b>Choose one</b> depth philosophy that matches your actual obligations, not the one that sounds most impressive.</li>
+          <li><b>Build a ritual</b> — fixed place, fixed time limit, fixed rules — so starting takes no negotiation.</li>
+          <li><b>Track hours</b> of deep work, not output. It's the lead measure you can actually move today.</li>
+          <li><b>Protect a full shutdown</b> each evening, with a closing ritual that tells your mind the day is over.</li>
+          <li><b>Use grand gestures</b> sparingly, for the projects that truly need a push past inertia.</li>
+        </ul>
+      </div>
+      <div class="vcol dont">
+        <h3>Don't</h3>
+        <ul>
+          <li><b>Don't rely on willpower alone</b> to switch into focus mid-afternoon — it's already draining by then.</li>
+          <li><b>Don't mix</b> serendipity-seeking and deep thinking in the same stretch of time; they need opposite settings.</li>
+          <li><b>Don't check email "for a second"</b> after shutdown — a brief intrusion reopens the whole stream of distraction.</li>
+          <li><b>Don't judge a day</b> by pages produced; judge it by hours of undistracted attention logged.</li>
+          <li><b>Don't copy someone else's philosophy</b> wholesale — Knuth's monasticism would get most people fired.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Based on Cal Newport, <em>Deep Work</em> — Part 2, Rule #1: Work Deeply</footer>
+
+</body>
+</html>

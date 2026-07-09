@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work, Forged — A Single-Page Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#1c1917;
+    --charcoal-2:#26221e;
+    --ember:#d1451f;
+    --ember-bright:#f2622f;
+    --spark:#f2b134;
+    --steel:#7d8590;
+    --parchment:#efe8da;
+    --parchment-dim:#c9c0ac;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--charcoal);
+    color:var(--parchment);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--ember); color:var(--parchment);}
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    margin:0;
+    color:var(--parchment);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.72rem;
+    color:var(--ember-bright);
+  }
+  a{color:var(--spark);}
+  section{
+    padding:5rem 6vw;
+    max-width:920px;
+    margin:0 auto;
+    position:relative;
+  }
+  @media (max-width:640px){
+    section{padding:3.2rem 6vw;}
+  }
+
+  /* HERO */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:1100px;
+    position:relative;
+  }
+  .forge-glow{
+    position:absolute;
+    top:-20%; left:50%;
+    transform:translateX(-50%);
+    width:900px; height:900px;
+    background:radial-gradient(circle, rgba(209,69,31,0.22), transparent 60%);
+    pointer-events:none;
+    filter:blur(10px);
+    animation:pulse 6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.7; transform:translateX(-50%) scale(1);}
+    50%{opacity:1; transform:translateX(-50%) scale(1.06);}
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.06;
+    max-width:14ch;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--ember-bright);
+  }
+  .hero p.lede{
+    margin-top:1.6rem;
+    max-width:52ch;
+    color:var(--parchment-dim);
+    font-size:1.15rem;
+  }
+  .strike-row{
+    display:flex;
+    gap:0.5rem;
+    margin-top:2.4rem;
+  }
+  .strike{
+    width:38px; height:6px;
+    background:var(--steel);
+    border-radius:1px;
+    opacity:0.35;
+    animation:strike-in 0.6s ease forwards;
+    animation-delay:calc(var(--i) * 0.15s + 0.4s);
+    transform-origin:left;
+    transform:scaleX(0);
+  }
+  @keyframes strike-in{ to{ transform:scaleX(1); opacity:1; background:var(--ember-bright);} }
+
+  /* DIVIDER — hammer-dent motif */
+  .dent-divider{
+    display:flex;
+    align-items:center;
+    gap:0.6rem;
+    margin:0 auto 3rem;
+    max-width:920px;
+    padding:0 6vw;
+  }
+  .dent-divider::before, .dent-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(125,133,144,0.4), transparent);
+  }
+  .dent-divider span{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 8px 1px rgba(242,98,47,0.5);
+  }
+
+  /* SECTION HEADERS */
+  .section-head{margin-bottom:2rem;}
+  .section-head h2{
+    font-size:clamp(1.6rem,3.4vw,2.3rem);
+    margin-top:0.4rem;
+  }
+
+  /* QUOTE-ISH CALLOUT (paraphrase, not verbatim) */
+  .callout{
+    border-left:2px solid var(--ember);
+    padding:0.2rem 0 0.2rem 1.4rem;
+    color:var(--parchment-dim);
+    font-style:italic;
+    margin:1.6rem 0;
+  }
+
+  /* THREE ARGUMENTS — numbered, since it's a real sequence */
+  .arg-grid{
+    display:grid;
+    gap:1.4rem;
+  }
+  .arg-card{
+    background:var(--charcoal-2);
+    border:1px solid rgba(125,133,144,0.18);
+    border-radius:6px;
+    padding:1.6rem 1.8rem;
+    position:relative;
+  }
+  .arg-num{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--ember-bright);
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+  }
+  .arg-card h3{font-size:1.25rem; margin:0.5rem 0 0.6rem;}
+  .arg-card p{color:var(--parchment-dim); margin:0; font-size:0.98rem;}
+
+  /* DO / DONT */
+  .protocol{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.2rem;
+  }
+  @media (max-width:640px){ .protocol{grid-template-columns:1fr;} }
+  .protocol .col{
+    border-radius:6px;
+    padding:1.6rem 1.6rem 1.8rem;
+  }
+  .col.do{background:rgba(242,177,52,0.07); border:1px solid rgba(242,177,52,0.3);}
+  .col.dont{background:rgba(209,69,31,0.06); border:1px solid rgba(209,69,31,0.28);}
+  .col h3{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:0.9rem;
+  }
+  .col.do h3{color:var(--spark);}
+  .col.dont h3{color:var(--ember-bright);}
+  .col ul{margin:0; padding-left:1.1rem;}
+  .col li{margin-bottom:0.65rem; color:var(--parchment-dim); font-size:0.95rem;}
+  .col li::marker{color:inherit;}
+
+  /* PRACTITIONERS */
+  .practitioners{
+    display:grid;
+    gap:1.2rem;
+  }
+  .practitioner{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:1.2rem;
+    align-items:start;
+    background:var(--charcoal-2);
+    border-radius:6px;
+    padding:1.4rem 1.6rem;
+    border:1px solid rgba(125,133,144,0.15);
+  }
+  .initial{
+    width:44px;height:44px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--ember), var(--spark));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    color:var(--charcoal);
+    flex-shrink:0;
+  }
+  .practitioner h4{
+    font-family:'Fraunces',serif;
+    font-size:1.15rem;
+    margin:0 0 0.3rem;
+    color:var(--parchment);
+  }
+  .practitioner .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    color:var(--steel);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:0.5rem;
+    display:block;
+  }
+  .practitioner p{margin:0; color:var(--parchment-dim); font-size:0.95rem;}
+
+  /* CLOSING */
+  .closing{
+    text-align:center;
+    padding-bottom:6rem;
+  }
+  .closing h2{
+    font-size:clamp(1.7rem,4vw,2.6rem);
+    max-width:16ch;
+    margin:0 auto 1rem;
+  }
+  .closing p{color:var(--parchment-dim); max-width:44ch; margin:0 auto;}
+
+  footer{
+    text-align:center;
+    padding:2rem 6vw 3rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.75rem;
+    color:var(--steel);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .forge-glow, .strike{ animation:none !important; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="forge-glow"></div>
+  <span class="eyebrow">Deep Work — Cal Newport</span>
+  <h1>Depth isn't found lying around.<br><em>It's forged</em>, one deliberate strike at a time.</h1>
+  <p class="lede">A one-page walkthrough of why sustained, undistracted concentration is both the scarcest skill in the modern economy and one of the surest paths to a meaningful working life — drawn from Chapter 1 (the case for depth) and Chapter 3 (why depth feels good).</p>
+  <div class="strike-row">
+    <div class="strike" style="--i:0"></div>
+    <div class="strike" style="--i:1"></div>
+    <div class="strike" style="--i:2"></div>
+    <div class="strike" style="--i:3"></div>
+    <div class="strike" style="--i:4"></div>
+  </div>
+</section>
+
+<div class="dent-divider"><span></span></div>
+
+<section>
+  <div class="section-head">
+    <span class="eyebrow">Chapter 1 — The Case</span>
+    <h2>Why depth is the new scarce resource</h2>
+  </div>
+  <p>Newport's opening argument is basically economic. Two forces are reshaping knowledge work at once: the ability to produce at an elite level, fast, and the ability to master complicated new tools and systems quickly. Both of those abilities depend on the same underlying skill — the capacity to focus without fragmentation for long stretches on something cognitively demanding. He calls this <strong>deep work</strong>, and its opposite — the email-checking, meeting-hopping, notification-answering busywork that fills most office hours — <strong>shallow work</strong>.</p>
+  <p>The twist is that the same always-on culture that makes deep work valuable is also the thing actively destroying everyone's capacity for it. Open-plan offices, instant-reply norms, and constant app-switching train the brain toward distraction. So the people who protect their ability to concentrate aren't just being disciplined — they're quietly cornering a market that's shrinking for everyone else.</p>
+  <div class="callout">If a skill is simultaneously more valuable and more rare, the people who keep it become disproportionately valuable themselves. That's the whole economic bet Chapter 1 is making.</div>
+</section>
+
+<div class="dent-divider"><span></span></div>
+
+<section>
+  <div class="section-head">
+    <span class="eyebrow">Chapter 3 — The Meaning</span>
+    <h2>Why depth also feels good</h2>
+  </div>
+  <p>The chapter opens with blacksmith Ric Furrer hand-forging a Viking-era sword — eight hours of careful hammering where one lapse in attention ruins the whole blade. Craftsmen like Furrer clearly find their work meaningful, and no one questions why. Knowledge work rarely gets the same credit; it can feel like interchangeable email-and-slides busywork. Newport's argument is that the connection between depth and meaning isn't unique to craftsmen — it's neurological, psychological, and philosophical, and knowledge workers can claim it too.</p>
+
+  <div class="arg-grid">
+    <div class="arg-card">
+      <span class="arg-num">01 — Neurological</span>
+      <h3>Attention builds your world</h3>
+      <p>Drawing on Winifred Gallagher's research, the idea is that your sense of a good life isn't set by your circumstances but by what you choose to dwell on. Time spent in rapt, focused attention crowds out the small irritations and worries that otherwise define an unfocused day — so a mind trained toward depth constructs a richer, calmer experience of work by default.</p>
+    </div>
+    <div class="arg-card">
+      <span class="arg-num">02 — Psychological</span>
+      <h3>Flow beats leisure</h3>
+      <p>Mihaly Csikszentmihalyi's experience-sampling studies found something counterintuitive: people report more satisfaction at work, immersed in a challenging task with clear goals, than they do relaxing. Structured difficulty — the hallmark of deep work — reliably produces the state he called flow, and flow tracks closely with life satisfaction.</p>
+    </div>
+    <div class="arg-card">
+      <span class="arg-num">03 — Philosophical</span>
+      <h3>Craft reveals meaning, it doesn't invent it</h3>
+      <p>Philosophers Hubert Dreyfus and Sean Kelly argue that skilled craftsmanship — whether wheelwrighting or writing code — gives people a source of meaning that sits outside their own arbitrary say-so. The skill isn't in choosing what matters; it's in getting good enough to notice what already does. That capacity for skilled noticing is built entirely through deep, sustained effort.</p>
+    </div>
+  </div>
+</section>
+
+<div class="dent-divider"><span></span></div>
+
+<section>
+  <div class="section-head">
+    <span class="eyebrow">The Protocol</span>
+    <h2>What to do — and what to stop doing</h2>
+  </div>
+  <div class="protocol">
+    <div class="col do">
+      <h3>Do</h3>
+      <ul>
+        <li>Block real, scheduled stretches of uninterrupted time for your hardest work — treat it like a meeting you can't skip.</li>
+        <li>Pick a small number of things that matter and give them your full, rapt attention.</li>
+        <li>Build a shutdown ritual that actually ends the workday, so evenings can recover attention for tomorrow.</li>
+        <li>Practice sitting with difficulty — let a task stretch your ability instead of reaching for the easy shallow task instead.</li>
+        <li>Judge tools and habits by whether they earn their place, not by whether everyone else uses them.</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h3>Don't</h3>
+      <ul>
+        <li>Don't treat constant availability (instant email replies, always-on chat) as a professional virtue by default.</li>
+        <li>Don't let a fear of missing out justify adopting every new app or platform without asking what it costs you.</li>
+        <li>Don't mistake busyness — a full inbox, a packed calendar — for meaningful progress.</li>
+        <li>Don't assume your job is "too mundane" for craftsmanship; the meaning comes from your approach, not the job title.</li>
+        <li>Don't multitask through cognitively demanding work — context-switching quietly taxes every task it touches.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="dent-divider"><span></span></div>
+
+<section>
+  <div class="section-head">
+    <span class="eyebrow">Putting It Into Practice</span>
+    <h2>Three ways this shows up in real life</h2>
+  </div>
+  <div class="practitioners">
+    <div class="practitioner">
+      <div class="initial">P</div>
+      <div>
+        <span class="tag">Pranav</span>
+        <h4>The engineer who closes every tab</h4>
+        <p>Pranav blocks two silent, notification-free hours every morning for the one hard problem on his plate — the rest of the day is for meetings and messages. Following the neurological argument: by the time lunch hits, his mind has already built a version of the day that feels productive, regardless of how the inbox looks later.</p>
+      </div>
+    </div>
+    <div class="practitioner">
+      <div class="initial">V</div>
+      <div>
+        <span class="tag">Vignesh</span>
+        <h4>The designer chasing flow, not comfort</h4>
+        <p>Vignesh used to think a light workload would make him happier. He's noticed the opposite — his best weeks are the ones where a genuinely hard brief stretches his skill right to its edge. That's Csikszentmihalyi's flow argument in action: the challenge itself, not the ease, is what he actually enjoys.</p>
+      </div>
+    </div>
+    <div class="practitioner">
+      <div class="initial">M</div>
+      <div>
+        <span class="tag">Mahadevaswamy</span>
+        <h4>The craftsman who sees the sacred in the spreadsheet</h4>
+        <p>Mahadevaswamy's job — financial modeling — sounds mundane on paper. But he's spent years honing a genuine feel for where a model is fragile versus sound, the way a woodworker senses grain. That's the Dreyfus and Kelly point: the meaning was never in the job title, it was in the skill he built to notice what the work itself required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dent-divider"><span></span></div>
+
+<section class="closing">
+  <h2>A deep life is a good life, any way you look at it.</h2>
+  <p>Neuroscience, psychology, and philosophy all point the same direction. The path there isn't cleverness — it's the willingness to put in the hours of careful, undistracted hammering.</p>
+</section>
+
+<footer>Based on Cal Newport's <em>Deep Work</em> — Chapters 1 &amp; 3. Summary for personal study.</footer>
+
+</body>
+</html>
