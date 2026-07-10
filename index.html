@@ -1139,10 +1139,12 @@ function resetToBuiltIn() {
    AUTO-INIT
 ══════════════════════════════ */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {
-      /* offline-first caching unavailable; app still works normally */
-    });
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => reg.unregister());
+  });
+
+  caches.keys().then(keys => {
+    keys.forEach(key => caches.delete(key));
   });
 }
 
