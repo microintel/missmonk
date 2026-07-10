@@ -1116,6 +1116,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Auto-fetch from the live URL
   await fetchFromUrl();
 
+  // If the URL carries a shared course/path, jump straight there
+  handleSharedUrl();
+
   // Keyboard shortcut
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Escape') clearSearch();
@@ -1277,6 +1280,62 @@ function navTo(idx) {
 }
 
 /* ══════════════════════════════
+   SHAREABLE DEEP LINKS
+   (?course=<key>&path=<label1>|<label2>|...)
+══════════════════════════════ */
+function buildShareUrl() {
+  const params = new URLSearchParams();
+  if (currentCourse) {
+    params.set('course', currentCourse);
+    const segments = pathStack.slice(1).map(p => p.key);
+    if (segments.length) params.set('path', segments.join('|'));
+  }
+  const base = window.location.origin + window.location.pathname;
+  const qs = params.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
+function handleSharedUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const course = params.get('course');
+  if (!course) return; // nothing shared, normal home view
+
+  if (!CURRICULUM[course]) { showWrongPath(); return; }
+
+  let obj   = CURRICULUM[course];
+  let stack = [{ key: cleanKey(course), obj }];
+  const rawPath = params.get('path');
+  const segments = rawPath ? rawPath.split('|').filter(Boolean) : [];
+
+  for (const seg of segments) {
+    if (typeof obj !== 'object' || obj === null) { showWrongPath(); return; }
+    const matchKey = Object.keys(obj).find(k => !k.startsWith('_') && cleanKey(k) === seg);
+    if (!matchKey) { showWrongPath(); return; }
+    obj = obj[matchKey];
+    stack.push({ key: cleanKey(matchKey), obj });
+  }
+
+  currentCourse = course;
+  pathStack     = stack;
+  document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById('si-' + CSS.escape(course));
+  if (si) si.classList.add('active');
+  renderContent();
+}
+
+function showWrongPath() {
+  currentView = 'home';
+  setBottomNavActive('home');
+  document.getElementById('content').innerHTML = `
+    <div class="welcome-hero">
+      <div class="hero-glow"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h1 class="hero-title">Wrong Path</h1>
+      <p class="hero-sub">This shared link doesn't match any course or topic. It may have been moved, renamed, or the curriculum has changed.</p>
+      <div class="hero-about"><a href="javascript:void(0)" onclick="goHome()">← Back to Home</a></div>
+    </div>`;
+}
+
+/* ══════════════════════════════
    RENDER CONTENT
 ══════════════════════════════ */
 function renderContent() {
@@ -1311,7 +1370,7 @@ function renderContent() {
           <div class="page-title">${cur.key}</div>
           <div class="page-meta">${childCount} item${childCount!==1?'s':''} · ${countDeep(obj)} total · ${countLessons(obj)} lesson${countLessons(obj)!==1?'s':''}</div>
         </div>
-        <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${window.location.href}')"><i class="bi bi-share-fill"></i> <span>Share</span></button>
+        <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${buildShareUrl().replace(/'/g,"\\'")}')"><i class="bi bi-share-fill"></i> <span>Share</span></button>
       </div>
     </div>`;
 
@@ -1665,6 +1724,7 @@ function goHome() {
   document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
   renderContent();
   closeSidebarMobile();
+  history.replaceState(null, '', window.location.pathname);
 }
 
 /* ══════════════════════════════
@@ -1827,15 +1887,31 @@ function closeSharePopup() { document.getElementById('sharePopup').classList.rem
 function handleShareOverlayClick(e) { if (e.target === e.currentTarget) closeSharePopup(); }
 function copyShareUrl() {
   const input = document.getElementById('shareUrlInput');
-  navigator.clipboard.writeText(input.value).then(() => {
-    showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied to clipboard!');
+
+  const legacyCopy = () => {
+    try {
+      input.select();
+      input.setSelectionRange(0, input.value.length);
+      const ok = document.execCommand('copy');
+      if (ok) {
+        showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied!');
+      } else {
+        showToast('<i class="bi bi-exclamation-triangle-fill"></i> Copy failed — select and copy manually');
+      }
+    } catch (err) {
+      showToast('<i class="bi bi-exclamation-triangle-fill"></i> Copy failed — select and copy manually');
+    }
     closeSharePopup();
-  }).catch(() => {
-    input.select();
-    document.execCommand('copy');
-    showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied!');
-    closeSharePopup();
-  });
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => {
+      showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied to clipboard!');
+      closeSharePopup();
+    }).catch(legacyCopy);
+  } else {
+    legacyCopy();
+  }
 }
 function shareVia(method) {
   const url   = encodeURIComponent(shareContext.url);
