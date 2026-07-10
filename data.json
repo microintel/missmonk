@@ -1,4 +1,11 @@
 {
+  "_bookMeta": {
+    "THE MOLECULE OF MORE": { "author": "Daniel Z. Lieberman & Michael E. Long" },
+    "The Psychology of Money": { "author": "Morgan Housel" },
+    "Atomic Habbits": { "author": "James Clear" },
+    "Deep Work": { "author": "Cal Newport" },
+    "The 7 Habits of Highly Effective People": { "author": "Stephen R. Covey" }
+  },
   "diploma": {
     "CSE": {
       "sem1": {
