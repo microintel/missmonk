@@ -1,0 +1,322 @@
+{
+  "diploma": {
+    "CSE": {
+      "sem1": {
+        "engineering mathematics": {
+          "matrix and determinants ": {
+            "Matrix and types": "",
+            "Algebra of Matrices (addition, \rsubtraction, scalar multiplication\rand multiplication)": "",
+            "Evaluation of determinants of a \rsquare matrix of order 2 and 3. \rSingular matrices": "",
+            "Cramer’s rule for solving system \rof linear equations involving 2\rand 3 variables": "",
+            "Adjoint and Inverse of the non-\rsingular matrices of order 2 and 3": "",
+            "Characteristic equation and Eigen \rvalues of a square matrix of order 2": "",
+            "Unit 1": "https://microintel.github.io/missmonk/diploma/sem1/maths/u1.html"
+          },
+          "STRAIGHT\tLINES": {
+            "Slope of a straight line": "",
+            "Intercepts of a straight line": "",
+            "Intercept form of a straight line": "",
+            "Slope-intercept form of a straight line": "",
+            "Slope-point form of a straight line": "",
+            "Two-point form of a straight line": "",
+            "General form of a straight line": "",
+            "Angle between two lines and conditions \rfor lines to be parallel and perpendicular": "",
+            "Equation of a straight line parallel to the \rgiven line": "",
+            "Equation of a straight line perpendicular \rto the given line": "",
+            "Unit 2": "https://microintel.github.io/missmonk/diploma/sem1/maths/u2.html"
+          }
+        },
+        "Fundamentals of Computer": {
+          "BASICS\tOF\tLOGIC\tDESIGN": {
+            "Introduction\tto\tnumber\tsystem.": {
+              "Binary, Octal, Decimal, Hexadecimal": {
+                "binary, octal hexadecimal decimal": "<a href=\"https://microintel.github.io/missmonk/diploma/sem1/foc/u1/binary-octal-decimal-hexadecimal.html\"/>"
+              }
+            }
+          },
+          "LOGIC\tCIRCUITS": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tCONCEPTS": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tORGANIZATION\t&\tOPERATING\tSYSTEM": {},
+          "INTRODUCTION\tTO\tCOMPUTER\tPROGRAMMING": {}
+        },
+        "Fundamentals of Electrical and electronics engineering": {},
+        "IT Skills": {},
+        "Environmental Sustainability": {}
+      },
+      "sem2": {},
+      "sem3": {},
+      "sem4": {},
+      "sem5": {},
+      "sem6": {}
+    }
+  },
+  "engineering": {},
+  "Financial": {
+    "Stock Market": {
+      "Stock Market": {
+        "Basics of Stock Market": {
+          "Role of Stock Market": {},
+          "what is stock market & market cap": {},
+          "size of companies": {},
+          "what is sensex & nifty": {},
+          "Chapter 1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c1.html"
+        },
+        "How Stock Prices Move?": {
+          "Understanding Earnings": {
+            "Indian Economy": "tourism industry, dairy industry ,film , aviation, textile, shippment, papar, agriculture industry "
+          },
+          "True Value and Market Value": {},
+          "How Fluctuations in Market Create \rOpportunities": {},
+          "Value creation": {},
+          "Chapter 2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c2.html"
+        },
+        "Set-up yourTrading System": {
+          "Accounts Required to trade in stock market": "",
+          "Chapter 3": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c3.html"
+        }
+      },
+      "Stock Research": {
+        "Investing vs Trading": {
+          "Difference between trading & investing": "",
+          "Differences in the mindsets of traders and investors": "",
+          "Chapter 4": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c4.html"
+        },
+        "Institutional v/s Retail Investors": {
+          "Difference between Institutional & \rRetail Investors": "",
+          "Advantages to Institutional \rInvestors over Retail Investors": "",
+          "How Diversification Works?": "",
+          "Chapter 5": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c5.html"
+        }
+      },
+      "Evaluating Companies": {
+        "How to generate income ideas": {
+          "How Your profession helps generate ideas": "",
+          "look around yourself i.e your environment": "",
+          "walking & investing": "",
+          "analyze what you read": "",
+          "use tools like screener": "",
+          "what friends and report says": "",
+          "Chapter 6": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c6.html"
+        },
+        "Stock Market Report - Where to Find Information": {
+          "Primary Sources of Information": "",
+          "Secondary Sources of Information": "",
+          "Sources Which Shouldn’t be Used": "",
+          "How to Research Within 4-5 Hours a \rWeek": "",
+          "Chapter 7": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c7.html"
+        },
+        "How to Read Annual Report": {
+          "Sections of Annual Report": {
+            "Introduction and Highlights": "",
+            "Chairman’s Letter and CEO’s Letter": "",
+            "Responsibility Reports": "",
+            "Management Discussion & Analysis": "",
+            "Director’s Report": "",
+            "Corporate Governance Report": "",
+            "Board of Directors and Management Team": "",
+            "Financials - Consolidated and Standalone": "",
+            "Notes to Financials": "",
+            "Notice to AGM": "",
+            "Chapter 8.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-1.html",
+            "Chapter 8.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-2.html"
+          },
+          "What to look for in each Section?": {
+            "Chapter 8.3": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-3.html"
+          }
+        },
+        "Basics of Financial Statment": {
+          "Income Statement & Balance Sheet": "",
+          "Cash Flow Statement": "",
+          "Chapter 9": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c9.html"
+        },
+        "Tools to use": {
+          "Screener.in": "",
+          "Ticker by Finology": "",
+          "Morning Star": "",
+          "Chapter 10": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10.html"
+        },
+        "How To Analyze a Company": {
+          "Introduction": "",
+          "Product & Services of the Company": "",
+          "Industry Research": "",
+          "Business Research": "",
+          "Management Background": "",
+          "Chapter 10.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-1.html",
+          "Chapter 10.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-2.html"
+        },
+        "Financial Ratios": {
+          "Introduction": "",
+          "Understanding of Various Ratios": "",
+          "Common Sizing": "",
+          "Key Performance Indicators": "",
+          "Ownership Structure of Stocks": "",
+          "Chapter 11.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-1.html",
+          "Chapter 11.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-2.html"
+        }
+      },
+      "Valuation of Stocks": {},
+      "When to Buy & When to Sell?": {},
+      "Managing a Portfolio": {},
+      "How to Grow your Money?": {}
+    }
+  },
+  "Values": {
+    "THE MOLECULE OF MORE": {
+      "UP VERSUS DOWN": {},
+      "LOVE": {
+        "What Is More Powerful Than Pleasure": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c1.html",
+        "MONKEYS AND RATS AND WHY LOVE FADES": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c2.html",
+        "ONE BRAIN, TWO WORLDS": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c3.html",
+        "The Dark Side": "https://microintel.github.io/missmonk/psychology/molecular-of-more/c4.html",
+        "THE CHEMICAL KEYS TO LONG-LASTING LOVE": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u5.html",
+        "DOPAMINE GETS YOU INTO BED . . . \rAND THEN GETS IN THE WAY": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u6.html"
+      },
+      "DRUGS": {
+        "WHO’S IN CONTROL OF YOUR BRAIN?": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u7.html",
+        "HOW TO STAY ALIVE": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u8.html",
+        "WHY WE LIVE IN A WORLD OF PHANTOMS && WANTING VERSUS LIKING": "https://microintel.github.io/missmonk/psychology/molecular-of-more/u9.html"
+      },
+      "DOMINATION": {},
+      "CREATIVITY AND MADNESS": {},
+      "PROGRESS": {},
+      "HARMONY": {}
+    },
+    "The Psychology of Money": {
+      "No One's Crazy": {
+        "Chapter 1": "https://microintel.github.io/missmonk/psychology/psychology-of-money/ch1.html"
+      },
+      "Luck & Risk": {
+        "Chapter 2": "https://microintel.github.io/missmonk/psychology/psychology-of-money/ch2.html"
+      },
+      "Never Enough": {
+        "Chapter 3": "https://microintel.github.io/missmonk/psychology/psychology-of-money/ch3.html"
+      },
+      "Confounding Compounding": {
+        "Chapter 4": "https://microintel.github.io/missmonk/psychology/psychology-of-money/ch4.html"
+      },
+      "Getting Wealthy vs. Staying Wealthy": {
+        "Chapter 5": ""
+      },
+      "Tails, You Win": {
+        "Chapter 6": ""
+      },
+      "Freedom": {
+        "Chapter 7": ""
+      },
+      "Man in the Car Paradox": {
+        "Chapter 8": ""
+      },
+      "Wealth is What You Don't See": {
+        "Chapter 9": ""
+      },
+      "Save Money": {
+        "Chapter 10": ""
+      },
+      "Reasonable > Rational": {
+        "Chapter 11": ""
+      },
+      "Surprise!": {
+        "Chapter 12": ""
+      },
+      "Room for Error": {
+        "Chapter 13": ""
+      },
+      "You'll Change": {
+        "Chapter 14": ""
+      },
+      "Nothing's Free": {
+        "Chapter 15": ""
+      },
+      "You & Me": {
+        "Chapter 16": ""
+      },
+      "The Seduction of Pessimism": {
+        "Chapter 17": ""
+      },
+      "When You'll Believe Anything": {
+        "Chapter 18": ""
+      },
+      "All Together Now": {
+        "Chapter 19": ""
+      },
+      "Confessions": {
+        "Chapter 20": ""
+      }
+    },
+    "Universal Human Values": {
+      "Section I - Introduction to Value Education": {
+        "Chapter 1: Understanding Value Education": "",
+        "Chapter 2: Self-exploration as the Process for Value Education": "",
+        "Chapter 3: Basic Human Aspirations and their Fulfilment": "",
+        "Chapter 4: Understanding Happiness and Prosperity – Their Continuity and Programme for Fulfilment": ""
+      },
+      "Section II - Understanding the Harmony at Various Levels": {
+        "Chapter 5: Understanding the Human Being as Co-existence of the Self and the Body": "",
+        "Chapter 6: Harmony in the Self – Understanding Myself": "",
+        "Chapter 7: Harmony of the Self with the Body – Understanding Self-regulation and Health": "",
+        "Chapter 8: Harmony in the Family – Understanding Values in Human-Human Relationships": "",
+        "Chapter 9: Harmony in the Society – Understanding Universal Human Order": "",
+        "Chapter 10: Harmony in Nature – Understanding the Interconnectedness, Self-regulation and Mutual Fulfilment": "",
+        "Chapter 11: Harmony in Existence – Understanding Co-existence at Various Levels": ""
+      },
+      "Section III - Implications of the Right Understanding": {
+        "Chapter 12: The Basis for Universal Human Values and Ethical Human Conduct": "",
+        "Chapter 13: Professional Ethics in the light of Right Understanding": "",
+        "Chapter 14: Holistic Development towards Universal Human Order": "",
+        "Chapter 15: Vision for Holistic Technologies, Production Systems and Management Models": "",
+        "Chapter 16: Journey towards Universal Human Order – The Road Ahead": ""
+      }
+    },
+    "Atomic Habbits": {
+      "1 The Surprising Power of Atomic Habits": "https://microintel.github.io/missmonk/Atomic-Habits/ch1.html",
+      "2 How Your Habits Shape Your Identity": "https://microintel.github.io/missmonk/Atomic-Habits/ch2.html",
+      "3 How to Build Better Habits in 4 Simple Steps": "https://microintel.github.io/missmonk/Atomic-Habits/ch3.html",
+      "4 The Man Who Didn’t Look Right": "https://microintel.github.io/missmonk/Atomic-Habits/ch4.html",
+      "5 The Best Way to Start a New Habit": "https://microintel.github.io/missmonk/Atomic-Habits/ch5.html",
+      "6 Motivation Is Overrated; Environment Often Matters More": "https://microintel.github.io/missmonk/Atomic-Habits/ch6.html",
+      "7 The Secret to Self-Control": "https://microintel.github.io/missmonk/Atomic-Habits/ch7.html",
+      "8 How to Make a Habit Irresistible": "https://microintel.github.io/missmonk/Atomic-Habits/ch8.html",
+      "9 The Role of Family and Friends in Shaping Your Habits": "https://microintel.github.io/missmonk/Atomic-Habits/ch9.html",
+      "10 How to Find and Fix the Causes of Your Bad Habits": "https://microintel.github.io/missmonk/Atomic-Habits/ch10.html",
+      "11 Walk Slowly, but Never Backward": "https://microintel.github.io/missmonk/Atomic-Habits/ch11.html",
+      "12 The Law of Least Effort": "https://microintel.github.io/missmonk/Atomic-Habits/ch12.html",
+      "13 How to Stop Procrastinating by Using the Two-Minute Rule": "https://microintel.github.io/missmonk/Atomic-Habits/ch13.html",
+      "14 How to Make Good Habits Inevitable and Bad Habits Impossible": "https://microintel.github.io/missmonk/Atomic-Habits/ch14.html",
+      "15 The Cardinal Rule of Behavior Change": "",
+      "16 How to Stick with Good Habits Every Day": "",
+      "17 How an Accountability Partner Can Change Everything": "",
+      "18 The Truth About Talent (When Genes Matter and When They Don’t)": "",
+      "19 The Goldilocks Rule: How to Stay Motivated in Life and Work": "",
+      "20 The Downside of Creating Good Habits": ""
+    },
+    "Deep Work": {
+      "Chapter 1": {
+        "Deep Work Is Valuable": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch1.html"
+      },
+      "Chapter 2": {
+        "Deep Work Is Rare": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch2.html"
+      },
+      "Chapter 3": {
+        "Deep Work Is Meaningful": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch3.html"
+      },
+      "Rule 1": {
+        "Work Deeply": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch4.html"
+      },
+      "Rule 2": {
+        "Embrace Boredom": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch5.html"
+      },
+      "Rule 3": {
+        "Quit Social Media": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch6.html"
+      },
+      "Rule 4": {
+        "Drain the Shallows": "https://microintel.github.io/missmonk/psychology/Deep-Work/ch7.html"
+      }
+    },
+    "The 7 Habits of Highly Effective People": {
+      "Summary": "https://microintel.github.io/missmonk/psychology/The-7-Habits-of-Highly-Effective-People/sum.html"
+    }
+  },
+  "Ancient Literature": {
+    "Vātsyāyana's Kama Sutra": {}
+  }
+}
