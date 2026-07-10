@@ -1,1 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 7 Habits — In Simple Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #142219;
+    --bg-panel: #1B2C20;
+    --bg-panel-2: #203524;
+    --ink: #F1EAD9;
+    --ink-dim: #B9C4B5;
+    --gold: #C9A227;
+    --sage: #7FA98B;
+    --line: rgba(241,234,217,0.14);
+    --pv: #C9A227;   /* private victory */
+    --pub: #7FA98B;  /* public victory */
+    --sharp: #E2B45A;/* sharpen the saw */
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  a{color:var(--gold);}
+  .wrap{max-width:880px; margin:0 auto; padding:0 24px;}
 
+  /* HERO */
+  .hero{
+    padding:88px 0 64px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(600px 300px at 85% -10%, rgba(201,162,39,0.16), transparent 60%),
+      radial-gradient(500px 260px at -10% 110%, rgba(127,169,139,0.14), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .label{color:var(--sage); margin-bottom:18px;}
+  .hero h1{
+    font-size:clamp(2.4rem, 5vw, 3.6rem);
+    line-height:1.06;
+    max-width:11ch;
+  }
+  .hero h1 em{font-style:italic; color:var(--gold); font-weight:500;}
+  .hero p.sub{
+    margin-top:22px;
+    max-width:56ch;
+    font-size:1.08rem;
+    color:var(--ink-dim);
+  }
+  .hero .meta{
+    margin-top:36px;
+    display:flex; gap:28px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+    color:var(--ink-dim);
+  }
+  .hero .meta b{color:var(--ink); font-weight:600;}
+
+  /* INTRO */
+  .intro{padding:56px 0; border-bottom:1px solid var(--line);}
+  .intro h2{font-size:1.5rem; margin-bottom:16px;}
+  .intro p{font-size:1.02rem; color:var(--ink-dim); max-width:64ch;}
+  .intro strong{color:var(--ink);}
+
+  /* MATURITY CONTINUUM STRIP */
+  .continuum{padding:40px 0 8px; border-bottom:1px solid var(--line);}
+  .continuum .label{margin-bottom:18px;}
+  .stages{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:14px;
+  }
+  .stage{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 16px;
+  }
+  .stage .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .stage:nth-child(1) .tag{color:var(--pv);}
+  .stage:nth-child(2) .tag{color:var(--pub);}
+  .stage:nth-child(3) .tag{color:var(--sharp);}
+  .stage h3{font-size:1.05rem; margin-top:8px; font-weight:600;}
+  .stage p{font-size:0.9rem; color:var(--ink-dim); margin-top:8px;}
+
+  /* PATH / HABITS */
+  .path-section{padding:64px 0 24px; position:relative;}
+  .path-section > .label{margin-bottom:6px;}
+  .path-section > h2{font-size:1.7rem; margin-bottom:44px;}
+
+  .path{position:relative;}
+  .path::before{
+    content:"";
+    position:absolute;
+    left:27px; top:8px; bottom:8px;
+    width:2px;
+    background:linear-gradient(var(--pv), var(--pv) 42%, var(--pub) 42%, var(--pub) 78%, var(--sharp) 78%, var(--sharp));
+    opacity:0.55;
+  }
+  .zone-marker{
+    display:flex; align-items:center; gap:14px;
+    margin:0 0 22px 0;
+    padding-left:0;
+  }
+  .zone-marker .dot{
+    width:56px; height:56px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:1.4rem;
+    flex-shrink:0; border:2px solid var(--bg);
+    z-index:1;
+  }
+  .zone-marker.pv .dot{background:var(--pv); color:#1a1607;}
+  .zone-marker.pub .dot{background:var(--pub); color:#0c1a10;}
+  .zone-marker.sharp .dot{background:var(--sharp); color:#1a1607;}
+  .zone-marker .zt{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-dim);}
+  .zone-marker .zn{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600; margin-top:2px;}
+
+  .habit{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:14px;
+    margin-bottom:26px;
+    position:relative;
+  }
+  .habit .num{
+    width:56px; height:56px; border-radius:50%;
+    background:var(--bg-panel-2);
+    border:2px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600; font-size:1.1rem;
+    color:var(--ink); flex-shrink:0; z-index:1;
+  }
+  .habit.pv .num{border-color:var(--pv); color:var(--pv);}
+  .habit.pub .num{border-color:var(--pub); color:var(--pub);}
+  .habit.sharp .num{border-color:var(--sharp); color:var(--sharp);}
+
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px 22px 22px;
+  }
+  .card h3{font-size:1.2rem; margin-bottom:6px;}
+  .card .oneline{
+    font-size:0.92rem;
+    color:var(--ink-dim);
+    font-style:italic;
+    margin-bottom:12px;
+  }
+  .card p{font-size:0.96rem; color:var(--ink-dim); margin:0 0 10px;}
+  .card .example{
+    margin-top:12px;
+    padding:12px 14px;
+    background:rgba(241,234,217,0.04);
+    border-left:3px solid var(--sage);
+    border-radius:0 8px 8px 0;
+    font-size:0.92rem;
+    color:var(--ink);
+  }
+  .card .example b{color:var(--gold);}
+  .habit.pub .card .example{border-left-color:var(--pub);}
+  .habit.sharp .card .example{border-left-color:var(--sharp);}
+
+  /* DO / DONT */
+  .verdict{padding:64px 0 88px; border-top:1px solid var(--line);}
+  .verdict > .label{color:var(--sage); margin-bottom:6px;}
+  .verdict > h2{font-size:1.7rem; margin-bottom:12px;}
+  .verdict > p.lead{color:var(--ink-dim); max-width:60ch; margin-bottom:36px;}
+
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .box{border-radius:12px; padding:22px 22px 24px; border:1px solid var(--line);}
+  .box.do{background:linear-gradient(180deg, rgba(127,169,139,0.10), rgba(127,169,139,0.03));}
+  .box.dont{background:linear-gradient(180deg, rgba(201,162,39,0.09), rgba(201,162,39,0.02));}
+  .box h3{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .box.do h3{color:var(--sage);}
+  .box.dont h3{color:var(--gold);}
+  .box ul{margin:0; padding:0; list-style:none;}
+  .box li{
+    font-size:0.94rem;
+    color:var(--ink);
+    padding:9px 0;
+    border-top:1px solid var(--line);
+    display:flex; gap:10px;
+  }
+  .box li:first-child{border-top:none;}
+  .box li .mark{flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:0.85rem;}
+  .box.do li .mark{color:var(--sage);}
+  .box.dont li .mark{color:var(--gold);}
+
+  .closing{
+    margin-top:40px;
+    padding:20px 22px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    font-size:1.02rem;
+    color:var(--ink);
+  }
+  .closing b{color:var(--gold);}
+
+  footer{
+    padding:28px 0 60px;
+    text-align:center;
+    color:var(--ink-dim);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.76rem;
+    letter-spacing:0.04em;
+  }
+
+  /* EXTRA CONCEPTS */
+  .extra-section{padding:64px 0 24px; border-top:1px solid var(--line);}
+  .extra-section > .label{margin-bottom:6px; color:var(--sage);}
+  .extra-section > h2{font-size:1.7rem; margin-bottom:12px;}
+  .extra-section > p.lead{color:var(--ink-dim); max-width:64ch; margin-bottom:44px;}
+
+  .concept{margin-bottom:58px;}
+  .concept-head{display:flex; align-items:baseline; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .concept-head h3{font-size:1.25rem;}
+  .concept-head .rel{
+    font-family:'IBM Plex Mono',monospace; font-size:0.66rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--sage); background:rgba(127,169,139,0.1);
+    padding:3px 9px; border-radius:20px; border:1px solid var(--line);
+  }
+  .concept p{font-size:0.98rem; color:var(--ink-dim); max-width:66ch; margin:0 0 14px;}
+  .concept .example{
+    margin-top:4px; padding:12px 14px; background:rgba(241,234,217,0.04);
+    border-left:3px solid var(--sage); border-radius:0 8px 8px 0;
+    font-size:0.92rem; color:var(--ink); max-width:66ch;
+  }
+  .concept .example b{color:var(--gold);}
+
+  .chart-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+    padding:20px 22px 10px; margin-top:20px; max-width:620px;
+  }
+  .chart-card .ct{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-dim); margin-bottom:14px;
+  }
+  .chart-card canvas{max-height:260px;}
+
+  .circles-row{display:flex; gap:36px; flex-wrap:wrap; margin-top:20px;}
+  .circles-item{flex:1 1 220px; max-width:260px;}
+  .circles-item .ct{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-dim); margin-bottom:10px; text-align:center;
+  }
+
+  .quad-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:560px; margin:20px 0 8px;}
+  .quad{border-radius:10px; padding:16px 18px; border:1px solid var(--line);}
+  .quad .qn{font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--ink-dim); margin-bottom:6px;}
+  .quad h4{font-family:'Fraunces',serif; font-size:1rem; font-weight:600; margin-bottom:6px;}
+  .quad p{font-size:0.85rem; margin:0; color:var(--ink-dim);}
+  .quad.q1{background:rgba(201,162,39,0.10); border-color:rgba(201,162,39,0.32);}
+  .quad.q2{background:rgba(127,169,139,0.15); border-color:var(--sage);}
+  .quad.q3{background:rgba(226,180,90,0.07);}
+  .quad.q4{background:rgba(241,234,217,0.03);}
+
+  .goose-box{
+    display:flex; gap:16px; align-items:flex-start; background:var(--bg-panel);
+    border:1px solid var(--line); border-radius:12px; padding:20px 22px; max-width:66ch; margin-top:6px;
+  }
+  .goose-box .gi{
+    font-family:'Fraunces',serif; font-size:1.6rem; flex-shrink:0; width:44px; height:44px;
+    border-radius:50%; background:var(--bg-panel-2); border:2px solid var(--sharp);
+    color:var(--sharp); display:flex; align-items:center; justify-content:center;
+  }
+  .goose-box p{margin:0 0 8px; font-size:0.95rem; color:var(--ink-dim);}
+  .goose-box p:last-child{margin-bottom:0;}
+  .goose-box b{color:var(--ink);}
+
+  @media (max-width:640px){
+    .stages{grid-template-columns:1fr;}
+    .split{grid-template-columns:1fr;}
+    .hero{padding:64px 0 48px;}
+    .quad-grid{grid-template-columns:1fr;}
+    .circles-row{justify-content:center;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="label">Book, made simple</div>
+    <h1>7 Habits that make a person <em>truly effective</em></h1>
+    <p class="sub">Stephen Covey's book says: real success does not come from tricks or shortcuts. It comes from your <strong>character</strong> — how you think and act every day. This page explains the whole book in plain, easy English.</p>
+    <div class="meta">
+      <div><b>Author</b> Stephen R. Covey</div>
+      <div><b>Idea</b> Change starts inside you, then spreads outward</div>
+      <div><b>Read time</b> 6 min</div>
+    </div>
+  </div>
+</section>
+
+<section class="intro">
+  <div class="wrap">
+    <h2>The one big idea</h2>
+    <p>Most people try to fix their <strong>outside</strong> first — how they talk, how they look busy, how they impress others. Covey says: fix your <strong>inside</strong> first — your values, your honesty, your habits. When your inside is strong, your outside naturally gets better. Effectiveness is not a trick. It is who you become.</p>
+  </div>
+</section>
+
+<section class="continuum">
+  <div class="wrap">
+    <div class="label">The journey the 7 habits take you on</div>
+    <div class="stages">
+      <div class="stage">
+        <div class="tag">Stage 1 · Dependence</div>
+        <h3>"You" take care of me</h3>
+        <p>You depend on others for results. Habits 1–3 move you out of this.</p>
+      </div>
+      <div class="stage">
+        <div class="tag">Stage 2 · Independence</div>
+        <h3>"I" take care of myself</h3>
+        <p>You become self-reliant. This is called a <strong>Private Victory</strong>.</p>
+      </div>
+      <div class="stage">
+        <div class="tag">Stage 3 · Interdependence</div>
+        <h3>"We" build something bigger</h3>
+        <p>You work well with others. This is called a <strong>Public Victory</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="path-section">
+  <div class="wrap">
+    <div class="label">The 7 habits, in order</div>
+    <h2>Each habit builds on the one before it</h2>
+
+    <div class="path">
+
+      <div class="zone-marker pv">
+        <div class="dot">PV</div>
+        <div>
+          <div class="zt">Zone 1 — Private Victory</div>
+          <div class="zn">Win with yourself first</div>
+        </div>
+      </div>
+
+      <div class="habit pv">
+        <div class="num">1</div>
+        <div class="card">
+          <h3>Be Proactive</h3>
+          <div class="oneline">You choose your response. No one else does.</div>
+          <p>Things will go wrong. Rain will fall. People will be rude. You cannot control that. But you can always control how you react.</p>
+          <div class="example"><b>Example:</b> Pranav's manager shouts at him for a mistake that was not his fault. Pranav feels angry for a second, then takes a breath and calmly explains the facts instead of shouting back. That is being proactive — Pranav chose his response.</div>
+        </div>
+      </div>
+
+      <div class="habit pv">
+        <div class="num">2</div>
+        <div class="card">
+          <h3>Begin With the End in Mind</h3>
+          <div class="oneline">Know where you are going before you start walking.</div>
+          <p>Before you build a house, you make a plan. Do the same with your life. Decide what kind of person you want to be, then work backward from there.</p>
+          <div class="example"><b>Example:</b> Vignesh wants to be known as someone people can trust. So before every choice — a project deadline, a promise to a friend — he asks, "Does this take me closer to that person I want to be?"</div>
+        </div>
+      </div>
+
+      <div class="habit pv">
+        <div class="num">3</div>
+        <div class="card">
+          <h3>Put First Things First</h3>
+          <div class="oneline">Do what matters, not just what is urgent.</div>
+          <p>Covey says to sort tasks into 4 boxes: Urgent+Important, Not Urgent+Important, Urgent+Not Important, Not Urgent+Not Important. Most people live in "urgent" all day and never get to "important."</p>
+          <div class="example"><b>Example:</b> Mahadevaswamy's phone keeps buzzing with messages (urgent, but not important). He mutes it for one hour every morning to finish his real work — studying for his exam (important, not urgent). His results improve.</div>
+        </div>
+      </div>
+
+      <div class="zone-marker pub">
+        <div class="dot">PB</div>
+        <div>
+          <div class="zt">Zone 2 — Public Victory</div>
+          <div class="zn">Win with other people</div>
+        </div>
+      </div>
+
+      <div class="habit pub">
+        <div class="num">4</div>
+        <div class="card">
+          <h3>Think Win-Win</h3>
+          <div class="oneline">Look for a result that is good for both sides.</div>
+          <p>Life is not always "I win, you lose." Most times, both people can win. If a real win-win is not possible, it is better to walk away than to force one side to lose.</p>
+          <div class="example"><b>Example:</b> Pranav and Vignesh both want the same weekend off. Instead of fighting over it, they swap — Pranav takes this weekend, Vignesh takes the next. Both get what they need.</div>
+        </div>
+      </div>
+
+      <div class="habit pub">
+        <div class="num">5</div>
+        <div class="card">
+          <h3>Seek First to Understand, Then to Be Understood</h3>
+          <div class="oneline">Listen fully before you speak.</div>
+          <p>Most people listen just to reply, not to understand. Real listening means you try to see the problem from the other person's side first.</p>
+          <div class="example"><b>Example:</b> Mahadevaswamy's son is upset but silent. Instead of guessing or lecturing, Mahadevaswamy sits down and asks, "What happened, tell me everything." He listens fully before giving any advice.</div>
+        </div>
+      </div>
+
+      <div class="habit pub">
+        <div class="num">6</div>
+        <div class="card">
+          <h3>Synergize</h3>
+          <div class="oneline">Together, people can create more than any one person alone.</div>
+          <p>When people with different strengths and ideas work together with respect, the result is often better than what any single person could make.</p>
+          <div class="example"><b>Example:</b> Pranav is good with numbers, Vignesh is good with design, and Mahadevaswamy is good with people. Together they build a small business plan that is far stronger than what any one of them could write alone.</div>
+        </div>
+      </div>
+
+      <div class="zone-marker sharp">
+        <div class="dot">SS</div>
+        <div>
+          <div class="zt">Zone 3 — Renewal</div>
+          <div class="zn">Keep yourself sharp</div>
+        </div>
+      </div>
+
+      <div class="habit sharp">
+        <div class="num">7</div>
+        <div class="card">
+          <h3>Sharpen the Saw</h3>
+          <div class="oneline">Take care of yourself so you can keep going.</div>
+          <p>A tired woodcutter with a blunt saw works slower, even if he cuts all day. Stop, rest, and sharpen the saw. This means caring for your body, mind, heart, and soul — sleep, learning, relationships, and reflection.</p>
+          <div class="example"><b>Example:</b> Vignesh used to work 7 days a week and felt burnt out. Now he walks every morning, reads for 20 minutes, and rests one full day a week. He gets more done in less time.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="extra-section">
+  <div class="wrap">
+    <div class="label">A few more ideas from the book</div>
+    <h2>The concepts behind the habits</h2>
+    <p class="lead">These are not separate habits — they are the ideas Covey uses to explain <em>why</em> the 7 habits work. Knowing them makes the habits click.</p>
+
+    <div class="concept">
+      <div class="concept-head">
+        <h3>Circle of Concern vs. Circle of Influence</h3>
+        <span class="rel">Behind Habit 1</span>
+      </div>
+      <p>Everything you care about sits inside your <strong>Circle of Concern</strong> — the weather, the economy, other people's opinions, your health, your work. But you can only actually change a smaller part of it: your <strong>Circle of Influence</strong>. Proactive people spend their energy inside the circle they can influence. That circle grows over time. Reactive people spend their energy on the outer circle — complaining about things they cannot change — and their circle of influence actually shrinks.</p>
+      <div class="circles-row">
+        <div class="circles-item">
+          <div class="ct">Reactive person</div>
+          <div class="chart-card" style="margin-top:0;"><canvas id="chartCircleReactive"></canvas></div>
+        </div>
+        <div class="circles-item">
+          <div class="ct">Proactive person</div>
+          <div class="chart-card" style="margin-top:0;"><canvas id="chartCircleProactive"></canvas></div>
+        </div>
+      </div>
+      <div class="example"><b>Example:</b> Dhanush is annoyed about traffic every morning. A reactive Dhanush would just complain about the government roads all day (Circle of Concern). A proactive Dhanush leaves 15 minutes earlier and picks a better route (Circle of Influence) — the one part of the problem he can actually act on.</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-head">
+        <h3>The Emotional Bank Account</h3>
+        <span class="rel">Behind Habits 4–6</span>
+      </div>
+      <p>Every relationship is like a bank account. Kindness, kept promises, honesty, and small courtesies are <strong>deposits</strong>. Rudeness, broken promises, and disrespect are <strong>withdrawals</strong>. When the balance is high, small mistakes don't damage the relationship. When it's low, even small things cause big fights.</p>
+      <div class="chart-card">
+        <div class="ct">Trust balance over a week of interactions</div>
+        <canvas id="chartBank"></canvas>
+      </div>
+      <div class="example"><b>Example:</b> Vignesh forgets to reply to Pranav's message for two days — a withdrawal. But because Vignesh has shown up for Pranav many times before, Pranav isn't upset. The account had a high balance, so it could absorb the mistake.</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-head">
+        <h3>The Four Quadrants of Time</h3>
+        <span class="rel">Behind Habit 3</span>
+      </div>
+      <p>Covey sorts every task into 4 boxes based on urgency and importance. Effective people spend most of their time in Quadrant II — important work that isn't screaming for attention yet, like planning, learning, and relationships.</p>
+      <div class="quad-grid">
+        <div class="quad q1">
+          <div class="qn">Quadrant I</div>
+          <h4>Urgent + Important</h4>
+          <p>Crises, deadlines, emergencies</p>
+        </div>
+        <div class="quad q2">
+          <div class="qn">Quadrant II</div>
+          <h4>Not Urgent + Important</h4>
+          <p>Planning, learning, relationships, rest</p>
+        </div>
+        <div class="quad q3">
+          <div class="qn">Quadrant III</div>
+          <h4>Urgent + Not Important</h4>
+          <p>Interruptions, most calls and messages</p>
+        </div>
+        <div class="quad q4">
+          <div class="qn">Quadrant IV</div>
+          <h4>Not Urgent + Not Important</h4>
+          <p>Mindless scrolling, time-wasters</p>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="ct">Where time actually goes: reactive person vs. effective person</div>
+        <canvas id="chartQuadrant"></canvas>
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-head">
+        <h3>The 5 Levels of Listening</h3>
+        <span class="rel">Behind Habit 5</span>
+      </div>
+      <p>Covey says most people never really listen — they just wait for their turn to talk. He ranks listening in 5 levels, from tuning someone out completely to fully understanding both their words and their feelings.</p>
+      <div class="chart-card">
+        <div class="ct">How well each level actually helps the other person</div>
+        <canvas id="chartListen"></canvas>
+      </div>
+      <div class="example"><b>Example:</b> When Mahadevaswamy's son says "school was fine," a level-2 listener (pretending) says "cool" while checking their phone. A level-5 listener (empathic) puts the phone down and notices the tired tone — then asks what actually happened.</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-head">
+        <h3>P/PC Balance — The Golden Goose</h3>
+        <span class="rel">The idea that ties it all together</span>
+      </div>
+      <p>Covey tells the fable of a goose that lays one golden egg a day. A greedy farmer, impatient for more, cuts the goose open looking for all the eggs at once — and kills it. No more eggs, ever.</p>
+      <div class="goose-box">
+        <div class="gi">P</div>
+        <div>
+          <p><b>Production (P)</b> is the golden egg — the result you want: grades, money, a finished project.</p>
+          <p><b>Production Capability (PC)</b> is the goose — the asset that creates the result: your health, your skills, your relationships, your reputation.</p>
+          <p>Chase only the eggs and you'll eventually damage the goose. Real effectiveness means balancing both — producing results <em>while</em> maintaining the thing that produces them.</p>
+        </div>
+      </div>
+      <div class="example"><b>Example:</b> Pranav pulls all-nighters for a month straight to hit a deadline (all P, no PC). He hits the deadline, but gets sick and burns out the next month — producing less overall than if he'd paced himself.</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="verdict">
+  <div class="wrap">
+    <div class="label">So what should you actually do?</div>
+    <h2>The simple takeaway</h2>
+    <p class="lead">You don't need to master all 7 habits at once. Start small. Here is the short version of what to do and what to avoid.</p>
+
+    <div class="split">
+      <div class="box do">
+        <h3>Do this</h3>
+        <ul>
+          <li><span class="mark">01</span> Pause before you react to bad news or anger.</li>
+          <li><span class="mark">02</span> Write down what kind of person you want to become.</li>
+          <li><span class="mark">03</span> Plan your important work before the day gets busy.</li>
+          <li><span class="mark">04</span> Look for outcomes where both sides gain something.</li>
+          <li><span class="mark">05</span> Listen fully before you give your opinion.</li>
+          <li><span class="mark">06</span> Value ideas that are different from yours.</li>
+          <li><span class="mark">07</span> Rest, sleep, and learn — every single week.</li>
+        </ul>
+      </div>
+      <div class="box dont">
+        <h3>Avoid this</h3>
+        <ul>
+          <li><span class="mark">01</span> Don't blame others or your situation for how you feel.</li>
+          <li><span class="mark">02</span> Don't live day to day with no clear direction.</li>
+          <li><span class="mark">03</span> Don't let small, urgent things eat your whole day.</li>
+          <li><span class="mark">04</span> Don't treat every talk like a fight to win.</li>
+          <li><span class="mark">05</span> Don't reply before the other person has finished talking.</li>
+          <li><span class="mark">06</span> Don't dismiss people who think differently than you.</li>
+          <li><span class="mark">07</span> Don't work non-stop until you burn out.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="closing">
+      In short: <b>control yourself first, understand others second, then build things together.</b> That is the whole book, in one line.
+    </div>
+  </div>
+</section>
+
+<footer>SUMMARY · WRITTEN IN SIMPLE ENGLISH · FOR PERSONAL LEARNING</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+(function(){
+  var ink = '#F1EAD9', inkDim = '#B9C4B5', gold = '#C9A227', sage = '#7FA98B', sharp = '#E2B45A', line = 'rgba(241,234,217,0.14)';
+
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.color = inkDim;
+
+  function makeObserver(id, draw){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var done = false;
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting && !done){ done = true; draw(); obs.disconnect(); }
+      });
+    }, {threshold:0.2});
+    obs.observe(el);
+  }
+
+  // Circle of Concern / Influence — reactive vs proactive
+  function doughnut(id, influencePct, color){
+    new Chart(document.getElementById(id), {
+      type:'doughnut',
+      data:{
+        labels:['Circle of Influence','Circle of Concern (rest)'],
+        datasets:[{
+          data:[influencePct, 100-influencePct],
+          backgroundColor:[color, 'rgba(241,234,217,0.06)'],
+          borderColor:['#1B2C20','#1B2C20'],
+          borderWidth:3
+        }]
+      },
+      options:{
+        cutout:'62%',
+        plugins:{
+          legend:{position:'bottom', labels:{boxWidth:10, font:{size:10}}},
+          tooltip:{callbacks:{label:function(c){return c.label+': '+c.parsed+'%';}}}
+        }
+      }
+    });
+  }
+  makeObserver('chartCircleReactive', function(){ doughnut('chartCircleReactive', 20, gold); });
+  makeObserver('chartCircleProactive', function(){ doughnut('chartCircleProactive', 65, sage); });
+
+  // Emotional Bank Account — running balance over a week
+  makeObserver('chartBank', function(){
+    new Chart(document.getElementById('chartBank'), {
+      type:'line',
+      data:{
+        labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets:[{
+          label:'Trust balance',
+          data:[4,6,5,3,5,7,8],
+          borderColor:sage,
+          backgroundColor:'rgba(127,169,139,0.15)',
+          fill:true,
+          tension:0.35,
+          pointBackgroundColor:sage,
+          pointRadius:4
+        }]
+      },
+      options:{
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{beginAtZero:true, grid:{color:line}, ticks:{display:false}},
+          x:{grid:{display:false}}
+        }
+      }
+    });
+  });
+
+  // Four Quadrants — time allocation
+  makeObserver('chartQuadrant', function(){
+    new Chart(document.getElementById('chartQuadrant'), {
+      type:'bar',
+      data:{
+        labels:['Q1: Urgent+Important','Q2: Important only','Q3: Urgent only','Q4: Neither'],
+        datasets:[
+          {label:'Reactive person', data:[55,15,20,10], backgroundColor:gold},
+          {label:'Effective person', data:[20,65,10,5], backgroundColor:sage}
+        ]
+      },
+      options:{
+        plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:10}}}},
+        scales:{
+          y:{beginAtZero:true, max:70, grid:{color:line}, ticks:{callback:function(v){return v+'%';}}},
+          x:{grid:{display:false}, ticks:{font:{size:9}}}
+        }
+      }
+    });
+  });
+
+  // 5 Levels of listening
+  makeObserver('chartListen', function(){
+    new Chart(document.getElementById('chartListen'), {
+      type:'bar',
+      indexAxis:'y',
+      data:{
+        labels:['5. Empathic','4. Attentive','3. Selective','2. Pretending','1. Ignoring'],
+        datasets:[{
+          data:[100,70,40,20,5],
+          backgroundColor:[sage, sage, sharp, gold, gold]
+        }]
+      },
+      options:{
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{beginAtZero:true, max:100, grid:{color:line}, ticks:{callback:function(v){return v+'%';}}},
+          y:{grid:{display:false}}
+        }
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
