@@ -7,111 +7,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
 <style>
 /* ════════════════════════════════════════════
    THEME TOKENS
 ════════════════════════════════════════════ */
 :root {
-  --bg:        #06090f;
-  --bg2:       #0d1117;
-  --surface:   #111820;
-  --surface2:  #18202c;
-  --surface3:  #1e2a38;
-  --border:    rgba(255,255,255,0.07);
-  --border2:   rgba(255,255,255,0.12);
-  --blue:      #3b82f6;
-  --blue-glow: rgba(59,130,246,0.25);
-  --teal:      #2dd4bf;
-  --amber:     #f59e0b;
-  --rose:      #f43f5e;
-  --green:     #22c55e;
-  --text:      #f1f5f9;
-  --text2:     #94a3b8;
-  --text3:     #475569;
+  --bg:        #000000;
+  --bg2:       #050505;
+  --surface:   #0d0d0d;
+  --surface2:  #141414;
+  --surface3:  #1c1c1c;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --blue:      #5b8def;
+  --blue-glow: rgba(91,141,239,0.25);
+  --teal:      #5b8def;
+  --amber:     #e0b34a;
+  --rose:      #e0645f;
+  --green:     #4caf7d;
+  --text:      #f2f2f2;
+  --text2:     #a1a1a1;
+  --text3:     #5c5c5c;
   --radius:    14px;
   --radius-lg: 20px;
   --shadow:    0 8px 32px rgba(0,0,0,0.5);
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
-  --nav-bg:    rgba(6,9,15,0.88);
+  --nav-bg:    rgba(0,0,0,0.9);
   --topnav-h:  60px;
 }
 [data-theme="light"] {
-  --bg:        #f0f4f8;
-  --bg2:       #e8edf3;
+  --bg:        #faf9f6;
+  --bg2:       #f2f1ed;
   --surface:   #ffffff;
-  --surface2:  #f8fafc;
-  --surface3:  #e2e8f0;
+  --surface2:  #f5f4f0;
+  --surface3:  #eae8e2;
   --border:    rgba(0,0,0,0.08);
   --border2:   rgba(0,0,0,0.13);
-  --blue:      #2563eb;
-  --blue-glow: rgba(37,99,235,0.2);
-  --teal:      #0d9488;
-  --amber:     #d97706;
-  --rose:      #e11d48;
-  --green:     #16a34a;
-  --text:      #0f172a;
-  --text2:     #475569;
-  --text3:     #94a3b8;
-  --shadow:    0 4px 20px rgba(0,0,0,0.1);
-  --shadow-lg: 0 12px 40px rgba(0,0,0,0.15);
-  --nav-bg:    rgba(240,244,248,0.92);
-}
-[data-theme="midnight"] {
-  --bg:        #020408;
-  --bg2:       #080c14;
-  --surface:   #0c1220;
-  --surface2:  #111828;
-  --surface3:  #162032;
-  --border:    rgba(120,150,255,0.1);
-  --border2:   rgba(120,150,255,0.18);
-  --blue:      #818cf8;
-  --blue-glow: rgba(129,140,248,0.3);
-  --teal:      #34d399;
-  --amber:     #fbbf24;
-  --rose:      #fb7185;
-  --green:     #4ade80;
-  --text:      #e8eeff;
-  --text2:     #8890a8;
-  --text3:     #3a4060;
-  --nav-bg:    rgba(2,4,8,0.9);
-}
-[data-theme="forest"] {
-  --bg:        #0a1208;
-  --bg2:       #0f1a0c;
-  --surface:   #132010;
-  --surface2:  #182a14;
-  --surface3:  #1e3518;
-  --border:    rgba(100,200,100,0.1);
-  --border2:   rgba(100,200,100,0.18);
-  --blue:      #4ade80;
-  --blue-glow: rgba(74,222,128,0.25);
-  --teal:      #34d399;
-  --amber:     #fde68a;
-  --rose:      #fca5a5;
-  --green:     #86efac;
-  --text:      #ecfdf5;
-  --text2:     #6ee7b7;
-  --text3:     #2a5a30;
-  --nav-bg:    rgba(10,18,8,0.9);
-}
-[data-theme="sunset"] {
-  --bg:        #130508;
-  --bg2:       #1a0a10;
-  --surface:   #220e16;
-  --surface2:  #2a1220;
-  --surface3:  #36182a;
-  --border:    rgba(255,100,100,0.1);
-  --border2:   rgba(255,100,100,0.18);
-  --blue:      #fb923c;
-  --blue-glow: rgba(251,146,60,0.28);
-  --teal:      #f472b6;
-  --amber:     #fde68a;
-  --rose:      #f87171;
-  --green:     #4ade80;
-  --text:      #fff1f2;
-  --text2:     #fca5a5;
-  --text3:     #5a2030;
-  --nav-bg:    rgba(19,5,8,0.9);
+  --blue:      #3563c9;
+  --blue-glow: rgba(53,99,201,0.18);
+  --teal:      #3563c9;
+  --amber:     #b5790c;
+  --rose:      #c23b36;
+  --green:     #227a52;
+  --text:      #1a1a1a;
+  --text2:     #5c5c5c;
+  --text3:     #8a8a8a;
+  --shadow:    0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --nav-bg:    rgba(250,249,246,0.92);
 }
 
 /* ════════════════════════════════════════════
@@ -136,14 +80,7 @@ a { color:inherit; text-decoration:none; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:4px; }
 
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(59,130,246,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(45,212,191,0.05) 0%, transparent 60%);
-  pointer-events:none; z-index:0;
-}
+
 
 /* ════════════════════════════════════════════
    APP SHELL
@@ -169,7 +106,7 @@ body::before {
 }
 .nav-logo-icon {
   width:30px; height:30px;
-  background:linear-gradient(135deg,var(--blue),var(--teal));
+  background:var(--blue);
   border-radius:9px;
   display:grid; place-items:center;
   font-size:.9rem; flex-shrink:0;
@@ -179,8 +116,12 @@ body::before {
 /* Search */
 .nav-search {
   position:relative; display:flex; align-items:center;
-  flex:1; max-width:340px; min-width:0;
+  flex:0 1 auto; min-width:0;
+  width:220px;
+  transition:width .45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change:width;
 }
+.nav-search:hover, .nav-search:focus-within { width:400px; }
 .nav-search-input {
   background:var(--surface2);
   border:1.5px solid var(--border);
@@ -188,7 +129,8 @@ body::before {
   padding:.4rem .9rem .4rem 2.2rem;
   color:var(--text); font-size:.83rem;
   width:100%; outline:none;
-  transition:border-color .2s, box-shadow .2s;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  transition:border-color .3s ease, box-shadow .3s ease, background .3s ease;
 }
 .nav-search-input:focus {
   border-color:var(--blue);
@@ -332,8 +274,8 @@ body::before {
 }
 .course-item:hover { background:var(--surface); color:var(--text); }
 .course-item.active {
-  background:linear-gradient(90deg,rgba(59,130,246,.18),rgba(59,130,246,.06));
-  border-color:rgba(59,130,246,.3);
+  background:rgba(91,141,239,.12);
+  border-color:rgba(91,141,239,.3);
   color:var(--blue);
 }
 .course-emoji {
@@ -382,19 +324,23 @@ body::before {
 }
 .hero-glow {
   width:88px; height:88px; border-radius:28px;
-  background:linear-gradient(135deg,var(--blue),var(--teal));
+  background:var(--blue);
   display:grid; place-items:center; font-size:2.2rem;
-  box-shadow:0 0 60px var(--blue-glow), 0 0 120px rgba(45,212,191,.1);
+  box-shadow:0 0 60px var(--blue-glow);
   margin-bottom:.5rem;
 }
 .hero-title {
   font-family:'Clash Display',sans-serif;
   font-size:2rem; font-weight:700;
-  background:linear-gradient(90deg,var(--text) 0%,var(--teal) 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  background-clip:text;
+  color:var(--text);
 }
 .hero-sub { color:var(--text2); font-size:.93rem; max-width:360px; line-height:1.7; font-weight:300; }
+.hero-about {
+  color:var(--text3); font-size:.78rem; max-width:400px; line-height:1.6;
+  margin-top:1.4rem; padding-top:1.1rem; border-top:1px solid var(--border);
+}
+.hero-about a { color:var(--blue); font-weight:600; white-space:nowrap; }
+.hero-about a:hover { text-decoration:underline; }
 .hero-stats {
   display:flex; gap:1.2rem; margin-top:.5rem; flex-wrap:wrap; justify-content:center;
 }
@@ -467,7 +413,7 @@ body::before {
 
 /* depth progress */
 .depth-prog { height:2px; background:var(--border); border-radius:1px; margin-bottom:1.5rem; overflow:hidden; }
-.depth-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal)); border-radius:1px; transition:width .4s ease; }
+.depth-fill { height:100%; background:var(--blue); border-radius:1px; transition:width .4s ease; }
 
 /* ── CARD GRID ── */
 .card-grid {
@@ -488,17 +434,9 @@ body::before {
   animation:fadeUp .35s ease both;
   display:flex; flex-direction:column; gap:.45rem;
 }
-.card::after {
-  content:'';
-  position:absolute; inset:0;
-  background:linear-gradient(135deg,rgba(59,130,246,.06) 0%,transparent 60%);
-  opacity:0; transition:opacity .22s;
-}
-.card:hover { transform:translateY(-3px); border-color:rgba(59,130,246,.4); box-shadow:0 10px 30px rgba(59,130,246,.12); }
-.card:hover::after { opacity:1; }
+.card:hover { transform:translateY(-3px); border-color:rgba(91,141,239,.4); box-shadow:0 10px 30px rgba(91,141,239,.12); }
 .card.empty { opacity:.5; cursor:default; }
 .card.empty:hover { transform:none; border-color:var(--border); box-shadow:none; }
-.card.empty:hover::after { opacity:0; }
 
 .card-type-badge {
   display:inline-flex; align-items:center; gap:.3rem;
@@ -526,15 +464,15 @@ body::before {
 .card:not(.empty):hover .card-arrow { color:var(--blue); transform:translate(2px,-2px); }
 
 .card.link-card {
-  border-color:rgba(45,212,191,.25);
-  background:linear-gradient(135deg,rgba(45,212,191,.05) 0%,var(--surface) 60%);
+  border-color:rgba(91,141,239,.25);
+  background:var(--surface);
 }
-.card.link-card:hover { border-color:rgba(45,212,191,.5); box-shadow:0 10px 30px rgba(45,212,191,.1); }
+.card.link-card:hover { border-color:rgba(91,141,239,.5); box-shadow:0 10px 30px rgba(91,141,239,.1); }
 
 /* Info card — plain text values */
 .card.info-card {
-  border-color:rgba(245,158,11,.2);
-  background:linear-gradient(135deg,rgba(245,158,11,.04) 0%,var(--surface) 60%);
+  border-color:rgba(224,179,74,.2);
+  background:var(--surface);
   cursor:default;
 }
 .card.info-card:hover {
@@ -549,8 +487,76 @@ body::before {
   margin-top:.1rem;
 }
 
+/* ── BOOK CARD (cover + author, no ratings) ── */
+.book-list {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(165px,1fr));
+  gap:1.6rem;
+}
+.card.book-card {
+  flex-direction:row; align-items:flex-start; gap:1rem;
+  padding:1rem;
+}
+.book-list .card.book-card {
+  width:100%;
+  flex-direction:column; align-items:stretch; gap:.75rem;
+  padding:.9rem;
+}
+.book-cover-wrap {
+  width:76px; height:112px; flex-shrink:0;
+  border-radius:8px; overflow:hidden;
+  background:var(--surface3);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  display:flex; align-items:center; justify-content:center;
+}
+.book-list .book-cover-wrap {
+  width:100%; height:auto; aspect-ratio:2/3;
+  border-radius:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.4);
+}
+.book-cover-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+.book-cover-ph { font-size:1.8rem; opacity:.6; }
+.book-list .book-cover-ph { font-size:2.6rem; }
+.book-card-body {
+  flex:1; min-width:0; display:flex; flex-direction:column; gap:.35rem;
+  align-self:stretch;
+}
+.book-card-author { font-size:.8rem; color:var(--text2); font-weight:400; }
+.card.book-card .card-footer { margin-top:auto; }
+
+/* ── ACCOUNT PAGE ── */
+.account-card {
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.1rem 1.2rem;
+  margin-bottom:1rem;
+}
+.account-card-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:.95rem; font-weight:700; margin-bottom:.8rem; color:var(--text);
+}
+.account-form { display:flex; flex-direction:column; gap:.6rem; max-width:340px; }
+.about-roadmap-lbl {
+  font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--text3); margin-top:1.1rem; margin-bottom:.6rem;
+}
+.about-roadmap {
+  list-style:none; display:flex; flex-direction:column; gap:.55rem;
+}
+.about-roadmap li {
+  display:flex; align-items:flex-start; gap:.55rem;
+  font-size:.82rem; color:var(--text2); line-height:1.5;
+}
+.about-roadmap li i {
+  color:var(--blue); font-size:.85rem; margin-top:.2rem; flex-shrink:0;
+}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav { display:none; }
+
 /* Search highlight */
-.highlight { background:rgba(59,130,246,.25); border-radius:3px; padding:0 2px; color:var(--blue); font-weight:600; }
+.highlight { background:var(--blue-glow); border-radius:3px; padding:0 2px; color:var(--blue); font-weight:600; }
 
 /* ── EMPTY STATE ── */
 .empty-state {
@@ -625,6 +631,15 @@ body::before {
 }
 .sr-item:hover { background:var(--surface2); }
 .sr-item-icon { font-size:.9rem; flex-shrink:0; margin-top:1px; }
+.sr-item-icon.t-lesson { color:var(--teal); }
+.sr-item-icon.t-book   { color:var(--amber); }
+.sr-item-icon.t-folder { color:var(--blue); }
+.sr-item-icon.t-course { color:var(--rose); }
+.sr-item-label { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+.sr-item-tag {
+  font-size:.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--text3); background:var(--surface3); border-radius:4px; padding:.05rem .4rem;
+}
 .sr-item-body { flex:1; min-width:0; }
 .sr-item-label { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--text); }
 .sr-path { font-size:.7rem; color:var(--text3); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -722,6 +737,17 @@ body::before {
    RESPONSIVE — MOBILE & LAPTOP
 ══════════════════════ */
 @media (max-width:768px) {
+  :root { --topnav-h: 66px; }
+  .topnav { gap:.6rem; }
+  .nav-logo span { display:none; }
+  .nav-search { width:130px; flex:0 1 auto; transition:width .4s cubic-bezier(0.22, 1, 0.36, 1); }
+  .nav-search:hover, .nav-search:focus-within { width:min(82vw, 480px); }
+  .nav-search-input {
+    font-size:1rem; padding:.7rem 2.4rem .7rem 2.6rem;
+    border-radius:14px; min-height:46px;
+  }
+  .nav-search-icon { font-size:1.05rem; left:.95rem; }
+  .search-clear { right:.85rem; font-size:1.05rem; }
   .sidebar {
     position:fixed; top:var(--topnav-h); left:0; bottom:0; z-index:40;
     transform:translateX(-100%);
@@ -731,16 +757,38 @@ body::before {
   .sidebar.open { transform:translateX(0); }
   .sidebar-overlay.open { display:block; }
   .nav-burger { display:flex; }
-  .nav-logo span { display:none; }
-  .nav-search { max-width:none; }
-  .content { padding:1.1rem .85rem 2rem; }
+  .content { padding:1.1rem .85rem calc(2rem + 64px); }
   .card-grid { grid-template-columns:repeat(2,1fr); gap:.65rem; }
   .page-title { font-size:1.3rem; }
   .hero-title { font-size:1.55rem; }
   .modal-box { height:92vh; max-height:none; border-radius:16px; }
-  .toast { bottom:.8rem; right:.8rem; left:.8rem; max-width:none; }
+  .toast { bottom:calc(64px + .8rem); right:.8rem; left:.8rem; max-width:none; }
   .share-btn span { display:none; }
   .theme-panel { width:92vw; max-width:340px; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
+    background:var(--nav-bg); backdrop-filter:blur(16px);
+    border-top:1px solid var(--border);
+    padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom));
+    height:64px;
+  }
+  .bn-item {
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:.15rem; background:none; border:none; color:var(--text3);
+    font-size:.65rem; font-weight:600; border-radius:10px; padding:.2rem;
+    transition:color .15s, background .15s;
+  }
+  .bn-icon { font-size:1.15rem; line-height:1; }
+  .bn-item.active { color:var(--blue); }
+  .bn-item:active { background:var(--surface2); }
+  /* Book cards inside mixed topic grids stay compact on phones */
+  .card-grid .book-cover-wrap { width:64px; height:96px; }
+  .card-grid .card.book-card { grid-column:1/-1; }
+  .card-grid .card.book-card { grid-column:span 2; }
+  /* Books page keeps bigger covers, just a tighter grid */
+  .book-list { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:1.1rem; }
 }
 @media (max-width:480px) {
   .topnav { padding:0 .75rem; gap:.5rem; }
@@ -755,7 +803,6 @@ body::before {
 }
 @media (max-width:360px) {
   .card-grid { grid-template-columns:1fr; }
-  .nav-search { display:none; }
 }
 /* Laptop optimizations */
 @media (min-width:1024px) {
@@ -777,10 +824,10 @@ body::before {
 
   <!-- TOP NAV -->
   <nav class="topnav">
-    <button class="nav-burger" id="burgerBtn" onclick="toggleSidebar()">☰</button>
+    <button class="nav-burger" id="burgerBtn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
 
     <div class="nav-logo">
-      <div class="nav-logo-icon"> ? </div>
+      <div class="nav-logo-icon"><i class="bi bi-patch-question-fill"></i></div>
       <span>Missmonk</span>
     </div>
 
@@ -788,15 +835,12 @@ body::before {
 
     <!-- Search -->
     <div class="nav-search" id="searchWrapper">
-      <span class="nav-search-icon">🔍</span>
-      <input type="text" class="nav-search-input" placeholder="Search topics, lessons…" id="searchInput"
+      <span class="nav-search-icon"><i class="bi bi-search"></i></span>
+      <input type="text" class="nav-search-input" placeholder="Search courses, topics, books, lessons…" id="searchInput"
              oninput="onSearch()" onfocus="showSearch()" autocomplete="off"/>
-      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="bi bi-x-lg"></i></button>
       <div class="search-results" id="searchResults"></div>
     </div>
-
-    <!-- Theme button -->
-    <button class="nav-icon-btn" onclick="toggleThemePanel()" title="Themes &amp; Settings">🎨</button>
   </nav>
 
   <!-- BODY -->
@@ -816,13 +860,29 @@ body::before {
   </div>
 </div>
 
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-item active" id="bn-home" onclick="goHome()">
+    <span class="bn-icon"><i class="bi bi-house-door-fill"></i></span><span class="bn-label">Home</span>
+  </button>
+  <button class="bn-item" id="bn-books" onclick="showBooksPage()">
+    <span class="bn-icon"><i class="bi bi-collection-fill"></i></span><span class="bn-label">Books</span>
+  </button>
+  <button class="bn-item" id="bn-progress" onclick="showProgressPage()">
+    <span class="bn-icon"><i class="bi bi-graph-up-arrow"></i></span><span class="bn-label">Progress</span>
+  </button>
+  <button class="bn-item" id="bn-account" onclick="showAccountPage()">
+    <span class="bn-icon"><i class="bi bi-person-circle"></i></span><span class="bn-label">Account</span>
+  </button>
+</nav>
+
 <!-- LESSON MODAL -->
 <div class="modal-backdrop" id="modalBg">
   <div class="modal-box">
     <div class="modal-head">
       <span class="modal-head-title" id="modalTitle">Loading…</span>
-      <button class="modal-btn share-modal-btn" onclick="shareLesson()">⬆ Share</button>
-      <button class="modal-btn" onclick="closeModal()">✕</button>
+      <button class="modal-btn share-modal-btn" onclick="shareLesson()"><i class="bi bi-share-fill"></i> Share</button>
+      <button class="modal-btn" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
     </div>
     <iframe class="modal-iframe" id="modalFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
   </div>
@@ -831,51 +891,25 @@ body::before {
 <!-- THEME / SETTINGS PANEL -->
 <div class="theme-panel" id="themePanel">
   <div class="theme-panel-title">
-    🎨 Themes &amp; Settings
-    <button class="theme-close" onclick="closeThemePanel()">✕</button>
+    <i class="bi bi-palette2"></i> Themes &amp; Settings
+    <button class="theme-close" onclick="closeThemePanel()"><i class="bi bi-x-lg"></i></button>
   </div>
 
   <div class="theme-section-lbl">Color Theme</div>
   <div class="theme-options" id="themeOptions">
     <div class="theme-opt active" data-theme="dark" onclick="applyTheme('dark')">
       <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#06090f;border:1px solid #333"></div>
-        <div class="swatch-dot" style="background:#3b82f6"></div>
-        <div class="swatch-dot" style="background:#2dd4bf"></div>
+        <div class="swatch-dot" style="background:#000000;border:1px solid #333"></div>
+        <div class="swatch-dot" style="background:#5b8def"></div>
       </div>
       <div class="theme-opt-name">Dark</div>
     </div>
     <div class="theme-opt" data-theme="light" onclick="applyTheme('light')">
       <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#f0f4f8;border:1px solid #ccc"></div>
-        <div class="swatch-dot" style="background:#2563eb"></div>
-        <div class="swatch-dot" style="background:#0d9488"></div>
+        <div class="swatch-dot" style="background:#faf9f6;border:1px solid #ccc"></div>
+        <div class="swatch-dot" style="background:#3563c9"></div>
       </div>
       <div class="theme-opt-name">Light</div>
-    </div>
-    <div class="theme-opt" data-theme="midnight" onclick="applyTheme('midnight')">
-      <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#020408;border:1px solid #222"></div>
-        <div class="swatch-dot" style="background:#818cf8"></div>
-        <div class="swatch-dot" style="background:#34d399"></div>
-      </div>
-      <div class="theme-opt-name">Midnight</div>
-    </div>
-    <div class="theme-opt" data-theme="forest" onclick="applyTheme('forest')">
-      <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#0a1208;border:1px solid #1a3a10"></div>
-        <div class="swatch-dot" style="background:#4ade80"></div>
-        <div class="swatch-dot" style="background:#34d399"></div>
-      </div>
-      <div class="theme-opt-name">Forest</div>
-    </div>
-    <div class="theme-opt" data-theme="sunset" onclick="applyTheme('sunset')">
-      <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#130508;border:1px solid #3a1020"></div>
-        <div class="swatch-dot" style="background:#fb923c"></div>
-        <div class="swatch-dot" style="background:#f472b6"></div>
-      </div>
-      <div class="theme-opt-name">Sunset</div>
     </div>
   </div>
 
@@ -897,17 +931,17 @@ body::before {
 <!-- SHARE POPUP -->
 <div class="share-popup" id="sharePopup" onclick="handleShareOverlayClick(event)">
   <div class="share-box">
-    <div class="share-box-title">⬆ Share</div>
+    <div class="share-box-title"><i class="bi bi-share-fill"></i> Share</div>
     <div class="share-box-sub" id="shareSubtitle">Share this topic with others</div>
     <div class="share-url-row">
       <input class="share-url-input" id="shareUrlInput" readonly/>
       <button class="btn-sm" onclick="copyShareUrl()">Copy</button>
     </div>
     <div class="share-methods">
-      <button class="share-method-btn" onclick="shareVia('whatsapp')">💬 WhatsApp</button>
-      <button class="share-method-btn" onclick="shareVia('telegram')">✈ Telegram</button>
-      <button class="share-method-btn" onclick="shareVia('twitter')">🐦 X / Twitter</button>
-      <button class="share-method-btn" onclick="shareVia('email')">✉ Email</button>
+      <button class="share-method-btn" onclick="shareVia('whatsapp')"><i class="bi bi-whatsapp"></i> WhatsApp</button>
+      <button class="share-method-btn" onclick="shareVia('telegram')"><i class="bi bi-telegram"></i> Telegram</button>
+      <button class="share-method-btn" onclick="shareVia('twitter')"><i class="bi bi-twitter-x"></i> X / Twitter</button>
+      <button class="share-method-btn" onclick="shareVia('email')"><i class="bi bi-envelope-fill"></i> Email</button>
     </div>
     <button class="share-close-btn" onclick="closeSharePopup()">Close</button>
   </div>
@@ -967,21 +1001,24 @@ const BUILT_IN_CURRICULUM = {
 };
 
 const COURSE_META = {
-  diploma:     { icon:'📐', color:'blue',  label:'Diploma' },
-  engineering: { icon:'⚙️', color:'amber', label:'Engineering' },
-  Financial:   { icon:'📈', color:'teal',  label:'Financial' },
+  diploma:     { icon:'<i class="bi bi-triangle-fill"></i>', color:'blue',  label:'Diploma' },
+  engineering: { icon:'<i class="bi bi-gear-fill"></i>', color:'amber', label:'Engineering' },
+  Financial:   { icon:'<i class="bi bi-graph-up-arrow"></i>', color:'teal',  label:'Financial' },
 };
 
 /* ══════════════════════════════
    STATE
 ══════════════════════════════ */
 let CURRICULUM    = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
+let BOOK_META     = {};
+let currentView   = 'home'; // 'home' | 'books' | 'account'
 let pathStack     = [];
 let currentCourse = null;
 let modalLessonKey   = null;
 let modalLessonHref  = null;
 let modalLessonLabel = null;
 let allLessons    = [];
+let allSearchItems = [];
 
 /* ══════════════════════════════
    THEME
@@ -1004,7 +1041,7 @@ async function fetchFromUrl() {
   const url    = document.getElementById('urlInput').value.trim();
   const status = document.getElementById('urlStatus');
   if (!url) { setUrlStatus('err', 'Please enter a URL.'); return; }
-  setUrlStatus('loading', '⏳ Fetching…');
+  setUrlStatus('loading', '<i class="bi bi-hourglass-split"></i> Fetching…');
   try {
     const res  = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1012,15 +1049,16 @@ async function fetchFromUrl() {
     const parsed = parseCurriculumData(data);
     if (!parsed) throw new Error('Invalid curriculum format');
     CURRICULUM = parsed;
+    BOOK_META = (CURRICULUM._bookMeta && typeof CURRICULUM._bookMeta === 'object') ? CURRICULUM._bookMeta : {};
     allLessons = [];
     buildLessonIndex(CURRICULUM, []);
     buildAll();
     if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
     if (currentCourse) renderContent(); else showWelcome();
-    setUrlStatus('ok', `✓ Loaded ${Object.keys(CURRICULUM).length} course(s)`);
-    showToast('✓ Curriculum loaded!');
+    setUrlStatus('ok', `<i class="bi bi-check-circle-fill"></i> Loaded ${Object.keys(CURRICULUM).filter(k=>!k.startsWith('_')).length} course(s)`);
+    showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
   } catch(e) {
-    setUrlStatus('err', '✗ ' + e.message);
+    setUrlStatus('err', '<i class="bi bi-x-circle-fill"></i> ' + e.message);
     showWelcome();
   }
 }
@@ -1043,11 +1081,12 @@ function parseCurriculumData(data) {
 function setUrlStatus(type, msg) {
   const el = document.getElementById('urlStatus');
   el.className = 'url-status ' + type;
-  el.textContent = msg;
+  el.innerHTML = msg;
 }
 
 function resetToBuiltIn() {
   CURRICULUM = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
+  BOOK_META = {};
   allLessons = [];
   buildLessonIndex(CURRICULUM, []);
   buildAll();
@@ -1055,7 +1094,7 @@ function resetToBuiltIn() {
   showWelcome();
   document.getElementById('urlInput').value = 'https://microintel.github.io/missmonk/data.json';
   setUrlStatus('', '');
-  showToast('↩ Reset to built-in curriculum');
+  showToast('<i class="bi bi-arrow-counterclockwise"></i> Reset to built-in curriculum');
 }
 
 /* ══════════════════════════════
@@ -1069,7 +1108,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Show loading state
   document.getElementById('content').innerHTML = `
     <div class="welcome-hero">
-      <div class="hero-glow">⏳</div>
+      <div class="hero-glow"><i class="bi bi-hourglass-split"></i></div>
       <h1 class="hero-title">Loading…</h1>
       <p class="hero-sub">Fetching curriculum from Missmonk</p>
     </div>`;
@@ -1096,6 +1135,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 function buildLessonIndex(obj, path) {
   if (typeof obj !== 'object' || obj === null) return;
   for (const key of Object.keys(obj)) {
+    if (key.startsWith('_')) continue;
     const val = obj[key];
     const p   = [...path, key];
     if (typeof val === 'string' && extractHref(val)) {
@@ -1144,13 +1184,62 @@ function highlightQuery(text, q) {
 /* ══════════════════════════════
    BUILD SIDEBAR
 ══════════════════════════════ */
-function buildAll() { buildSidebar(); }
+function buildAll() { buildSidebar(); buildSearchIndex(); }
+
+/* ══════════════════════════════
+   SEARCH INDEX (everything: courses, topics, books, lessons)
+══════════════════════════════ */
+function buildSearchIndex() {
+  allSearchItems = [];
+  Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).forEach(course => {
+    const courseStack = [{ key: cleanKey(course), obj: CURRICULUM[course] }];
+    const cMeta = COURSE_META[course] || { label: cleanKey(course) };
+    allSearchItems.push({
+      type: 'course', label: cleanKey(course), path: cleanKey(course),
+      course, stack: courseStack
+    });
+
+    const walk = (obj, stack) => {
+      if (!obj || typeof obj !== 'object') return;
+      Object.keys(obj).forEach(key => {
+        if (key.startsWith('_')) return;
+        const val = obj[key];
+        const newStack = [...stack, { key: cleanKey(key), obj: val }];
+        const pathLabel = newStack.map(s => s.key).join(' › ');
+
+        if (typeof val === 'string' && extractHref(val)) {
+          allSearchItems.push({
+            type: 'lesson', label: extractText(val) || cleanKey(key),
+            path: pathLabel, href: extractHref(val),
+            course, stack, key
+          });
+        } else if (val && typeof val === 'object') {
+          const meta = BOOK_META[key] || BOOK_META[cleanKey(key)];
+          if (meta) {
+            allSearchItems.push({
+              type: 'book', label: cleanKey(key), path: pathLabel,
+              author: meta.author || '', course, stack: newStack,
+              lcount: countLessons(val)
+            });
+          } else {
+            allSearchItems.push({
+              type: 'folder', label: cleanKey(key), path: pathLabel,
+              course, stack: newStack, lcount: countLessons(val)
+            });
+          }
+          walk(val, newStack);
+        }
+      });
+    };
+    walk(CURRICULUM[course], courseStack);
+  });
+}
 
 function buildSidebar() {
   const inner = document.getElementById('sidebarInner');
   inner.innerHTML = `<div class="sidebar-section-label">Courses</div>`;
-  Object.keys(CURRICULUM).forEach(course => {
-    const meta  = COURSE_META[course] || { icon:'📚', color:'blue', label: cleanKey(course) };
+  Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).forEach(course => {
+    const meta  = COURSE_META[course] || { icon:'<i class="bi bi-collection-fill"></i>', color:'blue', label: cleanKey(course) };
     const total = countLessons(CURRICULUM[course]);
     const div   = document.createElement('div');
     div.className = 'course-item';
@@ -1191,6 +1280,8 @@ function navTo(idx) {
    RENDER CONTENT
 ══════════════════════════════ */
 function renderContent() {
+  currentView = 'home';
+  setBottomNavActive('home');
   if (!currentCourse) { showWelcome(); return; }
   const cur      = pathStack[pathStack.length - 1];
   const obj      = cur.obj;
@@ -1216,11 +1307,11 @@ function renderContent() {
     <div class="page-header">
       <div class="page-header-row">
         <div>
-          <div class="page-tag ${meta.color}">${COURSE_META[currentCourse]?.icon||'📚'} ${childLabel||'Course'}</div>
+          <div class="page-tag ${meta.color}">${COURSE_META[currentCourse]?.icon||'<i class="bi bi-collection-fill"></i>'} ${childLabel||'Course'}</div>
           <div class="page-title">${cur.key}</div>
           <div class="page-meta">${childCount} item${childCount!==1?'s':''} · ${countDeep(obj)} total · ${countLessons(obj)} lesson${countLessons(obj)!==1?'s':''}</div>
         </div>
-        <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${window.location.href}')">⬆ <span>Share</span></button>
+        <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${window.location.href}')"><i class="bi bi-share-fill"></i> <span>Share</span></button>
       </div>
     </div>`;
 
@@ -1233,7 +1324,7 @@ function renderContent() {
       html += `
         <div class="card-grid">
           <div class="card link-card" onclick="openLesson('${href}','${label}','${lid}')">
-            <div class="card-type-badge teal">📄 Lesson</div>
+            <div class="card-type-badge teal"><i class="bi bi-file-earmark-text-fill"></i> Lesson</div>
             <div class="card-title">${label}</div>
             <div class="card-footer"><span class="card-count">Click to study</span><span class="card-arrow">↗</span></div>
           </div>
@@ -1243,7 +1334,7 @@ function renderContent() {
       html += `
         <div class="card-grid">
           <div class="card info-card" style="grid-column:1/-1">
-            <div class="card-type-badge amber">ℹ️ Info</div>
+            <div class="card-type-badge amber"><i class="bi bi-info-circle-fill"></i> Info</div>
             <div class="card-title">${cur.key}</div>
             <div class="card-info-text">${obj.trim()}</div>
           </div>
@@ -1254,14 +1345,14 @@ function renderContent() {
   }
 
   if (!obj || typeof obj !== 'object') {
-    html += `<div class="empty-state"><div class="ei">🚧</div><h3>Coming Soon</h3><p>Content will be added soon.</p></div>`;
+    html += `<div class="empty-state"><div class="ei"><i class="bi bi-cone-striped"></i></div><h3>Coming Soon</h3><p>Content will be added soon.</p></div>`;
     document.getElementById('content').innerHTML = html;
     return;
   }
 
   const keys = Object.keys(obj);
   if (keys.length === 0) {
-    html += `<div class="empty-state"><div class="ei">🚧</div><h3>Content Coming Soon</h3><p>This section is being built. Check back later!</p></div>`;
+    html += `<div class="empty-state"><div class="ei"><i class="bi bi-cone-striped"></i></div><h3>Content Coming Soon</h3><p>This section is being built. Check back later!</p></div>`;
     document.getElementById('content').innerHTML = html;
     return;
   }
@@ -1278,27 +1369,30 @@ function renderContent() {
     const deep   = countDeep(val);
     const lcount = countLessons(val);
     const lid    = isLink ? lessonId(pathStack.map(p=>p.key), key) : null;
+    const bookMeta = (!isLink && !isInfo) ? (BOOK_META[key] || BOOK_META[ck]) : null;
 
     const tagColor = depth === 0 ? 'blue' : depth === 1 ? 'amber' : 'teal';
-    const tagIcon  = depth === 0 ? '🗓️' : depth === 1 ? '📚' : depth === 2 ? '📖' : '🔹';
+    const tagIcon  = depth === 0 ? '<i class="bi bi-calendar3"></i>' : depth === 1 ? '<i class="bi bi-journal-bookmark-fill"></i>' : depth === 2 ? '<i class="bi bi-book-half"></i>' : '<i class="bi bi-bookmark-fill"></i>';
     const subLbl   = depth === 0 ? 'Semester' : depth === 1 ? 'Subject' : depth === 2 ? 'Chapter' : 'Topic';
 
     if (isLink) {
       html += `<div class="card link-card" data-a="link" data-href="${href}" data-label="${lbl.replace(/"/g,'&quot;')}" data-lid="${lid}">
-        <div class="card-type-badge teal">📄 Lesson</div>
+        <div class="card-type-badge teal"><i class="bi bi-file-earmark-text-fill"></i> Lesson</div>
         <div class="card-title">${lbl}</div>
         <div class="card-footer"><span class="card-count">Study now</span><span class="card-arrow">↗</span></div>
       </div>`;
     } else if (isInfo) {
       // Plain text string — show as info card (e.g. Indian Economy text)
       html += `<div class="card info-card" style="grid-column:span 2">
-        <div class="card-type-badge amber">ℹ️ Info</div>
+        <div class="card-type-badge amber"><i class="bi bi-info-circle-fill"></i> Info</div>
         <div class="card-title">${ck}</div>
         <div class="card-info-text">${val.trim()}</div>
       </div>`;
+    } else if (bookMeta) {
+      html += bookCardHTML(key, bookMeta, lcount);
     } else if (isEmpty) {
       html += `<div class="card empty">
-        <div class="card-type-badge muted">🚧 Soon</div>
+        <div class="card-type-badge muted"><i class="bi bi-cone-striped"></i> Soon</div>
         <div class="card-title">${ck}</div>
         <div class="card-footer"><span class="card-count">Coming soon</span></div>
       </div>`;
@@ -1315,6 +1409,7 @@ function renderContent() {
   }
   html += `</div>`;
   document.getElementById('content').innerHTML = html;
+  attachBookCovers(document.getElementById('cardGrid'));
 
   // Attach events
   document.querySelectorAll('#cardGrid .card[data-a="nav"]').forEach(card => {
@@ -1333,18 +1428,243 @@ function renderContent() {
 ══════════════════════════════ */
 function showWelcome() {
   const total   = allLessons.length;
-  const courses = Object.keys(CURRICULUM).length;
+  const courses = Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).length;
   document.getElementById('content').innerHTML = `
     <div class="welcome-hero">
-      <div class="hero-glow">?</div>
+      <div class="hero-glow"><i class="bi bi-patch-question-fill"></i></div>
       <h1 class="hero-title">Welcome to Missmonk</h1>
       <p class="hero-sub">Pick a course from the sidebar and start exploring chapters, topics, and lessons.</p>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-val">${courses}</div><div class="hero-stat-key">Courses</div></div>
         <div class="hero-stat"><div class="hero-stat-val">${total}</div><div class="hero-stat-key">Lessons</div></div>
       </div>
+      <p class="hero-about">Missmonk was built to bring scattered course material into one free, distraction-free place to learn. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
     </div>
     <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
+}
+
+/* ══════════════════════════════
+   BOOK CARDS + COVER LOOKUP
+══════════════════════════════ */
+function bookCardHTML(key, meta, lcount) {
+  const ck = cleanKey(key);
+  return `<div class="card book-card" data-a="nav" data-key="${String(key).replace(/"/g,'&quot;')}">
+    <div class="book-cover-wrap" data-cover-title="${ck.replace(/"/g,'&quot;')}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
+    <div class="book-card-body">
+      <div class="card-title">${ck}</div>
+      <div class="book-card-author">by ${meta.author || 'Unknown author'}</div>
+      <div class="card-footer"><span class="card-count">${lcount} lesson${lcount!==1?'s':''}</span><span class="card-arrow">→</span></div>
+    </div>
+  </div>`;
+}
+
+function attachBookCovers(root) {
+  const scope = root || document;
+  if (!scope) return;
+  scope.querySelectorAll('.book-cover-wrap[data-cover-title]').forEach(el => {
+    loadCoverInto(el, el.dataset.coverTitle);
+  });
+}
+
+const coverCache = {};
+async function loadCoverInto(el, title) {
+  try {
+    let url = coverCache[title];
+    if (url === undefined) {
+      const cached = localStorage.getItem('lp_cover_' + title);
+      if (cached !== null) {
+        url = cached === 'null' ? null : cached;
+      } else {
+        const res  = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1&fields=cover_i`);
+        const data = await res.json();
+        const coverId = data && data.docs && data.docs[0] ? data.docs[0].cover_i : null;
+        url = coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : null;
+        localStorage.setItem('lp_cover_' + title, url || 'null');
+      }
+      coverCache[title] = url;
+    }
+    if (url && el.isConnected) {
+      el.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=&quot;book-cover-ph&quot;&gt;&lt;i class=&quot;bi bi-book-fill&quot;&gt;&lt;/i&gt;&lt;/div&gt;'"/>`;
+    }
+  } catch (e) { /* keep placeholder icon on failure */ }
+}
+
+/* ══════════════════════════════
+   FIND BOOK NODES (for Books tab)
+══════════════════════════════ */
+function findBookNodes() {
+  const results = [];
+  Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).forEach(course => {
+    const walk = (obj, stack) => {
+      if (!obj || typeof obj !== 'object') return;
+      Object.keys(obj).forEach(key => {
+        const val  = obj[key];
+        const meta = BOOK_META[key] || BOOK_META[cleanKey(key)];
+        const newStack = [...stack, { key: cleanKey(key), obj: val }];
+        if (meta && val && typeof val === 'object') {
+          results.push({ course, key, meta, pathStack: newStack, lcount: countLessons(val) });
+        }
+        if (val && typeof val === 'object') walk(val, newStack);
+      });
+    };
+    walk(CURRICULUM[course], [{ key: cleanKey(course), obj: CURRICULUM[course] }]);
+  });
+  return results;
+}
+
+function navigateToStack(course, stack) {
+  currentCourse = course;
+  pathStack     = stack;
+  currentView   = 'home';
+  setBottomNavActive('home');
+  document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById('si-' + CSS.escape(course));
+  if (si) si.classList.add('active');
+  renderContent();
+  closeSidebarMobile();
+}
+
+function openBookNode(node) {
+  navigateToStack(node.course, node.pathStack);
+}
+
+/* ══════════════════════════════
+   BOOKS PAGE
+══════════════════════════════ */
+function showBooksPage() {
+  currentView = 'books';
+  setBottomNavActive('books');
+  const books = findBookNodes();
+  let html = `
+    <div class="page-header">
+      <div class="page-tag teal"><i class="bi bi-collection-fill"></i> Library</div>
+      <div class="page-title">Books</div>
+      <div class="page-meta">${books.length} book${books.length!==1?'s':''} available to read</div>
+    </div>`;
+
+  if (books.length === 0) {
+    html += `<div class="empty-state"><div class="ei"><i class="bi bi-book"></i></div><h3>No books yet</h3><p>Books you add with author &amp; cover info will show up here.</p></div>`;
+  } else {
+    html += `<div class="book-list" id="bookList">`;
+    books.forEach((b, i) => {
+      html += `<div class="card book-card" data-a="booknode" data-idx="${i}">
+        <div class="book-cover-wrap" data-cover-title="${cleanKey(b.key).replace(/"/g,'&quot;')}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
+        <div class="book-card-body">
+          <div class="card-title">${cleanKey(b.key)}</div>
+          <div class="book-card-author">by ${b.meta.author || 'Unknown author'}</div>
+          <div class="card-footer"><span class="card-count">${b.lcount} lesson${b.lcount!==1?'s':''}</span><span class="card-arrow">→</span></div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('content').innerHTML = html;
+  attachBookCovers(document.getElementById('bookList'));
+  document.querySelectorAll('#bookList .card[data-a="booknode"]').forEach(card => {
+    card.onclick = () => openBookNode(books[Number(card.dataset.idx)]);
+  });
+}
+
+/* ══════════════════════════════
+   ACCOUNT PAGE
+══════════════════════════════ */
+function showAccountPage() {
+  currentView = 'account';
+  setBottomNavActive('account');
+  document.getElementById('content').innerHTML = `
+    <div class="page-header">
+      <div class="page-tag amber"><i class="bi bi-person-circle"></i> Account</div>
+      <div class="page-title">Account</div>
+      <div class="page-meta">Login is coming soon</div>
+    </div>
+    <div class="account-card">
+      <div class="account-card-title"><i class="bi bi-shield-lock-fill"></i> Login</div>
+      <div class="account-form">
+        <input class="url-input" type="email" placeholder="Email" disabled/>
+        <input class="url-input" type="password" placeholder="Password" disabled/>
+        <button class="btn-sm" disabled style="opacity:.5;cursor:not-allowed;">Log In — Coming Soon</button>
+      </div>
+    </div>
+    <div class="account-card">
+      <div class="account-card-title"><i class="bi bi-graph-up-arrow"></i> Progress</div>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
+        Once login is available, your reading progress, completed lessons, and streaks will appear in the Progress tab.
+      </p>
+    </div>
+    <div class="account-card">
+      <div class="account-card-title"><i class="bi bi-palette2"></i> Themes &amp; Settings</div>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
+        Switch between light and dark mode, or load a curriculum from a URL.
+      </p>
+      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="toggleThemePanel()">
+        <i class="bi bi-palette2"></i> Open Themes &amp; Settings
+      </button>
+    </div>
+    <div class="account-card">
+      <div class="account-card-title"><i class="bi bi-info-circle-fill"></i> About This Project</div>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.7;">
+        Missmonk started as a simple idea: course material — PDFs, slide decks, scattered links — is usually spread across drives, chats, and folders with no single place to actually sit down and learn. This app pulls all of it into one clean, structured library organized by course, chapter, and topic.
+      </p>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.7;margin-top:.7rem;">
+        It's useful today because most students juggle several apps just to study — a PDF viewer here, a bookmark folder there, a group chat for links. Missmonk replaces that with one searchable, always-up-to-date curriculum that works on any device, loads fast, and stays free and open — no accounts or paywalls required to start learning.
+      </p>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.7;margin-top:.7rem;">
+        The curriculum itself is just data — a JSON file — so it can be updated, extended, or swapped out (see the URL loader above) without ever touching the app's code.
+      </p>
+      <div class="about-roadmap-lbl">What's coming next</div>
+      <ul class="about-roadmap">
+        <li><i class="bi bi-shield-lock-fill"></i> Real account login, so your progress is saved and synced across devices</li>
+        <li><i class="bi bi-graph-up-arrow"></i> Progress tracking — completed lessons, streaks, and per-course stats</li>
+        <li><i class="bi bi-bookmark-star-fill"></i> Bookmarks and personal notes on lessons</li>
+        <li><i class="bi bi-cloud-download-fill"></i> Offline / downloadable lessons for reading without internet</li>
+        <li><i class="bi bi-bell-fill"></i> Reminders to help you keep a consistent study streak</li>
+        <li><i class="bi bi-stars"></i> Smarter search with suggestions based on what you've read</li>
+        <li><i class="bi bi-people-fill"></i> Community-contributed curriculums beyond the built-in one</li>
+      </ul>
+    </div>
+    <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
+}
+
+/* ══════════════════════════════
+   PROGRESS PAGE
+══════════════════════════════ */
+function showProgressPage() {
+  currentView = 'progress';
+  setBottomNavActive('progress');
+  const total = allLessons.length;
+  document.getElementById('content').innerHTML = `
+    <div class="page-header">
+      <div class="page-tag blue"><i class="bi bi-graph-up-arrow"></i> Progress</div>
+      <div class="page-title">Your Progress</div>
+      <div class="page-meta">Log in to start tracking completed lessons</div>
+    </div>
+    <div class="account-card">
+      <div class="account-card-title"><i class="bi bi-bar-chart-line-fill"></i> Overview</div>
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
+        ${total} lesson${total!==1?'s':''} are available across your courses. Once login is enabled,
+        completed lessons, streaks, and per-course progress will show up here.
+      </p>
+    </div>
+    <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
+}
+
+/* ══════════════════════════════
+   BOTTOM NAV (mobile)
+══════════════════════════════ */
+function setBottomNavActive(view) {
+  ['home','books','progress','account'].forEach(v => {
+    const el = document.getElementById('bn-' + v);
+    if (el) el.classList.toggle('active', v === view);
+  });
+}
+function goHome() {
+  currentView   = 'home';
+  currentCourse = null;
+  pathStack     = [];
+  setBottomNavActive('home');
+  document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+  renderContent();
+  closeSidebarMobile();
 }
 
 /* ══════════════════════════════
@@ -1400,24 +1720,32 @@ function onSearch() {
   document.getElementById('searchClear').classList.toggle('show', val.length > 0);
 }
 
+let lastSearchResults = [];
+
 function performSearch() {
   const q   = document.getElementById('searchInput').value.trim();
   const box = document.getElementById('searchResults');
   if (!q) { box.classList.remove('open'); return; }
 
   const ql = q.toLowerCase();
-  const scored = allLessons.map(l => {
-    const ll = l.label.toLowerCase();
-    const pl = l.path.toLowerCase();
+  const scored = allSearchItems.map(item => {
+    const ll = item.label.toLowerCase();
+    const pl = item.path.toLowerCase();
+    const al = (item.author || '').toLowerCase();
     let score = 0;
-    if (ll === ql)             score = 100;
+    if (ll === ql)              score = 100;
     else if (ll.startsWith(ql)) score = 80;
-    else if (ll.includes(ql))  score = 60;
-    else if (pl.includes(ql))  score = 30;
-    return { ...l, score };
-  }).filter(l => l.score > 0)
+    else if (ll.includes(ql))   score = 60;
+    else if (al && al.includes(ql)) score = 50;
+    else if (pl.includes(ql))   score = 30;
+    // Slight boost so specific content (lessons/books) ranks above broad folders/courses on ties
+    if (score > 0 && (item.type === 'lesson' || item.type === 'book')) score += 2;
+    return { ...item, score };
+  }).filter(item => item.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, 12);
+
+  lastSearchResults = scored;
 
   const exact   = scored.filter(l => l.score >= 80);
   const partial = scored.filter(l => l.score < 80);
@@ -1426,31 +1754,49 @@ function performSearch() {
     box.innerHTML = `<div class="sr-empty">No results for "<strong>${q}</strong>"</div>`;
   } else {
     let html = '';
-    if (exact.length)   { html += `<div class="sr-section">Best Match</div>`;  html += exact.map(l => srItem(l, q)).join(''); }
+    if (exact.length)   { html += `<div class="sr-section">Best Match</div>`;  html += exact.map((l,i) => srItem(l, q, scored.indexOf(l))).join(''); }
     if (partial.length) {
       if (exact.length) html += `<div class="sr-divider"></div>`;
       html += `<div class="sr-section">Related</div>`;
-      html += partial.map(l => srItem(l, q)).join('');
+      html += partial.map((l,i) => srItem(l, q, scored.indexOf(l))).join('');
     }
     box.innerHTML = html;
     box.querySelectorAll('.sr-item').forEach(el => {
       el.onclick = () => {
-        openLesson(el.dataset.href, el.dataset.label, el.dataset.lid);
+        const item = lastSearchResults[Number(el.dataset.idx)];
         box.classList.remove('open');
         clearSearch();
+        openSearchResult(item);
       };
     });
   }
   box.classList.add('open');
 }
 
-function srItem(l, q) {
-  const lid = lessonId(l.pathArr.slice(0,-1), l.key);
-  return `<div class="sr-item" data-href="${l.href}" data-label="${l.label}" data-lid="${lid}">
-    <span class="sr-item-icon">📄</span>
+function openSearchResult(item) {
+  if (item.type === 'lesson') {
+    const lid = lessonId(item.stack.map(s => s.key), item.key);
+    openLesson(item.href, item.label, lid);
+  } else {
+    navigateToStack(item.course, item.stack);
+  }
+}
+
+const SR_TYPE_META = {
+  lesson: { icon: 'bi-file-earmark-text-fill', label: 'Lesson' },
+  book:   { icon: 'bi-book-fill',              label: 'Book'   },
+  folder: { icon: 'bi-folder-fill',            label: 'Topic'  },
+  course: { icon: 'bi-collection-fill',        label: 'Course' }
+};
+
+function srItem(l, q, idx) {
+  const tm = SR_TYPE_META[l.type] || SR_TYPE_META.lesson;
+  const subtitle = l.type === 'book' && l.author ? `by ${l.author}` : l.path;
+  return `<div class="sr-item" data-idx="${idx}">
+    <span class="sr-item-icon t-${l.type}"><i class="bi ${tm.icon}"></i></span>
     <div class="sr-item-body">
-      <div class="sr-item-label">${highlightQuery(l.label, q)}</div>
-      <div class="sr-path">${highlightQuery(l.path, q)}</div>
+      <div class="sr-item-label">${highlightQuery(l.label, q)}<span class="sr-item-tag">${tm.label}</span></div>
+      <div class="sr-path">${highlightQuery(subtitle, q)}</div>
     </div>
   </div>`;
 }
@@ -1482,12 +1828,12 @@ function handleShareOverlayClick(e) { if (e.target === e.currentTarget) closeSha
 function copyShareUrl() {
   const input = document.getElementById('shareUrlInput');
   navigator.clipboard.writeText(input.value).then(() => {
-    showToast('📋 Link copied to clipboard!');
+    showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied to clipboard!');
     closeSharePopup();
   }).catch(() => {
     input.select();
     document.execCommand('copy');
-    showToast('📋 Link copied!');
+    showToast('<i class="bi bi-clipboard-check-fill"></i> Link copied!');
     closeSharePopup();
   });
 }
@@ -1511,7 +1857,7 @@ function shareVia(method) {
 let toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
