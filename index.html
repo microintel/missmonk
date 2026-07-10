@@ -1037,29 +1037,66 @@ function closeThemePanel()  { document.getElementById('themePanel').classList.re
 /* ══════════════════════════════
    URL FETCH
 ══════════════════════════════ */
-async function fetchFromUrl() {
-  const url    = document.getElementById('urlInput').value.trim();
-  const status = document.getElementById('urlStatus');
-  if (!url) { setUrlStatus('err', 'Please enter a URL.'); return; }
-  setUrlStatus('loading', '<i class="bi bi-hourglass-split"></i> Fetching…');
+const CURRICULUM_CACHE_KEY = 'lp_curriculum_cache';
+const CURRICULUM_CACHE_TTL = 15 * 60 * 1000; // 15 min — long enough to skip repeat fetches, short enough to stay fresh
+
+function readCurriculumCache(url) {
   try {
-    const res  = await fetch(url);
+    const raw = localStorage.getItem(CURRICULUM_CACHE_KEY);
+    if (!raw) return null;
+    const entry = JSON.parse(raw);
+    if (entry.url !== url) return null;
+    return entry; // { url, data, ts }
+  } catch (e) { return null; }
+}
+function writeCurriculumCache(url, data) {
+  try {
+    localStorage.setItem(CURRICULUM_CACHE_KEY, JSON.stringify({ url, data, ts: Date.now() }));
+  } catch (e) { /* storage full/unavailable — safe to skip caching */ }
+}
+
+function applyCurriculumData(data, sourceLabel) {
+  const parsed = parseCurriculumData(data);
+  if (!parsed) throw new Error('Invalid curriculum format');
+  CURRICULUM = parsed;
+  BOOK_META = (CURRICULUM._bookMeta && typeof CURRICULUM._bookMeta === 'object') ? CURRICULUM._bookMeta : {};
+  allLessons = [];
+  buildLessonIndex(CURRICULUM, []);
+  buildAll();
+  if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
+  if (currentCourse) renderContent(); else showWelcome();
+  setUrlStatus('ok', `<i class="bi bi-check-circle-fill"></i> Loaded ${Object.keys(CURRICULUM).filter(k=>!k.startsWith('_')).length} course(s)${sourceLabel ? ' ' + sourceLabel : ''}`);
+}
+
+async function fetchFromUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) { setUrlStatus('err', 'Please enter a URL.'); return; }
+
+  // Serve instantly from cache if we have a fresh-enough copy, so most loads
+  // need zero network round trips for the curriculum itself.
+  const cached = readCurriculumCache(url);
+  if (cached) {
+    try {
+      applyCurriculumData(cached.data, '(cached)');
+      showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
+    } catch (e) { /* fall through to network fetch below */ }
+    if (Date.now() - cached.ts < CURRICULUM_CACHE_TTL) return; // still fresh, skip network entirely
+  }
+
+  if (!cached) setUrlStatus('loading', '<i class="bi bi-hourglass-split"></i> Fetching…');
+  try {
+    const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const parsed = parseCurriculumData(data);
-    if (!parsed) throw new Error('Invalid curriculum format');
-    CURRICULUM = parsed;
-    BOOK_META = (CURRICULUM._bookMeta && typeof CURRICULUM._bookMeta === 'object') ? CURRICULUM._bookMeta : {};
-    allLessons = [];
-    buildLessonIndex(CURRICULUM, []);
-    buildAll();
-    if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
-    if (currentCourse) renderContent(); else showWelcome();
-    setUrlStatus('ok', `<i class="bi bi-check-circle-fill"></i> Loaded ${Object.keys(CURRICULUM).filter(k=>!k.startsWith('_')).length} course(s)`);
-    showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
+    writeCurriculumCache(url, data);
+    applyCurriculumData(data);
+    if (!cached) showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
   } catch(e) {
-    setUrlStatus('err', '<i class="bi bi-x-circle-fill"></i> ' + e.message);
-    showWelcome();
+    if (!cached) {
+      setUrlStatus('err', '<i class="bi bi-x-circle-fill"></i> ' + e.message);
+      showWelcome();
+    }
+    // if cached data is already showing, a background refresh failure is silent
   }
 }
 
@@ -1085,6 +1122,7 @@ function setUrlStatus(type, msg) {
 }
 
 function resetToBuiltIn() {
+  try { localStorage.removeItem(CURRICULUM_CACHE_KEY); } catch (e) {}
   CURRICULUM = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
   BOOK_META = {};
   allLessons = [];
@@ -1100,6 +1138,14 @@ function resetToBuiltIn() {
 /* ══════════════════════════════
    AUTO-INIT
 ══════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      /* offline-first caching unavailable; app still works normally */
+    });
+  });
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
   // Restore theme
   const savedTheme = localStorage.getItem('lp_theme') || 'dark';
