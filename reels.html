@@ -95,15 +95,10 @@ a { color:inherit; text-decoration:none; }
   max-width:560px; margin:0 auto;
   text-align:center;
 }
-.reel-book {
-  font-size:.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
-  color:var(--rc-a); margin-bottom:.45rem;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
 .reel-title {
   font-family:'Clash Display',sans-serif; font-weight:700;
   font-size:clamp(1.5rem, 6vw, 2.1rem);
-  line-height:1.15; margin-bottom:.65rem;
+  line-height:1.15; margin-bottom:1.2rem;
   text-wrap:balance;
 }
 .reel-meaning {
@@ -116,7 +111,15 @@ a { color:inherit; text-decoration:none; }
   position:absolute; z-index:2; left:0; right:0;
   bottom:calc(2.4rem + env(safe-area-inset-bottom));
   padding:0 1.2rem; max-width:640px; margin:0 auto;
-  display:flex; align-items:center; gap:.6rem;
+  display:flex; flex-direction:column; align-items:flex-start; gap:.4rem;
+}
+.reel-author-main {
+  display:flex; align-items:center; gap:.6rem; width:100%;
+}
+.reel-book {
+  font-size:.75rem; font-weight:600; letter-spacing:.03em;
+  color:var(--text2); margin-left:calc(36px + .6rem);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:calc(100% - 36px - .6rem);
 }
 .reel-avatar {
   width:36px; height:36px; border-radius:50%; flex-shrink:0;
@@ -210,6 +213,39 @@ a { color:inherit; text-decoration:none; }
 .reel-like-btn.liked i { transform:scale(1.12); }
 .reel-like-btn:active { transform:scale(.85); }
 .reel-like-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+.reel-share-btn {
+  width:48px; height:48px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s, background .2s;
+}
+.reel-share-btn:active { transform:scale(.85); }
+.reel-share-btn.copied { background:var(--green); color:#fff; }
+.reel-share-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+/* ── SHARED-LINK FILTER BANNER ── */
+.shared-banner {
+  position:fixed; z-index:41; left:0; right:0;
+  top:calc(6.6rem + env(safe-area-inset-top));
+  display:flex; justify-content:center; pointer-events:none;
+}
+.shared-banner-inner {
+  pointer-events:auto;
+  display:flex; align-items:center; gap:.5rem;
+  background:rgba(20,20,20,.92); border:1px solid var(--border2);
+  padding:.5rem .6rem .5rem .9rem; border-radius:24px;
+  font-size:.78rem; color:var(--text2);
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+.shared-banner-inner strong { color:var(--text); }
+.shared-banner-btn {
+  padding:.35rem .8rem; border-radius:16px;
+  background:var(--blue); color:#fff;
+  font-size:.74rem; font-weight:700; white-space:nowrap;
+}
 
 .reel-card.removing { animation:rcfade .25s ease forwards; }
 @keyframes rcfade { to { opacity:0; transform:scale(.96); } }
@@ -453,10 +489,29 @@ async function loadReels() {
     allItems = normalizeItems(data);
     if (!allItems.length) throw new Error('Empty feed');
     likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
-    switchMode('random');
+
+    const sharedIdx = findSharedReelIndex();
+    if (sharedIdx !== -1) {
+      showSharedReel(sharedIdx);
+    } else {
+      switchMode('random');
+    }
   } catch (err) {
     showState(feed, 'error', "Couldn't load the feed", err.message);
   }
+}
+
+/* Reads ?book=...&title=... from the URL (set by the share feature) and
+   finds the matching reel, if any. Clears those params from the address
+   bar once read, so refreshing later doesn't keep re-filtering. */
+function findSharedReelIndex() {
+  const params = new URLSearchParams(location.search);
+  const book = params.get('book');
+  const title = params.get('title');
+  if (!book || !title) return -1;
+
+  history.replaceState(null, '', location.pathname + location.hash);
+  return allItems.findIndex(it => it.book === book && it.title === title);
 }
 
 function showState(feed, kind, title, detail) {
@@ -528,6 +583,7 @@ function switchMode(newMode) {
   if (!allItems.length || modeSwitching || newMode === mode) return;
   modeSwitching = true;
   mode = newMode;
+  removeSharedBanner();
 
   const cycleBtn = document.getElementById('modeCycleBtn');
   if (MODE_META[mode]) {
@@ -576,7 +632,6 @@ function cardHtml(idx) {
       <div class="reel-particles" id="particles-${seq}"></div>
       <div class="reel-monogram">${initial}</div>
       <div class="reel-center">
-        <div class="reel-book">${escapeHtml(it.book)}</div>
         <div class="reel-title">${escapeHtml(it.title)}</div>
         <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
       </div>
@@ -585,13 +640,20 @@ function cardHtml(idx) {
           <i class="bi ${liked ? 'bi-heart-fill' : 'bi-heart'}"></i>
         </button>
         <span class="reel-like-label">Like</span>
+        <button class="reel-share-btn" data-idx="${idx}" onclick="handleShareClick(event, ${idx}, this)" style="margin-top:.5rem;">
+          <i class="bi bi-share-fill"></i>
+        </button>
+        <span class="reel-share-label">Share</span>
       </div>
       <div class="reel-author-row">
-        <div class="reel-avatar">${initial}</div>
-        <div class="reel-author">${escapeHtml(it.author)}</div>
-        <button class="reel-follow" onclick="goToChapter('${encodeURI(it.link)}')">
-          <i class="bi bi-arrow-right-circle-fill"></i> Follow
-        </button>
+        <div class="reel-author-main">
+          <div class="reel-avatar">${initial}</div>
+          <div class="reel-author">${escapeHtml(it.author)}</div>
+          <button class="reel-follow" onclick="goToChapter('${encodeURI(it.link)}')">
+            <i class="bi bi-arrow-right-circle-fill"></i> Follow
+          </button>
+        </div>
+        <div class="reel-book">${escapeHtml(it.book)}</div>
       </div>
     </section>`
   };
@@ -673,6 +735,89 @@ function spawnLikeBurst(container) {
     container.appendChild(h);
     setTimeout(() => h.remove(), 950);
   }
+}
+
+/* ══════════════════════════════
+   SHARE — encode the reel's book + chapter title in the URL so that
+   whoever opens the link lands directly on that reel, filtered to just it.
+══════════════════════════════ */
+function buildShareUrl(idx) {
+  const it = allItems[idx];
+  const url = new URL(location.href);
+  url.search = '';
+  url.searchParams.set('book', it.book);
+  url.searchParams.set('title', it.title);
+  return url.toString();
+}
+
+async function handleShareClick(e, idx, btnEl) {
+  e.stopPropagation();
+  const it = allItems[idx];
+  const url = buildShareUrl(idx);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: it.title, text: `${it.title} — from ${it.book}`, url });
+    } catch (err) { /* user dismissed the share sheet — nothing to do */ }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    flashShareCopied(btnEl);
+  } catch (err) {
+    window.prompt('Copy this link to share:', url);
+  }
+}
+
+function flashShareCopied(btnEl) {
+  const icon = btnEl.querySelector('i');
+  const prevClass = icon.className;
+  btnEl.classList.add('copied');
+  icon.className = 'bi bi-check-lg';
+  setTimeout(() => {
+    btnEl.classList.remove('copied');
+    icon.className = prevClass;
+  }, 1200);
+}
+
+/* Land on a single shared reel, filtered out from the rest of the feed,
+   with a banner offering to go back to browsing everything. */
+function showSharedReel(idx) {
+  mode = 'shared';
+  feedOrder = [idx];
+  renderFull(feedOrder);
+  document.getElementById('reelFeed').scrollTo({ top: 0 });
+
+  const cycleBtn = document.getElementById('modeCycleBtn');
+  if (cycleBtn) cycleBtn.classList.remove('active');
+  document.getElementById('rtLikedBtn').classList.remove('active');
+
+  showSharedBanner(allItems[idx]);
+}
+
+function showSharedBanner(it) {
+  removeSharedBanner();
+  const banner = document.createElement('div');
+  banner.className = 'shared-banner';
+  banner.id = 'sharedBanner';
+  banner.innerHTML = `
+    <div class="shared-banner-inner">
+      <span>Shared: <strong>${escapeHtml(it.title)}</strong></span>
+      <button class="shared-banner-btn" onclick="exitSharedView()">Browse all</button>
+    </div>`;
+  document.body.appendChild(banner);
+}
+
+function removeSharedBanner() {
+  const el = document.getElementById('sharedBanner');
+  if (el) el.remove();
+}
+
+function exitSharedView() {
+  removeSharedBanner();
+  mode = null; // let switchMode actually run even though it may equal a prior mode
+  switchMode('random');
 }
 
 function escapeHtml(s) {
