@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Reels — Missmonk</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<style>
+:root {
+  --bg:        #000000;
+  --surface:   #0d0d0d;
+  --surface2:  #141414;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --blue:      #5b8def;
+  --amber:     #e0b34a;
+  --rose:      #e0645f;
+  --green:     #4caf7d;
+  --teal:      #5cc4c4;
+  --text:      #f2f2f2;
+  --text2:     #a1a1a1;
+  --text3:     #6b6b6b;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overscroll-behavior-y:contain; }
+body {
+  font-family:'Satoshi',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+button { cursor:pointer; font-family:inherit; border:none; background:none; color:inherit; }
+a { color:inherit; text-decoration:none; }
+
+/* ── TOP BAR ── */
+.reels-topbar {
+  position:fixed; top:0; left:0; right:0; z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1rem .9rem;
+  background:linear-gradient(rgba(0,0,0,.55), transparent);
+  pointer-events:none;
+}
+.reels-topbar * { pointer-events:auto; }
+.rt-back {
+  width:38px; height:38px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.rt-title {
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:1rem;
+  color:#fff; letter-spacing:.02em; display:flex; align-items:center; gap:.4rem;
+}
+
+/* ── REEL FEED ── */
+.reel-feed {
+  position:relative; z-index:1;
+  height:100dvh; width:100%;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  scroll-behavior:smooth;
+}
+.reel-feed::-webkit-scrollbar { display:none; }
+
+.reel-card {
+  position:relative;
+  height:100dvh; width:100%;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
+  isolation:isolate;
+}
+.reel-particles {
+  position:absolute; inset:0; z-index:-2;
+}
+.reel-monogram {
+  position:absolute; z-index:-1;
+  right:-.35em; bottom:-.28em;
+  font-family:'Clash Display',sans-serif; font-weight:700;
+  font-size:min(72vw, 62vh);
+  line-height:1; color:var(--text);
+  opacity:.05; user-select:none; pointer-events:none;
+}
+
+.reel-center {
+  position:absolute; z-index:2; left:0; right:0; top:50%;
+  transform:translateY(-50%);
+  padding:0 1.4rem;
+  max-width:560px; margin:0 auto;
+  text-align:center;
+}
+.reel-title {
+  font-family:'Clash Display',sans-serif; font-weight:700;
+  font-size:clamp(1.5rem, 6vw, 2.1rem);
+  line-height:1.15; margin-bottom:.65rem;
+  text-wrap:balance;
+}
+.reel-meaning {
+  font-size:.95rem; line-height:1.55; color:var(--text2);
+  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.reel-author-row {
+  position:absolute; z-index:2; left:0; right:0;
+  bottom:calc(2.4rem + env(safe-area-inset-bottom));
+  padding:0 1.2rem; max-width:640px; margin:0 auto;
+  display:flex; align-items:center; gap:.6rem;
+}
+.reel-avatar {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  background:var(--rc-a); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:1rem;
+}
+.reel-author {
+  font-weight:700; font-size:.92rem; color:var(--text);
+}
+.reel-follow {
+  margin-left:.3rem;
+  padding:.4rem 1rem;
+  border-radius:20px;
+  background:var(--rc-a); color:#fff;
+  font-size:.78rem; font-weight:700;
+  display:flex; align-items:center; gap:.4rem;
+  transition:transform .15s, opacity .15s;
+}
+.reel-follow:active { transform:scale(.95); opacity:.9; }
+
+/* States */
+.reel-state {
+  position:fixed; inset:0; z-index:5;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.9rem; text-align:center; padding:2rem;
+  background:var(--bg); color:var(--text2);
+}
+.reel-state i { font-size:1.8rem; color:var(--text3); }
+.reel-state .rs-title { font-family:'Clash Display',sans-serif; font-weight:700; color:var(--text); font-size:1.05rem; }
+.reel-spinner {
+  width:34px; height:34px; border-radius:50%;
+  border:3px solid var(--border2); border-top-color:var(--blue);
+  animation:rspin .8s linear infinite;
+}
+@keyframes rspin { to { transform:rotate(360deg); } }
+.reel-retry {
+  padding:.55rem 1.1rem; border-radius:10px; background:var(--blue); color:#fff;
+  font-size:.82rem; font-weight:700;
+}
+
+/* ── MODE BAR ── */
+.reels-modebar {
+  position:fixed; z-index:39; left:0; right:0;
+  top:calc(3.55rem + env(safe-area-inset-top));
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.15rem 1rem; pointer-events:none;
+}
+.reels-modebar * { pointer-events:auto; }
+.rm-btn {
+  display:flex; align-items:center; gap:.35rem;
+  padding:.45rem .85rem; border-radius:20px;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  font-size:.75rem; font-weight:700; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:background .15s, color .15s, border-color .15s, transform .15s;
+  white-space:nowrap;
+}
+.rm-btn i { font-size:.85rem; }
+.rm-btn.active { background:#0a0a0a; color:#fff; border-color:#0a0a0a; }
+.rm-btn:active { transform:scale(.94); }
+
+.rt-liked {
+  width:38px; height:38px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.05rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:background .15s, color .15s, transform .15s;
+}
+.rt-liked.active { background:var(--rose); color:#fff; border-color:var(--rose); }
+.rt-liked:active { transform:scale(.9); }
+
+/* ── LIKE ACTION ── */
+.reel-actions {
+  position:absolute; z-index:3; right:1.1rem;
+  bottom:calc(9.2rem + env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; align-items:center; gap:.25rem;
+}
+.reel-like-btn {
+  width:48px; height:48px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.45rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s, background .2s, border-color .2s;
+  position:relative;
+}
+.reel-like-btn i { transition:transform .2s; }
+.reel-like-btn.liked { background:#0a0a0a; color:var(--rose); border-color:#0a0a0a; }
+.reel-like-btn.liked i { transform:scale(1.12); }
+.reel-like-btn:active { transform:scale(.85); }
+.reel-like-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+.reel-card.removing { animation:rcfade .25s ease forwards; }
+@keyframes rcfade { to { opacity:0; transform:scale(.96); } }
+
+/* ── LIKE ANIMATION ── */
+@keyframes likePop {
+  0%   { transform:scale(1); }
+  35%  { transform:scale(1.4) rotate(-6deg); }
+  55%  { transform:scale(.9); }
+  75%  { transform:scale(1.12); }
+  100% { transform:scale(1); }
+}
+.reel-like-btn.pop i { animation:likePop .5s ease; }
+@keyframes ringPop {
+  0%   { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 0 rgba(224,100,95,.55); }
+  100% { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 20px rgba(224,100,95,0); }
+}
+.reel-like-btn.pop { animation:ringPop .55s ease-out; }
+
+@keyframes floatHeart {
+  0%   { transform:translate(-50%,0) scale(.5); opacity:1; }
+  100% { transform:translate(-50%,-64px) scale(1.25); opacity:0; }
+}
+.like-burst-heart {
+  position:absolute; left:50%; bottom:44px;
+  color:var(--rose); font-size:1rem; pointer-events:none;
+  animation:floatHeart .85s ease-out forwards;
+}
+</style>
+</head>
+<body>
+
+<div class="reels-topbar">
+  <button class="rt-back" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i></button>
+  <div class="rt-title"><i class="bi bi-collection-play-fill"></i> Reels</div>
+  <button class="rt-liked" id="rtLikedBtn" onclick="switchMode('liked')"><i class="bi bi-heart-fill"></i></button>
+</div>
+
+<div class="reels-modebar" id="modeBar">
+  <button class="rm-btn" data-mode="random" onclick="switchMode('random')"><i class="bi bi-shuffle"></i> Random</button>
+  <button class="rm-btn" data-mode="repeated" onclick="switchMode('repeated')"><i class="bi bi-arrow-repeat"></i> Repeated</button>
+  <button class="rm-btn active" data-mode="serial" onclick="switchMode('serial')"><i class="bi bi-list-ol"></i> Serial</button>
+</div>
+
+<div class="reel-feed" id="reelFeed"></div>
+
+<script>
+/* ══════════════════════════════
+   CONFIG
+   Feed format: an object keyed by index, each value:
+   { "title": "...", "author": "...", "meaning": "...", "link": "https://.../chapter.html" }
+══════════════════════════════ */
+const REELS_URL = 'https://microintel.github.io/missmonk/reel-data.json';
+
+/* ══════════════════════════════
+   LOAD & RENDER
+══════════════════════════════ */
+const ACCENTS = ['#5b8def', '#e0b34a', '#4caf7d', '#e0645f', '#5cc4c4'];
+
+/* A different particle "personality" per reel, cycled by index. */
+const PARTICLE_PRESETS = [
+  // 0 — drifting dust
+  (color) => ({
+    particles: {
+      number: { value:60, density:{ enable:true, value_area:900 } },
+      color:  { value:color },
+      shape:  { type:'circle' },
+      opacity:{ value:0.4, random:true, anim:{ enable:true, speed:0.4, opacity_min:0.05, sync:false } },
+      size:   { value:2.2, random:true },
+      line_linked: { enable:false },
+      move:   { enable:true, speed:0.5, direction:'none', random:true, out_mode:'out' }
+    }
+  }),
+  // 1 — confetti triangles, gentle fall
+  (color) => ({
+    particles: {
+      number: { value:35, density:{ enable:true, value_area:900 } },
+      color:  { value:color },
+      shape:  { type:'triangle' },
+      opacity:{ value:0.5, random:true },
+      size:   { value:4, random:true },
+      line_linked: { enable:false },
+      move:   { enable:true, speed:1.1, direction:'bottom', random:true, straight:false, out_mode:'out' }
+    }
+  }),
+  // 2 — constellation network
+  (color) => ({
+    particles: {
+      number: { value:45, density:{ enable:true, value_area:900 } },
+      color:  { value:color },
+      shape:  { type:'circle' },
+      opacity:{ value:0.5 },
+      size:   { value:2, random:true },
+      line_linked: { enable:true, distance:130, color:color, opacity:0.3, width:1 },
+      move:   { enable:true, speed:0.7, direction:'none', random:true, out_mode:'out' }
+    }
+  }),
+  // 3 — twinkling stars
+  (color) => ({
+    particles: {
+      number: { value:80, density:{ enable:true, value_area:900 } },
+      color:  { value:color },
+      shape:  { type:'star' },
+      opacity:{ value:0.6, random:true, anim:{ enable:true, speed:1, opacity_min:0.1, sync:false } },
+      size:   { value:2.5, random:true },
+      line_linked: { enable:false },
+      move:   { enable:true, speed:0.25, direction:'none', random:true, out_mode:'out' }
+    }
+  }),
+  // 4 — floating bubbles
+  (color) => ({
+    particles: {
+      number: { value:28, density:{ enable:true, value_area:900 } },
+      color:  { value:color },
+      shape:  { type:'polygon', polygon:{ nb_sides:6 } },
+      opacity:{ value:0.35, random:true },
+      size:   { value:6, random:true },
+      line_linked: { enable:false },
+      move:   { enable:true, speed:0.8, direction:'top', random:true, straight:false, out_mode:'out' }
+    }
+  })
+];
+
+function particleConfigFor(i) {
+  const color = ACCENTS[i % ACCENTS.length];
+  const preset = PARTICLE_PRESETS[i % PARTICLE_PRESETS.length](color);
+  return {
+    ...preset,
+    interactivity: {
+      detect_on:'canvas',
+      events:{ onhover:{ enable:false }, onclick:{ enable:false }, resize:true }
+    },
+    retina_detect:true
+  };
+}
+
+function normalizeItems(raw) {
+  const arr = Array.isArray(raw) ? raw : (raw && typeof raw === 'object' ? Object.values(raw) : []);
+  return arr.map((it, idx) => ({
+    idx,
+    title:   it.title || 'Untitled',
+    author:  it.author || 'Unknown',
+    meaning: it.meaning || '',
+    link:    it.link || '#'
+  }));
+}
+
+/* ══════════════════════════════
+   LIKES — stored in IndexedDB, keyed by the reel's stable idx
+══════════════════════════════ */
+const LIKES_DB_NAME = 'reelsLikesDB';
+const LIKES_STORE   = 'likes';
+let likedIndices = new Set();
+
+function dbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(LIKES_DB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(LIKES_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+async function dbLoadLikes() {
+  try {
+    const db = await dbOpen();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(LIKES_STORE, 'readonly');
+      const req = tx.objectStore(LIKES_STORE).getAllKeys();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror   = () => reject(req.error);
+    });
+  } catch (e) { console.warn('IndexedDB unavailable', e); return []; }
+}
+async function dbSetLiked(idx, liked) {
+  try {
+    const db = await dbOpen();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(LIKES_STORE, 'readwrite');
+      const store = tx.objectStore(LIKES_STORE);
+      if (liked) store.put(true, idx); else store.delete(idx);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = () => reject(tx.error);
+    });
+  } catch (e) { console.warn('IndexedDB write failed', e); }
+}
+
+/* Some browser contexts (Safari private mode, in-app webviews, blocked
+   third-party storage) let indexedDB.open() hang forever without ever
+   firing onsuccess/onerror. Race any DB call against a timeout so a stuck
+   IndexedDB can never block the feed from loading. */
+function withTimeout(promise, ms, fallback) {
+  return Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(() => resolve(fallback), ms))
+  ]);
+}
+
+/* ══════════════════════════════
+   LOAD
+══════════════════════════════ */
+let allItems = [];
+let mode = 'serial';
+let feedOrder = [];
+let renderSeq = 0;
+let swipeNavReady = false;
+let loadingMoreRepeated = false;
+
+async function loadReels() {
+  const feed = document.getElementById('reelFeed');
+  showState(feed, 'spinner', 'Loading reels…');
+  try {
+    const res = await fetch(REELS_URL, { cache:'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    allItems = normalizeItems(data);
+    if (!allItems.length) throw new Error('Empty feed');
+    likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
+    switchMode('serial');
+  } catch (err) {
+    showState(feed, 'error', "Couldn't load the reels feed", err.message);
+  }
+}
+
+function showState(feed, kind, title, detail) {
+  if (kind === 'spinner') {
+    feed.innerHTML = `<div class="reel-state"><div class="reel-spinner"></div><div class="rs-title">${title}</div></div>`;
+  } else if (kind === 'empty') {
+    feed.innerHTML = `<div class="reel-state">
+      <i class="bi bi-heart"></i>
+      <div class="rs-title">${title}</div>
+      <div style="font-size:.8rem;max-width:260px;">${detail || ''}</div>
+      <button class="reel-retry" onclick="switchMode('serial')">Browse reels</button>
+    </div>`;
+  } else {
+    feed.innerHTML = `<div class="reel-state">
+      <i class="bi bi-exclamation-triangle"></i>
+      <div class="rs-title">${title}</div>
+      <div style="font-size:.8rem;max-width:260px;">${detail || ''}</div>
+      <button class="reel-retry" onclick="loadReels()">Try again</button>
+    </div>`;
+  }
+}
+
+/* ══════════════════════════════
+   MODE SWITCHING
+   - serial:   original order
+   - random:   shuffled, each reel shown once (no repeat)
+   - repeated: random with repeats, extends infinitely as user scrolls
+   - liked:    only reels the user has liked
+══════════════════════════════ */
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function randomRepeatBatch(count, avoidFirst) {
+  const n = allItems.length;
+  const out = [];
+  let last = avoidFirst;
+  for (let i = 0; i < count; i++) {
+    let pick;
+    do { pick = Math.floor(Math.random() * n); } while (n > 1 && pick === last);
+    out.push(pick);
+    last = pick;
+  }
+  return out;
+}
+
+let modeSwitching = false;
+
+function switchMode(newMode) {
+  if (!allItems.length || modeSwitching || newMode === mode) return;
+  modeSwitching = true;
+  mode = newMode;
+
+  document.querySelectorAll('.rm-btn, #rtLikedBtn').forEach(b => {
+    const btnMode = b.id === 'rtLikedBtn' ? 'liked' : b.dataset.mode;
+    b.classList.toggle('active', btnMode === mode);
+  });
+
+  if (mode === 'serial') {
+    feedOrder = allItems.map(it => it.idx);
+  } else if (mode === 'random') {
+    feedOrder = shuffle(allItems.map(it => it.idx));
+  } else if (mode === 'repeated') {
+    feedOrder = randomRepeatBatch(Math.min(12, Math.max(6, allItems.length)), -1);
+  } else if (mode === 'liked') {
+    feedOrder = allItems.filter(it => likedIndices.has(it.idx)).map(it => it.idx);
+  }
+
+  const feed = document.getElementById('reelFeed');
+  if (mode === 'liked' && !feedOrder.length) {
+    showState(feed, 'empty', 'No liked reels yet', 'Tap the heart on a reel to save it here.');
+    setTimeout(() => { modeSwitching = false; }, 300);
+    return;
+  }
+
+  renderFull(feedOrder);
+  feed.scrollTo({ top: 0 });
+  setTimeout(() => { modeSwitching = false; }, 300);
+}
+
+/* ══════════════════════════════
+   RENDER
+══════════════════════════════ */
+function cardHtml(idx) {
+  const it = allItems[idx];
+  const seq = ++renderSeq;
+  const color = ACCENTS[idx % ACCENTS.length];
+  const initial = (it.title || '?').trim().charAt(0).toUpperCase();
+  const liked = likedIndices.has(idx);
+  return {
+    idx, seq,
+    html: `
+    <section class="reel-card" data-idx="${idx}" data-seq="${seq}" style="--rc-a:${color};">
+      <div class="reel-particles" id="particles-${seq}"></div>
+      <div class="reel-monogram">${initial}</div>
+      <div class="reel-center">
+        <div class="reel-title">${escapeHtml(it.title)}</div>
+        <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
+      </div>
+      <div class="reel-actions">
+        <button class="reel-like-btn${liked ? ' liked' : ''}" data-idx="${idx}" onclick="handleLikeClick(event, ${idx}, this)">
+          <i class="bi ${liked ? 'bi-heart-fill' : 'bi-heart'}"></i>
+        </button>
+        <span class="reel-like-label">Like</span>
+      </div>
+      <div class="reel-author-row">
+        <div class="reel-avatar">${initial}</div>
+        <div class="reel-author">${escapeHtml(it.author)}</div>
+        <button class="reel-follow" onclick="goToChapter('${encodeURI(it.link)}')">
+          <i class="bi bi-arrow-right-circle-fill"></i> Follow
+        </button>
+      </div>
+    </section>`
+  };
+}
+
+function renderFull(order) {
+  const feed = document.getElementById('reelFeed');
+  renderSeq = 0;
+  const cards = order.map(idx => cardHtml(idx));
+  feed.innerHTML = cards.map(c => c.html).join('');
+  cards.forEach(c => particlesJS(`particles-${c.seq}`, particleConfigFor(c.idx)));
+  if (!swipeNavReady) { enableSwipeNav(feed); enableInfiniteRepeat(feed); swipeNavReady = true; }
+}
+
+function appendReels(idxArray) {
+  const feed = document.getElementById('reelFeed');
+  const cards = idxArray.map(idx => cardHtml(idx));
+  feed.insertAdjacentHTML('beforeend', cards.map(c => c.html).join(''));
+  cards.forEach(c => particlesJS(`particles-${c.seq}`, particleConfigFor(c.idx)));
+  feedOrder = feedOrder.concat(idxArray);
+}
+
+function enableInfiniteRepeat(feed) {
+  feed.addEventListener('scroll', () => {
+    if (mode !== 'repeated' || loadingMoreRepeated) return;
+    const nearEnd = feed.scrollTop + feed.clientHeight >= feed.scrollHeight - window.innerHeight * 1.5;
+    if (nearEnd) {
+      loadingMoreRepeated = true;
+      const last = feedOrder.length ? feedOrder[feedOrder.length - 1] : -1;
+      appendReels(randomRepeatBatch(6, last));
+      setTimeout(() => { loadingMoreRepeated = false; }, 200);
+    }
+  });
+}
+
+/* ══════════════════════════════
+   LIKE HANDLING
+══════════════════════════════ */
+async function handleLikeClick(e, idx, btnEl) {
+  e.stopPropagation();
+  const nowLiked = !likedIndices.has(idx);
+  if (nowLiked) likedIndices.add(idx); else likedIndices.delete(idx);
+  btnEl.classList.toggle('liked', nowLiked);
+  btnEl.querySelector('i').className = 'bi ' + (nowLiked ? 'bi-heart-fill' : 'bi-heart');
+  await dbSetLiked(idx, nowLiked);
+
+  if (nowLiked) {
+    btnEl.classList.remove('pop');
+    void btnEl.offsetWidth; // restart animation
+    btnEl.classList.add('pop');
+    setTimeout(() => btnEl.classList.remove('pop'), 550);
+    spawnLikeBurst(btnEl.parentElement);
+  }
+
+  if (mode === 'liked' && !nowLiked) {
+    const card = btnEl.closest('.reel-card');
+    if (card) {
+      card.classList.add('removing');
+      setTimeout(() => {
+        card.remove();
+        feedOrder = feedOrder.filter(i => i !== idx);
+        if (!feedOrder.length) {
+          showState(document.getElementById('reelFeed'), 'empty', 'No liked reels yet', 'Tap the heart on a reel to save it here.');
+        }
+      }, 220);
+    }
+  }
+}
+
+function spawnLikeBurst(container) {
+  if (!container) return;
+  for (let i = 0; i < 5; i++) {
+    const h = document.createElement('span');
+    h.className = 'like-burst-heart';
+    h.innerHTML = '<i class="bi bi-heart-fill"></i>';
+    const dx = Math.round(Math.random() * 44 - 22);
+    h.style.marginLeft = dx + 'px';
+    h.style.animationDelay = (i * 0.06) + 's';
+    container.appendChild(h);
+    setTimeout(() => h.remove(), 950);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function goToChapter(link) {
+  const url = decodeURI(link);
+  if (!url || url === '#') return;
+  window.location.href = url;
+}
+
+/* One reel per gesture — mirrors Instagram Reels paging (native touch swipe
+   already snaps per-card via CSS scroll-snap; this adds the same deliberate
+   behavior for mouse wheel + keyboard, with a short lock so a single
+   scroll/key doesn't skip past more than one card). */
+function enableSwipeNav(feed) {
+  const cards = () => Array.from(feed.children);
+  let locked = false;
+  let wheelAccum = 0;
+  let wheelResetTimer = null;
+
+  function currentIndex() {
+    const items = cards();
+    let best = 0, bestDist = Infinity;
+    items.forEach((el, i) => {
+      const d = Math.abs(el.offsetTop - feed.scrollTop);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
+  }
+
+  function goTo(index) {
+    const items = cards();
+    if (index < 0 || index >= items.length) return;
+    locked = true;
+    feed.scrollTo({ top: items[index].offsetTop, behavior:'smooth' });
+    clearTimeout(goTo._t);
+    goTo._t = setTimeout(() => { locked = false; }, 550);
+  }
+
+  function step(dir) {
+    if (locked) return;
+    goTo(currentIndex() + dir);
+  }
+
+  feed.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (locked) return;
+    wheelAccum += e.deltaY;
+    clearTimeout(wheelResetTimer);
+    wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, 150);
+    if (Math.abs(wheelAccum) > 35) {
+      step(wheelAccum > 0 ? 1 : -1);
+      wheelAccum = 0;
+    }
+  }, { passive:false });
+
+  document.onkeydown = (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    step(e.key === 'ArrowDown' ? 1 : -1);
+  };
+}
+
+loadReels();
+</script>
+</body>
+</html>
