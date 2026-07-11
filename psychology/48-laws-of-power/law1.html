@@ -1,1 +1,761 @@
-r
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law 1 — Never Outshine the Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1117;
+    --bg-elev:#151824;
+    --card:#1b1f2e;
+    --card-line:#2a2f42;
+    --gold:#e3b23c;
+    --gold-soft:#8a6b24;
+    --gold-glow: rgba(227,178,60,0.35);
+    --star:#f5f1e3;
+    --muted:#9aa0b4;
+    --danger:#c1502e;
+    --danger-soft: rgba(193,80,46,0.18);
+    --success:#6b9e78;
+    --success-soft: rgba(107,158,120,0.18);
+    --radius:16px;
+    --maxw:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--star);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:700;
+    letter-spacing:0.01em;
+    color:var(--star);
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--gold);
+  }
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 22px;
+  }
+  section{padding:64px 0;}
+  a{color:var(--gold);}
+
+  /* progress bar = the sun's arc across the sky */
+  #progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--gold-soft),var(--gold));
+    z-index:999; transition:width 0.1s linear;
+  }
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,17,23,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--card-line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px;
+  }
+  .brand{font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.15rem;}
+  .brand span{color:var(--gold);}
+  .navlinks{display:flex; gap:18px; font-size:0.82rem; color:var(--muted);}
+  .navlinks a{text-decoration:none; color:var(--muted);}
+  .navlinks a:hover{color:var(--gold);}
+  @media (max-width:600px){ .navlinks{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:88vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    overflow:hidden;
+    padding:80px 22px 60px;
+  }
+  #starfield{
+    position:absolute; inset:0; z-index:0;
+  }
+  .hero-content{position:relative; z-index:2; max-width:640px;}
+  .hero .eyebrow{display:block; margin-bottom:18px;}
+  .hero h1{
+    font-size:clamp(2.4rem, 7vw, 4.2rem);
+    line-height:1.05;
+    margin:0 0 22px;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--gold);
+    text-shadow:0 0 30px var(--gold-glow);
+  }
+  .hero p{
+    color:var(--muted);
+    font-size:1.05rem;
+    max-width:480px;
+    margin:0 auto 30px;
+  }
+  .scrollcue{
+    color:var(--muted); font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* sun */
+  .sun{
+    position:absolute; left:50%; top:38%;
+    width:120px; height:120px; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 40% 35%, #fff3cf, var(--gold) 55%, var(--gold-soft) 100%);
+    box-shadow:0 0 60px 20px var(--gold-glow), 0 0 140px 60px rgba(227,178,60,0.12);
+    z-index:1;
+  }
+  .star{
+    position:absolute; border-radius:50%; background:var(--star);
+    animation:twinkle 3.5s ease-in-out infinite;
+  }
+  @keyframes twinkle{ 0%,100%{opacity:0.25;} 50%{opacity:1;} }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-head{margin-bottom:28px;}
+  .section-head h2{font-size:clamp(1.7rem,4vw,2.3rem); margin:8px 0 10px;}
+  .section-head p{color:var(--muted); margin:0; max-width:56ch;}
+
+  /* ---------- CARDS ---------- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:var(--radius);
+    padding:26px;
+  }
+  .lead{
+    font-size:1.15rem;
+    color:var(--star);
+  }
+  .lead strong{color:var(--gold); font-weight:700;}
+
+  /* ---------- MOOD METER ---------- */
+  .meter-card{margin-top:26px;}
+  .meter-stage{
+    display:flex; align-items:center; justify-content:center;
+    gap:28px; padding:30px 10px 10px;
+    flex-wrap:wrap;
+  }
+  .boss-sun, .you-star{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .boss-sun .orb{
+    width:74px; height:74px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #fff3cf, var(--gold) 55%, var(--gold-soft) 100%);
+    transition:box-shadow 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+  }
+  .you-star .orb{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--star);
+    transition:box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+  }
+  .orb-label{font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;}
+  input[type=range]{
+    width:100%;
+    -webkit-appearance:none;
+    height:6px; border-radius:4px;
+    background:linear-gradient(90deg,var(--success),var(--gold),var(--danger));
+    margin:18px 0 8px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:20px; height:20px; border-radius:50%;
+    background:var(--star); border:3px solid var(--bg-elev);
+    box-shadow:0 0 0 2px var(--card-line);
+    cursor:pointer; margin-top:-1px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:20px; height:20px; border-radius:50%;
+    background:var(--star); border:3px solid var(--bg-elev);
+    cursor:pointer;
+  }
+  .meter-labels{display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+  .meter-msg{
+    margin-top:18px; padding:16px 18px; border-radius:12px;
+    background:var(--bg-elev); border:1px solid var(--card-line);
+    font-size:0.95rem; transition:all 0.25s ease;
+  }
+  .meter-msg.warn{border-color:var(--danger); background:var(--danger-soft);}
+  .meter-msg.good{border-color:var(--success); background:var(--success-soft);}
+
+  /* ---------- STORY CARDS (flip) ---------- */
+  .story-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px;}
+  @media (max-width:640px){ .story-grid{grid-template-columns:1fr;} }
+  .flip-card{
+    perspective:1200px; height:340px; cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:var(--radius); border:1px solid var(--card-line);
+    padding:22px; display:flex; flex-direction:column;
+  }
+  .flip-front{background:var(--card); justify-content:space-between;}
+  .flip-back{
+    background:var(--bg-elev); transform:rotateY(180deg);
+    overflow-y:auto; font-size:0.92rem; color:var(--muted);
+  }
+  .flip-back strong{color:var(--star);}
+  .flip-tag{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold);}
+  .flip-title{font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin:10px 0;}
+  .flip-hint{font-size:0.75rem; color:var(--muted);}
+  .flip-outcome{
+    margin-top:12px; padding:10px 12px; border-radius:8px; font-size:0.85rem;
+    background:var(--danger-soft); border:1px solid var(--danger); color:var(--star);
+  }
+
+  /* ---------- SCENARIO ---------- */
+  .cast{display:flex; gap:14px; flex-wrap:wrap; margin:18px 0 26px;}
+  .cast-chip{
+    display:flex; align-items:center; gap:8px;
+    background:var(--bg-elev); border:1px solid var(--card-line);
+    padding:8px 14px; border-radius:999px; font-size:0.85rem;
+  }
+  .cast-dot{width:9px; height:9px; border-radius:50%;}
+  .dot-v{background:var(--gold);} .dot-p{background:var(--danger);} .dot-d{background:var(--success);}
+
+  .scenario-box{background:var(--card); border:1px solid var(--card-line); border-radius:var(--radius); padding:26px;}
+  .scenario-step{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--gold); margin-bottom:8px;}
+  .scenario-text{font-size:1.05rem; margin-bottom:22px;}
+  .choice-btn{
+    display:block; width:100%; text-align:left;
+    background:var(--bg-elev); color:var(--star);
+    border:1px solid var(--card-line); border-radius:12px;
+    padding:14px 16px; margin-bottom:10px; font-size:0.95rem;
+    cursor:pointer; font-family:'Inter',sans-serif;
+    transition:border-color 0.2s ease, transform 0.15s ease;
+  }
+  .choice-btn:hover{border-color:var(--gold); transform:translateX(2px);}
+  .choice-btn:disabled{opacity:0.5; cursor:default; transform:none;}
+  .feedback{
+    margin-top:16px; padding:16px 18px; border-radius:12px;
+    font-size:0.92rem; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback-score{font-weight:700; color:var(--gold);}
+  .continue-btn{
+    margin-top:16px; background:var(--gold); color:#1a1200; border:none;
+    padding:11px 20px; border-radius:999px; font-weight:700; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:0.88rem;
+  }
+  .favor-track{
+    height:10px; border-radius:6px; background:var(--bg-elev);
+    border:1px solid var(--card-line); overflow:hidden; margin:20px 0 6px; position:relative;
+  }
+  .favor-fill{
+    height:100%; width:50%; background:linear-gradient(90deg,var(--danger),var(--gold),var(--success));
+    transition:width 0.5s ease;
+  }
+  .favor-caption{display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+  .final-verdict{
+    margin-top:22px; padding:20px; border-radius:12px; border:1px solid var(--card-line);
+    background:var(--bg-elev); display:none;
+  }
+  .final-verdict.show{display:block;}
+  .final-verdict h3{margin:0 0 8px; font-size:1.4rem;}
+  .reset-btn{
+    margin-top:14px; background:transparent; border:1px solid var(--card-line);
+    color:var(--muted); padding:9px 16px; border-radius:999px; cursor:pointer; font-size:0.82rem;
+    font-family:'Inter',sans-serif;
+  }
+  .reset-btn:hover{border-color:var(--gold); color:var(--gold);}
+
+  /* ---------- QUIZ ---------- */
+  .quiz-card{background:var(--card); border:1px solid var(--card-line); border-radius:var(--radius); padding:26px; margin-bottom:16px;}
+  .quiz-q{font-size:1.02rem; margin-bottom:14px;}
+  .quiz-opt{
+    display:block; width:100%; text-align:left;
+    background:var(--bg-elev); border:1px solid var(--card-line); color:var(--star);
+    padding:12px 14px; border-radius:10px; margin-bottom:8px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:0.92rem;
+  }
+  .quiz-opt.correct{border-color:var(--success); background:var(--success-soft);}
+  .quiz-opt.wrong{border-color:var(--danger); background:var(--danger-soft);}
+  .quiz-opt:disabled{cursor:default;}
+  .quiz-explain{font-size:0.85rem; color:var(--muted); margin-top:10px; display:none;}
+  .quiz-explain.show{display:block;}
+  .quiz-total{
+    text-align:center; padding:22px; border-radius:var(--radius);
+    background:var(--bg-elev); border:1px solid var(--gold); font-size:1.1rem;
+  }
+
+  /* ---------- DO / DONT ---------- */
+  .dodont-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;}
+  @media (max-width:640px){ .dodont-grid{grid-template-columns:1fr;} }
+  .dodont-card{border-radius:var(--radius); padding:22px; border:1px solid var(--card-line);}
+  .dodont-card.do{background:var(--success-soft); border-color:var(--success);}
+  .dodont-card.dont{background:var(--danger-soft); border-color:var(--danger);}
+  .dodont-title{font-family:'Cormorant Garamond',serif; font-size:1.35rem; margin:0 0 14px; display:flex; align-items:center; gap:8px;}
+  .dodont-card ul{margin:0; padding-left:18px;}
+  .dodont-card li{margin-bottom:10px; font-size:0.93rem;}
+
+  .reversal-card{margin-top:20px; border-left:3px solid var(--gold); padding-left:18px;}
+
+  footer{
+    text-align:center; padding:60px 22px 80px; color:var(--muted); font-size:0.85rem;
+  }
+  footer .quote{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.3rem;
+    color:var(--star); max-width:520px; margin:0 auto 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Law <span>I</span></div>
+    <div class="navlinks">
+      <a href="#meaning">Meaning</a>
+      <a href="#stories">History</a>
+      <a href="#scenario">Try It</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#cheatsheet">Cheat Sheet</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div id="starfield"></div>
+  <div class="sun"></div>
+  <div class="hero-content">
+    <span class="eyebrow">The 48 Laws of Power · Law 1</span>
+    <h1>Never <em>Outshine</em><br>the Master</h1>
+    <p>There can be only one sun in the sky. If you shine brighter than the person above you, don't be surprised when they push you back into the dark.</p>
+    <div class="scrollcue">Scroll to learn how ↓</div>
+  </div>
+</section>
+
+<section id="meaning">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">In Simple Words</span>
+      <h2>What does this law actually mean?</h2>
+      <p>No fancy language. Just the idea, plain and clear.</p>
+    </div>
+    <div class="card">
+      <p class="lead">Everyone above you — your boss, your teacher, your senior, your client — likes to feel <strong>important, smart, and in control</strong>. If you show off too much in front of them, you don't impress them. You make them feel small.</p>
+      <p style="color:var(--muted); margin-top:14px;">And a person who feels small doesn't stay grateful. They get insecure. And insecure people in power don't fix the problem by improving themselves — they fix it by <strong style="color:var(--star)">removing the person who made them feel that way.</strong> That person might be you.</p>
+      <p style="color:var(--muted); margin-top:14px;">This doesn't mean "be less talented." It means: <strong style="color:var(--gold)">be smart about how you show your talent.</strong> Let your senior's light look bigger, even while you're the one actually glowing.</p>
+    </div>
+
+    <div class="meter-card card">
+      <span class="eyebrow">Try It</span>
+      <h3 style="margin:10px 0 4px;">The Master's Mood Meter</h3>
+      <p style="color:var(--muted); margin:0 0 6px; font-size:0.92rem;">Drag the slider to control how much you outshine your boss. Watch what happens to the sun (them) and the star (you).</p>
+      <div class="meter-stage">
+        <div class="boss-sun">
+          <div class="orb" id="bossOrb"></div>
+          <div class="orb-label">Your Boss</div>
+        </div>
+        <div class="you-star">
+          <div class="orb" id="youOrb"></div>
+          <div class="orb-label">You</div>
+        </div>
+      </div>
+      <input type="range" min="0" max="100" value="15" id="moodSlider">
+      <div class="meter-labels"><span>Invisible</span><span>Balanced</span><span>Blinding</span></div>
+      <div class="meter-msg" id="moodMsg"></div>
+    </div>
+  </div>
+</section>
+
+<section id="stories">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Proof From History</span>
+      <h2>Two men. Two very different endings.</h2>
+      <p>Tap each card to flip it and see what really happened.</p>
+    </div>
+    <div class="story-grid">
+      <div class="flip-card" id="card1">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div>
+              <span class="flip-tag">Broke the Law</span>
+              <div class="flip-title">Fouquet's Party</div>
+              <p style="color:var(--muted); font-size:0.9rem;">France, 1661. A finance minister throws the most spectacular party the king has ever seen — to win his favor.</p>
+            </div>
+            <div class="flip-hint">Tap to see what happened →</div>
+          </div>
+          <div class="flip-face flip-back">
+            <strong>Nicolas Fouquet</strong> was rich, clever, and loved lavish parties. To win back King Louis XIV's favor, he threw the grandest party in French history at his new château — top chefs, fireworks, a play written just for the king.</p>
+            <p>It backfired completely. Every gasp of admiration from the guests made the king feel smaller, not more loved. Louis saw his own finance minister outshining him in his own kingdom.</p>
+            <div class="flip-outcome">The very next day, Fouquet was arrested. He spent his last 20 years alone in a mountain prison.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" id="card2">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div>
+              <span class="flip-tag">Used the Law</span>
+              <div class="flip-title">Galileo's Trick</div>
+              <p style="color:var(--muted); font-size:0.9rem;">Italy, 1610. A scientist discovers the moons of Jupiter — and hands the glory to someone else.</p>
+            </div>
+            <div class="flip-hint">Tap to see what happened →</div>
+          </div>
+          <div class="flip-face flip-back">
+            <strong>Galileo</strong> discovered four moons circling Jupiter. Instead of keeping the credit for himself, he told the powerful Medici family that the moons "matched" their family of four brothers — as if the heavens themselves were celebrating the Medicis.</p>
+            <p>He made the discovery about <em>their</em> greatness, not his own genius.</p>
+            <div class="flip-outcome" style="border-color:var(--success); background:var(--success-soft);">Cosimo II instantly made Galileo his official court scientist, with a full salary for life.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="scenario">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Modern Example</span>
+      <h2>Play it out: Vignesh at work</h2>
+      <p>Make the choices. Watch how the boss's trust rises or falls.</p>
+    </div>
+
+    <div class="cast">
+      <div class="cast-chip"><span class="cast-dot dot-v"></span> Vignesh — a smart junior employee</div>
+      <div class="cast-chip"><span class="cast-dot dot-p"></span> Pranav — his manager</div>
+      <div class="cast-chip"><span class="cast-dot dot-d"></span> Dhanush — his teammate</div>
+    </div>
+
+    <div class="favor-track"><div class="favor-fill" id="favorFill"></div></div>
+    <div class="favor-caption"><span>Pranav sees you as a threat</span><span>Pranav trusts you fully</span></div>
+
+    <div class="scenario-box" id="scenarioBox"></div>
+
+    <div class="final-verdict" id="finalVerdict"></div>
+    <button class="reset-btn" id="resetScenario" style="display:none;">↺ Play again</button>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Check Yourself</span>
+      <h2>Quick quiz</h2>
+      <p>4 questions. No pressure — just to lock in the idea.</p>
+    </div>
+    <div id="quizContainer"></div>
+    <div class="quiz-total" id="quizTotal" style="display:none;"></div>
+  </div>
+</section>
+
+<section id="cheatsheet">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The Takeaway</span>
+      <h2>What to do — and what never to do</h2>
+    </div>
+    <div class="dodont-grid">
+      <div class="dodont-card do">
+        <div class="dodont-title">✅ Do</div>
+        <ul>
+          <li>Make your boss or senior look good in front of others — especially in public or in front of clients.</li>
+          <li>Give credit to them, even for your own ideas. Let it look like teamwork, or their guidance.</li>
+          <li>Ask for their advice sometimes. People love feeling needed and useful.</li>
+          <li>Notice what makes them feel insecure — and quietly avoid poking that spot.</li>
+        </ul>
+      </div>
+      <div class="dodont-card dont">
+        <div class="dodont-title">🚫 Don't</div>
+        <ul>
+          <li>Correct or embarrass your senior in front of a group, even if you're right.</li>
+          <li>Grab credit that should go to your boss, even by accident.</li>
+          <li>Assume that being liked today means you're safe forever.</li>
+          <li>Show off just to prove you're the smartest person in the room.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card reversal-card" style="margin-top:22px;">
+      <span class="eyebrow">One Exception</span>
+      <p style="margin:10px 0 0;">If your "master" is already weak, failing, or on their way out — you don't need to protect their ego forever. But be careful: attacking a weak boss too soon can make <em>you</em> look cruel. Read the room before you act.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="quote">"When the evening began, Fouquet was at the top of the world.<br>By the time it had ended, he was at the bottom."</p>
+  <p>— Voltaire, on the fall of Nicolas Fouquet</p>
+</footer>
+
+<script>
+/* ---------- progress bar ---------- */
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progress').style.width = scrolled + '%';
+});
+
+/* ---------- starfield ---------- */
+(function(){
+  const field = document.getElementById('starfield');
+  const count = window.innerWidth < 600 ? 40 : 70;
+  for(let i=0;i<count;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2 + 1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3.5)+'s';
+    field.appendChild(s);
+  }
+})();
+
+/* ---------- mood meter ---------- */
+const slider = document.getElementById('moodSlider');
+const bossOrb = document.getElementById('bossOrb');
+const youOrb = document.getElementById('youOrb');
+const moodMsg = document.getElementById('moodMsg');
+
+function updateMood(){
+  const v = parseInt(slider.value,10);
+  const bossScale = 1 - (v/100)*0.5;
+  const bossBlur = (v/100)*2;
+  bossOrb.style.transform = 'scale('+bossScale.toFixed(2)+')';
+  bossOrb.style.filter = 'brightness('+(1 - v/160)+') saturate('+(1-v/200)+')';
+  bossOrb.style.boxShadow = '0 0 '+(60-v*0.5)+'px '+(10)+'px rgba(227,178,60,'+(0.5-v/220)+')';
+
+  const youScale = 1 + (v/100)*2.2;
+  youOrb.style.transform = 'scale('+youScale.toFixed(2)+')';
+  const youGlow = v/100;
+  youOrb.style.boxShadow = '0 0 '+(6+v*0.5)+'px '+(2+v*0.2)+'px rgba(245,241,227,'+(0.3+youGlow*0.6)+')';
+  youOrb.style.background = v > 70 ? 'var(--gold)' : 'var(--star)';
+
+  let msg, cls;
+  if(v < 20){
+    msg = "You're barely noticed. Safe — but forgettable. No trust is being built either way.";
+    cls = '';
+  } else if(v < 50){
+    msg = "The sweet spot. You're helpful and visible, but your boss still feels like the star. This is where real trust grows.";
+    cls = 'good';
+  } else if(v < 80){
+    msg = "Careful. People are starting to notice you more than your boss. Their smile is starting to feel forced.";
+    cls = '';
+  } else {
+    msg = "Danger. This is Fouquet's party — you have completely outshone the master. Expect a 'convenient excuse' to remove you soon.";
+    cls = 'warn';
+  }
+  moodMsg.textContent = msg;
+  moodMsg.className = 'meter-msg ' + cls;
+}
+slider.addEventListener('input', updateMood);
+updateMood();
+
+/* ---------- flip cards ---------- */
+document.querySelectorAll('.flip-card').forEach(card=>{
+  card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+});
+
+/* ---------- scenario engine ---------- */
+let favor = 50;
+const favorFill = document.getElementById('favorFill');
+const scenarioBox = document.getElementById('scenarioBox');
+const finalVerdict = document.getElementById('finalVerdict');
+const resetBtn = document.getElementById('resetScenario');
+
+function setFavor(v){
+  favor = Math.max(0, Math.min(100, v));
+  favorFill.style.width = favor + '%';
+}
+
+const steps = [
+  {
+    step: "Moment 1 of 2",
+    text: "In a big client meeting, Vignesh spots a mistake in his manager Pranav's slide — right before Pranav presents it to the client.",
+    choices: [
+      { label: "Correct Pranav loudly, right in front of the client, to show you caught it.", delta: -30, msg: "Pranav goes red in front of the client. He doesn't say anything at the time — but he starts seeing Vignesh as a rival, not a helper." },
+      { label: "Quietly slide a note across the table so Pranav can fix it himself.", delta: 20, msg: "Pranav catches the note, smoothly fixes the slide, and later thanks Vignesh privately. Vignesh looked sharp — without making Pranav look bad." },
+      { label: "Say nothing and let the mistake happen.", delta: -5, msg: "The mistake goes out to the client. Pranav isn't upset with Vignesh, but a chance to build real trust was missed." }
+    ]
+  },
+  {
+    step: "Moment 2 of 2",
+    text: "Weeks later, Vignesh comes up with an idea that could save the company real money. Dhanush whispers: 'Let's take this straight to the CEO ourselves — we'll get all the credit!'",
+    choices: [
+      { label: "Skip Pranav and pitch the idea directly to the CEO with Dhanush.", delta: -40, msg: "The CEO is impressed — but Pranav is humiliated in front of his own boss. He starts quietly blocking Vignesh's ideas from then on." },
+      { label: "Bring the idea to Pranav first, and let him present it as 'his team's' win.", delta: 25, msg: "Pranav proudly presents it to the CEO, privately credits Vignesh to the whole team, and starts trusting him with bigger projects." },
+      { label: "Mention it casually in a group chat and move on.", delta: 5, msg: "Nothing bad happens — but the idea quietly gets lost in the chat. A wasted opportunity." }
+    ]
+  }
+];
+
+let stepIndex = 0;
+
+function renderStep(){
+  if(stepIndex >= steps.length){
+    renderVerdict();
+    return;
+  }
+  const s = steps[stepIndex];
+  let html = '<div class="scenario-step">'+s.step+'</div>';
+  html += '<div class="scenario-text">'+s.text+'</div>';
+  s.choices.forEach((c, idx)=>{
+    html += '<button class="choice-btn" data-idx="'+idx+'">'+c.label+'</button>';
+  });
+  html += '<div class="feedback" id="feedback"></div>';
+  scenarioBox.innerHTML = html;
+
+  scenarioBox.querySelectorAll('.choice-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      scenarioBox.querySelectorAll('.choice-btn').forEach(b=>b.disabled = true);
+      const idx = parseInt(btn.dataset.idx,10);
+      const choice = s.choices[idx];
+      setFavor(favor + choice.delta);
+      const fb = document.getElementById('feedback');
+      fb.innerHTML = choice.msg + ' <br><span class="feedback-score">Trust '+(choice.delta>=0?'+':'')+choice.delta+'</span>';
+      fb.className = 'feedback show';
+      fb.style.borderLeft = '3px solid ' + (choice.delta >= 0 ? 'var(--success)' : 'var(--danger)');
+      const cont = document.createElement('button');
+      cont.className = 'continue-btn';
+      cont.textContent = stepIndex < steps.length - 1 ? 'Continue →' : 'See the outcome →';
+      cont.addEventListener('click', ()=>{
+        stepIndex++;
+        renderStep();
+      });
+      fb.appendChild(document.createElement('br'));
+      fb.appendChild(cont);
+    });
+  });
+}
+
+function renderVerdict(){
+  let title, body, color;
+  if(favor >= 70){
+    title = "Vignesh is being groomed for the top.";
+    body = "Just like Galileo with the Medicis — Vignesh made Pranav look brilliant, not threatened. Pranav now hands him bigger projects and speaks well of him to leadership.";
+    color = 'var(--success)';
+  } else if(favor >= 40){
+    title = "Vignesh is safe, but not remarkable yet.";
+    body = "Nothing went badly wrong. But Pranav doesn't see Vignesh as someone special either. A missed chance to really stand out — the right way.";
+    color = 'var(--gold)';
+  } else {
+    title = "Vignesh is now seen as a threat.";
+    body = "Just like Fouquet after his party — Pranav feels outshone and insecure. He won't admit it out loud, but he'll quietly look for a reason to sideline Vignesh.";
+    color = 'var(--danger)';
+  }
+  finalVerdict.innerHTML = '<h3 style="color:'+color+'">'+title+'</h3><p style="color:var(--muted); margin:0;">'+body+'</p>';
+  finalVerdict.classList.add('show');
+  resetBtn.style.display = 'inline-block';
+}
+
+resetBtn.addEventListener('click', ()=>{
+  stepIndex = 0;
+  setFavor(50);
+  finalVerdict.classList.remove('show');
+  resetBtn.style.display = 'none';
+  renderStep();
+});
+
+setFavor(50);
+renderStep();
+
+/* ---------- quiz ---------- */
+const quizData = [
+  {
+    q: "What happened to Fouquet right after his lavish party for the king?",
+    options: ["He was promoted to prime minister", "He was arrested and spent the rest of his life in prison", "The king publicly thanked him"],
+    correct: 1,
+    explain: "The party made the king feel outshone in his own kingdom. Louis XIV had Fouquet arrested the very next day."
+  },
+  {
+    q: "How did Galileo win the Medici family's favor?",
+    options: ["He gave them gold and jewels", "He linked his discovery of Jupiter's moons to their family's glory", "He wrote a report criticizing other scientists"],
+    correct: 1,
+    explain: "Galileo made the discovery about their greatness, not his own — so they gave him a lifelong salary in return."
+  },
+  {
+    q: "If your idea is better than your boss's, what should you usually do?",
+    options: ["Announce loudly that it was all your idea", "Present it in a way that credits your boss too", "Hide it and never mention it"],
+    correct: 1,
+    explain: "Sharing the credit publicly protects your boss's ego while still getting the idea recognized — like Vignesh presenting his idea through Pranav."
+  },
+  {
+    q: "What is the real message of 'Never Outshine the Master'?",
+    options: ["Never be talented or successful", "Make people above you feel secure, not threatened, by your talent", "Always stay completely silent in meetings"],
+    correct: 1,
+    explain: "The law isn't about hiding your skill — it's about managing how it makes others feel."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let quizScore = 0;
+let answered = 0;
+
+quizData.forEach((item, qi)=>{
+  const card = document.createElement('div');
+  card.className = 'quiz-card';
+  let html = '<div class="quiz-q">'+(qi+1)+'. '+item.q+'</div>';
+  item.options.forEach((opt, oi)=>{
+    html += '<button class="quiz-opt" data-q="'+qi+'" data-o="'+oi+'">'+opt+'</button>';
+  });
+  html += '<div class="quiz-explain" id="explain-'+qi+'">'+item.explain+'</div>';
+  card.innerHTML = html;
+  quizContainer.appendChild(card);
+});
+
+quizContainer.addEventListener('click', (e)=>{
+  if(!e.target.classList.contains('quiz-opt')) return;
+  const qi = parseInt(e.target.dataset.q,10);
+  const oi = parseInt(e.target.dataset.o,10);
+  const card = e.target.closest('.quiz-card');
+  const btns = card.querySelectorAll('.quiz-opt');
+  if(btns[0].disabled) return; // already answered
+
+  btns.forEach((b,i)=>{
+    b.disabled = true;
+    if(i === quizData[qi].correct) b.classList.add('correct');
+    else if(i === oi) b.classList.add('wrong');
+  });
+  if(oi === quizData[qi].correct) quizScore++;
+  answered++;
+  document.getElementById('explain-'+qi).classList.add('show');
+
+  if(answered === quizData.length){
+    const totalEl = document.getElementById('quizTotal');
+    totalEl.style.display = 'block';
+    totalEl.innerHTML = 'You scored <strong style="color:var(--gold)">'+quizScore+' / '+quizData.length+'</strong> — ' +
+      (quizScore === quizData.length ? "Perfect. You've got the Law down." :
+       quizScore >= quizData.length/2 ? "Good grasp. Re-read the tricky one above." :
+       "Worth a re-read — scroll back up and try the meter again.");
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law 3 — Hide What You Really Want</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14110f;
+    --bg-soft:#1c1712;
+    --card:#221b16;
+    --card-hi:#2a2119;
+    --smoke:#8b8378;
+    --parchment:#efe6d3;
+    --parchment-dim:#c9bfa9;
+    --gold:#c8a03e;
+    --gold-soft:#8f7a3f;
+    --red:#a4503b;
+    --green:#5f7a5a;
+    --line:#3a3129;
+    --radius:14px;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--parchment);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold);color:#14110f;}
+
+  /* ---------- background smoke ---------- */
+  .fog-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:.5;}
+  .fog{
+    position:absolute;border-radius:50%;
+    background:radial-gradient(circle, rgba(140,131,116,0.16), transparent 70%);
+    filter:blur(10px);
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(40px,-30px) scale(1.15);}
+    100%{transform:translate(0,0) scale(1);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fog{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(20,17,15,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .navrow{
+    display:flex;gap:6px;overflow-x:auto;
+    padding:12px 20px;max-width:920px;margin:0 auto;
+    scrollbar-width:none;
+  }
+  .navrow::-webkit-scrollbar{display:none;}
+  .navrow a{
+    color:var(--parchment-dim);text-decoration:none;
+    font-size:13px;white-space:nowrap;padding:7px 13px;
+    border-radius:999px;border:1px solid var(--line);
+    transition:.2s;
+  }
+  .navrow a:hover, .navrow a.active{color:var(--bg);background:var(--gold);border-color:var(--gold);}
+
+  /* ---------- hero ---------- */
+  header.hero{
+    padding:90px 20px 60px;text-align:center;position:relative;
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;margin-bottom:18px;
+  }
+  h1.title{
+    font-family:var(--serif);
+    font-size:clamp(2.4rem, 7vw, 4.4rem);
+    font-weight:700;
+    margin:0 0 18px;
+    line-height:1.05;
+  }
+  h1.title em{
+    font-style:italic;font-weight:400;color:var(--smoke);
+    display:block;font-size:.5em;letter-spacing:.02em;margin-top:8px;
+  }
+  .hero p.sub{
+    max-width:520px;margin:0 auto;color:var(--parchment-dim);
+    font-size:17px;
+  }
+  .hero-reveal{
+    margin-top:36px;padding:18px 22px;border:1px dashed var(--line);
+    border-radius:var(--radius);max-width:460px;margin-left:auto;margin-right:auto;
+    background:var(--bg-soft);cursor:pointer;user-select:none;
+  }
+  .hero-reveal .tap-label{font-size:12px;color:var(--smoke);letter-spacing:.05em;}
+  .hero-reveal .hidden-text{
+    filter:blur(7px); opacity:.4; transition:filter .5s ease, opacity .5s ease;
+    font-family:var(--serif); font-size:17px; margin-top:6px;
+  }
+  .hero-reveal.revealed .hidden-text{filter:blur(0);opacity:1;}
+  .hero-reveal.revealed .tap-label{display:none;}
+
+  /* ---------- sections ---------- */
+  section{padding:60px 0;border-top:1px solid var(--line);}
+  section:first-of-type{border-top:none;}
+  .section-head{margin-bottom:28px;}
+  .section-num{font-family:var(--serif);color:var(--gold-soft);font-size:14px;letter-spacing:.15em;}
+  h2{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(1.5rem,4vw,2.1rem);margin:6px 0 10px;
+  }
+  .lead{color:var(--parchment-dim);font-size:16px;max-width:640px;}
+
+  /* idea cards */
+  .idea-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px;}
+  .idea{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 18px;
+  }
+  .idea .ico{font-size:22px;margin-bottom:10px;display:block;}
+  .idea h3{font-family:var(--serif);font-size:17px;margin:0 0 6px;font-weight:600;}
+  .idea p{font-size:14px;color:var(--parchment-dim);margin:0;}
+
+  /* tabs for old stories */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0;}
+  .tab-btn{
+    background:transparent;border:1px solid var(--line);color:var(--parchment-dim);
+    padding:9px 16px;border-radius:999px;font-family:var(--sans);font-size:13px;
+    cursor:pointer;transition:.2s;
+  }
+  .tab-btn.active{background:var(--gold);border-color:var(--gold);color:#14110f;font-weight:600;}
+  .tab-panel{display:none;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+  .tab-panel.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .tab-panel h3{font-family:var(--serif);margin-top:0;font-size:20px;color:var(--gold);}
+  .tab-panel .tag{
+    display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--bg);background:var(--smoke);padding:3px 9px;border-radius:5px;margin-bottom:10px;
+  }
+  .tab-panel .lesson{
+    margin-top:16px;padding:14px 16px;border-left:3px solid var(--gold);
+    background:rgba(200,160,62,0.07);font-size:14px;color:var(--parchment);
+    border-radius:0 8px 8px 0;
+  }
+
+  /* modern story */
+  .story-box{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;margin-top:24px;
+  }
+  .cast{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px;}
+  .person{text-align:center;font-size:13px;color:var(--parchment-dim);}
+  .avatar{
+    width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:700;font-size:18px;color:#14110f;margin:0 auto 6px;
+  }
+  .p-vignesh{background:#c8a03e;}
+  .p-pranav{background:#a4503b;}
+  .p-dhanush{background:#5f7a5a;}
+  .story-steps{border-left:2px solid var(--line);margin-left:8px;}
+  .step{position:relative;padding:0 0 22px 26px;}
+  .step:last-child{padding-bottom:0;}
+  .step::before{
+    content:'';position:absolute;left:-7px;top:3px;width:12px;height:12px;
+    border-radius:50%;background:var(--bg);border:2px solid var(--gold);
+  }
+  .step h4{margin:0 0 4px;font-size:14px;color:var(--gold);font-weight:600;}
+  .step p{margin:0;font-size:14.5px;color:var(--parchment-dim);}
+
+  /* toggle perspective */
+  .toggle-wrap{margin-top:22px;display:flex;gap:8px;}
+  .toggle-btn{
+    flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--bg-soft);color:var(--parchment-dim);cursor:pointer;font-size:13px;font-family:var(--sans);
+  }
+  .toggle-btn.active{background:var(--gold);color:#14110f;border-color:var(--gold);font-weight:600;}
+  .persp-box{margin-top:14px;padding:16px 18px;background:var(--bg-soft);border-radius:10px;font-size:14.5px;color:var(--parchment);min-height:70px;}
+
+  /* tools grid */
+  .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+  .tool-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;cursor:pointer;transition:.25s;
+  }
+  .tool-card:hover{border-color:var(--gold-soft);}
+  .tool-card h3{font-family:var(--serif);margin:0 0 8px;font-size:18px;}
+  .tool-card p.short{margin:0;font-size:13.5px;color:var(--parchment-dim);}
+  .tool-card .extra{max-height:0;overflow:hidden;transition:max-height .35s ease;font-size:13.5px;color:var(--parchment);}
+  .tool-card.open .extra{max-height:200px;margin-top:10px;}
+  .tool-card .plus{float:right;color:var(--gold);font-family:var(--serif);font-size:20px;}
+
+  /* chart */
+  .chart-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-top:24px;}
+  .chart-box svg{width:100%;height:auto;display:block;}
+  .chart-caption{font-size:13px;color:var(--parchment-dim);margin-top:12px;text-align:center;}
+
+  /* do dont */
+  .dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+  .dd-col{border-radius:var(--radius);padding:22px;border:1px solid var(--line);}
+  .dd-col.do{background:rgba(95,122,90,0.08);border-color:var(--green);}
+  .dd-col.dont{background:rgba(164,80,59,0.08);border-color:var(--red);}
+  .dd-col h3{font-family:var(--serif);margin-top:0;font-size:18px;}
+  .dd-col.do h3{color:var(--green);}
+  .dd-col.dont h3{color:var(--red);}
+  .dd-col ul{padding-left:20px;margin:0;font-size:14px;color:var(--parchment-dim);}
+  .dd-col li{margin-bottom:9px;}
+
+  footer{padding:40px 20px 60px;text-align:center;color:var(--smoke);font-size:12.5px;}
+  footer .mark{font-family:var(--serif);color:var(--gold-soft);font-size:14px;margin-bottom:6px;}
+
+  @media (max-width:680px){
+    .idea-grid{grid-template-columns:1fr;}
+    .tools-grid{grid-template-columns:1fr;}
+    .dd-grid{grid-template-columns:1fr;}
+    header.hero{padding:64px 16px 44px;}
+    section{padding:44px 0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="fog-layer" id="fogLayer"></div>
+
+<nav>
+  <div class="navrow" id="navrow">
+    <a href="#idea">The Idea</a>
+    <a href="#stories">Old Stories</a>
+    <a href="#today">Today's Example</a>
+    <a href="#tools">The Two Tools</a>
+    <a href="#chart">Trust Chart</a>
+    <a href="#dodont">Do &amp; Don't</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">The 48 Laws of Power · Law 3</div>
+    <h1 class="title">Hide What You
+      Really Want
+      <em>Nobody can block a plan they never saw coming</em>
+    </h1>
+    <p class="sub">A short, simple guide to one of the oldest tricks in power: don't tell people what you're really after — let them find out when it's too late to stop you.</p>
+    <div class="hero-reveal" id="heroReveal">
+      <div class="tap-label">👆 tap to clear the smoke</div>
+      <div class="hidden-text">If people know exactly what you want, they can plan against you. If they don't, they can't.</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- IDEA -->
+  <section id="idea">
+    <div class="section-head">
+      <div class="section-num">Start here</div>
+      <h2>What's the big idea?</h2>
+      <p class="lead">Most people say exactly what they think and want, all the time. It feels honest. But it also makes them easy to read — and easy to stop. This law says: keep your real goal quiet, and let people see something else instead.</p>
+    </div>
+    <div class="idea-grid">
+      <div class="idea">
+        <span class="ico">🎯</span>
+        <h3>Your real goal</h3>
+        <p>The thing you actually want. Keep this one to yourself.</p>
+      </div>
+      <div class="idea">
+        <span class="ico">🎭</span>
+        <h3>The decoy</h3>
+        <p>A fake interest you show on purpose, so people watch the wrong thing.</p>
+      </div>
+      <div class="idea">
+        <span class="ico">💨</span>
+        <h3>The smoke screen</h3>
+        <p>Acting so normal and calm that nobody suspects anything is happening at all.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OLD STORIES -->
+  <section id="stories">
+    <div class="section-head">
+      <div class="section-num">From the book</div>
+      <h2>Four old stories, told simply</h2>
+      <p class="lead">These are real stories the book uses. Tap a name to read what happened, in plain words.</p>
+    </div>
+
+    <div class="tabs" id="tabButtons">
+      <button class="tab-btn active" data-tab="t1">Ninon, the love coach</button>
+      <button class="tab-btn" data-tab="t2">Bismarck's fake speech</button>
+      <button class="tab-btn" data-tab="t3">The boxing con</button>
+      <button class="tab-btn" data-tab="t4">The king and the warlord</button>
+    </div>
+
+    <div class="tab-panel active" id="t1">
+      <span class="tag">Seduction</span>
+      <h3>The love coach who taught patience</h3>
+      <p>An older, wise woman named Ninon coached a young man who liked a countess but kept failing with her. Her advice: stop chasing. Act distant. Show up with other women so the countess gets jealous. Disappear, then reappear somewhere new. Keep her guessing.</p>
+      <p>It worked — the countess grew curious, then interested, then hooked. But one day the young man got impatient. He grabbed her hands and blurted out that he loved her. The moment he said it out loud, the magic broke. She felt tricked and pulled away for good.</p>
+      <div class="lesson">Lesson: the moment people can clearly see what you're after, they get their guard back up. The game only works while your goal stays hidden.</div>
+    </div>
+
+    <div class="tab-panel" id="t2">
+      <span class="tag">Politics</span>
+      <h3>The speech that fooled a whole country</h3>
+      <p>A young politician named Bismarck actually wanted war with a rival country — but not yet, because he knew his side would lose right now. So he stood up and gave a passionate speech <em>against</em> war, even praising the enemy. Everyone was stunned. People assumed he had changed his mind.</p>
+      <p>His "peace-loving" speech impressed the king so much that Bismarck was promoted, again and again, until he was the most powerful man in government. Years later, once his side was strong enough, he led that very same war — and won it.</p>
+      <div class="lesson">Lesson: saying the opposite of what you truly believe can throw everyone off balance long enough for you to gain real power.</div>
+    </div>
+
+    <div class="tab-panel" id="t3">
+      <span class="tag">Classic con</span>
+      <h3>The boxer who "died"</h3>
+      <p>A con man wanted to trick a rich businessman out of a large sum of cash. Instead of asking for money directly, he first pulled him into an exciting, totally different deal — buying land cheap and reselling it for a huge profit. The businessman got greedy and excited.</p>
+      <p>While his mind was busy with the land deal, the con man slipped in a side bet on a boxing match. The businessman handed over his cash for the bet. Then the boxer appeared to be knocked out and killed — panic! The businessman fled the scene, leaving his money behind. The "dead" boxer stood right back up. It was all fake blood.</p>
+      <div class="lesson">Lesson: people don't notice the real trick when their attention is busy with something else that looks exciting or urgent.</div>
+    </div>
+
+    <div class="tab-panel" id="t4">
+      <span class="tag">Strategy</span>
+      <h3>The gentle king who out-thought a warrior</h3>
+      <p>A proud warlord refused to bow to the new king, Selassie. He agreed to meet him — but brought 500 armed soldiers, just in case it was a trap. The king welcomed them warmly, acted humble, and let the warlord feel completely in control at the meeting.</p>
+      <p>While everyone's attention was on the polite meeting, the king quietly sent another army to the warlord's camp, three miles away, and bought out all his soldiers' weapons with gold. By the time the warlord walked home, his entire army was gone — without a single shot fired.</p>
+      <div class="lesson">Lesson: being extra polite and calm in one place can be the perfect cover for what you're really doing somewhere else.</div>
+    </div>
+  </section>
+
+  <!-- TODAY EXAMPLE -->
+  <section id="today">
+    <div class="section-head">
+      <div class="section-num">In real life</div>
+      <h2>The same trick, today</h2>
+      <p class="lead">Here's how this shows up in an ordinary office — no kings, no con men, just three coworkers.</p>
+    </div>
+
+    <div class="story-box">
+      <div class="cast">
+        <div class="person"><div class="avatar p-pranav">P</div>Pranav</div>
+        <div class="person"><div class="avatar p-dhanush">D</div>Dhanush</div>
+        <div class="person"><div class="avatar p-vignesh">V</div>Vignesh</div>
+      </div>
+
+      <div class="story-steps">
+        <div class="step">
+          <h4>The real goal</h4>
+          <p>Pranav really wants the Team Lead promotion. Dhanush wants the same role and watches Pranav closely for any sign of ambition.</p>
+        </div>
+        <div class="step">
+          <h4>The decoy</h4>
+          <p>Pranav starts talking a lot about wanting to move into the design team instead — a totally different direction. Dhanush relaxes, thinking Pranav is no longer his competition.</p>
+        </div>
+        <div class="step">
+          <h4>The smoke screen</h4>
+          <p>While Dhanush stops worrying, Pranav quietly does the real work — helping the manager Vignesh with the exact project that matters most for the Team Lead decision.</p>
+        </div>
+        <div class="step">
+          <h4>The reveal</h4>
+          <p>When the promotion is announced, it's Pranav. Dhanush is shocked — he was watching the wrong door the entire time.</p>
+        </div>
+      </div>
+
+      <div class="toggle-wrap">
+        <button class="toggle-btn active" data-view="dhanush">See it through Dhanush's eyes</button>
+        <button class="toggle-btn" data-view="pranav">See it through Pranav's eyes</button>
+      </div>
+      <div class="persp-box" id="perspBox">Dhanush thought: "Pranav's not even trying for Team Lead anymore, he's into design now. One less person to worry about." He stopped paying attention — right when it mattered most.</div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="section-head">
+      <div class="section-num">The toolkit</div>
+      <h2>Two tools, one purpose</h2>
+      <p class="lead">Tap each card to see how it works in plain terms.</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card" data-card="decoy">
+        <span class="plus">+</span>
+        <h3>🎯 The Decoy</h3>
+        <p class="short">Show interest in something fake so people watch that instead of your real move.</p>
+        <div class="extra">Talk openly and often about a goal that isn't your real one. People will believe it because it's so easy to check on — and while they watch that, your actual plan moves forward, unseen.</div>
+      </div>
+      <div class="tool-card" data-card="smoke">
+        <span class="plus">+</span>
+        <h3>💨 The Smoke Screen</h3>
+        <p class="short">Act so calm, normal, and predictable that no one thinks to question you.</p>
+        <div class="extra">Instead of a flashy lie, you simply blend in — stay friendly, agreeable, unremarkable. People trust what feels familiar, so they stop looking closely, which gives you room to work.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHART -->
+  <section id="chart">
+    <div class="section-head">
+      <div class="section-num">Visual</div>
+      <h2>How suspicion rises and falls</h2>
+      <p class="lead">In the Pranav story, watch how Dhanush's suspicion drops the moment the decoy appears — and stays low until the very end.</p>
+    </div>
+    <div class="chart-box">
+      <svg id="trustChart" viewBox="0 0 620 260" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="chart-caption">Dhanush's suspicion level over four weeks — dips right after the decoy, and spikes only at the reveal.</div>
+    </div>
+  </section>
+
+  <!-- DO DONT -->
+  <section id="dodont">
+    <div class="section-head">
+      <div class="section-num">Take away</div>
+      <h2>What to do — and what not to do</h2>
+    </div>
+    <div class="dd-grid">
+      <div class="dd-col do">
+        <h3>✅ Do this</h3>
+        <ul>
+          <li>Keep your real goal to yourself until it's already done, or too far along to stop.</li>
+          <li>Talk openly about small, harmless plans — it keeps you looking honest.</li>
+          <li>Stay calm and friendly. Predictable people don't get watched closely.</li>
+          <li>Let your actions speak later, not your words now.</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h3>🚫 Don't do this</h3>
+        <ul>
+          <li>Don't announce big plans before they're ready — it gives people time to block you.</li>
+          <li>Don't overact or oversell your "fake sincerity" — too much passion looks suspicious.</li>
+          <li>Don't blurt out your feelings the moment you get excited, like the young man did with the countess.</li>
+          <li>Don't use these tricks to lie your way into hurting someone's trust for no real reason — this law works best as self-protection, not cruelty.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="mark">Law 3 · Conceal Your Intentions</div>
+  Simplified for easy reading. Based on ideas from <em>The 48 Laws of Power</em>.
+</footer>
+
+<script>
+// ---------- fog background ----------
+(function(){
+  const layer = document.getElementById('fogLayer');
+  const n = window.innerWidth < 680 ? 4 : 7;
+  for(let i=0;i<n;i++){
+    const f = document.createElement('div');
+    f.className='fog';
+    const size = 180 + Math.random()*220;
+    f.style.width = size+'px';
+    f.style.height = size+'px';
+    f.style.left = (Math.random()*100)+'%';
+    f.style.top = (Math.random()*100)+'%';
+    f.style.animationDuration = (18+Math.random()*14)+'s';
+    f.style.animationDelay = (Math.random()*-20)+'s';
+    layer.appendChild(f);
+  }
+})();
+
+// ---------- hero reveal ----------
+document.getElementById('heroReveal').addEventListener('click', function(){
+  this.classList.toggle('revealed');
+});
+
+// ---------- nav active state ----------
+const navLinks = document.querySelectorAll('#navrow a');
+const sections = document.querySelectorAll('main section');
+window.addEventListener('scroll', ()=>{
+  let current = '';
+  sections.forEach(s=>{
+    const rect = s.getBoundingClientRect();
+    if(rect.top <= 120 && rect.bottom > 120) current = s.id;
+  });
+  navLinks.forEach(a=>{
+    a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+  });
+}, {passive:true});
+
+// ---------- tabs ----------
+const tabButtons = document.querySelectorAll('.tab-btn');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- perspective toggle ----------
+const perspText = {
+  dhanush: `Dhanush thought: "Pranav's not even trying for Team Lead anymore, he's into design now. One less person to worry about." He stopped paying attention — right when it mattered most.`,
+  pranav: `Pranav thought: "If Dhanush thinks I'm out of the race, he'll stop blocking me and stop competing for Vignesh's attention. That gives me room to actually do the work that counts."`
+};
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('perspBox').textContent = perspText[btn.dataset.view];
+  });
+});
+
+// ---------- tool cards ----------
+document.querySelectorAll('.tool-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.tool-card').forEach(c=>{c.classList.remove('open'); c.querySelector('.plus').textContent='+';});
+    if(!wasOpen){ card.classList.add('open'); card.querySelector('.plus').textContent='–'; }
+  });
+});
+
+// ---------- chart ----------
+(function(){
+  const svg = document.getElementById('trustChart');
+  const w = 620, h = 260, pad = 40;
+  // suspicion level 0-100 across 4 weeks + reveal point (5 points)
+  const points = [
+    {x:0, y:70, label:'Week 1'},
+    {x:1, y:25, label:'Decoy shown'},
+    {x:2, y:15, label:'Week 3'},
+    {x:3, y:10, label:'Week 4'},
+    {x:4, y:95, label:'Reveal day'}
+  ];
+  const xStep = (w - pad*2) / (points.length-1);
+  const toX = i => pad + i*xStep;
+  const toY = v => h - pad - (v/100)*(h - pad*2);
+
+  let ns = "http://www.w3.org/2000/svg";
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // axis line
+  svg.appendChild(el('line', {x1:pad, y1:h-pad, x2:w-pad, y2:h-pad, stroke:'#3a3129', 'stroke-width':1}));
+
+  // path
+  let d = '';
+  points.forEach((p,i)=>{
+    const x = toX(i), y = toY(p.y);
+    d += (i===0?'M':'L') + x + ',' + y + ' ';
+  });
+  const path = el('path', {d:d.trim(), fill:'none', stroke:'#c8a03e', 'stroke-width':2.5, 'stroke-linecap':'round', 'stroke-linejoin':'round'});
+  path.style.strokeDasharray = '900';
+  path.style.strokeDashoffset = '900';
+  path.style.transition = 'stroke-dashoffset 1.8s ease';
+  svg.appendChild(path);
+
+  // area fill
+  let areaD = d.trim() + ` L${toX(points.length-1)},${h-pad} L${toX(0)},${h-pad} Z`;
+  svg.appendChild(el('path', {d:areaD, fill:'rgba(200,160,62,0.08)', stroke:'none'}));
+
+  points.forEach((p,i)=>{
+    const x = toX(i), y = toY(p.y);
+    const circ = el('circle', {cx:x, cy:y, r:5, fill:(i===4?'#a4503b':'#c8a03e'), stroke:'#14110f', 'stroke-width':2});
+    svg.appendChild(circ);
+    const label = el('text', {x:x, y:h-pad+20, 'text-anchor': i===0?'start':(i===points.length-1?'end':'middle'), fill:'#c9bfa9', 'font-size':'11', 'font-family':'Inter, sans-serif'});
+    label.textContent = p.label;
+    svg.appendChild(label);
+  });
+
+  requestAnimationFrame(()=>{ setTimeout(()=>{ path.style.strokeDashoffset='0'; }, 200); });
+})();
+</script>
+</body>
+</html>

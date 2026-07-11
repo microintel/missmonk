@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law 2 — Trust Carefully, Use Wisely</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink: #12141c;
+    --panel: #1b1e2a;
+    --panel-2: #232739;
+    --gold: #c9a24b;
+    --gold-soft: #e2c886;
+    --enemy: #b2483f;
+    --enemy-soft: #d98177;
+    --friend: #5b86a3;
+    --friend-soft: #9fc0d4;
+    --paper: #ece4d3;
+    --paper-dim: #b9b1a0;
+    --line: rgba(201,162,75,0.22);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(201,162,75,0.08), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(178,72,63,0.08), transparent 55%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- NAV DOTS ---------- */
+  .navdots{
+    position:fixed; right:14px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:14px; z-index:50;
+  }
+  .navdots a{
+    width:9px; height:9px; border-radius:50%;
+    background:rgba(236,228,211,0.25);
+    border:1px solid transparent;
+    display:block;
+    transition:.25s;
+  }
+  .navdots a.active{background:var(--gold); box-shadow:0 0 0 4px rgba(201,162,75,0.15);}
+  @media(max-width:720px){.navdots{display:none;}}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    min-height:92vh;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+    padding:120px 0 60px;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif; letter-spacing:.22em; text-transform:uppercase;
+    font-size:12px; color:var(--gold-soft); font-weight:600; margin-bottom:18px;
+  }
+  h1.title{
+    font-size:clamp(2.4rem, 6.5vw, 4.6rem);
+    font-weight:700; line-height:1.05; margin:0 0 20px;
+    color:var(--paper);
+  }
+  h1.title em{
+    font-style:italic; color:var(--gold);
+  }
+  .subtitle{
+    max-width:60ch; font-size:clamp(1.05rem,2vw,1.25rem); color:var(--paper-dim);
+    margin-bottom:44px;
+  }
+  .subtitle strong{color:var(--paper); font-weight:600;}
+
+  /* Scale (signature element) */
+  .scale-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    margin-top:10px;
+  }
+  .scale-toggle{
+    display:flex; gap:10px; background:var(--panel); border:1px solid var(--line);
+    padding:6px; border-radius:999px;
+  }
+  .scale-toggle button{
+    border:none; background:transparent; color:var(--paper-dim);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px;
+    padding:9px 20px; border-radius:999px; cursor:pointer; transition:.25s;
+  }
+  .scale-toggle button.active.friend{background:var(--friend); color:#0d1620;}
+  .scale-toggle button.active.enemy{background:var(--enemy); color:#1a0b09;}
+
+  svg#scale{width:min(560px,90vw); height:auto; display:block;}
+  .beam{transform-origin:280px 92px; transition:transform .6s cubic-bezier(.34,1.4,.4,1);}
+  .pan-left, .pan-right{transition: transform .6s cubic-bezier(.34,1.4,.4,1);}
+  .scale-caption{
+    max-width:52ch; text-align:center; font-size:.98rem; color:var(--paper-dim);
+    min-height:44px;
+  }
+  .scale-caption b{color:var(--gold-soft);}
+
+  /* ---------- SECTION GENERAL ---------- */
+  section{padding:64px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .kicker{
+    font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:600; margin-bottom:14px;
+  }
+  h2{
+    font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; margin:0 0 22px; color:var(--paper);
+  }
+  p{color:var(--paper-dim); font-size:1.03rem; max-width:70ch;}
+  p strong{color:var(--paper);}
+
+  /* ---------- MEANING GRID ---------- */
+  .meaning-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:32px;
+  }
+  @media(max-width:720px){.meaning-grid{grid-template-columns:1fr;}}
+  .meaning-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:26px 24px;
+  }
+  .meaning-card.enemy-card{border-color:rgba(178,72,63,0.35);}
+  .meaning-card.friend-card{border-color:rgba(91,134,163,0.35);}
+  .meaning-card h3{
+    margin:0 0 10px; font-size:1.5rem; font-weight:600;
+  }
+  .meaning-card.friend-card h3{color:var(--friend-soft);}
+  .meaning-card.enemy-card h3{color:var(--enemy-soft);}
+  .meaning-card ul{margin:0; padding-left:20px; color:var(--paper-dim); font-size:.96rem;}
+  .meaning-card li{margin-bottom:8px;}
+
+  /* ---------- STORY TIMELINE ---------- */
+  .story{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:30px clamp(18px,4vw,36px);
+    margin-top:28px;
+  }
+  .story-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:6px;}
+  .story-head .story-tag{
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+    color:var(--ink); background:var(--gold); padding:4px 10px; border-radius:5px;
+  }
+  .story-head h3{margin:0; font-size:1.7rem;}
+  .story-sub{color:var(--paper-dim); font-size:.9rem; margin-bottom:20px;}
+  .timeline{list-style:none; margin:0; padding:0;}
+  .timeline li{
+    position:relative; padding:0 0 22px 26px; border-left:2px solid var(--line);
+    margin-left:6px; font-size:.98rem; color:var(--paper-dim);
+  }
+  .timeline li:last-child{border-color:transparent; padding-bottom:0;}
+  .timeline li::before{
+    content:''; position:absolute; left:-7px; top:2px; width:12px; height:12px;
+    border-radius:50%; background:var(--ink); border:2px solid var(--gold);
+  }
+  .timeline li b{color:var(--paper); font-weight:600;}
+  .moral-strip{
+    margin-top:22px; padding:16px 18px; border-left:3px solid var(--gold);
+    background:rgba(201,162,75,0.06); font-style:italic; color:var(--gold-soft);
+    font-family:'Cormorant Garamond',serif; font-size:1.2rem;
+  }
+
+  /* ---------- TODAY EXAMPLES (tabs) ---------- */
+  .tabbar{display:flex; gap:8px; margin-top:30px; flex-wrap:wrap;}
+  .tabbar button{
+    background:var(--panel); border:1px solid var(--line); color:var(--paper-dim);
+    padding:10px 18px; border-radius:10px; font-family:'Inter',sans-serif;
+    font-weight:600; font-size:.9rem; cursor:pointer; transition:.2s;
+  }
+  .tabbar button.active{background:var(--gold); color:var(--ink); border-color:var(--gold);}
+  .tab-panel{
+    display:none; background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:28px clamp(18px,4vw,32px); margin-top:16px;
+  }
+  .tab-panel.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .tab-panel h4{margin:0 0 4px; font-size:1.4rem; font-family:'Cormorant Garamond',serif;}
+  .tab-panel .role{color:var(--gold-soft); font-size:.85rem; font-weight:600; margin-bottom:16px; text-transform:uppercase; letter-spacing:.08em;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:14px;}
+  @media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+  .col-box{background:var(--panel-2); border-radius:10px; padding:16px 18px;}
+  .col-box.bad{border-left:3px solid var(--enemy);}
+  .col-box.good{border-left:3px solid var(--friend);}
+  .col-box h5{margin:0 0 8px; font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; color:var(--paper-dim);}
+  .col-box p{margin:0; font-size:.92rem;}
+
+  /* ---------- SIMULATOR ---------- */
+  .sim{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:30px clamp(18px,4vw,36px); margin-top:30px;
+  }
+  .sim-q{font-size:1.15rem; color:var(--paper); margin-bottom:22px; font-family:'Cormorant Garamond',serif;}
+  .sim-choices{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media(max-width:640px){.sim-choices{grid-template-columns:1fr;}}
+  .sim-choice{
+    text-align:left; background:var(--panel-2); border:1px solid var(--line);
+    border-radius:12px; padding:18px 18px; cursor:pointer; color:var(--paper);
+    font-family:'Inter',sans-serif; font-size:.95rem; transition:.2s;
+  }
+  .sim-choice:hover{border-color:var(--gold); transform:translateY(-2px);}
+  .sim-choice b{display:block; margin-bottom:6px; font-size:1.02rem;}
+  .sim-result{
+    margin-top:22px; padding:18px 20px; border-radius:10px; display:none;
+    font-size:.96rem; line-height:1.6;
+  }
+  .sim-result.show{display:block; animation:fade .35s ease;}
+  .sim-result.outcome-bad{background:rgba(178,72,63,0.12); border:1px solid rgba(178,72,63,0.4); color:var(--enemy-soft);}
+  .sim-result.outcome-good{background:rgba(91,134,163,0.12); border:1px solid rgba(91,134,163,0.4); color:var(--friend-soft);}
+  .sim-reset{
+    margin-top:16px; background:transparent; border:1px solid var(--line); color:var(--paper-dim);
+    padding:8px 16px; border-radius:8px; cursor:pointer; font-size:.85rem; display:none;
+  }
+  .sim-reset.show{display:inline-block;}
+
+  /* ---------- DO / DONT ---------- */
+  .dd-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px;}
+  @media(max-width:720px){.dd-grid{grid-template-columns:1fr;}}
+  .dd-box{border-radius:16px; padding:26px 24px;}
+  .dd-box.do{background:rgba(91,134,163,0.09); border:1px solid rgba(91,134,163,0.3);}
+  .dd-box.dont{background:rgba(178,72,63,0.09); border:1px solid rgba(178,72,63,0.3);}
+  .dd-box h3{margin:0 0 16px; font-size:1.4rem;}
+  .dd-box.do h3{color:var(--friend-soft);}
+  .dd-box.dont h3{color:var(--enemy-soft);}
+  .dd-box ul{margin:0; padding-left:0; list-style:none;}
+  .dd-box li{
+    padding:9px 0 9px 26px; border-bottom:1px solid var(--line); position:relative;
+    font-size:.94rem; color:var(--paper-dim);
+  }
+  .dd-box li:last-child{border-bottom:none;}
+  .dd-box.do li::before{content:'✓'; position:absolute; left:0; color:var(--friend-soft); font-weight:700;}
+  .dd-box.dont li::before{content:'✕'; position:absolute; left:0; color:var(--enemy-soft); font-weight:700;}
+
+  /* ---------- FOOTER / TAKEAWAY ---------- */
+  footer{
+    padding:80px 0 60px; text-align:center;
+  }
+  .takeaway{
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(1.4rem,3.4vw,2.1rem); color:var(--gold-soft);
+    max-width:22ch; margin:0 auto 14px;
+  }
+  .footnote{color:var(--paper-dim); font-size:.85rem;}
+
+  .section-num{
+    display:inline-block; font-family:'Cormorant Garamond',serif; font-size:.95rem;
+    color:var(--paper-dim); border:1px solid var(--line); border-radius:999px;
+    padding:3px 12px; margin-bottom:10px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="navdots">
+  <a href="#hero" class="active" data-target="hero"></a>
+  <a href="#meaning" data-target="meaning"></a>
+  <a href="#story1" data-target="story1"></a>
+  <a href="#story2" data-target="story2"></a>
+  <a href="#today" data-target="today"></a>
+  <a href="#sim" data-target="sim"></a>
+  <a href="#dodont" data-target="dodont"></a>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="wrap">
+    <div class="eyebrow">The 48 Laws of Power · Law 2</div>
+    <h1 class="title">Don't trust your <em>friends</em> too much.<br>Learn to use your <em>enemies</em>.</h1>
+    <p class="subtitle">Friends get comfortable and turn on you. Enemies have something to prove — and can become <strong>your best supporters</strong>. Tap and see.</p>
+
+    <div class="scale-wrap">
+      <div class="scale-toggle">
+        <button class="active friend" id="btnFriend" onclick="setScale('friend')">Hire a Friend</button>
+        <button class="enemy" id="btnEnemy" onclick="setScale('enemy')">Hire an Enemy</button>
+      </div>
+
+      <svg id="scale" viewBox="0 0 560 240">
+        <!-- stand -->
+        <rect x="272" y="95" width="16" height="110" fill="#3a3f52"/>
+        <polygon points="240,205 320,205 336,225 224,225" fill="#2a2e3f"/>
+        <circle cx="280" cy="92" r="8" fill="var(--gold)"/>
+        <!-- beam group rotates -->
+        <g class="beam" id="beam">
+          <rect x="60" y="86" width="440" height="6" rx="3" fill="var(--gold)"/>
+          <!-- left pan (Friend) -->
+          <g class="pan-left" id="panLeft">
+            <line x1="80" y1="90" x2="80" y2="150" stroke="var(--friend)" stroke-width="2"/>
+            <line x1="80" y1="90" x2="40" y2="150" stroke="var(--friend)" stroke-width="2"/>
+            <line x1="80" y1="90" x2="120" y2="150" stroke="var(--friend)" stroke-width="2"/>
+            <ellipse cx="80" cy="150" rx="46" ry="12" fill="none" stroke="var(--friend)" stroke-width="3"/>
+            <text x="80" y="180" text-anchor="middle" fill="var(--friend-soft)" font-size="15" font-family="Inter, sans-serif" font-weight="600">FRIEND</text>
+          </g>
+          <!-- right pan (Enemy) -->
+          <g class="pan-right" id="panRight">
+            <line x1="480" y1="90" x2="480" y2="150" stroke="var(--enemy)" stroke-width="2"/>
+            <line x1="480" y1="90" x2="440" y2="150" stroke="var(--enemy)" stroke-width="2"/>
+            <line x1="480" y1="90" x2="520" y2="150" stroke="var(--enemy)" stroke-width="2"/>
+            <ellipse cx="480" cy="150" rx="46" ry="12" fill="none" stroke="var(--enemy)" stroke-width="3"/>
+            <text x="480" y="180" text-anchor="middle" fill="var(--enemy-soft)" font-size="15" font-family="Inter, sans-serif" font-weight="600">ENEMY</text>
+          </g>
+        </g>
+      </svg>
+
+      <div class="scale-caption" id="scaleCaption">
+        Friends expect favors and rarely say the hard truth.
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="meaning">
+  <div class="wrap">
+    <div class="kicker">The Big Idea</div>
+    <h2>Pick people by skill, not by love</h2>
+    <p>Don't give power or big jobs to someone just because you like them. Judge by ability. People with something to prove often work harder than people who already have your heart.</p>
+
+    <div class="meaning-grid">
+      <div class="meaning-card friend-card">
+        <h3>Friends</h3>
+        <ul>
+          <li>Hide their real feelings to keep peace</li>
+          <li>Your favors feel like charity to them</li>
+          <li>Quiet envy builds up over time</li>
+          <li>Betrayal hits harder — you never saw it coming</li>
+        </ul>
+      </div>
+      <div class="meaning-card enemy-card">
+        <h3>Enemies</h3>
+        <ul>
+          <li>Expect nothing, so they're truly grateful</li>
+          <li>Work hard to prove themselves</li>
+          <li>Turn a threat into a helper — double win</li>
+          <li>Keep you sharp, not lazy</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="story1">
+  <div class="wrap">
+    <div class="kicker">True Story · Byzantine Empire</div>
+    <h2>The king who trusted his best friend — and lost his head</h2>
+    <div class="story">
+      <div class="story-head">
+        <span class="story-tag">True Story</span>
+        <h3>Michael & Basilius</h3>
+      </div>
+      <ul class="timeline">
+        <li><b>Picks a friend:</b> Young king Michael makes his best buddy his top advisor, over a smarter uncle.</li>
+        <li><b>Showers him with gifts:</b> Money, titles, even his own wife. Trying to buy loyalty.</li>
+        <li><b>Friend turns:</b> The friend gets him to kill his own uncle — then takes his job.</li>
+        <li><b>Betrayal:</b> Friend refuses to repay a debt, then has Michael killed in his sleep.</li>
+      </ul>
+      <div class="moral-strip">He created a monster who forgot every favor — and thought he'd earned it all alone.</div>
+    </div>
+  </div>
+</section>
+
+<section id="story2">
+  <div class="wrap">
+    <div class="kicker">True Story · Ancient China</div>
+    <h2>The emperor who used enemies instead of friends</h2>
+    <div class="story">
+      <div class="story-head">
+        <span class="story-tag">True Story</span>
+        <h3>Emperor Sung</h3>
+      </div>
+      <ul class="timeline">
+        <li><b>Sees the danger:</b> Sung knows his own "loyal" generals could betray him, just like he betrayed the last king.</li>
+        <li><b>Smart move:</b> He gives them rich estates to retire on, far from power. No threat left.</li>
+        <li><b>Wins over a rebel:</b> A defeated king fears Sung's wine is poisoned. Sung drinks it first. The king becomes his most loyal friend.</li>
+        <li><b>Forgives a plotter:</b> Sung has proof another rebel was plotting against him — but frees him anyway. The rebel is stunned into total loyalty.</li>
+      </ul>
+      <div class="moral-strip">A person spared feels real gratitude. A friend just feels entitled.</div>
+    </div>
+  </div>
+</section>
+
+<section id="today">
+  <div class="wrap">
+    <div class="kicker">Today's World</div>
+    <h2>Same law, modern office</h2>
+    <p>Tap a name.</p>
+
+    <div class="tabbar">
+      <button class="active" onclick="showTab('vignesh', this)">Vignesh</button>
+      <button onclick="showTab('pranav', this)">Pranav</button>
+      <button onclick="showTab('dhanush', this)">Dhanush</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-vignesh">
+      <h4>Vignesh</h4>
+      <div class="role">Promoted his friend, not the best person</div>
+      <p>Vignesh made his college buddy his deputy over a more skilled coworker. The friend started slacking off, expecting a free pass "because we're close" — and turned bitter when a bonus went elsewhere.</p>
+      <div class="two-col">
+        <div class="col-box bad">
+          <h5>Mistake</h5>
+          <p>Picked comfort over skill. Too awkward to give honest feedback later.</p>
+        </div>
+        <div class="col-box good">
+          <h5>Better move</h5>
+          <p>Keep the friendship. Give the job to whoever's actually best at it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-pranav">
+      <h4>Pranav</h4>
+      <div class="role">Turned a harsh critic into an ally</div>
+      <p>A rival publicly trashed Pranav's product. Instead of getting defensive, Pranav bought him coffee, fixed the flaws he'd pointed out, and gave him credit.</p>
+      <div class="two-col">
+        <div class="col-box good">
+          <h5>Result</h5>
+          <p>The critic became one of his best advisors — grateful, and eager to prove himself.</p>
+        </div>
+        <div class="col-box good">
+          <h5>Lesson</h5>
+          <p>An honest critic beats a friend who only tells you what you want to hear.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-dhanush">
+      <h4>Dhanush</h4>
+      <div class="role">Kept work and friendship separate</div>
+      <p>Dhanush managed friends and strangers on the same team. His rule: work decisions go to whoever delivers best — friendship stays outside the office.</p>
+      <div class="two-col">
+        <div class="col-box good">
+          <h5>Result</h5>
+          <p>Team trusted him — no favoritism. Friendships survived too, untested by money.</p>
+        </div>
+        <div class="col-box good">
+          <h5>Lesson</h5>
+          <p>Keep friends for friendship. Work with whoever's skilled.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sim">
+  <div class="wrap">
+    <div class="kicker">Your Turn</div>
+    <h2>One job. Who gets it?</h2>
+    <div class="sim">
+      <div class="sim-q">Your friend wants the job but is just average. Your old rival is far more skilled and wants to make amends. Who do you pick?</div>
+      <div class="sim-choices">
+        <div class="sim-choice" onclick="pickSim('friend')">
+          <b>Your friend</b>
+          Loyalty. You know what you're getting.
+        </div>
+        <div class="sim-choice" onclick="pickSim('rival')">
+          <b>Your rival</b>
+          More skilled, and hungry to prove it.
+        </div>
+      </div>
+      <div class="sim-result" id="simResult"></div>
+      <button class="sim-reset" id="simReset" onclick="resetSim()">Try the other choice</button>
+    </div>
+  </div>
+</section>
+
+<section id="dodont">
+  <div class="wrap">
+    <div class="kicker">Takeaway</div>
+    <h2>Do this, not that</h2>
+    <div class="dd-grid">
+      <div class="dd-box do">
+        <h3>Do</h3>
+        <ul>
+          <li>Pick people by skill, not by love</li>
+          <li>Give rivals a real chance</li>
+          <li>Keep some distance at work</li>
+          <li>Notice early signs of entitlement</li>
+        </ul>
+      </div>
+      <div class="dd-box dont">
+        <h3>Don't</h3>
+        <ul>
+          <li>Give power just because you're close</li>
+          <li>Assume a friend is always honest</li>
+          <li>Ignore skilled strangers</li>
+          <li>Be shocked when a favorite turns</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="takeaway">"You destroy an enemy when you make him a friend."</div>
+    <div class="footnote">Based on Law 2 of <em>The 48 Laws of Power</em> by Robert Greene — retold in simple English.</div>
+  </div>
+</footer>
+
+<script>
+  // ---- Scale interaction ----
+  const captions = {
+    friend: "A friend already <b>likes</b> you — so they expect favors and rarely tell you the truth. Comfort quietly breeds envy.",
+    enemy: "An enemy expects <b>nothing</b> from you. A little kindness or trust can turn them into your most loyal supporter."
+  };
+  function setScale(side){
+    const beam = document.getElementById('beam');
+    const btnF = document.getElementById('btnFriend');
+    const btnE = document.getElementById('btnEnemy');
+    const cap = document.getElementById('scaleCaption');
+    if(side === 'friend'){
+      beam.style.transform = 'rotate(9deg)'; // friend pan (left) drops -> heavier/riskier
+      btnF.classList.add('active'); btnE.classList.remove('active');
+    } else {
+      beam.style.transform = 'rotate(-9deg)'; // enemy pan drops -> becomes the valuable one
+      btnE.classList.add('active'); btnF.classList.remove('active');
+    }
+    cap.innerHTML = captions[side];
+  }
+
+  // ---- Tabs ----
+  function showTab(name, btn){
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tabbar button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ---- Simulator ----
+  function pickSim(choice){
+    const result = document.getElementById('simResult');
+    const reset = document.getElementById('simReset');
+    result.classList.remove('outcome-bad','outcome-good');
+    if(choice === 'friend'){
+      result.classList.add('outcome-bad');
+      result.innerHTML = "<b>Likely result:</b> Your friend feels entitled, not grateful. Hard to correct them later. Same trap Michael fell into.";
+    } else {
+      result.classList.add('outcome-good');
+      result.innerHTML = "<b>Likely result:</b> Your rival works hard to prove you right — like Sung's former enemies. Skilled worker gained, threat removed.";
+    }
+    result.classList.add('show');
+    reset.classList.add('show');
+  }
+  function resetSim(){
+    document.getElementById('simResult').classList.remove('show');
+    document.getElementById('simReset').classList.remove('show');
+  }
+
+  // ---- Nav dot active state on scroll ----
+  const sections = ['hero','meaning','story1','story2','today','sim','dodont'];
+  const dots = document.querySelectorAll('.navdots a');
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    for(const id of sections){
+      const el = document.getElementById(id);
+      if(el && window.scrollY >= el.offsetTop - window.innerHeight/2) current = id;
+    }
+    dots.forEach(d => d.classList.toggle('active', d.dataset.target === current));
+  });
+</script>
+
+</body>
+</html>

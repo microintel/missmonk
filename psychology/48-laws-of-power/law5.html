@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law 5 — Guard Your Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141c;
+    --ink-2:#1a1e2b;
+    --ink-3:#232838;
+    --parchment:#f3ede0;
+    --muted:#9099b0;
+    --gold:#c9a24b;
+    --gold-soft:#e7cf9a;
+    --ruby:#b23a48;
+    --ruby-soft:#d97b85;
+    --emerald:#4f9d69;
+    --emerald-soft:#8ccaa1;
+    --line:rgba(243,237,224,0.12);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:18px;
+    height:1px;
+    background:var(--gold-soft);
+    display:inline-block;
+  }
+
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  section{
+    padding:64px 0;
+    border-bottom:1px solid var(--line);
+  }
+  section:last-of-type{border-bottom:none;}
+
+  p{ color:var(--parchment); opacity:0.92; margin:14px 0; font-size:1.02rem; }
+  .lede{ font-size:1.12rem; color:var(--muted); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 40px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,162,75,0.14), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .eyebrow{ justify-content:center; margin-bottom:22px; }
+  .hero .eyebrow::before,.hero .eyebrow::after{content:"";width:18px;height:1px;background:var(--gold-soft);}
+  .hero h1{
+    font-size:clamp(2.1rem, 7vw, 3.4rem);
+    line-height:1.08;
+    margin:0 auto 18px;
+    max-width:11ch;
+  }
+  .hero .lede{ max-width:38ch; margin:0 auto 40px; }
+
+  /* wax seal */
+  .seal-stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    margin-top:8px;
+  }
+  .seal{
+    width:132px;
+    height:132px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .seal svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .seal-hint{
+    font-family:'Space Mono',monospace;
+    font-size:0.75rem;
+    color:var(--muted);
+    letter-spacing:0.04em;
+    transition:opacity .3s ease;
+  }
+  .seal-crack{
+    stroke:var(--ink);
+    stroke-width:1.6;
+    fill:none;
+    stroke-dasharray:340;
+    stroke-dashoffset:340;
+    transition:stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1);
+  }
+  .seal.cracked .seal-crack{ stroke-dashoffset:0; }
+  .seal-fold{
+    font-family:'Fraunces',serif;
+    font-size:1.4rem;
+    fill:var(--ink);
+    opacity:1;
+    transition:opacity .5s ease;
+  }
+  .seal.cracked .seal-fold{ opacity:0.35; }
+  .seal-result{
+    max-width:34ch;
+    margin:6px auto 0;
+    font-size:0.98rem;
+    color:var(--gold-soft);
+    opacity:0;
+    transform:translateY(6px);
+    transition:all .5s ease;
+    min-height:1.4em;
+  }
+  .seal.cracked + .seal-result,
+  .seal-stage.is-cracked .seal-result{ opacity:1; transform:translateY(0); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .s-head{ margin-bottom:22px; }
+  .s-head h2{ font-size:clamp(1.5rem,4.4vw,2rem); margin-top:10px; line-height:1.16; }
+
+  /* ---------- PULL / DEFINITION ---------- */
+  .define{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px 22px;
+    margin:22px 0;
+    position:relative;
+  }
+  .define .mark{
+    font-family:'Fraunces',serif;
+    font-size:2.6rem;
+    color:var(--gold);
+    line-height:1;
+    display:block;
+    margin-bottom:6px;
+  }
+  .define p{ margin:0; font-size:1.02rem; }
+  .define strong{ color:var(--gold-soft); font-weight:600; }
+
+  /* ---------- STORY CARD ---------- */
+  .story{
+    background:linear-gradient(180deg, var(--ink-2), var(--ink));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px 22px;
+    margin:26px 0;
+  }
+  .story .tag{
+    font-family:'Space Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:10px;
+    display:block;
+  }
+  .story h3{ font-size:1.3rem; margin-bottom:10px; color:var(--parchment); }
+  .story p{ font-size:0.98rem; }
+  .story .punch{
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.08rem;
+    color:var(--gold-soft);
+  }
+
+  /* toggle button used inside stories */
+  .toggle-btn{
+    font-family:'Space Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.03em;
+    color:var(--ink);
+    background:var(--gold-soft);
+    border:none;
+    border-radius:100px;
+    padding:10px 18px;
+    cursor:pointer;
+    margin-top:14px;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .toggle-btn:hover{ background:var(--gold); }
+  .toggle-btn:active{ transform:scale(0.96); }
+  .reveal{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .5s ease, opacity .4s ease, margin .4s ease;
+    opacity:0;
+    margin-top:0;
+  }
+  .reveal.open{
+    max-height:400px;
+    opacity:1;
+    margin-top:14px;
+  }
+  .reveal-box{
+    background:var(--ink-3);
+    border-left:3px solid var(--ruby-soft);
+    padding:14px 16px;
+    border-radius:0 10px 10px 0;
+    font-size:0.94rem;
+    color:var(--muted);
+  }
+
+  /* ---------- TACTIC TABS (Barnum) ---------- */
+  .tabs{ margin-top:18px; }
+  .tab-buttons{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .tab-btn{
+    flex:1;
+    min-width:130px;
+    font-family:'Space Mono',monospace;
+    font-size:0.74rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:11px 10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .tab-btn.active{
+    border-color:var(--gold);
+    color:var(--gold-soft);
+    background:rgba(201,162,75,0.08);
+  }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; animation:fadeIn .35s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+  .tab-panel p{ font-size:0.96rem; }
+  .tab-panel .when{
+    font-family:'Space Mono',monospace;
+    font-size:0.72rem;
+    color:var(--emerald-soft);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  /* ---------- BAR CHART (reputation over weeks) ---------- */
+  .chart-card{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 18px 8px;
+    margin-top:18px;
+  }
+  .chart-title{
+    font-family:'Space Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:16px;
+  }
+  .chart-play{
+    font-family:'Space Mono',monospace;
+    font-size:0.75rem;
+    color:var(--ink);
+    background:var(--parchment);
+    border:none;
+    border-radius:100px;
+    padding:8px 16px;
+    cursor:pointer;
+    margin-bottom:18px;
+  }
+  .bars{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    height:150px;
+    padding-bottom:8px;
+  }
+  .bar-group{
+    flex:1;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:3px;
+    height:100%;
+  }
+  .bar{
+    width:40%;
+    border-radius:4px 4px 0 0;
+    height:2px;
+    transition:height 1.1s cubic-bezier(.22,1,.36,1);
+  }
+  .bar.peale{ background:linear-gradient(180deg,var(--ruby-soft),var(--ruby)); }
+  .bar.barnum{ background:linear-gradient(180deg,var(--emerald-soft),var(--emerald)); }
+  .chart-labels{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Space Mono',monospace;
+    font-size:0.62rem;
+    color:var(--muted);
+    margin-top:8px;
+    border-top:1px solid var(--line);
+    padding-top:8px;
+  }
+  .legend{ display:flex; gap:18px; margin-top:12px; font-size:0.78rem; color:var(--muted); }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .dot.peale{ background:var(--ruby); }
+  .dot.barnum{ background:var(--emerald); }
+
+  /* ---------- MODERN STORY (Vignesh/Pranav/Dhanush) ---------- */
+  .cast{
+    display:flex;
+    gap:10px;
+    margin:18px 0 22px;
+    flex-wrap:wrap;
+  }
+  .person{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:100px;
+    padding:6px 14px 6px 6px;
+    font-size:0.86rem;
+  }
+  .avatar{
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:0.85rem;
+    color:var(--ink);
+  }
+  .avatar.v{ background:var(--emerald-soft); }
+  .avatar.p{ background:var(--ruby-soft); }
+  .avatar.d{ background:var(--gold-soft); }
+
+  .beat{
+    display:flex;
+    gap:14px;
+    padding:16px 0;
+    border-top:1px solid var(--line);
+  }
+  .beat:first-of-type{ border-top:none; }
+  .beat .who{
+    flex-shrink:0;
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600;
+    color:var(--ink);
+    font-size:0.95rem;
+  }
+  .beat p{ margin:0; font-size:0.96rem; }
+  .beat .who.v{ background:var(--emerald-soft); }
+  .beat .who.p{ background:var(--ruby-soft); }
+  .beat .who.d{ background:var(--gold-soft); }
+  .beat .note{
+    display:block;
+    margin-top:6px;
+    font-family:'Space Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.02em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+
+  /* ---------- DO / DONT ---------- */
+  .dd-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-top:20px;
+  }
+  @media(min-width:600px){ .dd-grid{ grid-template-columns:1fr 1fr; } }
+  .dd-card{
+    border-radius:16px;
+    padding:20px;
+    border:1px solid var(--line);
+  }
+  .dd-card.do{ background:linear-gradient(160deg, rgba(79,157,105,0.14), var(--ink-2)); }
+  .dd-card.dont{ background:linear-gradient(160deg, rgba(178,58,72,0.14), var(--ink-2)); }
+  .dd-card h4{
+    font-family:'Space Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin:0 0 14px;
+  }
+  .dd-card.do h4{ color:var(--emerald-soft); }
+  .dd-card.dont h4{ color:var(--ruby-soft); }
+  .dd-card ul{ margin:0; padding:0; list-style:none; }
+  .dd-card li{
+    font-size:0.92rem;
+    padding:9px 0;
+    border-top:1px dashed var(--line);
+    display:flex;
+    gap:9px;
+    color:var(--parchment);
+    opacity:0.92;
+  }
+  .dd-card li:first-child{ border-top:none; }
+  .dd-card li::before{ flex-shrink:0; font-family:'Space Mono',monospace; }
+  .dd-card.do li::before{ content:"+"; color:var(--emerald-soft); }
+  .dd-card.dont li::before{ content:"–"; color:var(--ruby-soft); }
+
+  /* ---------- CLOSING ---------- */
+  .closing{
+    text-align:center;
+    padding:70px 0 90px;
+  }
+  .closing .mark-big{
+    width:64px; height:64px;
+    margin:0 auto 22px;
+    opacity:0.9;
+  }
+  .closing h2{ font-size:clamp(1.5rem,5vw,2.1rem); max-width:16ch; margin:0 auto 16px; }
+  .closing p{ max-width:36ch; margin:0 auto; color:var(--muted); }
+
+  footer{
+    text-align:center;
+    padding:26px 0 50px;
+    font-family:'Space Mono',monospace;
+    font-size:0.7rem;
+    color:var(--muted);
+    letter-spacing:0.04em;
+  }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:var(--ink); }
+  ::-webkit-scrollbar-thumb{ background:var(--ink-3); border-radius:10px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:0.01ms !important; animation-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">LAW 5 · THE 48 LAWS OF POWER</div>
+    <h1>Your name walks into the room before you do.</h1>
+    <p class="lede">People rarely judge you by who you really are. They judge you by what they've already heard about you. That's your reputation — and it's the most powerful thing you own.</p>
+
+    <div class="seal-stage" id="sealStage">
+      <div class="seal" id="seal">
+        <svg viewBox="0 0 132 132">
+          <circle cx="66" cy="66" r="60" fill="var(--gold)"></circle>
+          <circle cx="66" cy="66" r="60" fill="url(#sheen)" opacity="0.5"></circle>
+          <defs>
+            <radialGradient id="sheen" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <text x="66" y="76" text-anchor="middle" class="seal-fold">R</text>
+          <path class="seal-crack" d="M20,50 L48,58 L38,72 L70,66 L60,90 L100,74 L88,100" />
+        </svg>
+      </div>
+      <div class="seal-hint" id="sealHint">tap the seal</div>
+      <div class="seal-result" id="sealResult">One crack, and it never looks the same again. That's why Law 5 says: guard it with your life.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WHAT IS REPUTATION ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">THE IDEA</div>
+      <h2>What is a reputation, really?</h2>
+    </div>
+    <p>Think about the last time you met someone new after hearing things about them. You didn't meet them with a blank mind. You already had a picture — "she's brilliant," "he's shady," "they're always late." That picture is a reputation, and it arrives before the person does.</p>
+
+    <div class="define">
+      <span class="mark">”</span>
+      <p>A good name does half the work for you. A bad name makes people fight you before you've said a word. <strong>You don't fully control what people think — but you control what you give them to think about.</strong></p>
+    </div>
+
+    <p>The old book that this idea comes from puts it simply: build a name around <strong>one clear quality</strong> — honesty, speed, kindness, brilliance, whatever fits you — and protect that name like it's treasure. Because once it cracks, everyone who was ever a little jealous, a little threatened, or a little bored will pile on.</p>
+  </div>
+</section>
+
+<!-- ============ STORY 1: CHUKO LIANG ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">STORY ONE · CHINA, YEAR 228</div>
+      <h2>The general who won without fighting</h2>
+    </div>
+
+    <div class="story">
+      <span class="tag">The Empty City Trick</span>
+      <h3>100 men. 150,000 enemies. Zero arrows fired.</h3>
+      <p>A general named Chuko Liang was known across China as the cleverest strategist alive — people called him "the Sleeping Dragon." One day, almost his whole army was away. An enemy force of 150,000 soldiers was marching straight at his town, and he had only 100 men left to defend it.</p>
+      <p>Instead of panicking, Liang did something strange. He opened the city gates wide, told his soldiers to hide, and sat alone on top of the wall — calmly playing music, like he didn't have a care in the world.</p>
+      <p>When the enemy general arrived and saw this, he stopped his entire army at the gate. He knew Liang's reputation: a man who always had a trick up his sleeve. An open, undefended city was exactly the kind of trap Liang would set. So instead of walking in, he ordered a full retreat.</p>
+      <div class="punch">The city was empty. The trap wasn't real. But Liang's <em>name</em> was real enough to stop an army.</div>
+
+      <button class="toggle-btn" id="whatIfBtn">What if Liang had no reputation?</button>
+      <div class="reveal" id="whatIfReveal">
+        <div class="reveal-box">Then the enemy general just sees an old man and an open gate. He walks in, and the story ends there. Reputation was the entire trap — Liang built it over years, long before that day ever happened.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORY 2: BARNUM VS PEALE ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">STORY TWO · NEW YORK, 1841</div>
+      <h2>The showman with nothing to lose</h2>
+    </div>
+
+    <div class="story">
+      <span class="tag">Barnum vs. Peale</span>
+      <h3>No money, no name — so he attacked someone else's name instead</h3>
+      <p>A young P. T. Barnum wanted to buy a museum in Manhattan. He had a deal almost sealed, but the sellers backed out at the last second and sold it to a rival, Peale's Museum, instead — simply because Peale's had a trusted name and Barnum had none.</p>
+      <p>Barnum had no reputation to protect, so he had nothing to lose. He wrote letters to newspapers, planting doubt about Peale's finances and management. He never proved anything — he just made people <em>wonder</em>. The rumors spread, the stock dropped, and the panicked owners sold the whole museum to Barnum instead.</p>
+      <p>Years later, once Barnum had built his own big reputation, he used a gentler version of the same idea: he mocked Peale's "serious" hypnotism shows with a hilarious fake version of his own — making Peale's museum look outdated instead of scandalous.</p>
+
+      <div class="tabs">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="doubt">When you have nothing</button>
+          <button class="tab-btn" data-tab="mock">When you're already known</button>
+        </div>
+        <div class="tab-panel active" id="tab-doubt">
+          <span class="when">Tactic: sow doubt</span>
+          <p>If nobody knows your name yet, quiet doubt is your best weapon. Once people start whispering "wait, is that true?" about a rival, they either defend themselves (which looks suspicious) or ignore it (which lets the doubt grow). Either way, attention shifts your way.</p>
+        </div>
+        <div class="tab-panel" id="tab-mock">
+          <span class="when">Tactic: gentle mockery</span>
+          <p>Once your name is solid, harsh attacks make <em>you</em> look bitter. A light, funny jab works better — it says "I'm confident enough to laugh," and it quietly makes the rival look a little stiff or old-fashioned, without you ever sounding cruel.</p>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Whose name was trusted more — week by week</div>
+        <button class="chart-play" id="playChart">▶ play it out</button>
+        <div class="bars" id="bars"></div>
+        <div class="chart-labels">
+          <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span><span>Week 5</span>
+        </div>
+        <div class="legend">
+          <span><i class="dot peale"></i>Peale's Museum</span>
+          <span><i class="dot barnum"></i>Barnum</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORY 3: EDISON VS TESLA ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">STORY THREE · AMERICA, 1890</div>
+      <h2>The warning: an attack that backfired</h2>
+    </div>
+
+    <div class="story">
+      <span class="tag">Edison vs. Tesla</span>
+      <h3>He tried to destroy a rival's name — and damaged his own instead</h3>
+      <p>Thomas Edison believed his own electric system (DC) was the future. When Nikola Tesla's rival system (AC) started winning, Edison panicked and went to war on Tesla's reputation — publicly electrocuting animals to "prove" AC was dangerous, then pushing for the first execution by electric chair, using AC current, to scare the public.</p>
+      <p>It backfired badly. The execution was botched and turned into a horror story. People didn't just distrust AC — they started seeing Edison himself as cruel and desperate. Tesla's name recovered. Edison's own name took the bigger hit.</p>
+      <div class="punch">Going too far in an attack doesn't punish your rival. It exposes you.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODERN STORY ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">TODAY · A FAMILIAR OFFICE</div>
+      <h2>The same law, three hundred years later</h2>
+    </div>
+    <p>Same idea, smaller stage. Here's how it plays out with people you might actually recognize.</p>
+
+    <div class="cast">
+      <div class="person"><span class="avatar v">V</span>Vignesh</div>
+      <div class="person"><span class="avatar p">P</span>Pranav</div>
+      <div class="person"><span class="avatar d">D</span>Dhanush</div>
+    </div>
+
+    <div class="beat">
+      <div class="who v">V</div>
+      <p>Vignesh joins a new team. He doesn't try to impress everyone at once — he just delivers every single thing on time, without fail, for months.
+        <span class="note">building — one clear quality: reliable</span></p>
+    </div>
+    <div class="beat">
+      <div class="who p">P</div>
+      <p>Pranav, feeling threatened, starts telling people Vignesh "just gets lucky" and "can't handle real pressure." No proof — just a seed of doubt dropped in casual chats.
+        <span class="note">attacking — sowing doubt, no risk to himself</span></p>
+    </div>
+    <div class="beat">
+      <div class="who v">V</div>
+      <p>Vignesh hears about it. He doesn't argue in the group chat or send an angry message. He stays calm, keeps delivering, and lets his track record speak.
+        <span class="note">guarding — no panic, no defensiveness</span></p>
+    </div>
+    <div class="beat">
+      <div class="who d">D</div>
+      <p>Dhanush, who already has a strong, well-known reputation, later jokes — lightly, in front of others — about how Pranav "reviewed" a project he never actually opened. No accusation, just a laugh. The room remembers it.
+        <span class="note">defending — gentle, not vicious</span></p>
+    </div>
+    <div class="beat">
+      <div class="who v">V</div>
+      <p>Months later, nobody remembers Pranav's rumor. Everyone remembers Vignesh as "the one who always delivers." The rumor faded because there was nothing solid to attach it to.
+        <span class="note">result — the name that was built quietly won</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DO / DONT ============ -->
+<section>
+  <div class="wrap">
+    <div class="s-head">
+      <div class="eyebrow">PUTTING IT TO USE</div>
+      <h2>What to actually do — and what to avoid</h2>
+    </div>
+
+    <div class="dd-grid">
+      <div class="dd-card do">
+        <h4>Do this</h4>
+        <ul>
+          <li>Pick one quality you want to be known for, and be consistent about it.</li>
+          <li>Let your name spread slowly, through real actions — not announcements.</li>
+          <li>Stay calm when rumors hit. Calm reads as confidence.</li>
+          <li>Once your name is solid, defend it with light humor, not heavy attacks.</li>
+          <li>If you're unknown and being blocked by someone else's name, doubt (used carefully) can open a door.</li>
+        </ul>
+      </div>
+      <div class="dd-card dont">
+        <h4>Don't do this</h4>
+        <ul>
+          <li>Don't go silent out of fear, or explode out of panic — both look desperate.</li>
+          <li>Don't attack harder than you need to. Overkill turns attention onto you.</li>
+          <li>Don't try to be known for five things at once. It waters everything down.</li>
+          <li>Don't assume no one's watching. Your name is always doing work, even offline.</li>
+          <li>Don't lean on someone else's good name forever — eventually, build your own.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="wrap">
+    <svg class="mark-big" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="28" fill="var(--gold)"/>
+      <text x="32" y="40" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="26" fill="var(--ink)">R</text>
+    </svg>
+    <h2>There's no version of this you can skip.</h2>
+    <p>You live around other people, whether you like it or not. So they will always judge you on something. The only real choice is whether that "something" is a story you built — or one someone else wrote for you.</p>
+  </div>
+</section>
+
+<footer>LAW 5 — SO MUCH DEPENDS ON REPUTATION, GUARD IT WITH YOUR LIFE</footer>
+
+<script>
+  // Wax seal crack interaction
+  const seal = document.getElementById('seal');
+  const sealHint = document.getElementById('sealHint');
+  const sealResult = document.getElementById('sealResult');
+  let cracked = false;
+  seal.addEventListener('click', () => {
+    cracked = !cracked;
+    seal.classList.toggle('cracked', cracked);
+    if(cracked){
+      sealHint.style.opacity = '0';
+      sealResult.style.opacity = '1';
+      sealResult.style.transform = 'translateY(0)';
+    } else {
+      sealHint.style.opacity = '1';
+      sealResult.style.opacity = '0';
+      sealResult.style.transform = 'translateY(6px)';
+    }
+  });
+
+  // "What if" reveal
+  const whatIfBtn = document.getElementById('whatIfBtn');
+  const whatIfReveal = document.getElementById('whatIfReveal');
+  whatIfBtn.addEventListener('click', () => {
+    const isOpen = whatIfReveal.classList.toggle('open');
+    whatIfBtn.textContent = isOpen ? 'Hide the alternate ending' : 'What if Liang had no reputation?';
+  });
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Bar chart: Peale vs Barnum reputation over 5 weeks
+  const pealeVals  = [82, 74, 55, 38, 30];
+  const barnumVals = [15, 28, 45, 62, 80];
+  const barsEl = document.getElementById('bars');
+  const maxH = 140;
+
+  pealeVals.forEach((v, i) => {
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+    const pealeBar = document.createElement('div');
+    pealeBar.className = 'bar peale';
+    pealeBar.dataset.target = v;
+    const barnumBar = document.createElement('div');
+    barnumBar.className = 'bar barnum';
+    barnumBar.dataset.target = barnumVals[i];
+    group.appendChild(pealeBar);
+    group.appendChild(barnumBar);
+    barsEl.appendChild(group);
+  });
+
+  function playChart(){
+    document.querySelectorAll('.bar').forEach((bar, idx) => {
+      const target = parseInt(bar.dataset.target, 10);
+      const delay = Math.floor(idx / 2) * 140;
+      bar.style.height = '2px';
+      setTimeout(() => {
+        bar.style.height = (target / 100 * maxH) + 'px';
+      }, delay + 60);
+    });
+  }
+  document.getElementById('playChart').addEventListener('click', playChart);
+
+  // Auto-play chart once it scrolls into view
+  const chartCard = document.querySelector('.chart-card');
+  let played = false;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && !played){
+        played = true;
+        playChart();
+      }
+    });
+  }, { threshold: 0.5 });
+  obs.observe(chartCard);
+</script>
+</body>
+</html>
