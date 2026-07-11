@@ -129,6 +129,18 @@ a { color:inherit; text-decoration:none; }
 .login-gate-loading.show { display:flex; }
 .login-gate.busy .google-btn { display:none; }
 
+.auth-checking { display:flex; color:var(--text3); }
+.auth-checking.hidden { display:none; }
+.auth-prompt {
+  display:none; flex-direction:column; align-items:center; gap:1.6rem;
+  animation:fadeUpIn .4s ease both;
+}
+.auth-prompt.show { display:flex; }
+@keyframes fadeUpIn {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
 /* ── Account page profile ── */
 .profile-row {
   display:flex; align-items:center; gap:1rem; margin-bottom:.9rem;
@@ -949,14 +961,23 @@ a { color:inherit; text-decoration:none; }
 ══════════════════════════════════ -->
 <div class="login-gate" id="loginGate">
   <div class="login-gate-logo"><i class="bi bi-patch-question-fill"></i></div>
-  <div class="login-gate-title">Missmonk</div>
-  <p class="login-gate-sub">Sign in with Google to access your courses, books, and lessons.</p>
-  <button class="google-btn" id="googleLoginBtn" onclick="startGoogleLogin()">
-    <span class="google-icon"><i class="bi bi-google"></i></span>
-    <span>Sign in with Google</span>
-  </button>
-  <div class="login-gate-loading" id="loginGateLoading">
-    <i class="bi bi-arrow-repeat" style="font-size:1.2rem;animation:spin 1s linear infinite;"></i> Signing you in…
+
+  <!-- Shown instantly on load while Firebase restores the session (usually <1s) -->
+  <div class="auth-checking" id="authChecking">
+    <i class="bi bi-arrow-repeat" style="font-size:1.4rem;animation:spin .8s linear infinite;"></i>
+  </div>
+
+  <!-- Shown only once we're sure there's no active session -->
+  <div class="auth-prompt" id="authPrompt">
+    <div class="login-gate-title">Missmonk</div>
+    <p class="login-gate-sub">Sign in with Google to access your courses, books, and lessons.</p>
+    <button class="google-btn" id="googleLoginBtn" onclick="startGoogleLogin()">
+      <span class="google-icon"><i class="bi bi-google"></i></span>
+      <span>Sign in with Google</span>
+    </button>
+    <div class="login-gate-loading" id="loginGateLoading">
+      <i class="bi bi-arrow-repeat" style="font-size:1.2rem;animation:spin 1s linear infinite;"></i> Signing you in…
+    </div>
   </div>
 </div>
 
@@ -1376,6 +1397,8 @@ function showLoginGate() {
   document.getElementById('loginGate').style.display = 'flex';
   document.getElementById('loginGate').classList.remove('busy');
   document.getElementById('loginGateLoading').classList.remove('show');
+  document.getElementById('authChecking').classList.add('hidden');
+  document.getElementById('authPrompt').classList.add('show');
 }
 
 async function enterApp() {
