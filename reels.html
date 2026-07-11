@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Reels — Missmonk</title>
+<title>Nuts — Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
@@ -54,6 +54,7 @@ a { color:inherit; text-decoration:none; }
   font-family:'Clash Display',sans-serif; font-weight:700; font-size:1rem;
   color:#fff; letter-spacing:.02em; display:flex; align-items:center; gap:.4rem;
 }
+.rt-nut-icon { font-size:1.1rem; line-height:1; }
 
 /* ── REEL FEED ── */
 .reel-feed {
@@ -238,14 +239,12 @@ a { color:inherit; text-decoration:none; }
 
 <div class="reels-topbar">
   <button class="rt-back" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i></button>
-  <div class="rt-title"><i class="bi bi-collection-play-fill"></i> Reels</div>
+  <div class="rt-title"><span class="rt-nut-icon">🥜</span> Nuts</div>
   <button class="rt-liked" id="rtLikedBtn" onclick="switchMode('liked')"><i class="bi bi-heart-fill"></i></button>
 </div>
 
 <div class="reels-modebar" id="modeBar">
-  <button class="rm-btn" data-mode="random" onclick="switchMode('random')"><i class="bi bi-shuffle"></i> Random</button>
-  <button class="rm-btn" data-mode="repeated" onclick="switchMode('repeated')"><i class="bi bi-arrow-repeat"></i> Repeated</button>
-  <button class="rm-btn active" data-mode="serial" onclick="switchMode('serial')"><i class="bi bi-list-ol"></i> Serial</button>
+  <button class="rm-btn active" id="modeCycleBtn" onclick="cycleMode()"><i class="bi bi-shuffle"></i> Random</button>
 </div>
 
 <div class="reel-feed" id="reelFeed"></div>
@@ -405,7 +404,7 @@ function withTimeout(promise, ms, fallback) {
    LOAD
 ══════════════════════════════ */
 let allItems = [];
-let mode = 'serial';
+let mode = null;
 let feedOrder = [];
 let renderSeq = 0;
 let swipeNavReady = false;
@@ -413,7 +412,7 @@ let loadingMoreRepeated = false;
 
 async function loadReels() {
   const feed = document.getElementById('reelFeed');
-  showState(feed, 'spinner', 'Loading reels…');
+  showState(feed, 'spinner', 'Loading…');
   try {
     const res = await fetch(REELS_URL, { cache:'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -421,9 +420,9 @@ async function loadReels() {
     allItems = normalizeItems(data);
     if (!allItems.length) throw new Error('Empty feed');
     likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
-    switchMode('serial');
+    switchMode('random');
   } catch (err) {
-    showState(feed, 'error', "Couldn't load the reels feed", err.message);
+    showState(feed, 'error', "Couldn't load the feed", err.message);
   }
 }
 
@@ -435,7 +434,7 @@ function showState(feed, kind, title, detail) {
       <i class="bi bi-heart"></i>
       <div class="rs-title">${title}</div>
       <div style="font-size:.8rem;max-width:260px;">${detail || ''}</div>
-      <button class="reel-retry" onclick="switchMode('serial')">Browse reels</button>
+      <button class="reel-retry" onclick="switchMode('random')">Browse nuts</button>
     </div>`;
   } else {
     feed.innerHTML = `<div class="reel-state">
@@ -478,15 +477,33 @@ function randomRepeatBatch(count, avoidFirst) {
 
 let modeSwitching = false;
 
+/* Single-button cycling: tap steps through these modes in order.
+   'liked' is reached separately via the heart button in the topbar. */
+const MODE_CYCLE = ['random', 'repeated', 'serial'];
+const MODE_META = {
+  random:   { icon: 'bi-shuffle',      label: 'Random' },
+  repeated: { icon: 'bi-arrow-repeat', label: 'Repeated' },
+  serial:   { icon: 'bi-list-ol',      label: 'Serial' }
+};
+function cycleMode() {
+  const curIdx = MODE_CYCLE.indexOf(mode);
+  const nextIdx = curIdx === -1 ? 0 : (curIdx + 1) % MODE_CYCLE.length;
+  switchMode(MODE_CYCLE[nextIdx]);
+}
+
 function switchMode(newMode) {
   if (!allItems.length || modeSwitching || newMode === mode) return;
   modeSwitching = true;
   mode = newMode;
 
-  document.querySelectorAll('.rm-btn, #rtLikedBtn').forEach(b => {
-    const btnMode = b.id === 'rtLikedBtn' ? 'liked' : b.dataset.mode;
-    b.classList.toggle('active', btnMode === mode);
-  });
+  const cycleBtn = document.getElementById('modeCycleBtn');
+  if (MODE_META[mode]) {
+    cycleBtn.innerHTML = `<i class="bi ${MODE_META[mode].icon}"></i> ${MODE_META[mode].label}`;
+    cycleBtn.classList.add('active');
+  } else {
+    cycleBtn.classList.remove('active');
+  }
+  document.getElementById('rtLikedBtn').classList.toggle('active', mode === 'liked');
 
   if (mode === 'serial') {
     feedOrder = allItems.map(it => it.idx);
@@ -500,7 +517,7 @@ function switchMode(newMode) {
 
   const feed = document.getElementById('reelFeed');
   if (mode === 'liked' && !feedOrder.length) {
-    showState(feed, 'empty', 'No liked reels yet', 'Tap the heart on a reel to save it here.');
+    showState(feed, 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
     setTimeout(() => { modeSwitching = false; }, 300);
     return;
   }
@@ -603,7 +620,7 @@ async function handleLikeClick(e, idx, btnEl) {
         card.remove();
         feedOrder = feedOrder.filter(i => i !== idx);
         if (!feedOrder.length) {
-          showState(document.getElementById('reelFeed'), 'empty', 'No liked reels yet', 'Tap the heart on a reel to save it here.');
+          showState(document.getElementById('reelFeed'), 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
         }
       }, 220);
     }
