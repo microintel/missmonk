@@ -339,14 +339,14 @@
       "Summary": "https://microintel.github.io/missmonk/psychology/The-7-Habits-of-Highly-Effective-People/sum.html"
     },
     "The 48 Laws of Power": {
-      "1. Never Outshine the Master": "",
-      "2. Never Put Too Much Trust in Friends; Learn How to Use Enemies": "",
-      "3. Conceal Your Intentions": "",
-      "4. Always Say Less Than Necessary": "",
-      "5. So Much Depends on Reputation—Guard It With Your Life": "",
-      "6. Court Attention at All Costs": "",
-      "7. Get Others to Do the Work for You, but Always Take the Credit": "",
-      "8. Make Other People Come to You—Use Bait if Necessary": "",
+      "1. Never Outshine the Master": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law1.html",
+      "2. Never Put Too Much Trust in Friends; Learn How to Use Enemies": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law2.html",
+      "3. Conceal Your Intentions": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law3.html",
+      "4. Always Say Less Than Necessary": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law4.html",
+      "5. So Much Depends on Reputation—Guard It With Your Life": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law5.html",
+      "6. Court Attention at All Costs": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law6.html",
+      "7. Get Others to Do the Work for You, but Always Take the Credit": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law7.html",
+      "8. Make Other People Come to You—Use Bait if Necessary": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law8.html",
       "9. Win Through Your Actions, Never Through Argument": "",
       "10. Infection: Avoid the Unhappy and Unlucky": "",
       "11. Learn to Keep People Dependent on You": "",
@@ -389,16 +389,16 @@
       "48. Assume Formlessness": ""
     },
     "The Power of Now": {
-    "1. You Are Not Your Mind": "",
-    "2. Consciousness: The Way Out of Pain": "",
-    "3. Moving Deeply into the Now": "",
-    "4. Mind Strategies for Avoiding the Now": "",
-    "5. The State of Presence": "",
-    "6. The Inner Body": "",
-    "7. Portals into the Unmanifested": "",
-    "8. Enlightened Relationships": "",
-    "9. Beyond Happiness and Unhappiness There Is Peace": "",
-    "10. The Meaning of Surrender": ""
+      "1. You Are Not Your Mind": "",
+      "2. Consciousness: The Way Out of Pain": "",
+      "3. Moving Deeply into the Now": "",
+      "4. Mind Strategies for Avoiding the Now": "",
+      "5. The State of Presence": "",
+      "6. The Inner Body": "",
+      "7. Portals into the Unmanifested": "",
+      "8. Enlightened Relationships": "",
+      "9. Beyond Happiness and Unhappiness There Is Peace": "",
+      "10. The Meaning of Surrender": ""
     }
   },
   "Ancient Literature": {
