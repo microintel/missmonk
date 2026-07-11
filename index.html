@@ -334,7 +334,8 @@ a { color:inherit; text-decoration:none; }
   font-size:2rem; font-weight:700;
   color:var(--text);
 }
-.hero-sub { color:var(--text2); font-size:.93rem; max-width:360px; line-height:1.7; font-weight:300; }
+.hero-sub { color:var(--text2); font-size:.93rem; max-width:480px; line-height:1.7; font-weight:300; }
+.hero-sub strong { color:var(--text); font-weight:700; }
 .hero-about {
   color:var(--text3); font-size:.78rem; max-width:400px; line-height:1.6;
   margin-top:1.4rem; padding-top:1.1rem; border-top:1px solid var(--border);
@@ -1545,12 +1546,12 @@ function showWelcome() {
     <div class="welcome-hero">
       <div class="hero-glow"><i class="bi bi-patch-question-fill"></i></div>
       <h1 class="hero-title">Welcome to Missmonk</h1>
-      <p class="hero-sub">Pick a course from the sidebar and start exploring chapters, topics, and lessons.</p>
+      <p class="hero-sub">Social media and the internet have made almost everything <strong>instantly accessible</strong> — except books, which still demand <strong>time, patience, and sustained focus</strong> most of us have quietly lost. Reading needs a hook, a small dose of <strong>interest to pull you back in</strong>, and that doesn't come naturally to everyone. Missmonk breaks every chapter into <strong>small, scrollable lessons</strong>, so learning feels as easy and instinctive to reach for as your feed — <strong>minus the mindless scrolling</strong>.</p>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-val">${courses}</div><div class="hero-stat-key">Courses</div></div>
         <div class="hero-stat"><div class="hero-stat-val">${total}</div><div class="hero-stat-key">Lessons</div></div>
       </div>
-      <p class="hero-about">Missmonk was built to bring scattered course material into one free, distraction-free place to learn. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
+      <p class="hero-about">Pick a course from the sidebar to start exploring chapters, topics, and lessons. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
     </div>
     <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
 }

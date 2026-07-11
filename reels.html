@@ -22,6 +22,9 @@
   --text:      #f2f2f2;
   --text2:     #a1a1a1;
   --text3:     #6b6b6b;
+  --frame-w:   100%;
+  --frame-radius: 0px;
+  --frame-top: 0px;
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html,body { height:100%; overscroll-behavior-y:contain; }
@@ -31,15 +34,33 @@ body {
   color:var(--text);
   overflow:hidden;
 }
+
+/* ── RESPONSIVE FRAME (tablet / desktop) ──
+   On wide viewports the reel column narrows to a phone-proportioned
+   frame centered on screen instead of ugly full-width stretched cards. */
+@media (min-width:640px) {
+  :root { --frame-w:420px; }
+  body {
+    background:
+      radial-gradient(circle at 50% 15%, rgba(91,141,239,0.10), transparent 55%),
+      #030303;
+  }
+}
+@media (min-width:900px) {
+  :root { --frame-w:440px; --frame-radius:26px; --frame-top:20px; }
+}
 button { cursor:pointer; font-family:inherit; border:none; background:none; color:inherit; }
 a { color:inherit; text-decoration:none; }
 
 /* ── TOP BAR ── */
 .reels-topbar {
-  position:fixed; top:0; left:0; right:0; z-index:40;
+  position:fixed; top:var(--frame-top); left:50%; z-index:40;
+  transform:translateX(-50%);
+  width:var(--frame-w);
   display:flex; align-items:center; justify-content:space-between;
   padding:calc(.9rem + env(safe-area-inset-top)) 1rem .9rem;
   background:linear-gradient(rgba(0,0,0,.55), transparent);
+  border-radius:var(--frame-radius) var(--frame-radius) 0 0;
   pointer-events:none;
 }
 .reels-topbar * { pointer-events:auto; }
@@ -59,22 +80,31 @@ a { color:inherit; text-decoration:none; }
 /* ── REEL FEED ── */
 .reel-feed {
   position:relative; z-index:1;
-  height:100dvh; width:100%;
+  height:calc(100dvh - var(--frame-top) * 2); width:var(--frame-w);
+  margin:var(--frame-top) auto 0;
+  border-radius:var(--frame-radius);
   overflow-y:scroll;
+  overflow-x:hidden;
   scroll-snap-type:y mandatory;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   scroll-behavior:smooth;
 }
 .reel-feed::-webkit-scrollbar { display:none; }
+@media (min-width:640px) {
+  .reel-feed { box-shadow:0 0 0 1px var(--border2), 0 30px 80px rgba(0,0,0,.55); }
+}
 
 .reel-card {
   position:relative;
-  height:100dvh; width:100%;
+  height:100%; width:100%;
   scroll-snap-align:start;
   scroll-snap-stop:always;
   overflow:hidden;
   isolation:isolate;
+  touch-action:manipulation;
+  content-visibility:auto;
+  contain-intrinsic-size:100% 100%;
 }
 .reel-particles {
   position:absolute; inset:0; z-index:-2;
@@ -94,6 +124,7 @@ a { color:inherit; text-decoration:none; }
   padding:0 1.4rem;
   max-width:560px; margin:0 auto;
   text-align:center;
+  touch-action:manipulation;
 }
 .reel-title {
   font-family:'Clash Display',sans-serif; font-weight:700;
@@ -143,7 +174,7 @@ a { color:inherit; text-decoration:none; }
 
 /* States */
 .reel-state {
-  position:fixed; inset:0; z-index:5;
+  position:absolute; inset:0; z-index:5;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:.9rem; text-align:center; padding:2rem;
   background:var(--bg); color:var(--text2);
@@ -163,8 +194,10 @@ a { color:inherit; text-decoration:none; }
 
 /* ── MODE BAR ── */
 .reels-modebar {
-  position:fixed; z-index:39; left:0; right:0;
-  top:calc(3.55rem + env(safe-area-inset-top));
+  position:fixed; z-index:39; left:50%;
+  transform:translateX(-50%);
+  width:var(--frame-w);
+  top:calc(var(--frame-top) + 3.55rem + env(safe-area-inset-top));
   display:flex; align-items:center; justify-content:center; gap:.4rem;
   padding:.15rem 1rem; pointer-events:none;
 }
@@ -228,8 +261,10 @@ a { color:inherit; text-decoration:none; }
 
 /* ── SHARED-LINK FILTER BANNER ── */
 .shared-banner {
-  position:fixed; z-index:41; left:0; right:0;
-  top:calc(6.6rem + env(safe-area-inset-top));
+  position:fixed; z-index:41; left:50%;
+  transform:translateX(-50%);
+  width:var(--frame-w);
+  top:calc(var(--frame-top) + 6.6rem + env(safe-area-inset-top));
   display:flex; justify-content:center; pointer-events:none;
 }
 .shared-banner-inner {
@@ -266,13 +301,67 @@ a { color:inherit; text-decoration:none; }
 .reel-like-btn.pop { animation:ringPop .55s ease-out; }
 
 @keyframes floatHeart {
-  0%   { transform:translate(-50%,0) scale(.5); opacity:1; }
-  100% { transform:translate(-50%,-64px) scale(1.25); opacity:0; }
+  0%   { transform:translate(-50%,0) scale(.4) rotate(0deg); opacity:1; }
+  70%  { opacity:1; }
+  100% { transform:translate(calc(-50% + var(--dx,0px)),-72px) scale(var(--sc,1.1)) rotate(var(--rot,0deg)); opacity:0; }
 }
 .like-burst-heart {
   position:absolute; left:50%; bottom:44px;
-  color:var(--rose); font-size:1rem; pointer-events:none;
-  animation:floatHeart .85s ease-out forwards;
+  font-size:1rem; pointer-events:none;
+  animation:floatHeart .95s cubic-bezier(.17,.67,.3,1) forwards;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+
+/* Big center heart on double-tap, Instagram-style */
+.big-heart {
+  position:absolute; z-index:6; left:50%; top:50%;
+  transform:translate(-50%,-50%) scale(.3);
+  color:#fff; font-size:6rem; opacity:0;
+  pointer-events:none;
+  filter:drop-shadow(0 0 22px rgba(224,100,95,.65)) drop-shadow(0 4px 18px rgba(0,0,0,.5));
+}
+.big-heart.show { animation:bigHeartPop .9s cubic-bezier(.17,.89,.32,1.49) forwards; }
+@keyframes bigHeartPop {
+  0%   { opacity:0;  transform:translate(-50%,-50%) scale(.3)  rotate(-10deg); }
+  18%  { opacity:1;  transform:translate(-50%,-50%) scale(1.18) rotate(5deg); }
+  34%  { transform:translate(-50%,-50%) scale(.94) rotate(-3deg); }
+  48%  { transform:translate(-50%,-50%) scale(1.05) rotate(0deg); }
+  78%  { opacity:1;  transform:translate(-50%,-50%) scale(1.02); }
+  100% { opacity:0;  transform:translate(-50%,-50%) scale(1.08); }
+}
+
+/* ── SHARE ANIMATION ── */
+@keyframes shareSwoosh {
+  0%   { transform:translate(0,0) rotate(0deg) scale(1); }
+  40%  { transform:translate(9px,-13px) rotate(22deg) scale(1.15); }
+  70%  { transform:translate(2px,-4px) rotate(6deg) scale(.92); }
+  100% { transform:translate(0,0) rotate(0deg) scale(1); }
+}
+.reel-share-btn.sending i { animation:shareSwoosh .6s ease; }
+@keyframes shareRing {
+  0%   { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 0 rgba(91,141,239,.55); }
+  100% { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 18px rgba(91,141,239,0); }
+}
+.reel-share-btn.sending { animation:shareRing .6s ease-out; }
+@keyframes sharePopCopied { 0%{transform:scale(1);} 45%{transform:scale(1.22);} 100%{transform:scale(1);} }
+.reel-share-btn.copied { animation:sharePopCopied .4s ease; }
+
+/* ── SHORT / LANDSCAPE SCREENS ── */
+@media (max-height:480px) {
+  .reel-center { top:44%; }
+  .reel-title { font-size:1.25rem; margin-bottom:.5rem; }
+  .reel-meaning { -webkit-line-clamp:2; font-size:.82rem; }
+  .reel-author-row { bottom:calc(1rem + env(safe-area-inset-bottom)); gap:.25rem; }
+  .reel-actions { bottom:calc(4.6rem + env(safe-area-inset-bottom)); gap:.15rem; }
+  .reel-like-btn, .reel-share-btn { width:40px; height:40px; font-size:1.1rem; }
+  .big-heart { font-size:4rem; }
+}
+
+/* ── POINTER / DESKTOP HOVER ── */
+@media (hover:hover) and (pointer:fine) {
+  .reel-like-btn:hover, .reel-share-btn:hover, .rt-liked:hover, .rm-btn:hover { transform:translateY(-1px) scale(1.05); }
+  .reel-follow:hover { opacity:.88; }
+  .rt-back:hover { opacity:.85; }
 }
 </style>
 </head>
@@ -476,8 +565,6 @@ let allItems = [];
 let mode = null;
 let feedOrder = [];
 let renderSeq = 0;
-let swipeNavReady = false;
-let loadingMoreRepeated = false;
 
 async function loadReels() {
   const feed = document.getElementById('reelFeed');
@@ -631,7 +718,7 @@ function cardHtml(idx) {
     <section class="reel-card" data-idx="${idx}" data-seq="${seq}" style="--rc-a:${color};">
       <div class="reel-particles" id="particles-${seq}"></div>
       <div class="reel-monogram">${initial}</div>
-      <div class="reel-center">
+      <div class="reel-center" onclick="handleCenterTap(event, ${idx}, ${seq})">
         <div class="reel-title">${escapeHtml(it.title)}</div>
         <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
       </div>
@@ -659,34 +746,175 @@ function cardHtml(idx) {
   };
 }
 
-function renderFull(order) {
-  const feed = document.getElementById('reelFeed');
-  renderSeq = 0;
-  const cards = order.map(idx => cardHtml(idx));
-  feed.innerHTML = cards.map(c => c.html).join('');
-  cards.forEach(c => particlesJS(`particles-${c.seq}`, particleConfigFor(c.idx)));
-  if (!swipeNavReady) { enableSwipeNav(feed); enableInfiniteRepeat(feed); swipeNavReady = true; }
+/* ══════════════════════════════
+   VIRTUALIZED FEED
+   With thousands of reels, mounting every card (and running a live
+   particles.js canvas for each) would freeze the tab. Instead we keep a
+   small sliding window of cards in the DOM — the current one plus a
+   couple ahead/behind — and grow/shrink that window as the user scrolls.
+   feedOrder itself can still hold the full list (or grow indefinitely for
+   'repeated' mode); only a slice of it is ever actually rendered.
+══════════════════════════════ */
+const RENDER_AHEAD  = 2;  // cards kept mounted ahead of the current one
+const RENDER_BEHIND = 2;  // cards kept mounted behind the current one
+const APPEND_CHUNK   = 3; // cards added at a time when nearing the mounted end
+const PRUNE_DEBOUNCE = 220; // ms to wait after scrolling stops before pruning
+
+let renderedFrom = 0;       // feedOrder index of the first mounted DOM child
+let mountedCount  = 0;      // number of DOM children currently mounted
+let virtualizationReady = false;
+
+/* particles.js keeps its own registry (window.pJSDom) of running instances
+   with their own requestAnimationFrame loops. Just removing the container
+   div from the DOM leaves that loop running in the background — this
+   properly stops and unregisters it so removed cards don't leak CPU. */
+function destroyParticlesIn(container) {
+  if (!container || !window.pJSDom) return;
+  const canvas = container.querySelector('canvas');
+  if (!canvas) return;
+  const i = window.pJSDom.findIndex(p => p && p.pJS && p.pJS.canvas && p.pJS.canvas.el === canvas);
+  if (i !== -1) {
+    try { window.pJSDom[i].pJS.fn.vendors.destroypJS(); } catch (e) { /* already gone */ }
+    window.pJSDom.splice(i, 1);
+  }
+}
+function destroyAllParticles(feed) {
+  feed.querySelectorAll('.reel-particles').forEach(destroyParticlesIn);
 }
 
-function appendReels(idxArray) {
-  const feed = document.getElementById('reelFeed');
-  const cards = idxArray.map(idx => cardHtml(idx));
+function mountCardsAtEnd(feed, count) {
+  if (mode === 'repeated') {
+    while (feedOrder.length < renderedFrom + mountedCount + count) {
+      const last = feedOrder.length ? feedOrder[feedOrder.length - 1] : -1;
+      feedOrder = feedOrder.concat(randomRepeatBatch(6, last));
+    }
+  }
+  const from = renderedFrom + mountedCount;
+  const to   = Math.min(from + count, feedOrder.length);
+  if (to <= from) return;
+  const cards = feedOrder.slice(from, to).map(idx => cardHtml(idx));
   feed.insertAdjacentHTML('beforeend', cards.map(c => c.html).join(''));
   cards.forEach(c => particlesJS(`particles-${c.seq}`, particleConfigFor(c.idx)));
-  feedOrder = feedOrder.concat(idxArray);
+  mountedCount += (to - from);
 }
 
-function enableInfiniteRepeat(feed) {
+function pruneCardsFromStart(feed, count) {
+  if (count <= 0) return;
+  const cardHeight = feed.clientHeight || 1;
+  let removed = 0;
+  for (let i = 0; i < count; i++) {
+    const first = feed.firstElementChild;
+    if (!first) break;
+    destroyParticlesIn(first.querySelector('.reel-particles'));
+    first.remove();
+    removed++;
+  }
+  renderedFrom += removed;
+  mountedCount  -= removed;
+  feed.scrollTop -= removed * cardHeight; // keep the visible card in place
+}
+
+function renderFull(order) {
+  feedOrder = order;
+  const feed = document.getElementById('reelFeed');
+  destroyAllParticles(feed);
+  feed.innerHTML = '';
+  renderSeq = 0;
+  renderedFrom = 0;
+  mountedCount = 0;
+  mountCardsAtEnd(feed, RENDER_AHEAD + APPEND_CHUNK + 1);
+  if (!virtualizationReady) {
+    enableSwipeNav(feed);
+    enableFeedVirtualization(feed);
+    virtualizationReady = true;
+  }
+}
+
+function enableFeedVirtualization(feed) {
+  let pruneTimer = null;
   feed.addEventListener('scroll', () => {
-    if (mode !== 'repeated' || loadingMoreRepeated) return;
-    const nearEnd = feed.scrollTop + feed.clientHeight >= feed.scrollHeight - window.innerHeight * 1.5;
-    if (nearEnd) {
-      loadingMoreRepeated = true;
-      const last = feedOrder.length ? feedOrder[feedOrder.length - 1] : -1;
-      appendReels(randomRepeatBatch(6, last));
-      setTimeout(() => { loadingMoreRepeated = false; }, 200);
+    const cardHeight = feed.clientHeight || 1;
+    const domIndex = Math.round(feed.scrollTop / cardHeight);
+
+    // Grow the window forward immediately so fast scrolling never outruns
+    // the DOM (no blank cards flashing in).
+    if (domIndex >= mountedCount - RENDER_AHEAD - 1) {
+      mountCardsAtEnd(feed, APPEND_CHUNK);
     }
+
+    // Shrink the window from the back only once scrolling settles, so an
+    // in-progress touch/momentum scroll never gets its scrollTop tugged.
+    clearTimeout(pruneTimer);
+    pruneTimer = setTimeout(() => {
+      const idx = Math.round(feed.scrollTop / (feed.clientHeight || 1));
+      const pruneCount = idx - RENDER_BEHIND;
+      if (pruneCount > 0) pruneCardsFromStart(feed, pruneCount);
+    }, PRUNE_DEBOUNCE);
   });
+}
+
+/* ══════════════════════════════
+   SOUND — tiny synthesized tones via Web Audio, no external audio files
+   to fetch, so it works instantly and offline. Context is created lazily
+   on first tap (autoplay policies require a user gesture).
+══════════════════════════════ */
+let audioCtx = null;
+function getAudioCtx() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  } catch (e) { return null; }
+}
+function tone(freq, start, dur, type, peak) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0, start);
+  gain.gain.linearRampToValueAtTime(peak || 0.16, start + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(start);
+  osc.stop(start + dur + 0.02);
+}
+function playLikeSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  tone(760, now, 0.14, 'sine', 0.16);
+  tone(1180, now + 0.06, 0.18, 'sine', 0.14);
+}
+function playUnlikeSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(480, now);
+  osc.frequency.exponentialRampToValueAtTime(240, now + 0.15);
+  gain.gain.setValueAtTime(0.12, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.17);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now); osc.stop(now + 0.2);
+}
+function playShareSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(620, now);
+  osc.frequency.exponentialRampToValueAtTime(1250, now + 0.16);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.14, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now); osc.stop(now + 0.22);
 }
 
 /* ══════════════════════════════
@@ -701,11 +929,15 @@ async function handleLikeClick(e, idx, btnEl) {
   await dbSetLiked(idx, nowLiked);
 
   if (nowLiked) {
+    playLikeSound();
+    if (navigator.vibrate) navigator.vibrate(18);
     btnEl.classList.remove('pop');
     void btnEl.offsetWidth; // restart animation
     btnEl.classList.add('pop');
     setTimeout(() => btnEl.classList.remove('pop'), 550);
     spawnLikeBurst(btnEl.parentElement);
+  } else {
+    playUnlikeSound();
   }
 
   if (mode === 'liked' && !nowLiked) {
@@ -713,7 +945,9 @@ async function handleLikeClick(e, idx, btnEl) {
     if (card) {
       card.classList.add('removing');
       setTimeout(() => {
+        destroyParticlesIn(card.querySelector('.reel-particles'));
         card.remove();
+        mountedCount = Math.max(0, mountedCount - 1);
         feedOrder = feedOrder.filter(i => i !== idx);
         if (!feedOrder.length) {
           showState(document.getElementById('reelFeed'), 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
@@ -723,18 +957,58 @@ async function handleLikeClick(e, idx, btnEl) {
   }
 }
 
+/* A little confetti burst of hearts in mixed colors/sizes/rotations,
+   floating up from the like button. */
 function spawnLikeBurst(container) {
   if (!container) return;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 7; i++) {
     const h = document.createElement('span');
     h.className = 'like-burst-heart';
     h.innerHTML = '<i class="bi bi-heart-fill"></i>';
-    const dx = Math.round(Math.random() * 44 - 22);
-    h.style.marginLeft = dx + 'px';
-    h.style.animationDelay = (i * 0.06) + 's';
+    const dx    = Math.round(Math.random() * 60 - 30);
+    const rot   = Math.round(Math.random() * 50 - 25);
+    const scale = (0.75 + Math.random() * 0.7).toFixed(2);
+    h.style.setProperty('--dx', dx + 'px');
+    h.style.setProperty('--rot', rot + 'deg');
+    h.style.setProperty('--sc', scale);
+    h.style.color = i % 3 === 0 ? 'var(--amber)' : 'var(--rose)';
+    h.style.marginLeft = Math.round(Math.random() * 20 - 10) + 'px';
+    h.style.animationDelay = (i * 0.045) + 's';
     container.appendChild(h);
-    setTimeout(() => h.remove(), 950);
+    setTimeout(() => h.remove(), 1050);
   }
+}
+
+/* Double-tap on the title/meaning text (Instagram-style): shows one big
+   heart in the center of the card and likes the reel if not already liked.
+   Tracked manually off the click event (fires for both mouse and touch)
+   rather than dblclick, so mouse and touch behave identically and it never
+   double-toggles. */
+let lastTapTime = 0;
+function handleCenterTap(e, idx, seq) {
+  const now = Date.now();
+  const isDouble = now - lastTapTime < 320;
+  lastTapTime = isDouble ? 0 : now;
+  if (!isDouble) return;
+
+  const card = document.querySelector(`.reel-card[data-seq="${seq}"]`);
+  if (!card) return;
+  spawnBigHeart(card);
+  if (!likedIndices.has(idx)) {
+    const btn = card.querySelector('.reel-like-btn');
+    if (btn) handleLikeClick(e, idx, btn);
+  } else {
+    playLikeSound();
+    if (navigator.vibrate) navigator.vibrate(12);
+  }
+}
+function spawnBigHeart(card) {
+  const heart = document.createElement('div');
+  heart.className = 'big-heart';
+  heart.innerHTML = '<i class="bi bi-heart-fill"></i>';
+  card.appendChild(heart);
+  requestAnimationFrame(() => heart.classList.add('show'));
+  setTimeout(() => heart.remove(), 950);
 }
 
 /* ══════════════════════════════
@@ -754,6 +1028,13 @@ async function handleShareClick(e, idx, btnEl) {
   e.stopPropagation();
   const it = allItems[idx];
   const url = buildShareUrl(idx);
+
+  playShareSound();
+  if (navigator.vibrate) navigator.vibrate(12);
+  btnEl.classList.remove('sending');
+  void btnEl.offsetWidth; // restart animation
+  btnEl.classList.add('sending');
+  setTimeout(() => btnEl.classList.remove('sending'), 650);
 
   if (navigator.share) {
     try {
