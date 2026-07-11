@@ -8,9 +8,6 @@
 <title>Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 /* ════════════════════════════════════════════
    THEME TOKENS
@@ -88,74 +85,6 @@ a { color:inherit; text-decoration:none; }
 /* ════════════════════════════════════════════
    APP SHELL
 ════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════
-   LOGIN GATE
-════════════════════════════════════════════ */
-.login-gate {
-  position:fixed; inset:0; z-index:500;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:1.6rem; text-align:center; padding:2rem;
-  background:var(--bg);
-}
-.login-gate-logo {
-  width:96px; height:96px; border-radius:30px;
-  background:var(--blue);
-  display:grid; place-items:center; font-size:2.4rem;
-  box-shadow:0 0 70px var(--blue-glow);
-  color:#fff;
-}
-.login-gate-title {
-  font-family:'Clash Display',sans-serif;
-  font-size:2rem; font-weight:700; color:var(--text);
-}
-.login-gate-sub { color:var(--text2); font-size:.95rem; max-width:420px; line-height:1.7; }
-.google-btn {
-  display:flex; align-items:center; gap:1rem;
-  background:#ffffff; color:#3c4043;
-  border:1px solid var(--border2);
-  border-radius:16px;
-  padding:1.1rem 2.2rem;
-  font-size:1.15rem; font-weight:600;
-  box-shadow:0 8px 30px rgba(0,0,0,.25);
-  transition:transform .15s, box-shadow .15s;
-}
-.google-btn:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(0,0,0,.3); }
-.google-btn:active { transform:translateY(0); }
-.google-btn .google-icon {
-  font-size:1.9rem; line-height:1; flex-shrink:0;
-  display:grid; place-items:center;
-}
-.login-gate-loading { display:none; align-items:center; gap:.6rem; color:var(--text2); font-size:.9rem; }
-.login-gate-loading.show { display:flex; }
-.login-gate.busy .google-btn { display:none; }
-
-/* ── Account page profile ── */
-.profile-row {
-  display:flex; align-items:center; gap:1rem; margin-bottom:.9rem;
-}
-.profile-avatar {
-  width:64px; height:64px; border-radius:50%;
-  object-fit:cover; border:2px solid var(--border2);
-  background:var(--surface3); flex-shrink:0;
-}
-.profile-name { font-size:1.05rem; font-weight:700; color:var(--text); font-family:'Clash Display',sans-serif; }
-.profile-email { font-size:.82rem; color:var(--text2); }
-.account-logout-btn {
-  display:inline-flex; align-items:center; gap:.5rem;
-  background:rgba(224,100,95,.12); color:var(--rose);
-  border:1px solid rgba(224,100,95,.3);
-  border-radius:12px; padding:.6rem 1.1rem;
-  font-size:.9rem; font-weight:600;
-}
-.account-logout-btn i { font-size:1.3rem; }
-.account-logout-btn:hover { background:rgba(224,100,95,.2); }
-.account-field-lbl { font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text3); margin-bottom:.25rem; }
-.account-field-val {
-  background:var(--bg); border:1.5px solid var(--border);
-  border-radius:var(--radius); padding:.6rem .85rem;
-  font-size:.86rem; color:var(--text); margin-bottom:.7rem;
-}
-
 #appShell { display:flex; flex-direction:column; min-height:100vh; position:relative; z-index:1; }
 
 /* ── TOP NAV ── */
@@ -189,7 +118,7 @@ a { color:inherit; text-decoration:none; }
   position:relative; display:flex; align-items:center;
   flex:0 1 auto; min-width:0;
   width:220px;
-  transition:width .75s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:width .45s cubic-bezier(0.22, 1, 0.36, 1);
   will-change:width;
 }
 .nav-search:hover, .nav-search:focus-within { width:400px; }
@@ -413,32 +342,6 @@ a { color:inherit; text-decoration:none; }
 }
 .hero-about a { color:var(--blue); font-weight:600; white-space:nowrap; }
 .hero-about a:hover { text-decoration:underline; }
-.hero-terms {
-  color:var(--text3); font-size:.72rem; max-width:440px; line-height:1.65;
-  margin-top:.9rem; padding-top:.9rem; border-top:1px solid var(--border);
-}
-
-/* Collapsible "About Missmonk" panel */
-.hero-toggle-btn {
-  display:inline-flex; align-items:center; gap:.5rem;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:30px; padding:.55rem 1.15rem;
-  font-size:.82rem; font-weight:600; color:var(--text2);
-  margin-top:.3rem;
-  transition:background .2s, color .2s, border-color .2s;
-}
-.hero-toggle-btn:hover { background:var(--surface2); color:var(--text); border-color:var(--border2); }
-.hero-toggle-btn i { transition:transform .5s cubic-bezier(0.16, 1, 0.3, 1); }
-.hero-toggle-btn.open i { transform:rotate(180deg); }
-.hero-collapse {
-  max-height:0; overflow:hidden; width:100%;
-  transition:max-height .7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.hero-collapse.open { max-height:600px; }
-.hero-collapse-inner {
-  display:flex; flex-direction:column; align-items:center;
-  padding-top:1rem;
-}
 .hero-stats {
   display:flex; gap:1.2rem; margin-top:.5rem; flex-wrap:wrap; justify-content:center;
 }
@@ -834,10 +737,6 @@ a { color:inherit; text-decoration:none; }
   from { opacity:0; transform:translateY(-8px); }
   to   { opacity:1; transform:translateY(0); }
 }
-@keyframes spin {
-  from { transform:rotate(0deg); }
-  to   { transform:rotate(360deg); }
-}
 .card:nth-child(1){animation-delay:.03s}
 .card:nth-child(2){animation-delay:.07s}
 .card:nth-child(3){animation-delay:.11s}
@@ -855,7 +754,7 @@ a { color:inherit; text-decoration:none; }
   :root { --topnav-h: 66px; }
   .topnav { gap:.6rem; }
   .nav-logo span { display:none; }
-  .nav-search { width:130px; flex:0 1 auto; transition:width .75s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nav-search { width:130px; flex:0 1 auto; transition:width .4s cubic-bezier(0.22, 1, 0.36, 1); }
   .nav-search:hover, .nav-search:focus-within { width:min(82vw, 480px); }
   .nav-search-input {
     font-size:1rem; padding:.7rem 2.4rem .7rem 2.6rem;
@@ -872,7 +771,6 @@ a { color:inherit; text-decoration:none; }
   .sidebar.open { transform:translateX(0); }
   .sidebar-overlay.open { display:block; }
   .nav-burger { display:flex; }
-  .nav-account-btn { display:none; }
   .content { padding:1.1rem .85rem calc(2rem + 64px); }
   .card-grid { grid-template-columns:repeat(2,1fr); gap:.65rem; }
   .page-title { font-size:1.3rem; }
@@ -934,25 +832,9 @@ a { color:inherit; text-decoration:none; }
 <body>
 
 <!-- ══════════════════════════════════
-     LOGIN GATE
-══════════════════════════════════ -->
-<div class="login-gate" id="loginGate">
-  <div class="login-gate-logo"><i class="bi bi-patch-question-fill"></i></div>
-  <div class="login-gate-title">Missmonk</div>
-  <p class="login-gate-sub">Sign in with Google to access your courses, books, and lessons.</p>
-  <button class="google-btn" id="googleLoginBtn" onclick="startGoogleLogin()">
-    <span class="google-icon"><i class="bi bi-google"></i></span>
-    <span>Sign in with Google</span>
-  </button>
-  <div class="login-gate-loading" id="loginGateLoading">
-    <i class="bi bi-arrow-repeat" style="font-size:1.2rem;animation:spin 1s linear infinite;"></i> Signing you in…
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
      APP SHELL
 ══════════════════════════════════ -->
-<div id="appShell" style="display:none;">
+<div id="appShell">
 
   <!-- TOP NAV -->
   <nav class="topnav">
@@ -975,7 +857,6 @@ a { color:inherit; text-decoration:none; }
     </div>
 
     <button class="nav-icon-btn" title="Nuts" onclick="location.href='reels.html'">🥜</button>
-    <button class="nav-icon-btn nav-account-btn" title="Account" onclick="showAccountPage()"><i class="bi bi-person-circle"></i></button>
   </nav>
 
   <!-- BODY -->
@@ -996,7 +877,7 @@ a { color:inherit; text-decoration:none; }
 </div>
 
 <!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav" id="bottomNav" style="display:none;">
+<nav class="bottom-nav" id="bottomNav">
   <button class="bn-item active" id="bn-home" onclick="goHome()">
     <span class="bn-icon"><i class="bi bi-house-door-fill"></i></span><span class="bn-label">Home</span>
   </button>
@@ -1286,73 +1167,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* ══════════════════════════════
-   FIREBASE — AUTH + FIRESTORE
-══════════════════════════════ */
-// TODO: replace with your own Firebase project config from
-// https://console.firebase.google.com → Project settings → General → Your apps (Web app).
-// Also: in the Firebase console, enable "Google" under Authentication → Sign-in method,
-// and add this site's domain under Authentication → Settings → Authorized domains.
-const firebaseConfig = {
-  apiKey: "AIzaSyAEDyOeP7DsUggkHiPHjPhaDxVhfk9g-Rg",
-  authDomain: "missmonk-microintel.firebaseapp.com",
-  projectId: "missmonk-microintel",
-  storageBucket: "missmonk-microintel.firebasestorage.app",
-  messagingSenderId: "365757789077",
-  appId: "1:365757789077:web:f3262db7e7689606e33c9c"
-};
-firebase.initializeApp(firebaseConfig);
-const auth           = firebase.auth();
-const db             = firebase.firestore();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-
-let currentUser = null;
-
-function startGoogleLogin() {
-  document.getElementById('loginGate').classList.add('busy');
-  document.getElementById('loginGateLoading').classList.add('show');
-  auth.signInWithPopup(googleProvider).catch(err => {
-    document.getElementById('loginGate').classList.remove('busy');
-    document.getElementById('loginGateLoading').classList.remove('show');
-    if (err && err.code === 'auth/popup-closed-by-user') return;
-    console.error('Google sign-in error:', err);
-    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Google sign-in failed');
-  });
-}
-
-async function saveUserToFirestore(user) {
-  try {
-    await db.collection('users').doc(user.uid).set({
-      name:      user.displayName || '',
-      email:     user.email || '',
-      photoURL:  user.photoURL || '',
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-  } catch (err) {
-    console.error('Firestore write failed:', err);
-  }
-}
-
-function logout() {
-  auth.signOut();
-}
-
-function showLoginGate() {
-  document.getElementById('appShell').style.display = 'none';
-  document.getElementById('bottomNav').style.display = 'none';
-  document.getElementById('loginGate').style.display = 'flex';
-  document.getElementById('loginGate').classList.remove('busy');
-  document.getElementById('loginGateLoading').classList.remove('show');
-}
-
-async function enterApp() {
-  document.getElementById('loginGate').style.display = 'none';
-  document.getElementById('appShell').style.display = 'flex';
-  document.getElementById('bottomNav').style.display = '';
-  await initAppData();
-}
-
-async function initAppData() {
+window.addEventListener('DOMContentLoaded', async () => {
   // Restore theme
   const savedTheme = localStorage.getItem('lp_theme') || 'dark';
   applyTheme(savedTheme);
@@ -1382,24 +1197,6 @@ async function initAppData() {
     if (!document.getElementById('themePanel')?.contains(e.target) && !e.target.closest('.nav-icon-btn'))
       document.getElementById('themePanel')?.classList.remove('open');
   });
-}
-
-// Firebase persists the session itself (IndexedDB), so this fires on every
-// load with the restored user if one exists — no manual localStorage needed.
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    currentUser = {
-      uid: user.uid,
-      name: user.displayName || user.email,
-      email: user.email,
-      picture: user.photoURL || ''
-    };
-    await saveUserToFirestore(user);
-    await enterApp();
-  } else {
-    currentUser = null;
-    showLoginGate();
-  }
 });
 
 /* ══════════════════════════════
@@ -1755,11 +1552,6 @@ function renderContent() {
 /* ══════════════════════════════
    WELCOME
 ══════════════════════════════ */
-function toggleWelcomeInfo() {
-  document.getElementById('heroCollapse').classList.toggle('open');
-  document.getElementById('heroToggleBtn').classList.toggle('open');
-}
-
 function showWelcome() {
   const total   = allLessons.length;
   const courses = Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).length;
@@ -1767,24 +1559,12 @@ function showWelcome() {
     <div class="welcome-hero">
       <div class="hero-glow"><i class="bi bi-patch-question-fill"></i></div>
       <h1 class="hero-title">Welcome to Missmonk</h1>
+      <p class="hero-sub">Social media and the internet have made almost everything <strong>instantly accessible</strong> — except books, which still demand <strong>time, patience, and sustained focus</strong> most of us have quietly lost. Reading needs a hook, a small dose of <strong>interest to pull you back in</strong>, and that doesn't come naturally to everyone. Missmonk breaks every chapter into <strong>small, scrollable lessons</strong>, so learning feels as easy and instinctive to reach for as your feed — <strong>minus the mindless scrolling</strong>.</p>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-val">${courses}</div><div class="hero-stat-key">Courses</div></div>
         <div class="hero-stat"><div class="hero-stat-val">${total}</div><div class="hero-stat-key">Lessons</div></div>
       </div>
-      <button class="hero-toggle-btn" id="heroToggleBtn" onclick="toggleWelcomeInfo()">
-        <span>About Missmonk</span>
-        <i class="bi bi-chevron-down"></i>
-      </button>
-      <div class="hero-collapse" id="heroCollapse">
-        <div class="hero-collapse-inner">
-          <p class="hero-sub">Social media and the internet have made almost everything <strong>instantly accessible</strong> — except books, which still demand <strong>time, patience, and sustained focus</strong> most of us have quietly lost. Reading needs a hook, a small dose of <strong>interest to pull you back in</strong>, and that doesn't come naturally to everyone. Missmonk breaks every chapter into <strong>small, scrollable lessons</strong>, so learning feels as easy and instinctive to reach for as your feed — <strong>minus the mindless scrolling</strong>.</p>
-          <p class="hero-about">Pick a course from the sidebar to start exploring chapters, topics, and lessons. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
-          <p class="hero-terms">
-            Curriculum content is community-sourced and may occasionally contain errors, outdated info, or broken links — please verify anything important independently.
-            Your account details are never shared with Microintel and sign-in is handled entirely by Google, secured by Google's own infrastructure.
-          </p>
-        </div>
-      </div>
+      <p class="hero-about">Pick a course from the sidebar to start exploring chapters, topics, and lessons. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
     </div>
     <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
 }
@@ -1929,29 +1709,20 @@ function showAccountPage() {
     <div class="page-header">
       <div class="page-tag amber"><i class="bi bi-person-circle"></i> Account</div>
       <div class="page-title">Account</div>
-      <div class="page-meta">Signed in with Google</div>
+      <div class="page-meta">Login is coming soon</div>
     </div>
     <div class="account-card">
-      <div class="account-card-title"><i class="bi bi-shield-lock-fill"></i> Profile</div>
-      <div class="profile-row">
-        <img class="profile-avatar" src="${currentUser?.picture || ''}" alt="">
-        <div>
-          <div class="profile-name">${currentUser?.name || ''}</div>
-          <div class="profile-email">${currentUser?.email || ''}</div>
-        </div>
+      <div class="account-card-title"><i class="bi bi-shield-lock-fill"></i> Login</div>
+      <div class="account-form">
+        <input class="url-input" type="email" placeholder="Email" disabled/>
+        <input class="url-input" type="password" placeholder="Password" disabled/>
+        <button class="btn-sm" disabled style="opacity:.5;cursor:not-allowed;">Log In — Coming Soon</button>
       </div>
-      <div class="account-field-lbl">Name</div>
-      <div class="account-field-val">${currentUser?.name || '—'}</div>
-      <div class="account-field-lbl">Email</div>
-      <div class="account-field-val">${currentUser?.email || '—'}</div>
-      <div class="account-field-lbl">Password</div>
-      <div class="account-field-val">•••••••• <span style="color:var(--text3);font-size:.75rem;">(managed by Google — never shared with Missmonk)</span></div>
-      <button class="account-logout-btn" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Log Out</button>
     </div>
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-graph-up-arrow"></i> Progress</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
-        Your reading progress, completed lessons, and streaks will appear here as you use the app.
+        Once login is available, your reading progress, completed lessons, and streaks will appear in the Progress tab.
       </p>
     </div>
     <div class="account-card">
@@ -1976,6 +1747,7 @@ function showAccountPage() {
       </p>
       <div class="about-roadmap-lbl">What's coming next</div>
       <ul class="about-roadmap">
+        <li><i class="bi bi-shield-lock-fill"></i> Real account login, so your progress is saved and synced across devices</li>
         <li><i class="bi bi-graph-up-arrow"></i> Progress tracking — completed lessons, streaks, and per-course stats</li>
         <li><i class="bi bi-bookmark-star-fill"></i> Bookmarks and personal notes on lessons</li>
         <li><i class="bi bi-cloud-download-fill"></i> Offline / downloadable lessons for reading without internet</li>
@@ -1998,7 +1770,7 @@ function showProgressPage() {
     <div class="page-header">
       <div class="page-tag blue"><i class="bi bi-graph-up-arrow"></i> Progress</div>
       <div class="page-title">Your Progress</div>
-      <div class="page-meta">Signed in — tracking is coming soon</div>
+      <div class="page-meta">Log in to start tracking completed lessons</div>
     </div>
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-bar-chart-line-fill"></i> Overview</div>
