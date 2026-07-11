@@ -1,26 +1,67 @@
 {
-  "1": {
-    "title": "Never Outshine the Master",
+  "The 48 Laws of Power": {
     "author": "Robert Greene",
-    "meaning": "Always make those above you feel superior. If you outshine your superior, they may become insecure and work against you.",
-    "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law1.html"
+    "chapters": [
+      {
+        "title": "Never Outshine the Master",
+        "meaning": "Always make those above you feel superior. If you outshine your superior, they may become insecure and work against you.",
+        "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law1.html"
+      },
+      {
+        "title": "Never Put Too Much Trust in Friends, Learn How to Use Enemies",
+        "meaning": "Friends can become jealous or betray you, while former enemies often prove more loyal when given a chance.",
+        "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law2.html"
+      },
+      {
+        "title": "Conceal Your Intentions",
+        "meaning": "Keep your true plans hidden so others cannot predict, interfere with, or block your actions.",
+        "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law3.html"
+      },
+      {
+        "title": "Always Say Less Than Necessary",
+        "meaning": "Speaking less makes you appear more confident and prevents others from gaining information they can use against you.",
+        "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law4.html"
+      }
+    ]
   },
-  "2": {
-    "title": "Never Put Too Much Trust in Friends, Learn How to Use Enemies",
-    "author": "Robert Greene",
-    "meaning": "Friends can become jealous or betray you, while former enemies often prove more loyal when given a chance.",
-    "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law2.html"
-  },
-  "3": {
-    "title": "Conceal Your Intentions",
-    "author": "Robert Greene",
-    "meaning": "Keep your true plans hidden so others cannot predict, interfere with, or block your actions.",
-    "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law3.html"
-  },
-  "4": {
-    "title": "Always Say Less Than Necessary",
-    "author": "Robert Greene",
-    "meaning": "Speaking less makes you appear more confident and prevents others from gaining information they can use against you.",
-    "link": "https://microintel.github.io/missmonk/psychology/48-laws-of-power/law4.html"
+  "The Psychology of Money": {
+    "author": "Morgan Housel",
+    "chapters": [
+      {
+        "title": "We all learned money from completely different worlds",
+        "meaning": "Everyone learns about money from different life experiences. Because of this, people have different beliefs and habits about money.",
+        "link": ""
+      },
+      {
+        "title": "The same event looks different from every window",
+        "meaning": "The same money situation can look different to different people. Our experiences change the way we see financial decisions.",
+        "link": ""
+      },
+      {
+        "title": "Experience > Education",
+        "meaning": "Real-life experience often teaches better money lessons than books or school. What we live through shapes our financial decisions.",
+        "link": ""
+      },
+      {
+        "title": "Every outcome is guided by forces beyond individual effort",
+        "meaning": "Hard work is important, but it is not the only reason for success. Luck and timing also play a big role in life.",
+        "link": ""
+      },
+      {
+        "title": "Where does bold end and reckless begin?",
+        "meaning": "Taking smart risks can help you grow. But taking unnecessary risks can lead to big losses.",
+        "link": ""
+      },
+      {
+        "title": "Two things can point you in a better direction",
+        "meaning": "Good habits like saving money and being patient can improve your financial future. Small actions repeated over time make a big difference.",
+        "link": ""
+      },
+      {
+        "title": "Luck & risk are identical siblings",
+        "meaning": "Luck and risk always exist together. Success is not only because of skill, and failure is not always because of mistakes.",
+        "link": ""
+      }
+    ]
   }
 }
