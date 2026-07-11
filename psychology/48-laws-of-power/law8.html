@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don't Chase. Set the Trap. — Law 8, simply explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,560;9..144,680&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#152018;
+    --bg-2:#1d2b21;
+    --bg-3:#24342a;
+    --card:#20301f;
+    --honey:#e8a33d;
+    --honey-bright:#f2c14e;
+    --ember:#c1502e;
+    --cream:#f1ead9;
+    --muted:#a9b8ac;
+    --line:#3a4a3c;
+    --radius:18px;
+    --serif:'Fraunces', serif;
+    --sans:'Work Sans', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--honey); color:#1a1a10;}
+
+  /* subtle texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:radial-gradient(circle at 20% 10%, rgba(232,163,61,0.07), transparent 40%),
+                      radial-gradient(circle at 85% 30%, rgba(232,163,61,0.05), transparent 45%),
+                      radial-gradient(circle at 50% 90%, rgba(193,80,46,0.06), transparent 50%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{max-width:760px; margin:0 auto; padding:0 22px; position:relative; z-index:1;}
+
+  /* ---------- progress dots ---------- */
+  .progress-rail{
+    position:fixed; right:14px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:10px; z-index:50;
+  }
+  .progress-rail button{
+    width:8px; height:8px; border-radius:50%;
+    border:1px solid var(--muted); background:transparent;
+    cursor:pointer; padding:0; transition:.3s;
+  }
+  .progress-rail button.active{background:var(--honey); border-color:var(--honey); transform:scale(1.4);}
+  @media (max-width:720px){ .progress-rail{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:60px 0 40px;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--honey); margin-bottom:18px; font-weight:600;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:560;
+    font-size:clamp(2.4rem, 8vw, 4.2rem);
+    line-height:1.05;
+    color:var(--cream);
+    max-width:11ch;
+  }
+  .hero h1 em{
+    font-style:italic; font-weight:680; color:var(--honey-bright);
+  }
+  .hero p.lede{
+    margin-top:22px; max-width:46ch;
+    font-size:1.08rem; color:var(--muted);
+  }
+  .bait-orb{
+    position:absolute; right:-40px; top:14%;
+    width:220px; height:220px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--honey-bright), var(--honey) 45%, transparent 70%);
+    filter:blur(2px);
+    opacity:.5;
+    animation:pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1); opacity:.4;}
+    50%{transform:scale(1.12); opacity:.6;}
+  }
+  @media (max-width:720px){ .bait-orb{width:140px; height:140px; right:-60px;} }
+
+  .scroll-cue{
+    margin-top:50px; font-size:.8rem; color:var(--muted);
+    display:flex; align-items:center; gap:8px;
+  }
+  .scroll-cue .arrow{animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);}}
+
+  /* ---------- generic sections ---------- */
+  section{
+    padding:70px 0;
+    border-top:1px solid var(--line);
+  }
+  .tag{
+    font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--honey); font-weight:600; margin-bottom:14px; display:block;
+  }
+  h2{
+    font-family:var(--serif); font-weight:560;
+    font-size:clamp(1.7rem, 5vw, 2.5rem);
+    margin-bottom:20px; color:var(--cream);
+  }
+  h3{
+    font-family:var(--serif); font-weight:560; font-size:1.25rem; color:var(--honey-bright);
+    margin-bottom:10px;
+  }
+  p{color:var(--muted); font-size:1rem; margin-bottom:14px;}
+  p strong{color:var(--cream); font-weight:600;}
+  .lead-line{
+    font-size:1.15rem; color:var(--cream); margin-bottom:18px;
+  }
+
+  /* ---------- fade in on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- story card ---------- */
+  .story-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 24px;
+    margin-top:20px;
+  }
+  .story-box p:last-child{margin-bottom:0;}
+
+  .who{
+    display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .who .dot{
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(140deg, var(--honey), var(--ember));
+    flex-shrink:0;
+  }
+  .who span{font-family:var(--serif); font-weight:680; color:var(--honey-bright); font-size:1.05rem;}
+
+  /* ---------- big idea metaphor ---------- */
+  .trap-visual{
+    margin:26px 0; display:flex; justify-content:center;
+  }
+  .trap-visual svg{width:100%; max-width:320px; height:auto;}
+
+  /* ---------- comparison / simulator ---------- */
+  .sim{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 22px; margin-top:24px;
+  }
+  .sim-buttons{display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap;}
+  .sim-buttons button{
+    flex:1; min-width:140px;
+    font-family:var(--sans); font-weight:600; font-size:.92rem;
+    padding:13px 16px; border-radius:12px; border:1px solid var(--line);
+    background:var(--bg-3); color:var(--cream); cursor:pointer;
+    transition:.25s;
+  }
+  .sim-buttons button:hover{border-color:var(--honey);}
+  .sim-buttons button.selected{
+    background:var(--honey); color:#1a1a10; border-color:var(--honey);
+  }
+  .track{
+    position:relative; height:70px; background:var(--bg-2); border-radius:14px;
+    margin-bottom:20px; overflow:hidden; border:1px solid var(--line);
+  }
+  .track .you, .track .them{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem;
+  }
+  .track .you{left:14px; background:var(--honey-bright);}
+  .track .them{ right:220px; background:var(--bg); border:2px solid var(--muted); transition:right 1.6s cubic-bezier(.4,0,.2,1); }
+  .track .path{
+    position:absolute; left:48px; right:48px; top:50%; height:2px;
+    background:repeating-linear-gradient(to right, var(--line) 0, var(--line) 6px, transparent 6px, transparent 12px);
+  }
+  .bars{display:grid; gap:14px;}
+  .bar-row{display:grid; grid-template-columns:110px 1fr; align-items:center; gap:12px;}
+  .bar-row .label{font-size:.85rem; color:var(--muted); font-weight:500;}
+  .bar-track{height:10px; border-radius:6px; background:var(--bg-2); overflow:hidden; border:1px solid var(--line);}
+  .bar-fill{height:100%; width:100%; border-radius:6px; transition:width 1.6s cubic-bezier(.4,0,.2,1), background .4s;}
+  .fill-energy{background:linear-gradient(90deg, var(--honey), var(--honey-bright));}
+  .fill-control{background:linear-gradient(90deg, #4d7a5a, #79b98d);}
+  .sim-msg{
+    margin-top:18px; font-size:.95rem; color:var(--cream);
+    min-height:44px; padding-top:14px; border-top:1px dashed var(--line);
+  }
+
+  /* ---------- examples grid ---------- */
+  .example{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin-top:18px;
+  }
+  .example .badge-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
+  .name-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--serif); font-weight:680; color:var(--honey-bright); font-size:1.1rem;
+  }
+  .versus{
+    display:grid; grid-template-columns:1fr; gap:12px; margin-top:14px;
+  }
+  @media (min-width:560px){ .versus{grid-template-columns:1fr 1fr;} }
+  .versus .col{border-radius:12px; padding:14px 16px; font-size:.92rem;}
+  .versus .bad{background:rgba(193,80,46,0.12); border:1px solid rgba(193,80,46,0.35); color:#e8c3b6;}
+  .versus .good{background:rgba(121,185,141,0.1); border:1px solid rgba(121,185,141,0.32); color:#cfe8d7;}
+  .versus .col .tiny-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.12em; font-weight:700; margin-bottom:6px; display:block;}
+  .versus .bad .tiny-label{color:#e59a80;}
+  .versus .good .tiny-label{color:#8ecda2;}
+
+  /* ---------- tricks cards (flip) ---------- */
+  .tricks-grid{
+    display:grid; grid-template-columns:1fr; gap:14px; margin-top:22px;
+  }
+  @media (min-width:640px){ .tricks-grid{grid-template-columns:1fr 1fr;} }
+  .flip-card{
+    perspective:1200px; height:190px; cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%;
+    transition:transform .6s cubic-bezier(.4,0,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-front, .flip-back{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:14px; padding:18px; border:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .flip-front{background:var(--bg-3);}
+  .flip-back{background:var(--honey); color:#1a1a10; transform:rotateY(180deg);}
+  .flip-front h4{font-family:var(--serif); font-weight:680; font-size:1.05rem; color:var(--honey-bright); margin-bottom:6px;}
+  .flip-front .who-tag{font-size:.78rem; color:var(--muted);}
+  .flip-back p{color:#1a1a10; font-size:.88rem; margin:0;}
+  .tap-hint{position:absolute; bottom:10px; right:14px; font-size:.68rem; color:var(--muted); opacity:.7;}
+
+  /* ---------- reversal callout ---------- */
+  .callout{
+    background:linear-gradient(135deg, rgba(193,80,46,0.14), rgba(193,80,46,0.04));
+    border:1px solid rgba(193,80,46,0.4);
+    border-radius:var(--radius);
+    padding:24px; margin-top:20px;
+  }
+  .callout .tag{color:var(--ember);}
+
+  /* ---------- do / dont ---------- */
+  .dd-grid{display:grid; grid-template-columns:1fr; gap:16px; margin-top:22px;}
+  @media (min-width:640px){ .dd-grid{grid-template-columns:1fr 1fr;} }
+  .dd-col{border-radius:var(--radius); padding:22px; border:1px solid var(--line);}
+  .dd-col.do{background:rgba(121,185,141,0.08);}
+  .dd-col.dont{background:rgba(193,80,46,0.08);}
+  .dd-col h3{margin-bottom:14px;}
+  .dd-col.do h3{color:#8ecda2;}
+  .dd-col.dont h3{color:#e59a80;}
+  .dd-col ul{list-style:none;}
+  .dd-col li{
+    position:relative; padding-left:24px; margin-bottom:12px; font-size:.94rem; color:var(--cream);
+  }
+  .dd-col.do li::before{content:"✓"; position:absolute; left:0; color:#8ecda2; font-weight:700;}
+  .dd-col.dont li::before{content:"✕"; position:absolute; left:0; color:#e59a80; font-weight:700;}
+
+  /* ---------- footer / takeaway ---------- */
+  .takeaway{
+    text-align:center; padding:90px 0 100px;
+  }
+  .takeaway .honey-line{
+    width:44px; height:3px; background:var(--honey); margin:0 auto 26px; border-radius:2px;
+  }
+  .takeaway h2{max-width:20ch; margin:0 auto 16px;}
+  .takeaway p{max-width:44ch; margin:0 auto;}
+  footer{
+    text-align:center; padding:26px 0 50px; font-size:.78rem; color:var(--muted);
+  }
+
+  a{color:var(--honey-bright);}
+</style>
+</head>
+<body>
+
+<nav class="progress-rail" id="progressRail"></nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero" id="s-hero">
+    <div class="bait-orb"></div>
+    <span class="eyebrow">Law 8 · The 48 Laws of Power</span>
+    <h1>Don't chase.<br>Set the <em>trap</em>.</h1>
+    <p class="lede">A short, simple guide to one of the oldest power moves there is: making the other person walk toward you — instead of you running after them.</p>
+    <div class="scroll-cue"><span class="arrow">↓</span> scroll to begin</div>
+  </header>
+
+  <!-- ONE LINE -->
+  <section id="s-oneline">
+    <span class="tag">In one line</span>
+    <p class="lead-line">Whoever forces the other person to move first is the one holding the power. If you chase, you get tired and desperate. If you wait — with something good to offer — they come to you, and you stay in control.</p>
+  </section>
+
+  <!-- NAPOLEON STORY -->
+  <section id="s-story" class="reveal">
+    <span class="tag">The story behind the idea</span>
+    <h2>How an emperor was tricked into destroying himself</h2>
+    <p>In 1814, Napoleon — once the most powerful man in Europe — had just lost everything. The winning nations didn't kill him. They sent him to a tiny island called Elba and let him play "king" over a handful of servants. It looked harmless. It was actually a trap.</p>
+
+    <div class="story-box">
+      <div class="who"><div class="dot"></div><span>The setup</span></div>
+      <p>One man, Talleyrand — Napoleon's own former minister — quietly worked behind the scenes. He didn't argue or beg anyone to lock Napoleon up tighter. Instead, he let visitors whisper to Napoleon that France still loved him and wanted him back.</p>
+    </div>
+
+    <div class="story-box">
+      <div class="who"><div class="dot"></div><span>The bait</span></div>
+      <p>Napoleon took the bait. He escaped Elba, marched into France, and reclaimed his throne — for about a hundred days. It felt like a triumph. It was actually exactly what Talleyrand wanted: to draw Napoleon out into the open, where he'd overreach, exhaust his weak country, and fall — this time for good, at Waterloo.</p>
+    </div>
+
+    <div class="story-box">
+      <div class="who"><div class="dot"></div><span>The lesson</span></div>
+      <p>Talleyrand never chased Napoleon. He never even argued his case loudly. He just planted temptation and waited. Napoleon did all the running — and all the exhausting — himself.</p>
+    </div>
+  </section>
+
+  <!-- BIG IDEA -->
+  <section id="s-idea" class="reveal">
+    <span class="tag">The big idea</span>
+    <h2>The honey trap, not the hunt</h2>
+    <p>A bear that knows it's being hunted is almost impossible to catch — and dangerous if it's cornered. So smart hunters don't chase bears through the forest. They leave honey in a trap and simply wait. The bear walks in on its own.</p>
+
+    <div class="trap-visual">
+      <svg viewBox="0 0 300 180" fill="none">
+        <ellipse cx="150" cy="150" rx="130" ry="14" fill="#1d2b21"/>
+        <path d="M40 130 Q150 60 260 130" stroke="#3a4a3c" stroke-width="3" fill="none" stroke-dasharray="2 8"/>
+        <circle cx="150" cy="95" r="22" fill="#e8a33d" opacity="0.9"/>
+        <circle cx="150" cy="95" r="22" fill="none" stroke="#f2c14e" stroke-width="2"/>
+        <path d="M140 88 Q150 82 160 88 Q152 96 150 106 Q148 96 140 88 Z" fill="#c1502e" opacity="0.5"/>
+        <path d="M60 150 Q100 110 150 118 Q200 110 240 150" stroke="#a9b8ac" stroke-width="3" fill="none" opacity="0.5"/>
+        <circle cx="60" cy="150" r="6" fill="#f1ead9"/>
+        <circle cx="240" cy="150" r="6" fill="#f1ead9"/>
+        <text x="150" y="170" text-anchor="middle" fill="#a9b8ac" font-size="11" font-family="Work Sans">the bait sits still — everyone else moves toward it</text>
+      </svg>
+    </div>
+
+    <p>People work the same way. Chasing someone — a client, a crush, a boss's approval — makes you look eager, and eager people don't hold power. But if you build something worth wanting and simply wait, people start walking toward <strong>you</strong>.</p>
+  </section>
+
+  <!-- SIMULATOR -->
+  <section id="s-sim" class="reveal">
+    <span class="tag">Try it yourself</span>
+    <h2>Chasing vs. waiting — see the difference</h2>
+    <p>Below, "you" are trying to win over someone — a customer, a partner, anyone. Pick a strategy and watch what happens to your energy and your control.</p>
+
+    <div class="sim">
+      <div class="sim-buttons">
+        <button id="btnChase">🏃 Chase them</button>
+        <button id="btnBait">🍯 Set bait & wait</button>
+      </div>
+
+      <div class="track">
+        <div class="path"></div>
+        <div class="you">🙂</div>
+        <div class="them" id="themDot">🚶</div>
+      </div>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="label">Your energy</span>
+          <div class="bar-track"><div class="bar-fill fill-energy" id="barEnergy"></div></div>
+        </div>
+        <div class="bar-row">
+          <span class="label">Your control</span>
+          <div class="bar-track"><div class="bar-fill fill-control" id="barControl"></div></div>
+        </div>
+      </div>
+
+      <div class="sim-msg" id="simMsg">Pick a strategy above to begin.</div>
+    </div>
+  </section>
+
+  <!-- EXAMPLES -->
+  <section id="s-examples" class="reveal">
+    <span class="tag">In everyday life</span>
+    <h2>Same idea, three different people</h2>
+
+    <div class="example">
+      <div class="badge-row">
+        <span class="name-badge">🎓 Vignesh</span>
+      </div>
+      <p>Vignesh is job hunting. He's been mailing twenty companies a day, begging for a chance. Most don't reply, and the ones that do can sense how desperate he sounds.</p>
+      <div class="versus">
+        <div class="col bad"><span class="tiny-label">Chasing</span>Cold-emails strangers daily, sounds needy, gets ignored, feels worse every week.</div>
+        <div class="col good"><span class="tiny-label">Baiting</span>Builds a small portfolio site showing his best work. Recruiters searching for talent find him instead — and now he's the one being chased.</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="badge-row">
+        <span class="name-badge">💬 Pranav</span>
+      </div>
+      <p>Pranav likes someone and texts first, every single time. He calls twice if she doesn't reply. She's started replying slower and slower.</p>
+      <div class="versus">
+        <div class="col bad"><span class="tiny-label">Chasing</span>Texts constantly, cancels his own plans to be free for her, feels invisible when she's busy.</div>
+        <div class="col good"><span class="tiny-label">Baiting</span>Keeps living his own full life — gym, friends, hobbies. He becomes interesting again, and now she's the one asking what he's up to.</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="badge-row">
+        <span class="name-badge">🛍️ Dhanush</span>
+      </div>
+      <p>Dhanush sells handmade snacks. He used to walk door to door, tired by noon, selling to maybe two people a day.</p>
+      <div class="versus">
+        <div class="col bad"><span class="tiny-label">Chasing</span>Knocks on doors all day, gets rejected often, burns out fast, sales stay flat.</div>
+        <div class="col good"><span class="tiny-label">Baiting</span>Posts free tasting videos online. People start messaging him to order — he now picks which orders to take.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER TRICKS -->
+  <section id="s-tricks" class="reveal">
+    <span class="tag">More proof, from history</span>
+    <h2>Four more people who never chased</h2>
+    <p style="font-size:.85rem; margin-bottom:4px;">Tap a card to reveal what actually happened.</p>
+
+    <div class="tricks-grid" id="tricksGrid">
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <h4>The stock trader</h4>
+            <span class="who-tag">Daniel Drew, 1800s Wall Street</span>
+          </div>
+          <div class="flip-back">
+            <p>He'd "accidentally" drop a note with a fake stock tip near nosy investors. They'd rush to buy or sell — playing right into whatever he actually wanted the market to do.</p>
+          </div>
+        </div>
+        <span class="tap-hint">tap</span>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <h4>The "sick" architect</h4>
+            <span class="who-tag">Brunelleschi, Florence</span>
+          </div>
+          <div class="flip-back">
+            <p>Forced to share a big project with a rival, he faked an illness and stepped back. The rival couldn't handle it alone — and officials came begging Brunelleschi to return, on his terms.</p>
+          </div>
+        </div>
+        <span class="tap-hint">tap</span>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <h4>The naval trap</h4>
+            <span class="who-tag">Admiral Togo, Japan, 1905</span>
+          </div>
+          <div class="flip-back">
+            <p>He spread false rumours that lured the entire Russian fleet on a six-thousand-mile detour, arriving exhausted and on edge. His own fleet, rested and calm, crushed them easily.</p>
+          </div>
+        </div>
+        <span class="tap-hint">tap</span>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <h4>The pickpocket's sign</h4>
+            <span class="who-tag">Train stations, everywhere</span>
+          </div>
+          <div class="flip-back">
+            <p>Some pickpockets put up their own "Beware of Pickpockets" signs. Nervous travellers instantly pat the pocket where their wallet is — and just gave away exactly where to strike.</p>
+          </div>
+        </div>
+        <span class="tap-hint">tap</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVERSAL -->
+  <section id="s-reversal" class="reveal">
+    <span class="tag">The exception</span>
+    <h2>Sometimes, waiting is the wrong move</h2>
+    <div class="callout">
+      <p>Waiting only works if time is on your side. If you're already weaker, or the other side is getting stronger every day you delay, don't wait — that just gives them room to recover. In that case, move first, move fast, and don't give them time to think. A sudden, decisive move can catch people so off guard that they can't react properly at all.</p>
+      <p style="margin-bottom:0;"><strong>Simple rule:</strong> if you're equal or stronger, bait and wait. If you're falling behind, strike now.</p>
+    </div>
+  </section>
+
+  <!-- DO / DONT -->
+  <section id="s-dodont" class="reveal">
+    <span class="tag">Putting it to use</span>
+    <h2>What to do — and what to avoid</h2>
+
+    <div class="dd-grid">
+      <div class="dd-col do">
+        <h3>Do this</h3>
+        <ul>
+          <li>Build something genuinely valuable — a skill, a portfolio, a piece of work — before you try to attract anyone.</li>
+          <li>Let your results speak instead of your requests.</li>
+          <li>Stay calm and unbothered when someone doesn't respond right away.</li>
+          <li>Pick meetings and deals on your own turf whenever you can.</li>
+          <li>Keep your own life full, so you're never waiting on just one person or outcome.</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h3>Don't do this</h3>
+        <ul>
+          <li>Don't beg, over-message, or follow up so often that you seem desperate.</li>
+          <li>Don't argue loudly to convince people — it usually backfires and makes you look unsure.</li>
+          <li>Don't use fake or dishonest bait just to trap people — it damages trust fast.</li>
+          <li>Don't confuse "being busy chasing" with "actually making progress."</li>
+          <li>Don't keep waiting once it's clear the other side is only getting stronger — know when to act instead.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAKEAWAY -->
+  <div class="takeaway reveal">
+    <div class="honey-line"></div>
+    <h2>Stop running. Start building something worth walking toward.</h2>
+    <p>The people with real power aren't the busiest ones. They're the ones others go out of their way to reach.</p>
+  </div>
+
+  <footer>Based on Law 8, "The 48 Laws of Power" by Robert Greene · Retold simply for everyday reading</footer>
+</div>
+
+<script>
+  // ---- scroll reveal ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---- progress rail dots ----
+  const sections = ['s-hero','s-oneline','s-story','s-idea','s-sim','s-examples','s-tricks','s-reversal','s-dodont'];
+  const rail = document.getElementById('progressRail');
+  sections.forEach(id=>{
+    const b = document.createElement('button');
+    b.dataset.target = id;
+    b.addEventListener('click', ()=> document.getElementById(id).scrollIntoView({behavior:'smooth'}));
+    rail.appendChild(b);
+  });
+  const railButtons = rail.querySelectorAll('button');
+  const secIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        railButtons.forEach(b=>b.classList.toggle('active', b.dataset.target===e.target.id));
+      }
+    });
+  }, {threshold:0.5});
+  sections.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) secIO.observe(el);
+  });
+
+  // ---- simulator ----
+  const btnChase = document.getElementById('btnChase');
+  const btnBait = document.getElementById('btnBait');
+  const themDot = document.getElementById('themDot');
+  const barEnergy = document.getElementById('barEnergy');
+  const barControl = document.getElementById('barControl');
+  const simMsg = document.getElementById('simMsg');
+
+  function resetBars(){
+    barEnergy.style.width = '100%';
+    barControl.style.width = '100%';
+    themDot.style.right = '220px';
+  }
+  resetBars();
+
+  function runChase(){
+    btnChase.classList.add('selected');
+    btnBait.classList.remove('selected');
+    themDot.style.right = '260px'; // they move further away
+    barEnergy.style.width = '18%';
+    barControl.style.width = '25%';
+    simMsg.innerHTML = "You ran after them. They got nervous and pulled further back. You're exhausted, and you still don't have them.";
+  }
+
+  function runBait(){
+    btnBait.classList.add('selected');
+    btnChase.classList.remove('selected');
+    themDot.style.right = '40px'; // they move closer
+    barEnergy.style.width = '92%';
+    barControl.style.width = '95%';
+    simMsg.innerHTML = "You stayed still and let the bait do the work. They walked toward you on their own — and you're still fresh, still in charge.";
+  }
+
+  btnChase.addEventListener('click', runChase);
+  btnBait.addEventListener('click', runBait);
+
+  // ---- flip cards ----
+  document.querySelectorAll('.flip-card').forEach(card=>{
+    card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+  });
+</script>
+
+</body>
+</html>

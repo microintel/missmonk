@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law 6 — Court Attention At All Cost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --stage-black:#120f0e;
+    --velvet:#241318;
+    --velvet-2:#33161f;
+    --gold:#f0bf4c;
+    --gold-dim:#c99a35;
+    --marquee-red:#c8433f;
+    --ivory:#f4ecd9;
+    --muted:#b8ab9b;
+    --card:#f4ecd9;
+    --card-ink:#231a15;
+    --max:920px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--stage-black);
+    color:var(--ivory);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:800; letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 24px; }
+  a{color:inherit;}
+  img{max-width:100%;}
+
+  /* ---------- MARQUEE LIGHTS ---------- */
+  .marquee-lights{
+    display:flex; justify-content:space-between;
+    padding:14px 5vw 0;
+  }
+  .marquee-lights span{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 6px 1px var(--gold);
+    animation: blink 1.8s infinite ease-in-out;
+    opacity:0.35;
+  }
+  .marquee-lights span:nth-child(3n){animation-delay:0.3s;}
+  .marquee-lights span:nth-child(3n+1){animation-delay:0.6s;}
+  .marquee-lights span:nth-child(3n+2){animation-delay:0.9s;}
+  @keyframes blink{ 0%,100%{opacity:0.25;} 50%{opacity:1;} }
+
+  /* ---------- HERO / SPOTLIGHT ---------- */
+  .hero{
+    position:relative;
+    min-height:88vh;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center;
+    padding:40px 24px 80px;
+    background:
+      radial-gradient(circle 380px at var(--mx,50%) var(--my,30%), rgba(240,191,76,0.16), transparent 70%),
+      linear-gradient(180deg, var(--stage-black), var(--velvet) 140%);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 60px);
+    pointer-events:none;
+  }
+  .hero .eyebrow{ margin-bottom:18px; }
+  .hero h1{
+    font-size:clamp(2.6rem, 9vw, 5.2rem);
+    color:var(--gold);
+    text-shadow:0 0 40px rgba(240,191,76,0.35);
+    line-height:1.02;
+    max-width:12ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--ivory); }
+  .hero p.sub{
+    margin-top:22px;
+    max-width:46ch;
+    color:var(--muted);
+    font-size:1.08rem;
+  }
+  .curtain-edge{
+    position:absolute; top:0; bottom:0; width:70px;
+    background:linear-gradient(90deg, var(--velvet-2), transparent);
+  }
+  .curtain-edge.left{left:0;}
+  .curtain-edge.right{right:0; transform:scaleX(-1);}
+  .scroll-cue{
+    margin-top:46px; font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    color:var(--gold-dim); letter-spacing:0.14em; text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-cue::after{
+    content:""; width:1px; height:34px; background:linear-gradient(var(--gold-dim), transparent);
+    animation: dropline 1.6s infinite;
+  }
+  @keyframes dropline{ 0%{opacity:0; transform:translateY(-6px);} 50%{opacity:1;} 100%{opacity:0; transform:translateY(10px);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:90px 0; position:relative; }
+  .section-head{ text-align:center; max-width:640px; margin:0 auto 46px; }
+  .section-head h2{ font-size:clamp(1.8rem,4.6vw,2.6rem); color:var(--ivory); margin-top:10px; }
+  .section-head p{ color:var(--muted); margin-top:14px; font-size:1.02rem; }
+
+  .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* Plain-explain box */
+  .core-idea{
+    background:var(--velvet);
+    border:1px solid rgba(240,191,76,0.18);
+    border-radius:18px;
+    padding:34px 30px;
+    max-width:720px;
+    margin:0 auto;
+  }
+  .core-idea p{ font-size:1.12rem; }
+  .core-idea strong{ color:var(--gold); }
+
+  /* Act blocks */
+  .act{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:28px;
+    max-width:820px;
+    margin:0 auto;
+  }
+  .act-badge{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.75rem; letter-spacing:0.14em;
+    color:var(--gold); text-transform:uppercase; margin-bottom:8px;
+  }
+  .act-badge .line{ width:26px; height:1px; background:var(--gold-dim); }
+  .story{ color:var(--ivory); font-size:1.02rem; }
+  .story p + p{ margin-top:14px; }
+  .quote-line{
+    margin-top:18px; padding:16px 20px;
+    border-left:3px solid var(--marquee-red);
+    background:rgba(200,67,63,0.08);
+    font-style:italic; color:var(--ivory);
+    border-radius:0 10px 10px 0;
+  }
+
+  /* Playbill / example card */
+  .playbill{
+    background:var(--card); color:var(--card-ink);
+    border-radius:14px;
+    padding:26px 26px 24px;
+    position:relative;
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+    transform:rotate(-0.6deg);
+  }
+  .playbill.tilt-r{ transform:rotate(0.7deg); }
+  .playbill::before{
+    content:"TODAY'S EXAMPLE";
+    position:absolute; top:-11px; left:22px;
+    background:var(--marquee-red); color:#fff;
+    font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.12em;
+    padding:5px 10px; border-radius:20px;
+  }
+  .playbill h4{ font-family:'Playfair Display',serif; font-size:1.25rem; margin:10px 0 8px; }
+  .playbill p{ font-size:0.97rem; color:#4a3a2c; }
+  .playbill .name{ color:var(--marquee-red); font-weight:700; }
+
+  /* Fame meter */
+  .fame-box{
+    max-width:560px; margin:56px auto 0;
+    background:var(--velvet); border-radius:18px; padding:30px 26px;
+    border:1px solid rgba(240,191,76,0.18);
+    text-align:center;
+  }
+  .fame-box h3{ font-size:1.3rem; color:var(--ivory); margin-bottom:6px; }
+  .fame-box p.hint{ color:var(--muted); font-size:0.92rem; margin-bottom:22px; }
+  .fame-readout{ font-family:'IBM Plex Mono',monospace; }
+  .fame-num{ font-size:3.4rem; color:var(--gold); font-weight:600; line-height:1; }
+  .fame-label{ font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:4px;}
+  .fame-buttons{ display:flex; gap:14px; justify-content:center; margin-top:24px; flex-wrap:wrap; }
+  .fame-btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.92rem;
+    padding:12px 22px; border-radius:30px; border:1px solid transparent;
+    cursor:pointer; transition:transform .15s ease, background .2s ease;
+  }
+  .fame-btn:active{ transform:scale(0.96); }
+  .fame-btn.praise{ background:var(--gold); color:#231a15; }
+  .fame-btn.praise:hover{ background:#ffd469; }
+  .fame-btn.criticism{ background:transparent; color:var(--marquee-red); border-color:var(--marquee-red); }
+  .fame-btn.criticism:hover{ background:rgba(200,67,63,0.12); }
+  .fame-note{ margin-top:20px; font-size:0.88rem; color:var(--muted); min-height:1.4em; }
+
+  /* Chart */
+  .chart-box{ max-width:760px; margin:70px auto 0; }
+  .chart-box h3{ text-align:center; font-size:1.25rem; margin-bottom:6px; color:var(--ivory); }
+  .chart-box p.hint{ text-align:center; color:var(--muted); font-size:0.9rem; margin-bottom:34px; }
+  .bars{
+    display:flex; align-items:flex-end; gap:14px;
+    height:200px; padding:0 6px;
+    border-bottom:1px solid rgba(255,255,255,0.15);
+  }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .bar{
+    width:100%; max-width:46px;
+    background:linear-gradient(180deg, var(--gold), var(--gold-dim));
+    border-radius:6px 6px 0 0;
+    height:0%;
+    transition:height 1.1s cubic-bezier(.2,.8,.25,1);
+    box-shadow:0 0 14px rgba(240,191,76,0.35);
+  }
+  .bar-label{
+    margin-top:10px; font-size:0.68rem; text-align:center; color:var(--muted);
+    font-family:'IBM Plex Mono',monospace; line-height:1.3;
+  }
+
+  /* Keys grid */
+  .keys-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:18px;
+    max-width:820px; margin:0 auto;
+  }
+  .key-card{
+    background:var(--velvet); border:1px solid rgba(240,191,76,0.14);
+    border-radius:14px; padding:22px 20px;
+  }
+  .key-card .num{ font-family:'IBM Plex Mono',monospace; color:var(--gold-dim); font-size:0.78rem; }
+  .key-card h4{ font-family:'Playfair Display',serif; font-size:1.08rem; margin:8px 0 8px; color:var(--gold); }
+  .key-card p{ font-size:0.92rem; color:var(--muted); }
+
+  /* Do / Dont */
+  .dd-wrap{
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+    max-width:820px; margin:0 auto;
+  }
+  .dd-col{ border-radius:16px; padding:28px 24px; }
+  .dd-col.do{ background:rgba(240,191,76,0.1); border:1px solid rgba(240,191,76,0.3); }
+  .dd-col.dont{ background:rgba(200,67,63,0.08); border:1px solid rgba(200,67,63,0.28); }
+  .dd-col h3{ font-size:1.2rem; margin-bottom:16px; }
+  .dd-col.do h3{ color:var(--gold); }
+  .dd-col.dont h3{ color:var(--marquee-red); }
+  .dd-col ul{ list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .dd-col li{ font-size:0.94rem; padding-left:22px; position:relative; color:var(--ivory); }
+  .dd-col.do li::before{ content:"✦"; position:absolute; left:0; color:var(--gold); }
+  .dd-col.dont li::before{ content:"✕"; position:absolute; left:0; color:var(--marquee-red); }
+
+  footer{
+    text-align:center; padding:60px 24px 80px;
+    color:var(--muted); font-size:0.85rem;
+  }
+  footer .eyebrow{ display:block; margin-bottom:10px; }
+
+  @media (max-width:640px){
+    .keys-grid{ grid-template-columns:1fr; }
+    .dd-wrap{ grid-template-columns:1fr; }
+    .playbill{ transform:none; }
+    section{ padding:64px 0; }
+    .bars{ gap:8px; }
+    .bar-label{ font-size:0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="marquee-lights" id="marquee">
+</div>
+
+<section class="hero" id="hero">
+  <div class="curtain-edge left"></div>
+  <div class="curtain-edge right"></div>
+  <p class="eyebrow">The 48 Laws of Power · Law 6</p>
+  <h1>Court <em>Attention</em><br>At All Cost</h1>
+  <p class="sub">If people don't notice you, you have no power — no matter how good you are. This law is about one thing: making sure the spotlight finds you.</p>
+  <div class="scroll-cue">Scroll to begin</div>
+</section>
+
+<section id="idea">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Plain and simple</p>
+      <h2>What this law actually means</h2>
+    </div>
+    <div class="core-idea reveal">
+      <p>Being skilled at what you do is <strong>not enough</strong>. If nobody sees your work, it's as if it doesn't exist. The world notices loud, unusual, memorable people first — and asks questions about their talent later.</p>
+      <p style="margin-top:14px;">So this law says: build something about yourself that people can't ignore. A style. A story. A habit. Anything that makes your name travel from one mouth to the next.</p>
+    </div>
+  </div>
+</section>
+
+<section id="act1">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Act I</p>
+      <h2>Be impossible to ignore</h2>
+      <p>The fastest way to get noticed is to do something people have never seen before — even if it sounds a little crazy.</p>
+    </div>
+
+    <div class="act">
+      <div class="story reveal">
+        <div class="act-badge"><span class="line"></span> True story · P.T. Barnum</div>
+        <p>In the 1800s, a showman named P.T. Barnum ran a museum in New York. To pull in crowds, he once paid a poor man to walk the streets carrying bricks — laying one down, picking another up, again and again, saying nothing to anyone. People stopped to stare. They followed him just to figure out what he was doing. By the end of the day, thousands had walked into his museum.</p>
+        <p>Barnum did this over and over. He spread a rumor that one of his performers was secretly a robot. He displayed a "mermaid" that was really a monkey stitched to a fish — and let the whole country argue about whether mermaids were real. None of it needed to be true. It only needed to be talked about.</p>
+        <div class="quote-line">"All we need to ensure success is notoriety." — the lesson Barnum learned early in his career</div>
+      </div>
+
+      <div class="playbill reveal">
+        <h4>Vignesh and the glowing sculpture</h4>
+        <p>At Vignesh's college fest, every project table looked the same — neat posters, quiet explanations. Vignesh built a strange glowing sculpture that half the students didn't even understand. People stopped, argued about what it meant, and took photos anyway. He didn't win "Best Project" on paper — but every recruiter at the fest remembered <span class="name">his name</span>, not the winner's.</p>
+      </div>
+    </div>
+
+    <div class="fame-box reveal">
+      <h3>Try it: the Fame Meter</h3>
+      <p class="hint">Barnum's big idea — praise and criticism both add up to the same thing: attention. Tap either button and watch what happens.</p>
+      <div class="fame-readout">
+        <div class="fame-num" id="fameNum">0</div>
+        <div class="fame-label">Total attention</div>
+      </div>
+      <div class="fame-buttons">
+        <button class="fame-btn praise" id="btnPraise">👏 Give praise</button>
+        <button class="fame-btn criticism" id="btnCriticism">💢 Give criticism</button>
+      </div>
+      <p class="fame-note" id="fameNote">Both meters move the same needle. That's the whole trick.</p>
+    </div>
+
+    <div class="chart-box reveal">
+      <h3>How Barnum's buzz grew</h3>
+      <p class="hint">Each new stunt made more people talk — scroll here and watch the bars fill.</p>
+      <div class="bars" id="barsChart">
+        <div class="bar-col"><div class="bar" data-h="22"></div><div class="bar-label">Brick<br>man</div></div>
+        <div class="bar-col"><div class="bar" data-h="38"></div><div class="bar-label">"Free"<br>concert</div></div>
+        <div class="bar-col"><div class="bar" data-h="58"></div><div class="bar-label">Robot<br>rumor</div></div>
+        <div class="bar-col"><div class="bar" data-h="80"></div><div class="bar-label">Fiji<br>mermaid</div></div>
+        <div class="bar-col"><div class="bar" data-h="100"></div><div class="bar-label">Meets the<br>Queen</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="act2" style="background:var(--velvet);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Act II</p>
+      <h2>Or do the opposite — stay a little mysterious</h2>
+      <p>Sometimes the loudest move is saying less. When people can't fully figure you out, they keep watching.</p>
+    </div>
+
+    <div class="act">
+      <div class="story reveal">
+        <div class="act-badge"><span class="line"></span> True story · Mata Hari</div>
+        <p>A woman named Margaretha Zelle arrived in Paris with almost no money and no dance training. Instead of blending in with the city's many performers, she invented a new identity: "Mata Hari," a dancer of mysterious Eastern origin. Every time a journalist asked about her past, she told a different story — India, Java, Sumatra, none of it true.</p>
+        <p>People couldn't pin her down, so they never stopped talking about her. Ambassadors and royalty competed for invitations to watch her perform. She wasn't the most beautiful or the most skilled dancer in Paris — but she was the most unexplained, and that made her the most famous.</p>
+        <div class="quote-line">People get tired of things they fully understand. What they can't fully explain, they keep watching.</div>
+      </div>
+
+      <div class="playbill tilt-r reveal">
+        <h4>Pranav's quiet confidence</h4>
+        <p>Pranav never posts everything he's working on. When friends ask what he's building, he just smiles and says, "You'll see." No details, no proof, no hurry. People keep asking. He never needed to convince anyone — the not-knowing did the work for him.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="keys">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Keys to power</p>
+      <h2>Four small rules that make this work</h2>
+    </div>
+    <div class="keys-grid">
+      <div class="key-card reveal">
+        <span class="num">01</span>
+        <h4>Pick one clear trait</h4>
+        <p>A style of dress, a way of speaking, a signature idea. Attach your name to it early, so people have something to remember you by.</p>
+      </div>
+      <div class="key-card reveal">
+        <span class="num">02</span>
+        <h4>Mystery can be small</h4>
+        <p>You don't need a big secret. Just don't explain every detail about yourself. A little unfinished sentence is enough to keep people curious.</p>
+      </div>
+      <div class="key-card reveal">
+        <span class="num">03</span>
+        <h4>Refresh yourself often</h4>
+        <p>The painter Picasso kept shocking his own fans with new styles. If you stay too predictable, people get bored and move to someone newer.</p>
+      </div>
+      <div class="key-card reveal">
+        <span class="num">04</span>
+        <h4>Nobody? Aim high</h4>
+        <p>If you're unknown, a bold and public opinion about someone famous or powerful can get your own name noticed fast — but use this rarely.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reversal" style="background:var(--velvet);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">The other side</p>
+      <h2>Know when to step back</h2>
+      <p>Chasing attention has one big trap: doing it at the wrong moment, in front of the wrong person.</p>
+    </div>
+
+    <div class="act">
+      <div class="story reveal">
+        <div class="act-badge"><span class="line"></span> True story · Lola Montez</div>
+        <p>Lola Montez was famous for commanding a room. But one evening at a London theatre, she made her entrance late — walking in dramatically, dropping her fur coat to reveal a bright red gown, moments after the Queen had already taken her royal seat. It looked like she was trying to outshine royalty, in public.</p>
+        <p>The whole room went cold. The royal couple pointedly looked away, and everyone followed their lead. From that night on, doors across London society closed to her.</p>
+        <div class="quote-line">Attention isn't power if it makes you look like you're competing with someone more powerful than you.</div>
+      </div>
+
+      <div class="playbill reveal">
+        <h4>Dhanush at the farewell</h4>
+        <p>At a senior colleague's farewell speech, Dhanush kept cracking jokes and pulling the room's focus onto himself all evening. Later, people quietly asked, "why does he always need to be the center of everything?" The attention he grabbed that night worked against him — it wasn't his moment to shine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="doanddont">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Before you try this</p>
+      <h2>What to do, what to avoid</h2>
+    </div>
+    <div class="dd-wrap">
+      <div class="dd-col do reveal">
+        <h3>Do</h3>
+        <ul>
+          <li>Build one clear, memorable trait people can recognize you by.</li>
+          <li>Treat both praise and criticism as useful — neither one hurts your name.</li>
+          <li>Keep a little mystery. You don't have to explain everything about yourself.</li>
+          <li>Refresh your image now and then, before people get bored of it.</li>
+        </ul>
+      </div>
+      <div class="dd-col dont reveal">
+        <h3>Don't</h3>
+        <ul>
+          <li>Don't play it so safe that you become invisible — that's the real failure.</li>
+          <li>Don't let "mystery" turn into people simply not trusting you.</li>
+          <li>Don't outshine someone more powerful than you, right in front of them.</li>
+          <li>Don't repeat the exact same trick forever — it stops working.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="eyebrow">The 48 Laws of Power</span>
+  Law 6, simplified for easy reading. The stories above are shortened and retold in plain English.
+</footer>
+
+<script>
+// Marquee lights
+const marquee = document.getElementById('marquee');
+for(let i=0;i<28;i++){
+  const s = document.createElement('span');
+  marquee.appendChild(s);
+}
+
+// Spotlight cursor follow (hero only)
+const hero = document.getElementById('hero');
+function setSpot(x,y){
+  const rect = hero.getBoundingClientRect();
+  hero.style.setProperty('--mx', (x-rect.left)+'px');
+  hero.style.setProperty('--my', (y-rect.top)+'px');
+}
+hero.addEventListener('mousemove', e=> setSpot(e.clientX, e.clientY));
+hero.addEventListener('touchmove', e=>{
+  if(e.touches[0]) setSpot(e.touches[0].clientX, e.touches[0].clientY);
+}, {passive:true});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  });
+}, {threshold:0.15});
+revealEls.forEach(el=> io.observe(el));
+
+// Bars chart animate on view
+const bars = document.querySelectorAll('.bar');
+const barsIO = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      bars.forEach(b=> b.style.height = b.dataset.h + '%');
+      barsIO.disconnect();
+    }
+  });
+}, {threshold:0.3});
+barsIO.observe(document.getElementById('barsChart'));
+
+// Fame meter
+let fame = 0;
+const fameNum = document.getElementById('fameNum');
+const fameNote = document.getElementById('fameNote');
+const notes = [
+  "Both meters move the same needle. That's the whole trick.",
+  "Notice: it doesn't matter which button you tapped.",
+  "Praise or criticism — your name got said either way.",
+  "This is exactly why Barnum never bothered to defend himself.",
+  "The only number that matters here is the one going up."
+];
+function bump(kind){
+  fame++;
+  fameNum.textContent = fame;
+  fameNote.textContent = notes[Math.min(fame-1, notes.length-1)];
+  fameNum.style.transform = 'scale(1.15)';
+  setTimeout(()=> fameNum.style.transform = 'scale(1)', 150);
+}
+document.getElementById('btnPraise').addEventListener('click', ()=>bump('praise'));
+document.getElementById('btnCriticism').addEventListener('click', ()=>bump('criticism'));
+fameNum.style.transition = 'transform .15s ease';
+</script>
+
+</body>
+</html>
