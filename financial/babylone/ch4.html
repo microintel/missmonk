@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet the Goddess of Good Luck — A Babylon Story, Chapter Four</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mukta:wght@400;500;600&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#241109; --bg2:#2f160c; --bg3:#1a0c06;
+    --cream:#F4E9D8; --muted:#C7A98A;
+    --gold:#E4A94A; --gold-dim:#a9793a;
+    --brick:#C1502E; --indigo:#4E6E9E;
+    --line: rgba(244,233,216,0.14);
+    --maxw:760px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 55%, var(--bg3) 100%); color:var(--cream); font-family:'Mukta',sans-serif; font-size:17px; line-height:1.65; overflow-x:hidden;}
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:700; letter-spacing:0.01em; }
+  .label{ font-family:'Baloo 2', sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem; color:var(--gold); }
+  section{ padding:5.5rem 1.5rem; position:relative; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; }
+  p{ margin-bottom:1rem; color:#e7d9c4; }
+  a{ color:var(--gold); }
+
+  .bg-coins{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .bg-coins span{ position:absolute; width:10px; height:10px; border-radius:50%; background: radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: drift 14s linear infinite; opacity:0.35; }
+  @keyframes drift{ 0%{ transform: translateY(-5vh) rotate(0deg);} 100%{ transform: translateY(110vh) rotate(360deg);} }
+
+  .hero{ min-height:88vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:4rem; border-bottom:1px solid var(--line);}
+  .hero h1{ font-size:clamp(2rem,7vw,3.6rem); line-height:1.08; background: linear-gradient(180deg,#fff5e0,var(--gold) 70%); -webkit-background-clip:text; background-clip:text; color:transparent; max-width:19ch;}
+  .hero p.sub{ margin-top:1.3rem; max-width:48ch; color:var(--muted); font-size:1.05rem;}
+  .hero .chip{ margin-top:1.6rem; display:inline-flex; gap:0.5rem; align-items:center; background:rgba(228,169,74,0.1); border:1px solid var(--gold-dim); padding:0.5rem 1rem; border-radius:999px; font-family:'Baloo 2',sans-serif; font-size:0.78rem; color:var(--gold);}
+  .scrolldown{ position:absolute; bottom:1.8rem; left:50%; transform:translateX(-50%); font-size:0.75rem; color:var(--muted); font-family:'Baloo 2',sans-serif; display:flex; flex-direction:column; align-items:center; gap:0.4rem;}
+  .scrolldown .chevron{ width:10px; height:10px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .eyebrow{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.1rem;}
+  .eyebrow .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold);}
+  h2.title{ font-size:clamp(1.6rem,4.5vw,2.3rem); margin-bottom:1.1rem; color:var(--cream); }
+  .lede{ font-size:1.1rem; color:var(--cream); }
+
+  .character-card{ background:linear-gradient(160deg, rgba(228,169,74,0.08), rgba(228,169,74,0.02)); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.5rem; margin:1.6rem 0; display:flex; gap:1rem; align-items:flex-start;}
+  .avatar{ flex:none; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.3rem; background:conic-gradient(from 180deg, var(--gold), var(--brick), var(--gold)); color:var(--bg3);}
+  .character-card h3{ font-size:1.15rem; color:var(--gold); margin-bottom:0.2rem;}
+  .character-card .role{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;}
+
+  blockquote{ border-left:3px solid var(--brick); padding:0.3rem 0 0.3rem 1.1rem; margin:1.4rem 0; font-style:italic; color:var(--muted); font-size:0.95rem;}
+  blockquote cite{ display:block; margin-top:0.4rem; font-style:normal; font-family:'Baloo 2',sans-serif; font-size:0.75rem; color:var(--gold-dim);}
+  blockquote.epigraph{ border-left:none; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:1.4rem 0; text-align:center; font-size:1.05rem; color:var(--cream); }
+  blockquote.epigraph cite{ text-align:center; }
+
+  .dialogue{ background:rgba(78,110,158,0.08); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.5rem; margin:1.4rem 0;}
+  .dialogue .who{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; color:var(--indigo); margin-bottom:0.25rem;}
+  .dialogue p{ margin-bottom:0.9rem; color:var(--cream); }
+  .dialogue p:last-child{ margin-bottom:0; }
+
+  .demo-section{ background:var(--bg3); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  .cure-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .cure-card h4{ font-family:'Baloo 2',sans-serif; font-size:0.85rem; color:var(--gold); margin-bottom:0.9rem; }
+
+  /* dice / cube simulator */
+  .dice-wrap{ display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .cube{ width:64px; height:64px; border-radius:12px; background: linear-gradient(160deg, var(--gold), var(--gold-dim)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.8rem; color:#2a1305; transition: transform 0.4s ease; }
+  .cube.red{ background: linear-gradient(160deg, var(--brick), #7a2f18); color:#fff2e8; }
+  .cube.rolling{ animation: shake 0.35s ease; }
+  @keyframes shake{ 0%,100%{ transform:rotate(0);} 25%{transform:rotate(-8deg);} 75%{transform:rotate(8deg);} }
+  .dice-btn{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem; background:var(--gold); color:#2a1305; border:none; border-radius:999px; padding:0.6rem 1.3rem; cursor:pointer; }
+  .dice-btn.secondary{ background:transparent; border:1px solid var(--line); color:var(--muted); }
+  .dice-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:0.8rem; width:100%; margin-top:0.6rem; }
+  .dice-stat{ text-align:center; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:10px; padding:0.7rem 0.4rem; }
+  .dice-stat .dval{ font-family:'Cormorant Garamond',serif; font-size:1.25rem; color:var(--gold); }
+  .dice-stat .dlabel{ font-family:'Baloo 2',sans-serif; font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .dice-controls{ display:flex; gap:0.7rem; }
+
+  /* luck verdict quiz */
+  .quiz-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.4rem; margin-bottom:1rem; }
+  .quiz-scenario{ font-size:0.95rem; color:var(--cream); margin-bottom:0.9rem; }
+  .quiz-buttons{ display:flex; gap:0.8rem; }
+  .quiz-buttons button{ flex:1; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem; padding:0.6rem; border-radius:8px; cursor:pointer; border:1px solid var(--line); background:transparent; color:var(--muted); }
+  .quiz-buttons button.picked-luck{ background:rgba(78,110,158,0.2); border-color:var(--indigo); color:#bcd0ee; }
+  .quiz-buttons button.picked-earned{ background:rgba(228,169,74,0.2); border-color:var(--gold); color:var(--gold); }
+  .quiz-feedback{ margin-top:0.8rem; font-size:0.85rem; color:var(--muted); display:none; }
+  .quiz-feedback.show{ display:block; }
+  .quiz-feedback.correct{ color:var(--gold); }
+
+  /* procrastinator callout */
+  .callout{ background: linear-gradient(160deg, rgba(193,80,46,0.14), rgba(193,80,46,0.03)); border:1px solid var(--brick); border-radius:14px; padding:1.3rem 1.5rem; margin:1.6rem 0; }
+  .callout .ctag{ font-family:'Baloo 2',sans-serif; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--brick); margin-bottom:0.5rem; }
+  .callout p{ color:var(--cream); margin-bottom:0.5rem; }
+  .callout p:last-child{ margin-bottom:0; }
+
+  /* decision simulator */
+  .decision-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .decision-buttons{ display:flex; gap:1rem; margin:1rem 0; flex-wrap:wrap; }
+  @media (max-width:480px){ .decision-buttons{ flex-direction:column; } }
+  .decision-buttons button{ flex:1; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.88rem; padding:0.9rem 1rem; border-radius:10px; cursor:pointer; border:1px solid var(--gold-dim); background:transparent; color:var(--gold); transition:all 0.2s ease; }
+  .decision-buttons button:hover{ background:rgba(228,169,74,0.1); }
+  .decision-buttons button.chosen{ background:var(--gold); color:#2a1305; }
+  .decision-outcome{ display:none; padding:1rem 1.1rem; border-radius:10px; font-size:0.92rem; margin-top:0.6rem; }
+  .decision-outcome.show{ display:block; }
+  .decision-outcome.bad{ background:rgba(193,80,46,0.14); color:#f0b39c; }
+  .decision-outcome.good{ background:rgba(228,169,74,0.14); color:var(--gold); }
+
+  .takeaways{ list-style:none; margin-top:1.4rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .takeaways li{ display:flex; gap:0.8rem; align-items:flex-start; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:0.9rem 1.1rem; color:var(--cream); font-size:0.95rem;}
+  .takeaways li::before{ content:"◆"; color:var(--gold); flex:none; margin-top:0.15rem; font-size:0.7rem; }
+
+  footer{ text-align:center; padding:3.5rem 1.5rem 4rem; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--line); }
+  footer .label{ display:block; margin-bottom:0.6rem; }
+
+  ::selection{ background:var(--gold); color:#2a1305; }
+</style>
+</head>
+<body>
+
+<div class="bg-coins" id="bgCoins"></div>
+
+<section class="hero">
+  <span class="label">A Babylon Story — Chapter Four</span>
+  <h1>Meet the Goddess of Good Luck</h1>
+  <p class="sub">Back at the Temple of Learning, Arjun Rao opens the floor to a new question: is there actually a way to attract good luck — and were they all looking for her in the wrong places?</p>
+  <div class="chip">🍀 An open forum, eighty men strong</div>
+  <div class="scrolldown"><span>Scroll</span><span class="chevron"></span></div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <blockquote class="epigraph">"If a man be lucky, there is no foretelling the possible extent of his good fortune. Pitch him into the Euphrates and like as not he will swim out with a pearl in his hand."<cite>— Babylonian proverb</cite></blockquote>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The Question for Tonight</span></div>
+    <h2 class="title">Everyone wants to be lucky. Is there a way to actually attract it?</h2>
+    <p class="lede">At the Temple of Learning, anyone could speak — a labourer could challenge a nobleman's opinion and be heard on equal footing. Most evenings, a crowd gathered in Arjun Rao's hall to debate whatever question someone raised. Tonight, a cloth weaver has one.</p>
+
+    <div class="dialogue">
+      <div class="who">A cloth weaver</div>
+      <p>"This day I have been lucky — I found a purse with gold pieces in it. I'd very much like to keep being lucky. Since I suspect everyone here shares that wish, why don't we debate how good luck might actually be attracted?"</p>
+      <div class="who">Arjun Rao</div>
+      <p>"A subject well worth our evening. To some, luck is pure chance. To others, it's a goddess who rewards those who please her. Let's find out — is there a way to invite her favour?"</p>
+    </div>
+
+    <p>He starts by asking if anyone else in the room has simply stumbled onto treasure the way the weaver did. He waits. Nobody answers.</p>
+
+    <blockquote>"What, no one? Then rare indeed must be this kind of good luck."<cite>— Arjun Rao</cite></blockquote>
+  </div>
+</section>
+
+<!-- GAMING TABLES -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">First Guess: The Gaming Tables</span></div>
+    <h2 class="title">Where men actually go looking for luck</h2>
+    <p>A young man in the crowd suggests the obvious place — the gaming tables, where everyone hopes the goddess will smile on their bet. Someone in the back calls out, only half-joking, asking whether she actually did.</p>
+
+    <div class="dialogue">
+      <div class="who">The young man, laughing</div>
+      <p>"I'll admit — she didn't seem to know I was there at all."</p>
+    </div>
+
+    <p>Arjun does the actual math with the room. In the popular cube game, one face out of six pays four times your bet; the other five faces lose it entirely.</p>
+
+    <blockquote>"For each cast we have five chances to lose, but because the red pays four for one, we have four chances to win. In a night's play the game master can expect to keep for his profit a fifth of all the coins wagered."<cite>— Arjun Rao</cite></blockquote>
+
+    <div class="cure-card">
+      <h4>Try the cube yourself — bet ₹10 each time, red pays 4x</h4>
+      <div class="dice-wrap">
+        <div class="cube" id="cubeFace">?</div>
+        <div class="dice-controls">
+          <button class="dice-btn" id="rollBtn">Cast the cube</button>
+          <button class="dice-btn secondary" id="rollManyBtn">Cast it 50 times</button>
+          <button class="dice-btn secondary" id="resetDice">Reset</button>
+        </div>
+        <div class="dice-stats">
+          <div class="dice-stat"><div class="dval" id="statCasts">0</div><div class="dlabel">Casts</div></div>
+          <div class="dice-stat"><div class="dval" id="statWagered">₹0</div><div class="dlabel">Wagered</div></div>
+          <div class="dice-stat"><div class="dval" id="statNet">₹0</div><div class="dlabel">Your Net</div></div>
+        </div>
+      </div>
+    </div>
+
+    <p>Roll it enough times and the pattern always wins out — the house keeps a steady share of everything wagered, no matter how the room feels about any single cast. Arjun then asks the group a pointed question:</p>
+
+    <blockquote>"Among my acquaintances are many of the successful men of Babylon, yet among them I am unable to name a single one who started his success from such a source."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>Nobody in the room can name a single self-made success who started at the gaming tables either — not even themselves, once Arjun asks directly. Laughter and groans confirm it. Luck, it seems, isn't hiding there.</p>
+  </div>
+</section>
+
+<!-- WHICH WAS LUCK -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">A Different Angle</span></div>
+    <h2 class="title">An elderly merchant reframes the whole question</h2>
+    <p>If a profitable trade is really just a reward for effort, and not luck — an elderly merchant suggests — then maybe they're looking in the wrong direction. What about the good luck that was right there, and simply wasn't taken?</p>
+
+    <div class="cure-card">
+      <h4>Was it luck, or was it earned? Decide for each one.</h4>
+      <div id="quizArea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE MERCHANT'S REGRET -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The Merchant's Own Story</span></div>
+    <h2 class="title">The land, the waterwheels, and the new robes</h2>
+    <p>The merchant offers to go first. Years ago, as a newly married young man, his father urged him toward a real opportunity: a friend's son was raising money to buy dry land near the city, build ox-driven waterwheels to irrigate it, then divide and sell it as garden plots. Twelve investors were needed, each contributing one-tenth of their earnings until the land was ready.</p>
+
+    <div class="dialogue">
+      <div class="who">His father</div>
+      <p>"My son, I want you to begin building your own estate now — and to learn from the mistakes I never corrected. Set aside one-tenth of your earnings for worthy investments like this one. Do it now, and by my age, you'll have built real wealth."</p>
+      <div class="who">The young merchant</div>
+      <p>"I am young, Father. There's plenty of time."</p>
+      <div class="who">His father</div>
+      <p>"I said the very same thing at your age. Opportunity waits for no man. Today it is here; soon it is gone. I beg you — do not delay."</p>
+    </div>
+
+    <p>But new robes had just arrived from the east — beautiful, expensive, exactly what he and his wife wanted. Committing a tenth of his earnings meant giving that up. He hesitated. He kept hesitating. By the time he considered it seriously, the opportunity had closed to new investors.</p>
+
+    <blockquote>"The enterprise did prove to be more profitable than any man had prophesied. This is my tale, showing how I did permit good luck to escape."<cite>— The merchant</cite></blockquote>
+  </div>
+</section>
+
+<!-- FIRST CALF -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The Real Lesson</span></div>
+    <h2 class="title">Good luck isn't a windfall. It's the first step, taken on time.</h2>
+    <p>A weathered herdsman offers the sharpest reply. He didn't wait for the perfect opportunity either — he simply started, small, the moment he could.</p>
+
+    <div class="character-card">
+      <div class="avatar">H</div>
+      <div>
+        <h3>A desert herdsman</h3>
+        <div class="role">Now owns many herds</div>
+        <p style="margin:0;color:#e7d9c4;">"As a boy, I bought a single young calf with one piece of silver. That was the beginning of everything I own today. To take that first step — from a man who only earns by his own labour, to a man whose money earns for him — that is the best luck any man can have."</p>
+      </div>
+    </div>
+
+    <p>He points out something quietly devastating about the merchant's story: had he taken that step in his youth, he'd be a genuinely wealthy man today. The opportunity itself wasn't rare. Taking it, on time, was.</p>
+  </div>
+</section>
+
+<!-- PROCRASTINATOR -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The Room Names the Real Culprit</span></div>
+    <h2 class="title">There's a word for what actually cost him his luck</h2>
+    <p>A visiting Syrian, still finding his footing in the language, tries to make his point anyway.</p>
+
+    <div class="callout">
+      <div class="ctag">The Syrian's Question</div>
+      <p>"I wish to call this friend, the merchant, a name — not impolite, but I do not know your word for it. The man who puts off doing what is good for him. He waits. He says, 'I have much business right now — by and by I will talk to you.' What is this man called?"</p>
+      <p><strong>"Procrastinator,"</strong> someone calls out.</p>
+      <p>"That's him! Opportunity, she does not wait for such a slow fellow."</p>
+    </div>
+
+    <p>The merchant, good-natured about it, bows to the room in agreement.</p>
+  </div>
+</section>
+
+<!-- THE SHEEP AT MIDNIGHT -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">One More Tale</span></div>
+    <h2 class="title">Locked out of the city, at midnight, with nine hundred sheep</h2>
+    <p>An animal trader offers the last story of the night. Returning from a failed ten-day search for camels, he finds the city gates already shut for the night. In the dark, a farmer approaches — his wife gravely ill, desperate to sell his entire flock and rush home.</p>
+
+    <div class="dialogue">
+      <div class="who">The farmer, in the dark</div>
+      <p>"Please, honourable sir — pay me but two-thirds of the price tonight, so I may leave at once. My most trusted slave will stay to help count the flock properly at daylight, and you can pay him the balance then."</p>
+    </div>
+
+    <p>It was too dark to count nine hundred restless sheep. The trader refused to pay until he could verify the number himself in daylight — a reasonable-sounding condition.</p>
+
+    <div class="decision-card">
+      <h4 style="font-family:'Baloo 2',sans-serif;font-size:0.85rem;color:var(--gold);margin-bottom:0.6rem;">What would you have done?</h4>
+      <div class="decision-buttons">
+        <button data-choice="wait" id="btnWait">Wait until daylight to count and pay</button>
+        <button data-choice="pay" id="btnPay">Pay two-thirds now, settle the rest at dawn</button>
+      </div>
+      <div class="decision-outcome" id="decisionOutcome"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">Before You Go</span></div>
+    <h2 class="title">What this chapter is really saying</h2>
+    <ul class="takeaways">
+      <li>Luck doesn't live at the gaming tables — the math is quietly designed to favour whoever runs the game, every single time.</li>
+      <li>A profit earned through steady work isn't luck at all. It's a fair reward, and Arjun is careful to draw that line.</li>
+      <li>Real good luck looks like a genuine opportunity, met with quick action — not a windfall that falls in your lap.</li>
+      <li>The size of the first step barely matters. Taking it before you talk yourself out of it is what matters.</li>
+      <li>Hesitation has a name, and it has a cost — opportunity rarely waits around for anyone to feel fully ready.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="label">Next</span>
+  The saddle-maker's reply trails off mid-sentence in the old scroll — "If the bargain be good, then dost thou need protection against t—" — whatever he was about to warn the room of continues in the next reading. Based on <em>The Richest Man in Babylon</em> by George S. Clason.
+</footer>
+
+<script>
+  // decorative floating coins
+  (function(){
+    const container = document.getElementById('bgCoins');
+    const n = window.innerWidth < 600 ? 8 : 16;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (10 + Math.random()*10) + 's';
+      s.style.animationDelay = (Math.random()*14) + 's';
+      s.style.opacity = 0.15 + Math.random()*0.3;
+      container.appendChild(s);
+    }
+  })();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---- dice / cube simulator ----
+  let casts = 0, wagered = 0, net = 0;
+  const cubeFace = document.getElementById('cubeFace');
+  const statCasts = document.getElementById('statCasts');
+  const statWagered = document.getElementById('statWagered');
+  const statNet = document.getElementById('statNet');
+  const BET = 10;
+
+  function oneCast(){
+    const side = Math.floor(Math.random()*6) + 1;
+    casts++;
+    wagered += BET;
+    if(side === 1){ net += BET * 4; } else { net -= BET; }
+    return side;
+  }
+  function renderDice(lastSide){
+    cubeFace.textContent = lastSide || '?';
+    cubeFace.classList.toggle('red', lastSide === 1);
+    statCasts.textContent = casts;
+    statWagered.textContent = '₹' + wagered.toLocaleString('en-IN');
+    statNet.textContent = (net >= 0 ? '+' : '') + '₹' + net.toLocaleString('en-IN');
+    statNet.style.color = net >= 0 ? 'var(--gold)' : '#f0b39c';
+  }
+  document.getElementById('rollBtn').addEventListener('click', ()=>{
+    cubeFace.classList.add('rolling');
+    setTimeout(()=>{
+      cubeFace.classList.remove('rolling');
+      renderDice(oneCast());
+    }, 200);
+  });
+  document.getElementById('rollManyBtn').addEventListener('click', ()=>{
+    let last;
+    for(let i=0;i<50;i++){ last = oneCast(); }
+    renderDice(last);
+  });
+  document.getElementById('resetDice').addEventListener('click', ()=>{
+    casts=0; wagered=0; net=0; renderDice(null);
+  });
+  renderDice(null);
+
+  // ---- luck vs earned quiz ----
+  const scenarios = [
+    { text:'A weaver finds a stranger\'s lost purse full of gold on the street.', answer:'luck', reason:'Pure chance, no effort or foresight involved — the rarest and least reliable kind of luck.' },
+    { text:'A farmer works the same land every season and steadily turns a profit most years.', answer:'earned', reason:'This is a just reward for persistent, skilled effort — not luck, even though weather sometimes helps or hurts.' },
+    { text:'A trader is offered a fair, well-timed deal and pays a deposit on the spot to secure it before anyone else can.', answer:'luck', reason:'This is exactly the kind of luck Arjun says is real — an opportunity, met with quick, decisive action.' },
+    { text:'A gambler wins big at the cube game one lucky night.', answer:'luck', reason:'Real luck, but the fleeting kind — the odds still favour the house over any long run.' },
+  ];
+  const quizArea = document.getElementById('quizArea');
+  scenarios.forEach((s, i)=>{
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = '<div class="quiz-scenario">'+s.text+'</div>' +
+      '<div class="quiz-buttons"><button data-choice="luck">Good Luck</button><button data-choice="earned">Just Earned</button></div>' +
+      '<div class="quiz-feedback" id="feedback'+i+'"></div>';
+    quizArea.appendChild(card);
+    card.querySelectorAll('.quiz-buttons button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        card.querySelectorAll('.quiz-buttons button').forEach(b=>b.classList.remove('picked-luck','picked-earned'));
+        btn.classList.add(btn.dataset.choice === 'luck' ? 'picked-luck' : 'picked-earned');
+        const fb = card.querySelector('.quiz-feedback');
+        const correct = btn.dataset.choice === s.answer;
+        fb.classList.add('show');
+        fb.classList.toggle('correct', correct);
+        fb.textContent = (correct ? 'Matches Arjun\'s view — ' : 'Arjun would see it differently — ') + s.reason;
+      });
+    });
+  });
+
+  // ---- sheep decision simulator ----
+  const decisionOutcome = document.getElementById('decisionOutcome');
+  const btnWait = document.getElementById('btnWait');
+  const btnPay = document.getElementById('btnPay');
+  function chooseDecision(choice, btn){
+    [btnWait, btnPay].forEach(b=>b.classList.remove('chosen'));
+    btn.classList.add('chosen');
+    decisionOutcome.classList.add('show');
+    if(choice === 'wait'){
+      decisionOutcome.className = 'decision-outcome show bad';
+      decisionOutcome.textContent = 'This is what actually happened: by morning, four eager buyers rushed out through the city gates — food was scarce, the city was under threat of siege — and paid the farmer nearly three times what he\'d offered the night before. The trader\'s caution cost him the entire deal.';
+    } else {
+      decisionOutcome.className = 'decision-outcome show good';
+      decisionOutcome.textContent = 'Had he paid two-thirds that night, the flock would have been his — verified and settled at dawn with the trusted slave. He\'d have walked through the gates at sunrise owning nine hundred sheep, just as demand for food spiked. The deal, not the darkness, was the real risk he was afraid of — and it was a safe one.';
+    }
+  }
+  btnWait.addEventListener('click', ()=>chooseDecision('wait', btnWait));
+  btnPay.addEventListener('click', ()=>chooseDecision('pay', btnPay));
+</script>
+</body>
+</html>

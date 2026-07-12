@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay Yourself First — A Babylon Story, Chapter Two</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mukta:wght@400;500;600&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #241109; --bg2: #2f160c; --bg3: #1a0c06;
+    --cream: #F4E9D8; --muted: #C7A98A;
+    --gold: #E4A94A; --gold-dim: #a9793a;
+    --brick: #C1502E; --indigo: #4E6E9E;
+    --line: rgba(244,233,216,0.14);
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 55%, var(--bg3) 100%);
+    color: var(--cream); font-family:'Mukta',sans-serif; font-size:17px; line-height:1.65; overflow-x:hidden;
+  }
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:700; letter-spacing:0.01em; }
+  .label{ font-family:'Baloo 2', sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem; color:var(--gold); }
+  section{ padding: 5.5rem 1.5rem; position:relative; }
+  .wrap{ max-width: var(--maxw); margin:0 auto; }
+  p{ margin-bottom:1rem; color:#e7d9c4; }
+  a{ color:var(--gold); }
+
+  .bg-coins{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .bg-coins span{ position:absolute; width:10px; height:10px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: drift 14s linear infinite; opacity:0.35; }
+  @keyframes drift{ 0%{ transform: translateY(-5vh) rotate(0deg);} 100%{ transform: translateY(110vh) rotate(360deg);} }
+
+  .hero{ min-height:88vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:4rem; border-bottom:1px solid var(--line);}
+  .hero h1{ font-size:clamp(2.2rem,7vw,4rem); line-height:1.08;
+    background: linear-gradient(180deg,#fff5e0,var(--gold) 70%); -webkit-background-clip:text; background-clip:text; color:transparent; max-width:17ch; }
+  .hero p.sub{ margin-top:1.3rem; max-width:48ch; color:var(--muted); font-size:1.05rem; }
+  .hero .chip{ margin-top:1.6rem; display:inline-flex; gap:0.5rem; align-items:center; background:rgba(228,169,74,0.1); border:1px solid var(--gold-dim); padding:0.5rem 1rem; border-radius:999px; font-family:'Baloo 2',sans-serif; font-size:0.78rem; color:var(--gold);}
+  .scrolldown{ position:absolute; bottom:1.8rem; left:50%; transform:translateX(-50%); font-size:0.75rem; color:var(--muted); font-family:'Baloo 2',sans-serif; display:flex; flex-direction:column; align-items:center; gap:0.4rem;}
+  .scrolldown .chevron{ width:10px; height:10px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .eyebrow{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.1rem;}
+  .eyebrow .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold);}
+  h2.title{ font-size:clamp(1.7rem,4.5vw,2.4rem); margin-bottom:1.1rem; color:var(--cream); }
+  .lede{ font-size:1.1rem; color:var(--cream); }
+
+  .character-card{ background:linear-gradient(160deg, rgba(228,169,74,0.08), rgba(228,169,74,0.02)); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.5rem; margin:1.6rem 0; display:flex; gap:1rem; align-items:flex-start;}
+  .avatar{ flex:none; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.3rem; background:conic-gradient(from 180deg, var(--gold), var(--brick), var(--gold)); color:var(--bg3);}
+  .character-card h3{ font-size:1.15rem; color:var(--gold); margin-bottom:0.2rem;}
+  .character-card .role{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;}
+
+  blockquote{ border-left:3px solid var(--brick); padding:0.3rem 0 0.3rem 1.1rem; margin:1.4rem 0; font-style:italic; color:var(--muted); font-size:0.95rem;}
+  blockquote cite{ display:block; margin-top:0.4rem; font-style:normal; font-family:'Baloo 2',sans-serif; font-size:0.75rem; color:var(--gold-dim);}
+
+  .dialogue{ background:rgba(78,110,158,0.08); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.5rem; margin:1.4rem 0;}
+  .dialogue .who{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; color:var(--indigo); margin-bottom:0.25rem;}
+  .dialogue p{ margin-bottom:0.9rem; color:var(--cream); }
+  .dialogue p:last-child{ margin-bottom:0; }
+
+  .demo-section{ background:var(--bg3); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  /* ---- stepper: three lessons ---- */
+  .stepper{ margin-top:2rem; }
+  .step-tabs{ display:flex; gap:0.5rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+  .step-tab{
+    font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.82rem;
+    background:rgba(244,233,216,0.04); border:1px solid var(--line); color:var(--muted);
+    padding:0.55rem 1rem; border-radius:999px; cursor:pointer; transition:all 0.2s ease;
+  }
+  .step-tab.active{ background:var(--gold); color:#2a1305; border-color:var(--gold); }
+  .step-panel{ display:none; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; }
+  .step-panel.active{ display:block; }
+  .step-head{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
+  .step-num{ font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--gold); }
+  .step-result{ margin-top:1rem; display:flex; align-items:center; gap:0.8rem; padding:0.9rem 1.1rem; border-radius:10px; font-family:'Baloo 2',sans-serif; font-size:0.85rem; }
+  .step-result.loss{ background:rgba(193,80,46,0.14); color:#f0b39c; }
+  .step-result.leak{ background:rgba(193,80,46,0.1); color:#e8c7a8; }
+  .step-result.win{ background:rgba(228,169,74,0.14); color:var(--gold); }
+  .purse-mini{ display:flex; align-items:center; gap:0.6rem; margin-top:0.6rem; }
+  .purse-mini .bar-track{ flex:1; height:10px; border-radius:6px; background:rgba(244,233,216,0.08); overflow:hidden; }
+  .purse-mini .bar-fill{ height:100%; border-radius:6px; transition:width 0.6s ease; }
+  .purse-mini .bar-fill.gold{ background:var(--gold); }
+  .purse-mini .bar-fill.brick{ background:var(--brick); }
+
+  /* ---- gold slaves compounding ---- */
+  .compound-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .compound-controls{ display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center; }
+  .compound-controls button{
+    font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem;
+    background:var(--gold); color:#2a1305; border:none; border-radius:999px; padding:0.6rem 1.2rem; cursor:pointer;
+  }
+  .compound-controls button.secondary{ background:transparent; border:1px solid var(--line); color:var(--muted); }
+  .compound-controls .yearlabel{ font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); }
+  .coin-grid{ display:flex; flex-wrap:wrap; gap:6px; min-height:60px; align-items:flex-end; margin-bottom:1rem; }
+  .coin-grid .coin{ width:14px; height:14px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: pop 0.4s ease; }
+  @keyframes pop{ 0%{ transform:scale(0);} 100%{ transform:scale(1);} }
+  .compound-total{ font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--gold); }
+  .compound-note{ font-size:0.82rem; color:var(--muted); margin-top:0.6rem; }
+
+  /* ---- pebble streak ---- */
+  .pebble-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .pebble-grid{ display:grid; grid-template-columns: repeat(10, 1fr); gap:6px; margin:1.2rem 0; }
+  @media (max-width:480px){ .pebble-grid{ grid-template-columns: repeat(7,1fr);} }
+  .pebble{
+    aspect-ratio:1; border-radius:6px; background:rgba(244,233,216,0.06); border:1px solid var(--line);
+    cursor:pointer; transition: all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--muted);
+  }
+  .pebble.done{ background: var(--gold); border-color:var(--gold); color:#2a1305; }
+  .pebble-status{ font-family:'Baloo 2',sans-serif; font-size:0.85rem; color:var(--muted); }
+  .pebble-status strong{ color:var(--gold); }
+  .pebble-reset{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; background:transparent; border:1px solid var(--line); color:var(--muted); padding:0.5rem 1rem; border-radius:999px; cursor:pointer; margin-top:1rem; }
+
+  /* ---- advice accordion ---- */
+  .accordion{ margin-top:1.6rem; display:flex; flex-direction:column; gap:0.7rem; }
+  .acc-item{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .acc-head{ display:flex; align-items:center; gap:0.9rem; padding:1rem 1.2rem; cursor:pointer; }
+  .acc-num{ font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold); font-size:1.2rem; flex:none; width:1.6rem; }
+  .acc-title{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.95rem; color:var(--cream); flex:1; }
+  .acc-arrow{ color:var(--gold); transition:transform 0.25s ease; flex:none; }
+  .acc-item.open .acc-arrow{ transform:rotate(180deg); }
+  .acc-body{ max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .acc-body-inner{ padding:0 1.2rem 1.1rem 2.9rem; color:var(--muted); font-size:0.92rem; }
+  .acc-item.open .acc-body{ max-height:220px; }
+
+  .takeaways{ list-style:none; margin-top:1.4rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .takeaways li{ display:flex; gap:0.8rem; align-items:flex-start; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:0.9rem 1.1rem; color:var(--cream); font-size:0.95rem;}
+  .takeaways li::before{ content:"◆"; color:var(--gold); flex:none; margin-top:0.15rem; font-size:0.7rem; }
+
+  footer{ text-align:center; padding:3.5rem 1.5rem 4rem; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--line); }
+  footer .label{ display:block; margin-bottom:0.6rem; }
+
+  ::selection{ background:var(--gold); color:#2a1305; }
+</style>
+</head>
+<body>
+
+<div class="bg-coins" id="bgCoins"></div>
+
+<section class="hero">
+  <span class="label">A Babylon Story — Chapter Two</span>
+  <h1>Pay Yourself First</h1>
+  <p class="sub">Vignesh and Mahadevaswamy finally sit across from Arjun Rao, the richest man they know. He tells them exactly how he got there — starting from nothing.</p>
+  <div class="chip">🪙 Arjun's own story, in his words</div>
+  <div class="scrolldown"><span>Scroll</span><span class="chevron"></span></div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The Question</span></div>
+    <h2 class="title">"We studied together. We played together. Why are you rich and we are not?"</h2>
+    <p class="lede">Arjun Rao is generous — with his family, his charities, his own comforts. Yet every year, he somehow ends up wealthier than the year before, no matter how much he spends. Old classmates like Vignesh can't understand it. They ask him straight out.</p>
+
+    <div class="dialogue">
+      <div class="who">An old classmate</div>
+      <p>"We studied under the same teacher. We were never behind you in our lessons. In the years since, you haven't worked harder than us, or been more honest than us. Why has luck picked you, and not us?"</p>
+      <div class="who">Arjun Rao</div>
+      <p>"If you have only managed a bare living since we were students, it's not because luck skipped you. It's because you never learned the rules that build wealth — or you know them, and don't follow them."</p>
+    </div>
+
+    <p>Arjun explains something most people never consider: money that shows up by luck — a lottery win, a surprise inheritance — usually disappears fast. People either spend it all in a blur, or clutch it so tightly out of fear that they never actually enjoy it. Very few people know how to take money, earned or unearned, and make it grow. Arjun is one of them. And he learned it the hard way.</p>
+  </div>
+</section>
+
+<!-- ORIGIN STORY -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">Where It Started</span></div>
+    <h2 class="title">A clerk with no savings, and one impossible deadline</h2>
+    <p>Arjun grew up the son of a small shopkeeper — no land, no inheritance coming his way. He took a job as a record-keeper, copying documents by hand for a wage that vanished into rent and food each month. Nothing left over, same as everyone else.</p>
+
+    <div class="character-card">
+      <div class="avatar">S</div>
+      <div>
+        <h3>Shankar Lal</h3>
+        <div class="role">An old moneylender, known as the richest client in the records office</div>
+        <p style="margin:0;color:#e7d9c4;">One day Shankar Lal walked in needing an urgent copy of a long contract — due in two days, for a payment of two coins. Arjun worked hard, but the document was too long. He missed the deadline.</p>
+      </div>
+    </div>
+
+    <div class="dialogue">
+      <div class="who">Arjun, to Shankar Lal (missing the deadline)</div>
+      <p>"You are a wealthy man. Tell me the secret to becoming rich, and I will work through the night — by sunrise, this will be finished."</p>
+      <div class="who">Shankar Lal</div>
+      <p>"You're a bold one. Very well — it's a deal."</p>
+    </div>
+
+    <p>Arjun worked through the night, eyes burning from the lamp smoke, and finished by sunrise. Shankar Lal kept his word.</p>
+
+    <blockquote>"I found the road to wealth when I decided that a part of all I earned was mine to keep. And so will you."<cite>— Shankar Lal (Algamish, in the original story)</cite></blockquote>
+
+    <p>Arjun was confused — wasn't everything he earned already his to keep? Shankar Lal laughed. Rent, food, clothes, little expenses here and there — by the end of the month, everything was gone. <strong style="color:var(--cream)">Arjun was paying everyone — the landlord, the tailor, the grocer — except himself.</strong> Shankar Lal's advice was simple: set aside at least one-tenth of everything earned, before spending on anything else. Pay yourself first.</p>
+  </div>
+</section>
+
+<!-- THREE ATTEMPTS INTERACTIVE -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">It Didn't Work The First Time</span></div>
+    <h2 class="title">Arjun tried this for three straight years — and got it wrong twice</h2>
+    <p>Saving one-tenth of his wage turned out to be easy. Arjun barely noticed the difference. But knowing how to save is not the same as knowing what to do with savings. Tap through what actually happened, year by year.</p>
+
+    <div class="stepper">
+      <div class="step-tabs">
+        <button class="step-tab active" data-step="1">Year 1</button>
+        <button class="step-tab" data-step="2">Year 2</button>
+        <button class="step-tab" data-step="3">Year 3–4</button>
+      </div>
+
+      <div class="step-panel active" data-panel="1">
+        <div class="step-head"><span class="step-num">01</span><h3>He trusted a friend who wasn't an expert</h3></div>
+        <p style="margin-bottom:0.6rem;">Arjun handed his year of savings to a friend who claimed he could import rare gems and resell them at a huge profit. The friend was a brickmaker — not a jeweller. The "gems" turned out to be coloured glass.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill brick" style="width:0%" id="bar1"></div></div><span id="barlabel1">₹0 left</span></div>
+        <div class="step-result loss">Lesson: never take advice about money from someone who isn't actually skilled in that area — ask the jeweller about gems, not the brickmaker.</div>
+      </div>
+
+      <div class="step-panel" data-panel="2">
+        <div class="step-head"><span class="step-num">02</span><h3>He earned a return — and spent all of it</h3></div>
+        <p style="margin-bottom:0.6rem;">Undeterred, Arjun saved again and lent it to a metal trader, earning a steady payout every few months. But each time the payout arrived, he spent it — on feasts, on a new tunic, on small luxuries.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill brick" style="width:38%" id="bar2"></div></div><span id="barlabel2">Savings frozen, earnings spent</span></div>
+        <div class="step-result leak">Lesson: spending the returns is like eating your own children — the savings never multiply, because nothing is ever left to keep earning.</div>
+      </div>
+
+      <div class="step-panel" data-panel="3">
+        <div class="step-head"><span class="step-num">03</span><h3>He finally let it compound</h3></div>
+        <p style="margin-bottom:0.6rem;">This time, Arjun let both his savings <em>and</em> their earnings stay invested. His money began earning money, and that money began earning more. Two years later, Shankar Lal returned — impressed enough to make Arjun his business partner.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill gold" style="width:88%" id="bar3"></div></div><span id="barlabel3">Growing on its own</span></div>
+        <div class="step-result win">Lesson: your savings are workers. Let their wages also go to work. That's how a small seed becomes a tree.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPOUNDING DEMO -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">"Every Gold Piece Is a Slave That Works For You"</span></div>
+    <h2 class="title">Watch what savings do when you leave them alone</h2>
+    <p>Start with a small saved amount. Each "year" you add, it earns a little, and next year that earning earns too. Click ahead and watch the coins multiply on their own.</p>
+
+    <div class="compound-card">
+      <div class="compound-controls">
+        <button id="addYear">Add a year →</button>
+        <button class="secondary" id="resetYears">Reset</button>
+        <span class="yearlabel" id="yearLabel">Year 0</span>
+      </div>
+      <div class="coin-grid" id="coinGrid"></div>
+      <div class="compound-total">Total saved: <span id="compoundTotal">₹1,000</span></div>
+      <p class="compound-note">Starting seed: ₹1,000, growing at roughly 8% a year, exactly as Arjun described — "the first copper you save is the seed from which your tree of wealth shall grow."</p>
+    </div>
+  </div>
+</section>
+
+<!-- PEBBLE PARABLE -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">On Willpower</span></div>
+    <h2 class="title">It isn't willpower. It's just not skipping the small thing.</h2>
+    <p>Years later, a friend calls Arjun lucky, and another calls him strong-willed. Arjun disagrees with both.</p>
+
+    <div class="dialogue">
+      <div class="who">Arjun Rao</div>
+      <p>"Willpower is nothing grand. It's just the plain refusal to leave a task you set for yourself unfinished. If I told myself, 'for a hundred days, I'll pick up a pebble on my walk and drop it in the river' — I would do exactly that. Not skip a day and tell myself I'd throw in two tomorrow. Just the one pebble, every day, without fail."</p>
+    </div>
+
+    <p>Try it below — the same small, boring habit, repeated daily, is what actually built Arjun's fortune. Not one dramatic decision, but one un-skipped small one, repeated.</p>
+
+    <div class="pebble-card">
+      <p class="pebble-status">Tap each square to mark a day's pebble as dropped. <strong id="pebbleCount">0</strong> of 30 days done.</p>
+      <div class="pebble-grid" id="pebbleGrid"></div>
+      <button class="pebble-reset" id="pebbleReset">Reset the habit</button>
+    </div>
+  </div>
+</section>
+
+<!-- ADVICE ACCORDION -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">What Arjun Tells His Friends</span></div>
+    <h2 class="title">Six things he says to anyone who asks</h2>
+    <p>Tap each one to read what Arjun actually says.</p>
+
+    <div class="accordion" id="accordion">
+      <div class="acc-item open">
+        <div class="acc-head"><span class="acc-num">1</span><span class="acc-title">Pay yourself first</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">Set aside at least one-tenth of everything you earn, before any other spending. Arrange the rest of your expenses around it, not the other way round. Say it to yourself until it becomes automatic: a part of all I earn is mine to keep.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">2</span><span class="acc-title">Make your savings work</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">Money sitting idle earns nothing. Put it to work so it earns more money — and let that new money also stay invested, so it earns even more. This is how a small seed becomes a tree.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">3</span><span class="acc-title">Guard it with expert advice</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">Ask people who actually work with money for a living, not a well-meaning friend who's never handled an investment. A safe, modest return beats a risky, exciting one.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">4</span><span class="acc-title">Plan for old age</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">A day comes when you can no longer earn. Set something up now — through small, regular contributions — so that future version of you is provided for.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">5</span><span class="acc-title">Protect your family</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">Make sure your family won't struggle if something happens to you. This, too, can be arranged through small regular payments — no need to wait until you have a large sum.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">6</span><span class="acc-title">Still enjoy your life</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">Don't strain yourself trying to save more than is comfortable. If one-tenth is right for you, that's enough. Live well on the rest — life is meant to be enjoyed, not just hoarded against.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">Before You Go</span></div>
+    <h2 class="title">What this chapter is really saying</h2>
+    <ul class="takeaways">
+      <li>Wealth wasn't luck for Arjun — it started the moment he decided a part of every rupee earned belonged to him first.</li>
+      <li>His first two attempts to grow that money actually failed. Failure wasn't the problem — quitting after failure would have been.</li>
+      <li>Money you spend as soon as it's earned never multiplies. Money left alone to compound eventually builds real wealth.</li>
+      <li>"Willpower" is really just not skipping the small, boring habit — one day at a time, without exception.</li>
+      <li>Anyone offering advice about your money should actually be experienced in that exact subject — not just willing to help.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="label">Next</span>
+  Chapter Three asks the sharper question: if you have nothing saved at all right now, where do you even begin? Based on <em>The Richest Man in Babylon</em> by George S. Clason.
+</footer>
+
+<script>
+  // decorative floating coins
+  (function(){
+    const container = document.getElementById('bgCoins');
+    const n = window.innerWidth < 600 ? 8 : 16;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (10 + Math.random()*10) + 's';
+      s.style.animationDelay = (Math.random()*14) + 's';
+      s.style.opacity = 0.15 + Math.random()*0.3;
+      container.appendChild(s);
+    }
+  })();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // step tabs
+  const tabs = document.querySelectorAll('.step-tab');
+  const panels = document.querySelectorAll('.step-panel');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.step-panel[data-panel="'+tab.dataset.step+'"]').classList.add('active');
+      animateBars();
+    });
+  });
+  function animateBars(){
+    requestAnimationFrame(()=>{
+      document.getElementById('bar1').style.width = '0%';
+      document.getElementById('bar2').style.width = '38%';
+      document.getElementById('bar3').style.width = '88%';
+    });
+  }
+  animateBars();
+
+  // compounding coins
+  let year = 0;
+  let total = 1000;
+  const coinGrid = document.getElementById('coinGrid');
+  const yearLabel = document.getElementById('yearLabel');
+  const compoundTotal = document.getElementById('compoundTotal');
+
+  function renderCoins(){
+    coinGrid.innerHTML = '';
+    const coinCount = Math.min(120, Math.round(total/150));
+    for(let i=0;i<coinCount;i++){
+      const c = document.createElement('div');
+      c.className = 'coin';
+      c.style.animationDelay = (i*0.01)+'s';
+      coinGrid.appendChild(c);
+    }
+    yearLabel.textContent = 'Year ' + year;
+    compoundTotal.textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+  }
+  document.getElementById('addYear').addEventListener('click', ()=>{
+    if(year >= 20) return;
+    year++;
+    total = total * 1.08 + 200; // growth plus a fresh year of saving added to the pile
+    renderCoins();
+  });
+  document.getElementById('resetYears').addEventListener('click', ()=>{
+    year = 0; total = 1000; renderCoins();
+  });
+  renderCoins();
+
+  // pebble grid
+  const pebbleGrid = document.getElementById('pebbleGrid');
+  const pebbleCount = document.getElementById('pebbleCount');
+  for(let i=1;i<=30;i++){
+    const p = document.createElement('div');
+    p.className = 'pebble';
+    p.textContent = i;
+    p.addEventListener('click', ()=>{
+      p.classList.toggle('done');
+      updatePebbleCount();
+    });
+    pebbleGrid.appendChild(p);
+  }
+  function updatePebbleCount(){
+    pebbleCount.textContent = document.querySelectorAll('.pebble.done').length;
+  }
+  document.getElementById('pebbleReset').addEventListener('click', ()=>{
+    document.querySelectorAll('.pebble').forEach(p=>p.classList.remove('done'));
+    updatePebbleCount();
+  });
+
+  // accordion
+  document.querySelectorAll('.acc-head').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      const item = head.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.acc-item').forEach(i=>i.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

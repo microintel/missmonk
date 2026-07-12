@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seven Cures for a Lean Purse — A Babylon Story, Chapter Three</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mukta:wght@400;500;600&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#241109; --bg2:#2f160c; --bg3:#1a0c06;
+    --cream:#F4E9D8; --muted:#C7A98A;
+    --gold:#E4A94A; --gold-dim:#a9793a;
+    --brick:#C1502E; --indigo:#4E6E9E;
+    --line: rgba(244,233,216,0.14);
+    --maxw:760px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 55%, var(--bg3) 100%); color:var(--cream); font-family:'Mukta',sans-serif; font-size:17px; line-height:1.65; overflow-x:hidden;}
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:700; letter-spacing:0.01em; }
+  .label{ font-family:'Baloo 2', sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem; color:var(--gold); }
+  section{ padding:5.5rem 1.5rem; position:relative; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; }
+  p{ margin-bottom:1rem; color:#e7d9c4; }
+  a{ color:var(--gold); }
+
+  .bg-coins{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .bg-coins span{ position:absolute; width:10px; height:10px; border-radius:50%; background: radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: drift 14s linear infinite; opacity:0.35; }
+  @keyframes drift{ 0%{ transform: translateY(-5vh) rotate(0deg);} 100%{ transform: translateY(110vh) rotate(360deg);} }
+
+  .hero{ min-height:88vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:4rem; border-bottom:1px solid var(--line);}
+  .hero h1{ font-size:clamp(2.1rem,7vw,3.8rem); line-height:1.08; background: linear-gradient(180deg,#fff5e0,var(--gold) 70%); -webkit-background-clip:text; background-clip:text; color:transparent; max-width:18ch;}
+  .hero p.sub{ margin-top:1.3rem; max-width:48ch; color:var(--muted); font-size:1.05rem;}
+  .hero .chip{ margin-top:1.6rem; display:inline-flex; gap:0.5rem; align-items:center; background:rgba(228,169,74,0.1); border:1px solid var(--gold-dim); padding:0.5rem 1rem; border-radius:999px; font-family:'Baloo 2',sans-serif; font-size:0.78rem; color:var(--gold);}
+  .scrolldown{ position:absolute; bottom:1.8rem; left:50%; transform:translateX(-50%); font-size:0.75rem; color:var(--muted); font-family:'Baloo 2',sans-serif; display:flex; flex-direction:column; align-items:center; gap:0.4rem;}
+  .scrolldown .chevron{ width:10px; height:10px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .eyebrow{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.1rem;}
+  .eyebrow .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold);}
+  .eyebrow .cure-tag{ font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold); font-size:1rem; }
+  h2.title{ font-size:clamp(1.6rem,4.5vw,2.3rem); margin-bottom:1.1rem; color:var(--cream); }
+  .lede{ font-size:1.1rem; color:var(--cream); }
+
+  .character-card{ background:linear-gradient(160deg, rgba(228,169,74,0.08), rgba(228,169,74,0.02)); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.5rem; margin:1.6rem 0; display:flex; gap:1rem; align-items:flex-start;}
+  .avatar{ flex:none; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.3rem; background:conic-gradient(from 180deg, var(--gold), var(--brick), var(--gold)); color:var(--bg3);}
+  .character-card h3{ font-size:1.15rem; color:var(--gold); margin-bottom:0.2rem;}
+  .character-card .role{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;}
+
+  blockquote{ border-left:3px solid var(--brick); padding:0.3rem 0 0.3rem 1.1rem; margin:1.4rem 0; font-style:italic; color:var(--muted); font-size:0.95rem;}
+  blockquote cite{ display:block; margin-top:0.4rem; font-style:normal; font-family:'Baloo 2',sans-serif; font-size:0.75rem; color:var(--gold-dim);}
+
+  .dialogue{ background:rgba(78,110,158,0.08); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.5rem; margin:1.4rem 0;}
+  .dialogue .who{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; color:var(--indigo); margin-bottom:0.25rem;}
+  .dialogue p{ margin-bottom:0.9rem; color:var(--cream); }
+  .dialogue p:last-child{ margin-bottom:0; }
+
+  .demo-section{ background:var(--bg3); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  .cure-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .cure-card h4{ font-family:'Baloo 2',sans-serif; font-size:0.85rem; color:var(--gold); margin-bottom:0.9rem; }
+
+  /* egg basket - cure 1 */
+  .egg-demo{ display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .basket{ position:relative; width:180px; height:110px; }
+  .basket-body{ position:absolute; bottom:0; width:100%; height:70px; background: linear-gradient(180deg, var(--gold-dim), #6b4b23); border-radius: 8px 8px 30px 30px; border:2px solid var(--gold); }
+  .basket-weave{ position:absolute; bottom:0; width:100%; height:70px; background-image: repeating-linear-gradient(90deg, transparent 0 12px, rgba(0,0,0,0.15) 12px 14px); border-radius: 8px 8px 30px 30px; }
+  .egg-pile{ position:absolute; bottom:35px; left:50%; transform:translateX(-50%); display:flex; flex-wrap:wrap; width:150px; justify-content:center; gap:2px; }
+  .egg{ width:12px; height:16px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 35% 30%, #fff8ea, #e8d3a5); animation: eggpop 0.35s ease; }
+  @keyframes eggpop{ 0%{ transform:scale(0);} 100%{ transform:scale(1);} }
+  .egg-controls{ display:flex; gap:0.8rem; }
+  .egg-controls button{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem; border-radius:999px; padding:0.6rem 1.2rem; cursor:pointer; border:none; }
+  #dayInBtn{ background:var(--gold); color:#2a1305; }
+  #dayOutBtn{ background:transparent; border:1px solid var(--line); color:var(--muted); }
+  .egg-stat{ font-family:'Baloo 2',sans-serif; font-size:0.85rem; color:var(--muted); text-align:center; }
+  .egg-stat strong{ color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.3rem; }
+
+  /* budget - cure 2 */
+  .budget-list{ display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.2rem; }
+  .budget-item{ display:flex; align-items:center; gap:0.8rem; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:10px; padding:0.7rem 1rem; cursor:pointer; }
+  .budget-item input{ accent-color:var(--gold); width:16px; height:16px; flex:none; }
+  .budget-item .bname{ flex:1; font-size:0.92rem; color:var(--cream); }
+  .budget-item .bamt{ font-family:'Baloo 2',sans-serif; font-size:0.82rem; color:var(--muted); }
+  .budget-item.needed{ opacity:0.6; }
+  .budget-item.needed .bname::after{ content:" (necessary)"; font-size:0.72rem; color:var(--gold-dim); }
+  .budget-bar-wrap{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:1.1rem 1.2rem; }
+  .budget-bar-track{ height:16px; border-radius:8px; background:rgba(244,233,216,0.08); overflow:hidden; position:relative; }
+  .budget-bar-fill{ height:100%; background: linear-gradient(90deg, var(--gold), var(--brick)); transition: width 0.3s ease; }
+  .budget-marker{ position:absolute; top:-4px; left:90%; width:2px; height:24px; background:var(--cream); }
+  .budget-readout{ display:flex; justify-content:space-between; margin-top:0.6rem; font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); }
+  .budget-readout strong{ color:var(--gold); }
+  .budget-warning{ margin-top:0.8rem; font-family:'Baloo 2',sans-serif; font-size:0.82rem; padding:0.7rem 0.9rem; border-radius:8px; }
+  .budget-warning.ok{ background:rgba(228,169,74,0.12); color:var(--gold); }
+  .budget-warning.over{ background:rgba(193,80,46,0.14); color:#f0b39c; }
+
+  /* period stepper - cure 3 */
+  .period-controls{ display:flex; gap:0.8rem; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; }
+  .period-controls button{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem; background:var(--gold); color:#2a1305; border:none; border-radius:999px; padding:0.55rem 1.1rem; cursor:pointer; }
+  .period-controls button.secondary{ background:transparent; border:1px solid var(--line); color:var(--muted); }
+  .period-controls .yrs{ font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); }
+  .silver-bar-track{ height:120px; display:flex; align-items:flex-end; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:10px; padding:0.6rem; }
+  .silver-bar{ width:100%; background: linear-gradient(180deg, var(--gold), var(--gold-dim)); border-radius:6px 6px 0 0; transition: height 0.5s ease; min-height:4px; }
+  .silver-readout{ margin-top:0.8rem; font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold); text-align:center; }
+  .silver-note{ font-size:0.8rem; color:var(--muted); text-align:center; margin-top:0.4rem; }
+
+  /* risk quiz - cure 4 */
+  .quiz-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.4rem; margin-bottom:1rem; }
+  .quiz-scenario{ font-size:0.95rem; color:var(--cream); margin-bottom:0.9rem; }
+  .quiz-buttons{ display:flex; gap:0.8rem; }
+  .quiz-buttons button{ flex:1; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem; padding:0.6rem; border-radius:8px; cursor:pointer; border:1px solid var(--line); background:transparent; color:var(--muted); }
+  .quiz-buttons button.picked-safe{ background:rgba(78,110,158,0.2); border-color:var(--indigo); color:#bcd0ee; }
+  .quiz-buttons button.picked-risky{ background:rgba(193,80,46,0.2); border-color:var(--brick); color:#f0b39c; }
+  .quiz-feedback{ margin-top:0.8rem; font-size:0.85rem; color:var(--muted); display:none; }
+  .quiz-feedback.show{ display:block; }
+  .quiz-feedback.correct{ color:var(--gold); }
+
+  /* rent vs own - cure 5 */
+  .compare-slider{ margin-bottom:1.2rem; }
+  .compare-slider input[type=range]{ width:100%; accent-color:var(--gold); }
+  .compare-slider .yrs{ font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); }
+  .compare-bars{ display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+  @media (max-width:480px){ .compare-bars{ grid-template-columns:1fr; } }
+  .compare-col{ text-align:center; }
+  .compare-col .clabel{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.6rem; }
+  .compare-track{ height:140px; display:flex; align-items:flex-end; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:10px; padding:0.5rem; }
+  .compare-fill{ width:100%; border-radius:6px 6px 0 0; transition:height 0.5s ease; min-height:4px; }
+  .compare-fill.rent{ background: linear-gradient(180deg, var(--brick), #7a2f18); }
+  .compare-fill.own{ background: linear-gradient(180deg, var(--gold), var(--gold-dim)); }
+  .compare-amt{ margin-top:0.6rem; font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--cream); }
+  .compare-note{ font-size:0.8rem; color:var(--muted); text-align:center; margin-top:1rem; }
+
+  /* insurance growth - cure 6 */
+  .milestone-row{ display:flex; justify-content:space-between; margin-top:0.6rem; font-family:'Baloo 2',sans-serif; font-size:0.78rem; color:var(--muted); }
+  .milestone-row span.hit{ color:var(--gold); font-weight:600; }
+
+  /* desire ladder - cure 7 */
+  .ladder{ display:flex; flex-direction:column-reverse; gap:0.5rem; margin:1.2rem 0; }
+  .rung{ display:flex; align-items:center; gap:0.9rem; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:10px; padding:0.7rem 1rem; opacity:0.4; transition:all 0.25s ease; }
+  .rung.unlocked{ opacity:1; cursor:pointer; }
+  .rung.achieved{ background:rgba(228,169,74,0.12); border-color:var(--gold-dim); }
+  .rung .ramt{ font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold); min-width:5rem; }
+  .rung .rlabel{ flex:1; font-size:0.88rem; color:var(--cream); }
+  .rung .rcheck{ color:var(--gold); font-family:'Baloo 2',sans-serif; font-size:0.8rem; opacity:0; }
+  .rung.achieved .rcheck{ opacity:1; }
+  .ladder-hint{ font-size:0.82rem; color:var(--muted); text-align:center; }
+
+  .conduct-list{ list-style:none; margin-top:1.2rem; display:flex; flex-direction:column; gap:0.7rem; }
+  .conduct-list li{ display:flex; gap:0.7rem; align-items:flex-start; font-size:0.92rem; color:var(--cream); }
+  .conduct-list li::before{ content:"✓"; color:var(--gold); font-family:'Baloo 2',sans-serif; font-weight:700; flex:none; }
+
+  .takeaways{ list-style:none; margin-top:1.4rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .takeaways li{ display:flex; gap:0.8rem; align-items:flex-start; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:0.9rem 1.1rem; color:var(--cream); font-size:0.95rem;}
+  .takeaways li::before{ content:"◆"; color:var(--gold); flex:none; margin-top:0.15rem; font-size:0.7rem; }
+
+  footer{ text-align:center; padding:3.5rem 1.5rem 4rem; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--line); }
+  footer .label{ display:block; margin-bottom:0.6rem; }
+
+  ::selection{ background:var(--gold); color:#2a1305; }
+</style>
+</head>
+<body>
+
+<div class="bg-coins" id="bgCoins"></div>
+
+<section class="hero">
+  <span class="label">A Babylon Story — Chapter Three</span>
+  <h1>Seven Cures for a Lean Purse</h1>
+  <p class="sub">The king of Babylon asks his richest citizen a simple question: can wealth actually be taught? Arjun Rao says yes — and spends seven days teaching a hundred students exactly how.</p>
+  <div class="chip">🏺 All seven cures, taught in the Temple of Learning</div>
+  <div class="scrolldown"><span>Scroll</span><span class="chevron"></span></div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">The King's Problem</span></div>
+    <h2 class="title">The city built great things — and somehow got poorer</h2>
+    <p class="lede">After years of building huge public projects — canals, temples — the king returns victorious from war to find his city struggling. Work has dried up. Merchants have no customers. People can't afford food, despite all the money that was spent.</p>
+
+    <div class="dialogue">
+      <div class="who">The Royal Chancellor</div>
+      <p>"The gold has found its way into the hands of a few very rich men. It filtered through the fingers of most of our people as quickly as goat's milk goes through a strainer. Now that the flow has stopped, most have nothing to show for their earnings."</p>
+      <div class="who">The King</div>
+      <p>"Why should so few men be able to acquire all the gold?"</p>
+      <div class="who">The Chancellor</div>
+      <p>"Because they know how, your majesty. One cannot fault a man for succeeding at something he understands."</p>
+    </div>
+
+    <p>The king asks a better question: if a few people know the secret, why not teach it to everyone? He summons the richest man in the city — Arjun Rao — and asks him directly.</p>
+
+    <div class="dialogue">
+      <div class="who">The King</div>
+      <p>"Arjun, is there truly a secret to acquiring wealth? Can it be taught?"</p>
+      <div class="who">Arjun Rao</div>
+      <p>"It is entirely practical, your majesty. What one man knows, he can teach to another."</p>
+    </div>
+
+    <p>Arjun agrees to teach a hundred chosen citizens — including, this time, Vignesh and Mahadevaswamy — the seven remedies that once fattened his own famously empty purse. Each day, for seven days, one cure.</p>
+  </div>
+</section>
+
+<!-- CURE 1 -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 1</span></div>
+    <h2 class="title">Start thy purse to fattening</h2>
+    <p>Arjun asks his students what work they do — a record-keeper, a butcher, an egg seller. Every trade, he says, is a stream of coins. The first cure is simply learning to keep a small part of that stream for yourself.</p>
+
+    <div class="dialogue">
+      <div class="who">Arjun, to the egg merchant in the class</div>
+      <p>"If you place ten eggs in a basket each morning, and take out only nine each evening, what happens?"</p>
+      <div class="who">The egg merchant</div>
+      <p>"In time... it would overflow."</p>
+    </div>
+
+    <blockquote>"For every ten coins thou placest within thy purse take out for use but nine. Thy purse will start to fatten at once, and its increasing weight will feel good in thy hand."<cite>— Arjun Rao (Arkad, in the original story)</cite></blockquote>
+
+    <div class="cure-card">
+      <h4>Try the egg basket yourself</h4>
+      <div class="egg-demo">
+        <div class="basket">
+          <div class="egg-pile" id="eggPile"></div>
+          <div class="basket-weave"></div>
+          <div class="basket-body"></div>
+        </div>
+        <div class="egg-controls">
+          <button id="dayInBtn">Live a day: put in 10, use 9</button>
+        </div>
+        <div class="egg-stat">Days passed: <strong id="dayCount">0</strong> · Eggs saved: <strong id="eggCount">0</strong></div>
+      </div>
+    </div>
+
+    <blockquote>"Truth is always simple."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>He adds a strange truth he can't fully explain: once he stopped spending more than nine-tenths of what he earned, he never actually felt shorter of money — and, oddly, coins seemed to come to him more easily than before.</p>
+  </div>
+</section>
+
+<!-- CURE 2 -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 2</span></div>
+    <h2 class="title">Control thy expenditures</h2>
+    <p>A student objects: what if my earnings barely cover my expenses already? Arjun has an answer ready.</p>
+
+    <blockquote>"What each of us calls our 'necessary expenses' will always grow to equal our incomes, unless we protest to the contrary."<cite>— Arjun Rao</cite></blockquote>
+
+    <blockquote>"Just as weeds grow in a field wherever the farmer leaves space for their roots, so freely do desires grow in men wherever there is a possibility of their being gratified."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>Even Arjun, with all his wealth, cannot satisfy every desire — there isn't enough time, strength, or appetite in one lifetime. The fix isn't earning more. It's writing down every expense, separating what's truly necessary from what's simply wanted, and never touching the one-tenth that's set aside.</p>
+
+    <div class="cure-card">
+      <h4>Sort a month's expenses — stay under nine-tenths</h4>
+      <div class="budget-list" id="budgetList"></div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-track"><div class="budget-bar-fill" id="budgetFill" style="width:0%"></div><div class="budget-marker"></div></div>
+        <div class="budget-readout"><span>Spent: <strong id="budgetSpent">₹0</strong></span><span>Limit (90%): <strong id="budgetLimit">₹0</strong></span></div>
+        <div class="budget-warning ok" id="budgetWarning">Tick the things you'd actually spend on. Stay left of the white line.</div>
+      </div>
+    </div>
+
+    <div class="dialogue">
+      <div class="who">A student in a red and gold robe</div>
+      <p>"I am a free man. Isn't a budget just a kind of slavery — deciding in advance what I may and may not spend?"</p>
+      <div class="who">Arjun Rao</div>
+      <p>"Would a pack-donkey, budgeting his own load, choose to carry jewels and bars of gold? No — he'd carry hay and water for the trail. A budget isn't there to limit your joy. It's a bright light in a dark cave, showing you exactly where your purse is leaking."</p>
+    </div>
+  </div>
+</section>
+
+<!-- CURE 3 -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 3</span></div>
+    <h2 class="title">Make thy gold multiply</h2>
+    <p>Coins sitting in a purse feel good, Arjun says, but they earn nothing on their own. The real goal isn't a big pile of savings — it's a steady stream of income that keeps flowing in, whether you're working or not.</p>
+
+    <blockquote>"A man's wealth is not in the coins he carries in his purse; it is the income he buildeth — the golden stream that continually floweth into his purse and keepeth it always bulging."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>To prove how powerful this becomes over time, Arjun tells his class about a farmer who, the day his son was born, gave ten pieces of silver to a moneylender — to be left untouched, earning a rental of one-fourth its value every four years, compounding the whole time.</p>
+
+    <div class="cure-card">
+      <h4>Watch the farmer's ten silver pieces grow</h4>
+      <div class="period-controls">
+        <button id="addPeriod">+ 4 years</button>
+        <button class="secondary" id="resetPeriod">Reset</button>
+        <span class="yrs" id="silverYears">0 years</span>
+      </div>
+      <div class="silver-bar-track"><div class="silver-bar" id="silverBar" style="height:4px"></div></div>
+      <div class="silver-readout" id="silverAmount">10 silver pieces</div>
+      <div class="silver-note">At 20 years the book records it reaching about 30½ pieces. By 50 years, about 167 — nearly seventeen times the original, without the farmer lifting a finger after the first gift.</div>
+    </div>
+
+    <p>Arjun's own first profitable investment worked the same way: lending capital to a shield maker named Aggar, and — crucially — reinvesting the rental he earned each time, instead of spending it. That's the real secret: <strong style="color:var(--cream)">not just saving, but letting both the savings and their earnings keep working.</strong></p>
+  </div>
+</section>
+
+<!-- CURE 4 -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 4</span></div>
+    <h2 class="title">Guard thy treasures from loss</h2>
+    <p>Arjun turns serious. Growing money is one thing — keeping it safe is another, and it's the lesson he learned most painfully.</p>
+
+    <blockquote>"Misfortune loves a shining mark."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>He reminds the class of his own first investment — the year his savings went to a friend chasing rare gems overseas, a friend who knew nothing about jewels. The gems were fake. The savings were gone.</p>
+
+    <blockquote>"Be not too confident of thine own wisdom in entrusting thy treasures to the possible pitfalls of investments. Better by far to consult the wisdom of those experienced in handling money for profit."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>The rule going forward is simple: protect the original amount before chasing a bigger return. Check whether the person can actually repay, and whether they're actually known for doing so. Ask someone who works with money professionally before trusting an exciting opportunity.</p>
+
+    <div class="cure-card">
+      <h4>Safe or risky? Test yourself against Arjun's rule</h4>
+      <div id="quizArea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CURE 5 -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 5</span></div>
+    <h2 class="title">Make of thy dwelling a profitable investment</h2>
+    <p>Too many families, Arjun says, spend their whole lives paying rent to a landlord — with a wife who has nowhere to grow a garden, and children who play in unclean lanes because there's no yard of their own.</p>
+
+    <blockquote>"To a man's heart it brings gladness to eat the figs from his own trees and the grapes of his own vines. To own his own domicile... putteth confidence in his heart and greater effort behind all his endeavours."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>His advice isn't "save up the full price of a house." It's the opposite: show a lender a reasonable portion you've already saved, borrow the rest, and redirect the same money you were already paying in rent toward paying that loan off instead. Every payment builds ownership rather than disappearing into a landlord's pocket.</p>
+
+    <div class="cure-card">
+      <h4>Renting forever vs. paying off a home</h4>
+      <div class="compare-slider">
+        <label style="font-family:'Baloo 2',sans-serif;font-size:0.82rem;color:var(--muted);">Years: <span class="yrs" id="rentYearsLabel">10</span></label>
+        <input type="range" id="rentYears" min="1" max="25" step="1" value="10">
+      </div>
+      <div class="compare-bars">
+        <div class="compare-col">
+          <div class="clabel">Keeps Renting</div>
+          <div class="compare-track"><div class="compare-fill rent" id="rentBar" style="height:4px"></div></div>
+          <div class="compare-amt" id="rentAmt">₹0</div>
+        </div>
+        <div class="compare-col">
+          <div class="clabel">Buys a Home (10-yr loan)</div>
+          <div class="compare-track"><div class="compare-fill own" id="ownBar" style="height:4px"></div></div>
+          <div class="compare-amt" id="ownAmt">₹0</div>
+        </div>
+      </div>
+      <p class="compare-note">Same rough monthly outgo either way — but once the loan is paid off around year 10, ownership costs drop to almost nothing, while rent keeps climbing forever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CURE 6 -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 6</span></div>
+    <h2 class="title">Insure a future income</h2>
+    <p>Every life moves the same direction — childhood toward old age. Arjun's sixth lesson is blunt: plan now for the years you'll no longer be able to earn, and for a family that may need to stand on its own without you.</p>
+
+    <div class="character-card">
+      <div class="avatar">A</div>
+      <div>
+        <h3>Ansan</h3>
+        <div class="role">A sandal-maker Arjun knew</div>
+        <p style="margin:0;color:#e7d9c4;">Each week for eight years, Ansan deposited just two silver pieces with a moneylender. Left untouched and compounding at the usual rate, his small habit had already grown into over a thousand silver pieces — with more than a decade still to go.</p>
+      </div>
+    </div>
+
+    <div class="cure-card">
+      <h4>Ansan's two-silver-a-week habit</h4>
+      <div class="compare-slider">
+        <label style="font-family:'Baloo 2',sans-serif;font-size:0.82rem;color:var(--muted);">Years of deposits: <span class="yrs" id="ansanYearsLabel">0</span></label>
+        <input type="range" id="ansanYears" min="0" max="20" step="1" value="0">
+      </div>
+      <div class="silver-bar-track"><div class="silver-bar" id="ansanBar" style="height:4px"></div></div>
+      <div class="silver-readout" id="ansanAmount">0 silver pieces</div>
+      <div class="milestone-row"><span id="m8">8 years → ~1,040 pieces</span><span id="m20">20 years → ~4,000 pieces</span></div>
+    </div>
+
+    <blockquote>"A lean purse to a man no longer able to earn, or to a family without its head, is a sore tragedy."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>Arjun goes further, describing an idea he can only imagine — a plan where many men each pay in a small, regular sum, and the combined pool provides a real fortune for any one family should its earner pass away:</p>
+
+    <blockquote>"Some day wise-thinking men will devise a plan to insure against death whereby many men pay in but a trifling sum regularly, the aggregate making a handsome sum for the family of each member who passeth to the beyond."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>He's describing, almost exactly, what we now call life insurance — centuries before it existed.</p>
+  </div>
+</section>
+
+<!-- CURE 7 -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="cure-tag">Cure No. 7</span></div>
+    <h2 class="title">Increase thy ability to earn</h2>
+    <p>On the last day, Arjun doesn't talk about gold at all. He talks about the people sitting in front of him.</p>
+
+    <div class="dialogue">
+      <div class="who">A young man, once asking Arjun for a loan</div>
+      <p>"My earnings simply aren't enough to cover my expenses. Six times in two months I've asked my master for a raise — without success. No man can ask more often than that."</p>
+      <div class="who">Arjun Rao</div>
+      <p>"What you need, young man, isn't a loan. It's to earn more. What are you actually doing to increase your capacity to earn?"</p>
+    </div>
+
+    <blockquote>"Preceding accomplishment must be desire. Thy desires must be strong and definite. General desires are but weak longings."<cite>— Arjun Rao</cite></blockquote>
+
+    <p>Wanting to "be rich" leads nowhere. Wanting five specific gold pieces, and working out exactly how to get them, does — because succeeding at a small definite goal trains you to succeed at a bigger one next.</p>
+
+    <div class="cure-card">
+      <h4>Climb the desire ladder</h4>
+      <div class="ladder" id="ladder"></div>
+      <p class="ladder-hint">Tap the bottom rung first — each one unlocks the next, just as Arjun describes.</p>
+    </div>
+
+    <p style="margin-top:1.4rem;">He also lists what he considers non-negotiable, for any man who respects himself:</p>
+
+    <ul class="conduct-list">
+      <li>Pay his debts with all the promptness within his power</li>
+      <li>Take care of his family, so they think and speak well of him</li>
+      <li>Make a will, so his property is honourably divided if the Gods call him</li>
+      <li>Have compassion for those struck by misfortune, and help within reason</li>
+    </ul>
+
+    <blockquote>"There is more gold in Babylon, my students, than thou dreamest of. There is abundance for all."<cite>— Arjun Rao, closing his seventh lesson</cite></blockquote>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">All Seven, Together</span></div>
+    <h2 class="title">What Arjun actually taught his hundred students</h2>
+    <ul class="takeaways">
+      <li>Cure 1 — Start thy purse to fattening: keep at least one coin in ten for yourself, before spending on anything.</li>
+      <li>Cure 2 — Control thy expenditures: a budget doesn't limit your freedom, it shows you exactly where your money is leaking.</li>
+      <li>Cure 3 — Make thy gold multiply: real wealth is an income stream, built by letting savings and their earnings both stay invested.</li>
+      <li>Cure 4 — Guard thy treasures from loss: protect the original amount first, and get advice only from people who genuinely understand money.</li>
+      <li>Cure 5 — Own thy own home: money spent on rent forever is gone forever; money spent paying off your own roof eventually stops costing anything.</li>
+      <li>Cure 6 — Insure a future income: a small, regular habit, left untouched for years, quietly becomes a real safety net.</li>
+      <li>Cure 7 — Increase thy ability to earn: chase specific, small goals first — the skill of achieving them is what makes bigger ones possible.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="label">Next</span>
+  Vignesh and Mahadevaswamy leave the Temple of Learning with all seven cures in hand — the real test now is which of them actually put any of it into practice. Based on <em>The Richest Man in Babylon</em> by George S. Clason.
+</footer>
+
+<script>
+  // decorative floating coins
+  (function(){
+    const container = document.getElementById('bgCoins');
+    const n = window.innerWidth < 600 ? 8 : 16;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (10 + Math.random()*10) + 's';
+      s.style.animationDelay = (Math.random()*14) + 's';
+      s.style.opacity = 0.15 + Math.random()*0.3;
+      container.appendChild(s);
+    }
+  })();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---- Cure 1: egg basket ----
+  let days = 0, eggs = 0;
+  const eggPile = document.getElementById('eggPile');
+  const dayCount = document.getElementById('dayCount');
+  const eggCount = document.getElementById('eggCount');
+  function renderEggs(){
+    eggPile.innerHTML = '';
+    const show = Math.min(eggs, 60);
+    for(let i=0;i<show;i++){
+      const e = document.createElement('div');
+      e.className = 'egg';
+      e.style.animationDelay = (i*0.01)+'s';
+      eggPile.appendChild(e);
+    }
+    dayCount.textContent = days;
+    eggCount.textContent = eggs;
+  }
+  document.getElementById('dayInBtn').addEventListener('click', ()=>{
+    days++; eggs++; renderEggs();
+  });
+  renderEggs();
+
+  // ---- Cure 2: budget ----
+  const expenses = [
+    { name:'Rent / housing', amt:5000, necessary:true },
+    { name:'Groceries', amt:3000, necessary:true },
+    { name:'Children\'s school fees', amt:2500, necessary:true },
+    { name:'Eating out often', amt:1500, necessary:false },
+    { name:'New clothes every month', amt:1200, necessary:false },
+    { name:'Streaming subscriptions', amt:600, necessary:false },
+    { name:'Impulse online shopping', amt:1800, necessary:false },
+  ];
+  const totalIncome = 20000;
+  const budgetList = document.getElementById('budgetList');
+  const budgetFill = document.getElementById('budgetFill');
+  const budgetSpent = document.getElementById('budgetSpent');
+  const budgetLimit = document.getElementById('budgetLimit');
+  const budgetWarning = document.getElementById('budgetWarning');
+  budgetLimit.textContent = '₹' + Math.round(totalIncome*0.9).toLocaleString('en-IN');
+
+  expenses.forEach((item, idx)=>{
+    const row = document.createElement('label');
+    row.className = 'budget-item' + (item.necessary ? ' needed' : '');
+    row.innerHTML = '<input type="checkbox" data-idx="'+idx+'" '+(item.necessary?'checked disabled':'')+'><span class="bname">'+item.name+'</span><span class="bamt">₹'+item.amt.toLocaleString('en-IN')+'</span>';
+    budgetList.appendChild(row);
+  });
+
+  function updateBudget(){
+    let spent = 0;
+    budgetList.querySelectorAll('input').forEach((cb, idx)=>{
+      if(cb.checked) spent += expenses[idx].amt;
+    });
+    const pct = Math.min(100, (spent/totalIncome)*100);
+    budgetFill.style.width = pct + '%';
+    budgetSpent.textContent = '₹' + spent.toLocaleString('en-IN');
+    if(spent > totalIncome*0.9){
+      budgetWarning.className = 'budget-warning over';
+      budgetWarning.textContent = 'This crosses the line — your purse won\'t get to fatten this month.';
+    } else {
+      budgetWarning.className = 'budget-warning ok';
+      budgetWarning.textContent = 'Within nine-tenths — your one-tenth stays safe and untouched.';
+    }
+  }
+  budgetList.addEventListener('change', updateBudget);
+  updateBudget();
+
+  // ---- Cure 3: silver periods ----
+  let periods = 0;
+  const silverBar = document.getElementById('silverBar');
+  const silverAmount = document.getElementById('silverAmount');
+  const silverYears = document.getElementById('silverYears');
+  function renderSilver(){
+    const amt = 10 * Math.pow(1.25, periods);
+    const heightPx = Math.min(110, 4 + amt);
+    silverBar.style.height = heightPx + 'px';
+    silverAmount.textContent = amt.toFixed(1) + ' silver pieces';
+    silverYears.textContent = (periods*4) + ' years';
+  }
+  document.getElementById('addPeriod').addEventListener('click', ()=>{
+    if(periods >= 12) return;
+    periods++; renderSilver();
+  });
+  document.getElementById('resetPeriod').addEventListener('click', ()=>{
+    periods = 0; renderSilver();
+  });
+  renderSilver();
+
+  // ---- Cure 4: quiz ----
+  const scenarios = [
+    { text:'A cousin says he can double your money in a month trading something he "read about online" — no track record.', answer:'risky', reason:'No proven ability to repay, no reputation, and a suspiciously large promised return — exactly the trap Arjun\'s friend fell into.' },
+    { text:'A licensed bank offers a fixed deposit with a modest, guaranteed interest rate.', answer:'safe', reason:'Principal is protected and the return, though modest, is dependable — security before excitement.' },
+    { text:'A friend who has never handled investments urges you to put your savings into a "sure thing" he heard about.', answer:'risky', reason:'Good intentions aren\'t the same as expertise — ask someone who actually works with money for a living.' },
+    { text:'A certified financial advisor reviews your goals and suggests a diversified, well-established investment.', answer:'safe', reason:'Advice from someone whose profession is money is worth more than gold, Arjun says — because it can save you from loss.' },
+  ];
+  const quizArea = document.getElementById('quizArea');
+  scenarios.forEach((s, i)=>{
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = '<div class="quiz-scenario">'+s.text+'</div>' +
+      '<div class="quiz-buttons"><button data-choice="safe">Looks Safe</button><button data-choice="risky">Looks Risky</button></div>' +
+      '<div class="quiz-feedback" id="feedback'+i+'"></div>';
+    quizArea.appendChild(card);
+    card.querySelectorAll('.quiz-buttons button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        card.querySelectorAll('.quiz-buttons button').forEach(b=>b.classList.remove('picked-safe','picked-risky'));
+        btn.classList.add(btn.dataset.choice === 'safe' ? 'picked-safe' : 'picked-risky');
+        const fb = card.querySelector('.quiz-feedback');
+        const correct = btn.dataset.choice === s.answer;
+        fb.classList.add('show');
+        fb.classList.toggle('correct', correct);
+        fb.textContent = (correct ? 'Right — ' : 'Arjun would disagree — ') + s.reason;
+      });
+    });
+  });
+
+  // ---- Cure 5: rent vs own ----
+  const rentYears = document.getElementById('rentYears');
+  const rentYearsLabel = document.getElementById('rentYearsLabel');
+  const rentBar = document.getElementById('rentBar');
+  const ownBar = document.getElementById('ownBar');
+  const rentAmt = document.getElementById('rentAmt');
+  const ownAmt = document.getElementById('ownAmt');
+  const MONTHLY = 8000;
+  const LOAN_YEARS = 10;
+  const TAX_YEARLY = 12000;
+  function renderRentOwn(){
+    const yrs = +rentYears.value;
+    rentYearsLabel.textContent = yrs;
+    const rentTotal = MONTHLY * 12 * yrs;
+    const loanYrs = Math.min(yrs, LOAN_YEARS);
+    const postLoanYrs = Math.max(0, yrs - LOAN_YEARS);
+    const ownTotal = (MONTHLY * 12 * loanYrs) + (TAX_YEARLY * (loanYrs + postLoanYrs));
+    const maxScale = MONTHLY*12*25;
+    rentBar.style.height = Math.max(4, (rentTotal/maxScale)*130) + 'px';
+    ownBar.style.height = Math.max(4, (ownTotal/maxScale)*130) + 'px';
+    rentAmt.textContent = '₹' + rentTotal.toLocaleString('en-IN');
+    ownAmt.textContent = '₹' + ownTotal.toLocaleString('en-IN');
+  }
+  rentYears.addEventListener('input', renderRentOwn);
+  renderRentOwn();
+
+  // ---- Cure 6: Ansan's savings ----
+  const ansanYears = document.getElementById('ansanYears');
+  const ansanYearsLabel = document.getElementById('ansanYearsLabel');
+  const ansanBar = document.getElementById('ansanBar');
+  const ansanAmount = document.getElementById('ansanAmount');
+  const m8 = document.getElementById('m8');
+  const m20 = document.getElementById('m20');
+  function ansanValue(t){
+    if(t <= 0) return 0;
+    return 423.8 * Math.pow(1.1187, t);
+  }
+  function renderAnsan(){
+    const yrs = +ansanYears.value;
+    ansanYearsLabel.textContent = yrs;
+    const amt = ansanValue(yrs);
+    ansanBar.style.height = Math.max(4, Math.min(130, (amt/4000)*130)) + 'px';
+    ansanAmount.textContent = Math.round(amt).toLocaleString('en-IN') + ' silver pieces';
+    m8.classList.toggle('hit', yrs >= 8);
+    m20.classList.toggle('hit', yrs >= 20);
+  }
+  ansanYears.addEventListener('input', renderAnsan);
+  renderAnsan();
+
+  // ---- Cure 7: desire ladder ----
+  const rungs = [
+    { amt:'5 pieces', label:'A small, specific goal — set aside deliberately, not spent' },
+    { amt:'10 pieces', label:'Same method, repeated — it gets easier the second time' },
+    { amt:'20 pieces', label:'Confidence building — the habit is now trained' },
+    { amt:'50 pieces', label:'Bigger goal, same discipline that worked before' },
+    { amt:'200 pieces', label:'A meaningful sum — proof the method scales up' },
+    { amt:'1,000 pieces', label:'Wealth — built the exact same way as the first 5 pieces' },
+  ];
+  const ladder = document.getElementById('ladder');
+  rungs.forEach((r, i)=>{
+    const div = document.createElement('div');
+    div.className = 'rung' + (i===0 ? ' unlocked' : '');
+    div.dataset.idx = i;
+    div.innerHTML = '<span class="ramt">'+r.amt+'</span><span class="rlabel">'+r.label+'</span><span class="rcheck">✓ done</span>';
+    ladder.appendChild(div);
+  });
+  ladder.addEventListener('click', (e)=>{
+    const rung = e.target.closest('.rung');
+    if(!rung || !rung.classList.contains('unlocked') || rung.classList.contains('achieved')) return;
+    rung.classList.add('achieved');
+    const idx = +rung.dataset.idx;
+    const next = ladder.querySelector('.rung[data-idx="'+(idx+1)+'"]');
+    if(next) next.classList.add('unlocked');
+  });
+</script>
+</body>
+</html>
