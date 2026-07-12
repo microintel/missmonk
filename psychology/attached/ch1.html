@@ -1,1 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two Hearts, Three Languages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#241220;
+    --plum-deep:#160a14;
+    --blush:#f4e3df;
+    --rose:#d98a86;
+    --rose-soft:#e9b3ae;
+    --gold:#c9a05c;
+    --cream:#fbf3ec;
+    --ink:#3a2530;
+    --line:rgba(244,227,223,0.16);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--plum);
+    color:var(--blush);
+    font-family:'Karla', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'Karla', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.22em;
+    font-size:0.72rem;
+    color:var(--gold);
+  }
+  section{
+    position:relative;
+    padding:7rem 1.5rem;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:3rem;
+    max-width:100%;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:1.02;
+    margin:1.2rem 0 1rem;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--rose-soft);
+  }
+  .hero p{
+    max-width:520px;
+    font-size:1.05rem;
+    color:rgba(244,227,223,0.75);
+    line-height:1.6;
+  }
+  .connection{
+    width:280px;
+    height:120px;
+    position:relative;
+    margin:2.5rem 0;
+  }
+  .dot{
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--rose);
+    position:absolute;
+    top:52px;
+    box-shadow:0 0 18px rgba(217,138,134,0.7);
+  }
+  .dot.a{left:6px;}
+  .dot.b{right:6px; background:var(--gold); box-shadow:0 0 18px rgba(201,160,92,0.7);}
+  svg.pulse-line{position:absolute; top:0; left:0;}
+  .pulse-path{
+    fill:none;
+    stroke:var(--rose-soft);
+    stroke-width:2;
+    stroke-linecap:round;
+    opacity:0.85;
+  }
+  .scrolldown{
+    margin-top:3rem;
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:rgba(244,227,223,0.4);
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
 
+  /* ---------- reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- intro ---------- */
+  .intro h2{font-size:clamp(1.8rem,4vw,2.6rem); margin-bottom:1.3rem;}
+  .intro p{color:rgba(244,227,223,0.78); line-height:1.75; font-size:1.05rem; max-width:680px;}
+  .stat-row{
+    display:flex;
+    gap:2.2rem;
+    margin-top:2.8rem;
+    flex-wrap:wrap;
+  }
+  .stat{flex:1; min-width:140px;}
+  .stat .num{font-family:'Fraunces',serif; font-size:2.4rem; color:var(--rose-soft);}
+  .stat .lbl{font-size:0.82rem; color:rgba(244,227,223,0.6); margin-top:0.2rem;}
+
+  /* ---------- style cards ---------- */
+  .styles-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1.4rem;
+    margin-top:3rem;
+  }
+  @media(max-width:800px){.styles-grid{grid-template-columns:1fr;}}
+  .style-card{
+    background:linear-gradient(160deg, rgba(244,227,223,0.05), rgba(244,227,223,0.02));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:2rem 1.6rem 2.2rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .style-card .name{
+    font-family:'Fraunces',serif;
+    font-size:1.5rem;
+    margin:0.9rem 0 0.2rem;
+  }
+  .style-card .role{
+    font-size:0.78rem;
+    color:var(--gold);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    margin-bottom:1rem;
+  }
+  .style-card p{
+    color:rgba(244,227,223,0.75);
+    line-height:1.65;
+    font-size:0.95rem;
+  }
+  .heartbeat{
+    width:100%;
+    height:44px;
+    margin-bottom:0.4rem;
+  }
+  .heartbeat path{fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .secure-path{stroke:#9fd6b8;}
+  .anxious-path{stroke:var(--rose);}
+  .avoidant-path{stroke:#8fb6d9;}
+
+  /* ---------- story section ---------- */
+  .story{
+    background:var(--cream);
+    color:var(--ink);
+    border-radius:28px;
+    padding:3.4rem 2rem;
+    margin-top:1rem;
+  }
+  .story .eyebrow{color:#a5673f;}
+  .story h2{color:var(--ink); font-size:clamp(1.7rem,4vw,2.3rem); margin:1rem 0 1.6rem;}
+  .story-pair{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    margin:2rem 0;
+    position:relative;
+    height:130px;
+  }
+  .figure{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:110px;
+    z-index:2;
+  }
+  .figure .avatar{
+    width:56px;height:56px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-size:1.3rem;
+    color:#fff;
+  }
+  .avatar.anx{background:#c9645f;}
+  .avatar.avo{background:#5c7ca3;}
+  .avatar.sec{background:#5f9c76;}
+  .figure .fname{margin-top:0.5rem; font-weight:700; font-size:0.9rem;}
+  .figure .ftag{font-size:0.72rem; color:#8a7266; text-transform:uppercase; letter-spacing:0.08em;}
+  .dance-track{
+    flex:1;
+    height:2px;
+    position:relative;
+    max-width:260px;
+  }
+  .anxious-fig{animation:chase 3.2s ease-in-out infinite;}
+  .avoidant-fig{animation:flee 3.2s ease-in-out infinite;}
+  @keyframes chase{
+    0%,100%{transform:translateX(0);}
+    50%{transform:translateX(30px);}
+  }
+  @keyframes flee{
+    0%,100%{transform:translateX(0);}
+    50%{transform:translateX(30px);}
+  }
+  .anxious-fig .avatar{
+    animation:anx-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes anx-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(201,100,95,0.55);}
+    50%{box-shadow:0 0 0 10px rgba(201,100,95,0);}
+  }
+  .avoidant-fig .avatar{
+    animation:avo-fade 3.2s ease-in-out infinite;
+  }
+  @keyframes avo-fade{
+    0%,100%{opacity:1; filter:saturate(1);}
+    50%{opacity:0.55; filter:saturate(0.6);}
+  }
+  .dance-track{
+    position:relative;
+    overflow:visible;
+  }
+  .dance-track::before{
+    content:'';
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:2px;
+    transform:translateY(-50%);
+    background:linear-gradient(90deg, rgba(201,100,95,0.7), rgba(92,124,163,0.35));
+    background-size:200% 100%;
+  }
+  .tension .dance-track::before{
+    animation:tension-line 3.2s ease-in-out infinite;
+  }
+  @keyframes tension-line{
+    0%,100%{opacity:0.55; background-position:0% 0;}
+    50%{opacity:0.9; background-position:100% 0;}
+  }
+  .calm-track .dance-track::before{
+    background:linear-gradient(90deg, rgba(159,214,184,0.5), rgba(159,214,184,0.5));
+    animation:calm-glow 4s ease-in-out infinite;
+  }
+  @keyframes calm-glow{
+    0%,100%{opacity:0.5;}
+    50%{opacity:0.95;}
+  }
+  .mini-heart{
+    position:absolute;
+    bottom:6px;
+    font-size:12px;
+    color:#9fd6b8;
+    opacity:0;
+    animation:mini-float 4s ease-in infinite;
+    pointer-events:none;
+  }
+  .mini-heart:nth-child(1){left:35%; animation-delay:0s;}
+  .mini-heart:nth-child(2){left:50%; animation-delay:1.3s;}
+  .mini-heart:nth-child(3){left:65%; animation-delay:2.6s;}
+  @keyframes mini-float{
+    0%{transform:translateY(0) scale(0.7); opacity:0;}
+    15%{opacity:0.9;}
+    80%{opacity:0.4;}
+    100%{transform:translateY(-46px) scale(1); opacity:0;}
+  }
+  /* heartbeat line draw-in when card scrolls into view */
+  .heartbeat path{
+    stroke-dasharray:420;
+    stroke-dashoffset:420;
+    transition:stroke-dashoffset 1.6s ease;
+  }
+  .reveal.in .heartbeat path{stroke-dashoffset:0;}
+  .styles-grid .style-card:nth-child(2) .heartbeat path{transition-delay:0.2s;}
+  .styles-grid .style-card:nth-child(3) .heartbeat path{transition-delay:0.4s;}
+  .style-card{
+    transition:transform 0.4s ease, border-color 0.4s ease;
+  }
+  .style-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(244,227,223,0.35);
+  }
+  .story p.lede{font-size:1.02rem; line-height:1.75; margin-bottom:1rem;}
+  .story .callout{
+    border-left:3px solid var(--gold);
+    padding-left:1rem;
+    font-style:italic;
+    color:#6b4e42;
+    margin-top:1.4rem;
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.2rem;
+  }
+
+  .secure-pair .fig{animation:sway 4s ease-in-out infinite;}
+  @keyframes sway{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-4px);}
+  }
+
+  /* ---------- roots section ---------- */
+  .roots{display:flex; gap:3rem; flex-wrap:wrap; align-items:center;}
+  .roots-text{flex:1; min-width:260px;}
+  .roots-text p{color:rgba(244,227,223,0.78); line-height:1.75; font-size:1.02rem;}
+  .roots-visual{
+    flex:1; min-width:260px;
+    display:flex; justify-content:center;
+  }
+  .timeline{
+    position:relative;
+    width:6px;
+    height:220px;
+    background:var(--line);
+    border-radius:3px;
+  }
+  .tdot{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--rose-soft);
+    box-shadow:0 0 12px rgba(233,179,174,0.7);
+  }
+  .tdot:nth-child(1){top:0;}
+  .tdot:nth-child(2){top:45%; background:var(--gold); box-shadow:0 0 12px rgba(201,160,92,0.6);}
+  .tdot:nth-child(3){top:90%; background:#9fd6b8; box-shadow:0 0 12px rgba(159,214,184,0.6);}
+
+  /* ---------- final: do / dont ---------- */
+  .final{
+    padding-bottom:9rem;
+  }
+  .final h2{
+    text-align:center;
+    font-size:clamp(2rem,5vw,2.8rem);
+    margin:1rem 0 0.6rem;
+  }
+  .final .sub{
+    text-align:center;
+    color:rgba(244,227,223,0.65);
+    max-width:560px;
+    margin:0 auto 3rem;
+    line-height:1.6;
+  }
+  .dd-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.6rem;
+  }
+  @media(max-width:700px){.dd-grid{grid-template-columns:1fr;}}
+  .dd-card{
+    border-radius:20px;
+    padding:2rem 1.8rem;
+  }
+  .dd-card.do{
+    background:linear-gradient(160deg, rgba(159,214,184,0.14), rgba(159,214,184,0.03));
+    border:1px solid rgba(159,214,184,0.3);
+  }
+  .dd-card.dont{
+    background:linear-gradient(160deg, rgba(201,100,95,0.14), rgba(201,100,95,0.03));
+    border:1px solid rgba(201,100,95,0.3);
+  }
+  .dd-card h3{
+    font-size:1.3rem;
+    margin-bottom:1.2rem;
+    display:flex;
+    align-items:center;
+    gap:0.6rem;
+  }
+  .dd-card.do h3{color:#9fd6b8;}
+  .dd-card.dont h3{color:#e0918d;}
+  .dd-card ul{list-style:none;}
+  .dd-card li{
+    display:flex;
+    gap:0.7rem;
+    margin-bottom:1rem;
+    line-height:1.55;
+    font-size:0.95rem;
+    color:rgba(244,227,223,0.85);
+  }
+  .dd-card li .mark{
+    flex-shrink:0;
+    width:20px;height:20px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.75rem;
+    margin-top:0.1rem;
+  }
+  .do .mark{background:rgba(159,214,184,0.2); color:#9fd6b8;}
+  .dont .mark{background:rgba(224,145,141,0.2); color:#e0918d;}
+
+  footer{
+    text-align:center;
+    padding:3rem 1.5rem 4rem;
+    color:rgba(244,227,223,0.4);
+    font-size:0.85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ---------- falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .fheart{
+    position:absolute;
+    top:-40px;
+    will-change:transform, opacity;
+    animation-name:heart-fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    filter:drop-shadow(0 0 6px rgba(217,60,60,0.35));
+  }
+  .fheart svg{display:block;}
+  @keyframes heart-fall{
+    0%{
+      transform:translateY(-10vh) translateX(0) rotate(var(--r0));
+      opacity:0;
+    }
+    8%{opacity:var(--op);}
+    92%{opacity:var(--op);}
+    100%{
+      transform:translateY(112vh) translateX(var(--drift)) rotate(var(--r1));
+      opacity:0;
+    }
+  }
+  body > *:not(#heart-field){
+    position:relative;
+    z-index:1;
+  }
+  .hero, .intro, .styles-grid, .story, .roots, .final, footer{
+    position:relative;
+    z-index:1;
+  }
+</style>
+</head>
+<body>
+<div id="heart-field"></div>
+
+<section class="hero">
+  <div class="eyebrow">The Science of Adult Attachment</div>
+  <h1>Why do we<br><em>love differently?</em></h1>
+  <div class="connection">
+    <svg class="pulse-line" width="280" height="120" viewBox="0 0 280 120">
+      <path id="pulseA" class="pulse-path" d="M20,60 Q140,60 260,60"/>
+    </svg>
+    <div class="dot a"></div>
+    <div class="dot b"></div>
+  </div>
+  <p>Some couples fit together easily. Others fight for years without knowing why. It is not bad luck. It is how each person is wired to love. This is called your <strong>attachment style</strong>.</p>
+  <div class="scrolldown">scroll down</div>
+</section>
+
+<section class="intro reveal">
+  <div class="eyebrow">Chapter One</div>
+  <h2>There are 3 ways to love</h2>
+  <p>From a young age, your brain learns a pattern. This pattern decides how you act when you get close to someone. It decides how safe closeness feels to you. It decides how you handle a fight. It decides how you feel when your partner goes quiet.</p>
+  <p>Scientists found <strong>3 main styles</strong>. Almost everyone fits into one of them.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="num">50%</div><div class="lbl">Secure</div></div>
+    <div class="stat"><div class="num">20%</div><div class="lbl">Anxious</div></div>
+    <div class="stat"><div class="num">25%</div><div class="lbl">Avoidant</div></div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="eyebrow">Meet the styles</div>
+  <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-bottom:2rem;">3 ways people love</h2>
+  <div class="styles-grid">
+
+    <div class="style-card">
+      <svg class="heartbeat" viewBox="0 0 200 44"><path class="secure-path" d="M0,22 L60,22 L72,6 L86,38 L98,22 L200,22"/></svg>
+      <div class="role">Calm</div>
+      <div class="name">Lisa — Secure</div>
+      <p>Lisa feels okay being close, and okay being apart too. She tells her partner what she needs. She does not panic if he replies late.</p>
+    </div>
+
+    <div class="style-card">
+      <svg class="heartbeat" viewBox="0 0 200 44"><path class="anxious-path" d="M0,22 C20,4 30,40 44,22 C58,4 68,40 82,22 C96,4 106,40 120,22 C134,4 144,40 158,22 C168,10 180,34 200,22"/></svg>
+      <div class="role">Needs closeness</div>
+      <div class="name">Elsa — Anxious</div>
+      <p>Elsa notices every small change in her partner's mood. A slow reply feels scary to her. She loves deeply, but she also worries a lot.</p>
+    </div>
+
+    <div class="style-card">
+      <svg class="heartbeat" viewBox="0 0 200 44"><path class="avoidant-path" d="M0,22 L70,22 L80,18 L90,26 L100,20 L110,24 L200,22" stroke-dasharray="4 7"/></svg>
+      <div class="role">Needs space</div>
+      <div class="name">Vignesh — Avoidant</div>
+      <p>Vignesh likes his freedom. When someone gets too close, he feels stuck. This does not mean he loves less. Closeness just feels unsafe to him.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="story">
+    <div class="eyebrow">A common story</div>
+    <h2>Elsa and Vignesh</h2>
+    <p class="lede">Elsa liked Vignesh from the start. He was warm and sweet at first. But as she got closer, he pulled back. He got "busy." His texts got shorter. The more distant he became, the more Elsa checked her phone and worried what she did wrong.</p>
+    <div class="story-pair tension">
+      <div class="figure anxious-fig">
+        <div class="avatar anx">E</div>
+        <div class="fname">Elsa</div>
+        <div class="ftag">moving closer</div>
+      </div>
+      <div class="dance-track"></div>
+      <div class="figure avoidant-fig">
+        <div class="avatar avo">V</div>
+        <div class="fname">Vignesh</div>
+        <div class="ftag">moving away</div>
+      </div>
+    </div>
+    <p class="lede">Here is the twist. Vignesh did not pull away because Elsa was not good enough. He pulled away because things got too close, and closeness scares him. Elsa was not "too much" either. Her worry is just how an anxious heart reacts to distance. Neither one did anything wrong. They just speak two different love languages.</p>
+    <div class="callout">Two good people, stuck in a pattern that was never really about either of them.</div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="story secure-pair">
+    <div class="eyebrow">A better match</div>
+    <h2>Elsa and Pranav</h2>
+    <p class="lede">Later, Elsa met Pranav. He is calm and easy to understand. When she needed comfort, he gave it, simply and honestly. When he needed space, he just said so, and it never felt like rejection. Nothing dramatic happened. It was just two people who felt safe with each other.</p>
+    <div class="story-pair calm-track">
+      <div class="figure fig">
+        <div class="avatar anx">E</div>
+        <div class="fname">Elsa</div>
+        <div class="ftag">relaxed</div>
+      </div>
+      <div class="dance-track">
+        <span class="mini-heart">♥</span>
+        <span class="mini-heart">♥</span>
+        <span class="mini-heart">♥</span>
+      </div>
+      <div class="figure fig">
+        <div class="avatar sec">P</div>
+        <div class="fname">Pranav</div>
+        <div class="ftag">calm</div>
+      </div>
+    </div>
+    <div class="callout">A calm partner can help even a worried heart feel safe.</div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="eyebrow">Why we are like this</div>
+  <div class="roots">
+    <div class="roots-text">
+      <h2 style="font-size:clamp(1.7rem,4vw,2.2rem); margin-bottom:1rem;">This is very old wiring</h2>
+      <p>Long ago, staying close to someone who cared for you kept you alive. So our brains learned to hold on tight to the people we love. That old habit is still inside us today. It just shows up in dating and marriage now, instead of survival in the wild.</p>
+      <p style="margin-top:1rem;">Your style can also change. It is shaped by how you were raised, but also by your life and the people you meet. About <strong>1 in 4 people</strong> change their style over a few years, often without even noticing.</p>
+    </div>
+    <div class="roots-visual">
+      <div class="timeline">
+        <div class="tdot"></div>
+        <div class="tdot"></div>
+        <div class="tdot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final reveal">
+  <div class="eyebrow" style="text-align:center; display:block;">What you can do</div>
+  <h2>Simple rules to remember</h2>
+  <p class="sub">You cannot change your style overnight. But you can stop it from controlling you.</p>
+  <div class="dd-grid">
+    <div class="dd-card do">
+      <h3>Do</h3>
+      <ul>
+        <li><span class="mark">✓</span>Learn your own style first. You cannot fix what you cannot see.</li>
+        <li><span class="mark">✓</span>Say what you need in simple words, like Lisa does. Do not wait for your partner to guess.</li>
+        <li><span class="mark">✓</span>If someone pulls away every time you get close, notice that. It tells you something real.</li>
+        <li><span class="mark">✓</span>It is okay to need love and closeness. That is not weakness.</li>
+        <li><span class="mark">✓</span>Look for a partner whose actions match their words.</li>
+      </ul>
+    </div>
+    <div class="dd-card dont">
+      <h3>Don't</h3>
+      <ul>
+        <li><span class="mark">✕</span>Don't confuse worry with love. "I can't stop thinking about them" can just mean fear, not real love.</li>
+        <li><span class="mark">✕</span>Don't keep chasing someone who keeps pulling away, hoping they will change.</li>
+        <li><span class="mark">✕</span>Don't blame yourself when a partner needs space. It is often not about you.</li>
+        <li><span class="mark">✕</span>Don't think love alone can fix two very different attachment styles.</li>
+        <li><span class="mark">✕</span>Don't ignore a pattern that keeps repeating in your relationships. It is not bad luck.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Made simple, from the science of adult attachment: Secure, Anxious, and Avoidant styles.
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // animated hero pulse line morph
+  const pulsePath = document.getElementById('pulseA');
+  const frames = [
+    "M20,60 Q140,60 260,60",
+    "M20,60 Q80,30 140,60 T260,60",
+    "M20,60 Q80,90 140,60 T260,60",
+    "M20,60 Q140,60 260,60"
+  ];
+  let f = 0;
+  setInterval(()=>{
+    f = (f+1) % frames.length;
+    pulsePath.setAttribute('d', frames[f]);
+  }, 1400);
+
+  // ---------- falling hearts background ----------
+  const heartField = document.getElementById('heart-field');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const heartReds = ['#e0625d', '#d9433c', '#c9645f', '#e88c86', '#b83b34'];
+
+  function spawnHeart(){
+    const size = 10 + Math.random() * 22;
+    const left = Math.random() * 100;
+    const duration = 9 + Math.random() * 10;
+    const delay = 0;
+    const drift = (Math.random() * 140 - 70).toFixed(0) + 'px';
+    const r0 = (Math.random() * 40 - 20).toFixed(0) + 'deg';
+    const r1 = (Math.random() * 360 - 180).toFixed(0) + 'deg';
+    const op = (0.35 + Math.random() * 0.45).toFixed(2);
+    const color = heartReds[Math.floor(Math.random() * heartReds.length)];
+
+    const el = document.createElement('div');
+    el.className = 'fheart';
+    el.style.left = left + 'vw';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.setProperty('--drift', drift);
+    el.style.setProperty('--r0', r0);
+    el.style.setProperty('--r1', r1);
+    el.style.setProperty('--op', op);
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = delay + 's';
+    el.innerHTML = `<svg viewBox="0 0 32 29" width="${size}" height="${size}">
+      <path d="M16 28.5 C 6 20 0 13.5 0 8 C 0 3 4 0 8.2 0 C 11.5 0 14.2 2 16 4.8 C 17.8 2 20.5 0 23.8 0 C 28 0 32 3 32 8 C 32 13.5 26 20 16 28.5 Z" fill="${color}"/>
+    </svg>`;
+
+    heartField.appendChild(el);
+    setTimeout(()=>{ el.remove(); }, (duration + delay) * 1000 + 200);
+  }
+
+  if(!reduceMotion){
+    // seed an initial batch so the sky isn't empty on load
+    for(let i=0;i<12;i++){
+      setTimeout(spawnHeart, i * 300);
+    }
+    setInterval(spawnHeart, 650);
+  }
+</script>
+
+</body>
+</html>

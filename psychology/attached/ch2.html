@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Needing Someone Is Not Weak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#241220;
+    --blush:#f4e3df;
+    --rose:#d98a86;
+    --rose-soft:#e9b3ae;
+    --gold:#c9a05c;
+    --cream:#fbf3ec;
+    --ink:#3a2530;
+    --line:rgba(244,227,223,0.16);
+    --green:#9fd6b8;
+    --blue:#8fb6d9;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--plum); color:var(--blush); font-family:'Karla', sans-serif; overflow-x:hidden;}
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em;}
+  .eyebrow{font-family:'Karla', sans-serif; text-transform:uppercase; letter-spacing:0.22em; font-size:0.72rem; color:var(--gold);}
+  section{position:relative; padding:6.5rem 1.5rem; max-width:960px; margin:0 auto; z-index:1;}
+
+  /* falling hearts background */
+  #heart-field{position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden;}
+  .fheart{position:absolute; top:-40px; will-change:transform, opacity; animation-name:heart-fall; animation-timing-function:linear; animation-iteration-count:infinite; filter:drop-shadow(0 0 6px rgba(217,60,60,0.35));}
+  @keyframes heart-fall{
+    0%{transform:translateY(-10vh) translateX(0) rotate(var(--r0)); opacity:0;}
+    8%{opacity:var(--op);}
+    92%{opacity:var(--op);}
+    100%{transform:translateY(112vh) translateX(var(--drift)) rotate(var(--r1)); opacity:0;}
+  }
+
+  /* hero */
+  .hero{min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:3rem;}
+  .hero h1{font-size:clamp(2.4rem, 7vw, 4.6rem); line-height:1.05; margin:1.1rem 0 1rem;}
+  .hero h1 em{font-style:italic; color:var(--rose-soft);}
+  .hero p{max-width:520px; font-size:1.05rem; color:rgba(244,227,223,0.75); line-height:1.6;}
+  .hand-hold{width:200px; height:120px; margin:2.2rem auto; position:relative;}
+  .hh-dot{width:18px; height:18px; border-radius:50%; position:absolute; top:50px; box-shadow:0 0 16px currentColor;}
+  .hh-dot.left{left:20px; background:var(--rose); color:var(--rose); animation:hh-move 3s ease-in-out infinite;}
+  .hh-dot.right{right:20px; background:var(--gold); color:var(--gold); animation:hh-move2 3s ease-in-out infinite;}
+  @keyframes hh-move{0%,100%{transform:translateX(0);} 50%{transform:translateX(18px);}}
+  @keyframes hh-move2{0%,100%{transform:translateX(0);} 50%{transform:translateX(-18px);}}
+  .hh-ring{position:absolute; top:50px; left:50%; transform:translate(-50%,0); width:20px; height:20px; border-radius:50%; border:1.5px solid rgba(233,179,174,0.7); animation:hh-pulse 3s ease-in-out infinite;}
+  @keyframes hh-pulse{0%,100%{transform:translate(-50%,0) scale(0.6); opacity:0;} 50%{transform:translate(-50%,0) scale(2.4); opacity:0.6;}}
+  .scrolldown{margin-top:2.5rem; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(244,227,223,0.4); animation:bob 2.4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);}}
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity 0.9s ease, transform 0.9s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* intro */
+  .intro h2{font-size:clamp(1.8rem,4vw,2.4rem); margin-bottom:1.2rem;}
+  .intro p{color:rgba(244,227,223,0.78); line-height:1.75; font-size:1.05rem; max-width:680px;}
+  .intro p + p{margin-top:1rem;}
+
+  /* big quote / paradox */
+  .paradox{
+    text-align:center;
+    padding:3rem 1.5rem;
+  }
+  .paradox .quote{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(1.5rem, 4vw, 2.3rem);
+    line-height:1.5;
+    color:var(--rose-soft);
+    max-width:720px;
+    margin:0 auto;
+  }
+  .paradox .quote .highlight{color:var(--gold); font-style:normal; font-family:'Fraunces',serif; font-weight:600;}
+  .paradox .tag{margin-top:1.2rem; font-size:0.8rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(244,227,223,0.45);}
+
+  /* story card */
+  .story{background:var(--cream); color:var(--ink); border-radius:28px; padding:3.2rem 2rem;}
+  .story .eyebrow{color:#a5673f;}
+  .story h2{color:var(--ink); font-size:clamp(1.6rem,4vw,2.2rem); margin:1rem 0 1.4rem;}
+  .story p.lede{font-size:1.02rem; line-height:1.75; margin-bottom:1rem; color:var(--ink);}
+  .story .callout{border-left:3px solid var(--gold); padding-left:1rem; font-style:italic; color:#6b4e42; margin-top:1.2rem; font-family:'Cormorant Garamond', serif; font-size:1.15rem;}
+
+  .story-pair{display:flex; align-items:center; justify-content:center; gap:0; margin:1.8rem 0; position:relative; height:120px;}
+  .figure{display:flex; flex-direction:column; align-items:center; width:100px; z-index:2;}
+  .figure .avatar{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:1.2rem; color:#fff;}
+  .avatar.a1{background:#c9645f;}
+  .avatar.a2{background:#5c7ca3;}
+  .figure .fname{margin-top:0.5rem; font-weight:700; font-size:0.88rem;}
+  .figure .ftag{font-size:0.7rem; color:#8a7266; text-transform:uppercase; letter-spacing:0.08em;}
+  .dance-track{flex:1; max-width:220px; height:2px; position:relative;}
+  .dance-track::before{content:''; position:absolute; left:0; right:0; top:50%; height:2px; transform:translateY(-50%); background:linear-gradient(90deg, rgba(201,100,95,0.6), rgba(201,160,92,0.6)); background-size:200% 100%; animation:tension-line 2.6s ease-in-out infinite;}
+  @keyframes tension-line{0%,100%{opacity:0.5;} 50%{opacity:0.95;}}
+  .figA{animation:reach 2.6s ease-in-out infinite;}
+  .figB{animation:reach2 2.6s ease-in-out infinite;}
+  @keyframes reach{0%,100%{transform:translateX(0);} 50%{transform:translateX(14px);}}
+  @keyframes reach2{0%,100%{transform:translateX(0);} 50%{transform:translateX(-14px);}}
+  .figA .avatar{animation:need-pulse 1.6s ease-in-out infinite;}
+  @keyframes need-pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,100,95,0.5);} 50%{box-shadow:0 0 0 9px rgba(201,100,95,0);}}
+
+  /* brain study visual */
+  .brain-row{display:flex; gap:1.2rem; margin-top:2.5rem; flex-wrap:wrap; justify-content:center;}
+  .brain-step{
+    flex:1; min-width:170px; max-width:220px;
+    background:rgba(244,227,223,0.05);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.6rem 1.2rem;
+    text-align:center;
+  }
+  .brain-step .icon{width:54px; height:54px; margin:0 auto 0.9rem; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative;}
+  .brain-step .fear-ring{position:absolute; inset:0; border-radius:50%; border:2px solid currentColor; opacity:0.5;}
+  .brain-step.high .icon{color:#e0918d;}
+  .brain-step.mid .icon{color:var(--gold);}
+  .brain-step.low .icon{color:var(--green);}
+  .brain-step.high .fear-ring{animation:fear-big 1.4s ease-in-out infinite;}
+  .brain-step.mid .fear-ring{animation:fear-mid 1.8s ease-in-out infinite;}
+  .brain-step.low .fear-ring{animation:fear-low 2.4s ease-in-out infinite;}
+  @keyframes fear-big{0%,100%{transform:scale(1);} 50%{transform:scale(1.35);}}
+  @keyframes fear-mid{0%,100%{transform:scale(1);} 50%{transform:scale(1.18);}}
+  @keyframes fear-low{0%,100%{transform:scale(1);} 50%{transform:scale(1.05);}}
+  .brain-step .label{font-weight:700; font-size:0.95rem; margin-bottom:0.3rem;}
+  .brain-step .sub{font-size:0.82rem; color:rgba(244,227,223,0.6);}
+
+  /* secure base illustration */
+  .base-visual{display:flex; justify-content:center; align-items:center; margin:2.2rem 0;}
+  .base-scene{position:relative; width:260px; height:150px;}
+  .base-anchor{position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:20px; height:20px; border-radius:50%; background:var(--gold); box-shadow:0 0 16px rgba(201,160,92,0.7);}
+  .base-anchor::after{content:''; position:absolute; inset:-10px; border-radius:50%; border:1.5px solid rgba(201,160,92,0.5); animation:anchor-pulse 3s ease-in-out infinite;}
+  @keyframes anchor-pulse{0%,100%{transform:scale(0.8); opacity:0.6;} 50%{transform:scale(1.6); opacity:0;}}
+  .explorer{position:absolute; bottom:14px; left:50%; width:10px; height:10px; border-radius:50%; background:var(--rose-soft); box-shadow:0 0 8px rgba(233,179,174,0.7); animation:orbit 6s linear infinite;}
+  @keyframes orbit{
+    0%{transform:translate(-50%,0) translate(0px,0px);}
+    25%{transform:translate(-50%,0) translate(70px,-40px);}
+    50%{transform:translate(-50%,0) translate(0px,-70px);}
+    75%{transform:translate(-50%,0) translate(-70px,-40px);}
+    100%{transform:translate(-50%,0) translate(0px,0px);}
+  }
+
+  /* stat row style reused */
+  .stat-row{display:flex; gap:2.2rem; margin-top:2.5rem; flex-wrap:wrap;}
+  .stat{flex:1; min-width:150px;}
+  .stat .num{font-family:'Fraunces',serif; font-size:1.9rem; color:var(--rose-soft);}
+  .stat .lbl{font-size:0.82rem; color:rgba(244,227,223,0.6); margin-top:0.2rem; line-height:1.4;}
+
+  /* final do/dont */
+  .final{padding-bottom:8rem;}
+  .final h2{text-align:center; font-size:clamp(2rem,5vw,2.6rem); margin:1rem 0 0.6rem;}
+  .final .sub{text-align:center; color:rgba(244,227,223,0.65); max-width:560px; margin:0 auto 2.6rem; line-height:1.6;}
+  .dd-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.4rem;}
+  @media(max-width:700px){.dd-grid{grid-template-columns:1fr;} .brain-row{flex-direction:column; align-items:center;}}
+  .dd-card{border-radius:20px; padding:1.8rem 1.6rem;}
+  .dd-card.do{background:linear-gradient(160deg, rgba(159,214,184,0.14), rgba(159,214,184,0.03)); border:1px solid rgba(159,214,184,0.3);}
+  .dd-card.dont{background:linear-gradient(160deg, rgba(201,100,95,0.14), rgba(201,100,95,0.03)); border:1px solid rgba(201,100,95,0.3);}
+  .dd-card h3{font-size:1.25rem; margin-bottom:1rem;}
+  .dd-card.do h3{color:var(--green);}
+  .dd-card.dont h3{color:#e0918d;}
+  .dd-card ul{list-style:none;}
+  .dd-card li{display:flex; gap:0.6rem; margin-bottom:0.9rem; line-height:1.5; font-size:0.93rem; color:rgba(244,227,223,0.85);}
+  .dd-card li .mark{flex-shrink:0; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; margin-top:0.1rem;}
+  .do .mark{background:rgba(159,214,184,0.2); color:var(--green);}
+  .dont .mark{background:rgba(224,145,141,0.2); color:#e0918d;}
+
+  footer{text-align:center; padding:2.5rem 1.5rem 3.5rem; color:rgba(244,227,223,0.4); font-size:0.85rem;}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+</style>
+</head>
+<body>
+<div id="heart-field"></div>
+
+<section class="hero">
+  <div class="eyebrow">Chapter Two, Made Simple</div>
+  <h1>Needing someone<br><em>is not weak</em></h1>
+  <div class="hand-hold">
+    <div class="hh-ring"></div>
+    <div class="hh-dot left"></div>
+    <div class="hh-dot right"></div>
+  </div>
+  <p>We are told to "stand on our own." But when life gets hard, one hand to hold can calm your whole body. This is not a flaw. This is how humans are built.</p>
+  <div class="scrolldown">scroll down</div>
+</section>
+
+<section class="intro reveal">
+  <div class="eyebrow">The old idea</div>
+  <h2>"Don't depend on anyone"</h2>
+  <p>For a long time, people were taught: be strong alone. Do not lean on your partner too much. Look after your own feelings, and let them look after theirs.</p>
+  <p>This sounds mature. But it is not true. When we love someone, our brain and body link with theirs. We are not built to be two separate islands. We are built to depend on each other — and that is not a problem to fix.</p>
+</section>
+
+<section class="reveal">
+  <div class="story">
+    <div class="eyebrow">A real-life example</div>
+    <h2>Fiona and Pranav on the race show</h2>
+    <p class="lede">Fiona and Pranav were on a TV show where couples race around the world. Under stress, Fiona often needed Pranav to hold her hand. Pranav pulled back — it felt like giving in to her too much.</p>
+    <p class="lede">Later, Fiona blamed herself. "I was too needy," she said. "I should have stayed calm on my own." But that is not what really happened. Pranav also froze before a scary jump, and only calmed down once Fiona stood close and encouraged him. They both needed each other. Neither one was weak for it.</p>
+    <div class="story-pair">
+      <div class="figure figA">
+        <div class="avatar a1">F</div>
+        <div class="fname">Fiona</div>
+        <div class="ftag">needs a hand</div>
+      </div>
+      <div class="dance-track"></div>
+      <div class="figure figB">
+        <div class="avatar a2">P</div>
+        <div class="fname">Pranav</div>
+        <div class="ftag">holds back</div>
+      </div>
+    </div>
+    <div class="callout">She was not "too needy." She simply had a need that was not being met.</div>
+  </div>
+</section>
+
+<section class="paradox reveal">
+  <div class="eyebrow">The big idea</div>
+  <p class="quote">The more you can safely <span class="highlight">depend</span> on your partner,<br>the more <span class="highlight">brave</span> and independent you become.</p>
+  <div class="tag">This is called the dependency paradox</div>
+</section>
+
+<section class="intro reveal">
+  <p>This sounds strange at first. How can leaning on someone make you stronger on your own? But think about it simply: when you know someone has your back, you take more risks. You try the new job. You speak up. You explore. Without that person, you hold back and play it safe.</p>
+</section>
+
+<section class="reveal">
+  <div class="eyebrow">What science found</div>
+  <h2 style="font-size:clamp(1.7rem,4vw,2.2rem); margin-bottom:1rem;">Your body feels fear go down</h2>
+  <p style="color:rgba(244,227,223,0.78); line-height:1.75; font-size:1.02rem; max-width:680px;">Scientists told women they might get a small electric shock, and scanned their brains at the same time. Fear showed up clearly on the scan — until someone held their hand.</p>
+  <div class="brain-row">
+    <div class="brain-step high">
+      <div class="icon"><div class="fear-ring"></div>●</div>
+      <div class="label">Alone</div>
+      <div class="sub">Fear is high</div>
+    </div>
+    <div class="brain-step mid">
+      <div class="icon"><div class="fear-ring"></div>●</div>
+      <div class="label">Stranger's hand</div>
+      <div class="sub">Fear drops a little</div>
+    </div>
+    <div class="brain-step low">
+      <div class="icon"><div class="fear-ring"></div>●</div>
+      <div class="label">Husband's hand</div>
+      <div class="sub">Fear almost disappears</div>
+    </div>
+  </div>
+  <p style="color:rgba(244,227,223,0.78); line-height:1.75; font-size:1.02rem; max-width:680px; margin-top:2rem;">This proves something simple: love is not only a feeling in your head. Holding hands with someone you trust actually calms your body. That comfort is real, not silly.</p>
+</section>
+
+<section class="reveal">
+  <div class="story">
+    <div class="eyebrow">A simple picture</div>
+    <h2>The child in the toy room</h2>
+    <p class="lede">A baby sits in a room full of toys. While her mother is nearby, she crawls everywhere and plays freely. The moment her mother steps out, she stops playing and cries at the door. When her mother comes back, the baby calms down fast — and soon goes back to playing.</p>
+    <div class="base-visual">
+      <div class="base-scene">
+        <div class="base-anchor"></div>
+        <div class="explorer"></div>
+      </div>
+    </div>
+    <p class="lede">This safe feeling has a name: a <strong>secure base</strong>. It means having one person you can 100% count on. Adults need this too. When we know someone truly backs us, we feel free to explore our own life — new jobs, new goals, new dreams.</p>
+    <div class="callout">A person who feels backed by someone does not shrink from life. They step into it.</div>
+  </div>
+</section>
+
+<section class="intro reveal">
+  <div class="eyebrow">What happens without it</div>
+  <h2 style="font-size:clamp(1.7rem,4vw,2.2rem);">When a partner isn't there for you</h2>
+  <p>Researchers also studied blood pressure in marriages. If your marriage feels good, simply being near your partner can bring your blood pressure down. But if the marriage feels unhappy, being near your partner can raise it instead — and it stays high as long as you're together.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="num">↓</div><div class="lbl">Happy bond: partner calms your body</div></div>
+    <div class="stat"><div class="num">↑</div><div class="lbl">Unhappy bond: partner stresses your body</div></div>
+  </div>
+  <p style="margin-top:1.8rem;">So a good partner is not a "nice to have." A secure, dependable partner is linked to real health — a calmer mind and a calmer body.</p>
+</section>
+
+<section class="final reveal">
+  <div class="eyebrow" style="text-align:center; display:block;">What you can do</div>
+  <h2>Simple rules to remember</h2>
+  <p class="sub">Depending on someone you love is not a weakness. It is how humans are made.</p>
+  <div class="dd-grid">
+    <div class="dd-card do">
+      <h3>Do</h3>
+      <ul>
+        <li><span class="mark">✓</span>Ask for a hand to hold, a hug, or a call when you're stressed. It really does calm your body.</li>
+        <li><span class="mark">✓</span>Let your partner know early when you need comfort, instead of waiting until you're upset.</li>
+        <li><span class="mark">✓</span>Be someone's secure base too — show up for them so they feel free to take risks.</li>
+        <li><span class="mark">✓</span>See a good, dependable partner as good for your health, not just your heart.</li>
+      </ul>
+    </div>
+    <div class="dd-card dont">
+      <h3>Don't</h3>
+      <ul>
+        <li><span class="mark">✕</span>Don't call yourself "too needy" for wanting support. That need is normal, not a flaw.</li>
+        <li><span class="mark">✕</span>Don't wait until you're falling apart to ask for comfort — ask early.</li>
+        <li><span class="mark">✕</span>Don't believe you must be 100% self-sufficient to be "healthy." That idea isn't biology.</li>
+        <li><span class="mark">✕</span>Don't ignore it if being close to your partner keeps stressing you, not calming you.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Made simple, from the science of adult attachment — the dependency paradox and the secure base.
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // falling hearts
+  const heartField = document.getElementById('heart-field');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const heartReds = ['#e0625d', '#d9433c', '#c9645f', '#e88c86', '#b83b34'];
+
+  function spawnHeart(){
+    const size = 10 + Math.random() * 22;
+    const left = Math.random() * 100;
+    const duration = 9 + Math.random() * 10;
+    const drift = (Math.random() * 140 - 70).toFixed(0) + 'px';
+    const r0 = (Math.random() * 40 - 20).toFixed(0) + 'deg';
+    const r1 = (Math.random() * 360 - 180).toFixed(0) + 'deg';
+    const op = (0.35 + Math.random() * 0.45).toFixed(2);
+    const color = heartReds[Math.floor(Math.random() * heartReds.length)];
+
+    const el = document.createElement('div');
+    el.className = 'fheart';
+    el.style.left = left + 'vw';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.setProperty('--drift', drift);
+    el.style.setProperty('--r0', r0);
+    el.style.setProperty('--r1', r1);
+    el.style.setProperty('--op', op);
+    el.style.animationDuration = duration + 's';
+    el.innerHTML = `<svg viewBox="0 0 32 29" width="${size}" height="${size}">
+      <path d="M16 28.5 C 6 20 0 13.5 0 8 C 0 3 4 0 8.2 0 C 11.5 0 14.2 2 16 4.8 C 17.8 2 20.5 0 23.8 0 C 28 0 32 3 32 8 C 32 13.5 26 20 16 28.5 Z" fill="${color}"/>
+    </svg>`;
+
+    heartField.appendChild(el);
+    setTimeout(()=>{ el.remove(); }, (duration) * 1000 + 200);
+  }
+
+  if(!reduceMotion){
+    for(let i=0;i<12;i++){ setTimeout(spawnHeart, i * 300); }
+    setInterval(spawnHeart, 650);
+  }
+</script>
+
+</body>
+</html>
