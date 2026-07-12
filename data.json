@@ -27,6 +27,9 @@
     "Stock Investing Mastermind": {
       "author": "Zebra Learn",
       "cover": "https://zebralearn-store.s3.ap-south-1.amazonaws.com/uploads/all/eIwqSuLObgLyYd67H9qZMEPNRxDLE6WLscTzdjGu.png"
+    },
+    "Attached": {
+      "author": "Amir Levine"
     }
   },
   "diploma": {
@@ -421,6 +424,10 @@
       "8. Enlightened Relationships": "",
       "9. Beyond Happiness and Unhappiness There Is Peace": "",
       "10. The Meaning of Surrender": ""
+    },
+    "Attached": {
+      "1. Decoding Relationship Behavior": "https://microintel.github.io/missmonk/psychology/attached/ch1.html",
+      "2. Dependency Is Not a Bad Word": "https://microintel.github.io/missmonk/psychology/attached/ch2.html"
     }
   },
   "Ancient Literature": {
