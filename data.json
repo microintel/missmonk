@@ -65,7 +65,9 @@
           "INTRODUCTION\tTO\tCOMPUTER\tORGANIZATION\t&\tOPERATING\tSYSTEM": {},
           "INTRODUCTION\tTO\tCOMPUTER\tPROGRAMMING": {}
         },
-        "Fundamentals of Electrical and electronics engineering": {},
+        "Fundamentals of Electrical and electronics engineering": {
+          "week 1": "https://microintel.github.io/missmonk/diploma/sem1/feee/week1.html"
+        },
         "IT Skills": {},
         "Environmental Sustainability": {}
       },
