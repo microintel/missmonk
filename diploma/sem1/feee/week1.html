@@ -1,1 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Safety Procedures — Field Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#181a1b;
+    --panel:#212426;
+    --panel2:#26292b;
+    --line:#3a3e40;
+    --yellow:#F5B400;
+    --yellow-dim:#8a6b12;
+    --red:#C1272D;
+    --text:#EAE7E0;
+    --muted:#9BA0A3;
+    --mono: 'JetBrains Mono', monospace;
+    --disp: 'Oswald', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.6;
+    font-size:16px;
+  }
+  a{color:var(--yellow);}
+  img{max-width:100%; display:block; border-radius:4px;}
 
+  /* Hazard stripe divider - signature element */
+  .stripe{
+    height:14px;
+    background: repeating-linear-gradient(45deg, var(--yellow), var(--yellow) 18px, #1a1a1a 18px, #1a1a1a 36px);
+  }
+  .stripe.thin{height:8px;}
+
+  /* Top bar */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(24,26,27,0.97);
+    border-bottom:1px solid var(--line);
+    backdrop-filter: blur(4px);
+  }
+  .topbar-inner{
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px;
+  }
+  .brand{
+    font-family:var(--disp); font-weight:600; letter-spacing:0.5px;
+    font-size:1.05rem; color:var(--text); display:flex; gap:8px; align-items:center;
+  }
+  .brand .bolt{color:var(--yellow); font-size:1.3rem;}
+  nav.mainnav{
+    display:flex; gap:18px; flex-wrap:wrap;
+  }
+  nav.mainnav a{
+    color:var(--muted); text-decoration:none; font-size:0.82rem;
+    text-transform:uppercase; letter-spacing:0.6px; font-weight:600;
+    padding:6px 2px; border-bottom:2px solid transparent;
+  }
+  nav.mainnav a:hover{color:var(--yellow); border-bottom:2px solid var(--yellow);}
+  .navtoggle{
+    display:none; background:none; border:1px solid var(--line); color:var(--text);
+    border-radius:4px; padding:8px 10px; font-size:1rem; cursor:pointer;
+  }
+
+  /* Hero */
+  .hero{
+    max-width:1200px; margin:0 auto; padding:64px 20px 40px;
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:40px; align-items:center;
+  }
+  .hero .eyebrow{
+    font-family:var(--mono); color:var(--yellow); letter-spacing:2px; font-size:0.78rem;
+    text-transform:uppercase; margin-bottom:14px;
+  }
+  .hero h1{
+    font-family:var(--disp); font-size:clamp(2.2rem, 5vw, 3.6rem);
+    line-height:1.05; margin:0 0 18px; font-weight:700; text-transform:uppercase;
+  }
+  .hero h1 span{color:var(--yellow);}
+  .hero p.lead{color:var(--muted); font-size:1.05rem; max-width:52ch;}
+  .hero-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:22px; font-family:var(--mono); font-size:0.85rem; color:var(--muted);
+  }
+  .hero-card b{color:var(--yellow);}
+  .hero-card ul{margin:10px 0 0; padding-left:18px;}
+  .hero-card li{margin-bottom:6px;}
+
+  main{max-width:1200px; margin:0 auto; padding:10px 20px 80px;}
+
+  section{padding:56px 0; border-bottom:1px solid var(--line);}
+  section:last-child{border-bottom:none;}
+
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:26px; flex-wrap:wrap;}
+  .sec-num{
+    font-family:var(--mono); color:var(--yellow); font-size:0.85rem;
+    border:1px solid var(--yellow-dim); border-radius:4px; padding:2px 8px;
+  }
+  h2{
+    font-family:var(--disp); text-transform:uppercase; letter-spacing:0.5px;
+    font-size:clamp(1.4rem,3vw,2rem); margin:0; font-weight:600;
+  }
+  h3{
+    font-family:var(--disp); font-size:1.15rem; text-transform:uppercase;
+    letter-spacing:0.4px; color:var(--yellow); margin:28px 0 12px; font-weight:600;
+  }
+  p{color:#cfcbc2;}
+  .muted{color:var(--muted);}
+
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:32px;}
+  .cols3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:20px;
+  }
+
+  ul.checklist{list-style:none; margin:0; padding:0;}
+  ul.checklist li{
+    position:relative; padding:8px 0 8px 28px; border-bottom:1px dashed var(--line);
+    color:#d8d4cb; font-size:0.95rem;
+  }
+  ul.checklist li:last-child{border-bottom:none;}
+  ul.checklist li::before{
+    content:"⚡"; position:absolute; left:0; top:8px; color:var(--yellow); font-size:0.9rem;
+  }
+  ul.checklist.plain li::before{content:"–"; color:var(--muted);}
+
+  figure{margin:0;}
+  figcaption{
+    font-family:var(--mono); font-size:0.75rem; color:var(--muted); margin-top:8px;
+  }
+
+  .img-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:18px;}
+  .img-grid img{aspect-ratio:1/1; object-fit:contain; background:#fff; padding:12px;}
+  .sign-tile{background:#fff; border-radius:6px; padding:10px; text-align:center;}
+  .sign-tile figcaption{color:#333;}
+
+  table{width:100%; border-collapse:collapse; margin-top:10px; font-size:0.92rem;}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--panel2); color:var(--yellow); font-family:var(--mono); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px;}
+  tr:nth-child(even) td{background:#1e2021;}
+  .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+
+  .current-scale{display:flex; flex-direction:column; gap:10px; margin-top:16px;}
+  .current-row{display:grid; grid-template-columns:170px 1fr; gap:14px; align-items:center;}
+  .current-row .amt{font-family:var(--mono); color:var(--yellow); font-size:0.85rem;}
+  .bar{height:10px; border-radius:5px; background:linear-gradient(90deg,#3a3e40,var(--red));}
+  .current-row p{margin:0; font-size:0.88rem; color:#cfcbc2;}
+
+  .steps{counter-reset:step;}
+  .steps li{
+    counter-increment:step; list-style:none; position:relative; padding:10px 0 10px 46px;
+    border-bottom:1px dashed var(--line); color:#d8d4cb;
+  }
+  .steps li::before{
+    content: counter(step);
+    position:absolute; left:0; top:8px; width:30px; height:30px; border-radius:50%;
+    background:var(--yellow); color:#1a1a1a; font-family:var(--mono); font-weight:700;
+    display:flex; align-items:center; justify-content:center; font-size:0.85rem;
+  }
+  .steps{padding:0; margin:14px 0 0;}
+
+  .tool-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:18px;}
+  .tool-card{background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .tool-card img{width:100%; height:130px; object-fit:cover;}
+  .tool-card .tc-body{padding:12px;}
+  .tool-card .tc-body h4{margin:0 0 4px; font-family:var(--disp); font-size:0.95rem; color:var(--yellow); text-transform:none;}
+  .tool-card .tc-body p{margin:0; font-size:0.82rem; color:var(--muted);}
+
+  .extinguisher-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:16px;}
+  .ext-tile{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:14px; text-align:center;}
+  .ext-tile .letter{
+    width:44px; height:44px; border-radius:50%; background:var(--red); color:#fff;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 8px;
+    font-family:var(--disp); font-weight:700; font-size:1.2rem;
+  }
+  .ext-tile p{margin:0; font-size:0.78rem; color:var(--muted);}
+
+  .video-link{
+    display:inline-flex; align-items:center; gap:8px; margin-top:10px;
+    background:var(--panel2); border:1px solid var(--line); border-radius:6px;
+    padding:8px 12px; font-family:var(--mono); font-size:0.8rem; text-decoration:none; color:var(--yellow);
+  }
+
+  .search-more-btn{
+    display:inline-flex; align-items:center; gap:10px; margin-top:20px;
+    background:var(--yellow); color:#1a1a1a; text-decoration:none;
+    font-family:var(--disp); font-weight:600; text-transform:uppercase;
+    letter-spacing:0.5px; font-size:0.85rem; padding:12px 20px; border-radius:6px;
+    border:1px solid var(--yellow); transition:background 0.15s, color 0.15s;
+  }
+  .search-more-btn:hover{background:transparent; color:var(--yellow);}
+  .search-more-btn svg{width:16px; height:16px; flex-shrink:0;}
+
+  .yt-card{
+    position:relative; display:block; max-width:480px; margin-top:16px;
+    border-radius:8px; overflow:hidden; border:1px solid var(--line);
+    text-decoration:none;
+  }
+  .yt-card img{width:100%; display:block; aspect-ratio:16/9; object-fit:cover;}
+  .yt-play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%; background:rgba(20,20,20,0.75);
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--yellow);
+  }
+  .yt-play::before{
+    content:""; border-style:solid; border-width:10px 0 10px 16px;
+    border-color:transparent transparent transparent var(--yellow); margin-left:4px;
+  }
+  .yt-cap{
+    background:var(--panel2); color:var(--muted); font-family:var(--mono);
+    font-size:0.75rem; padding:8px 12px; border-top:1px solid var(--line);
+  }
+
+  footer{
+    text-align:center; padding:40px 20px; color:var(--muted); font-size:0.8rem;
+    font-family:var(--mono);
+  }
+  .disclaimer{
+    max-width:640px; margin:0 auto; text-align:center; color:var(--muted);
+    font-size:0.85rem; line-height:1.7; font-family:var(--body);
+  }
+  .disclaimer b{color:var(--yellow);}
+
+  /* Responsive */
+  @media (max-width: 900px){
+    .cols2, .cols3{grid-template-columns:1fr;}
+    .img-grid{grid-template-columns:repeat(2,1fr);}
+    .tool-grid{grid-template-columns:repeat(2,1fr);}
+    .extinguisher-grid{grid-template-columns:repeat(2,1fr);}
+    .hero{grid-template-columns:1fr;}
+  }
+  @media (max-width: 700px){
+    nav.mainnav{
+      position:absolute; top:100%; left:0; right:0; background:var(--bg);
+      flex-direction:column; border-bottom:1px solid var(--line);
+      padding:10px 20px; display:none;
+    }
+    nav.mainnav.open{display:flex;}
+    .navtoggle{display:inline-block;}
+    .current-row{grid-template-columns:120px 1fr;}
+  }
+  @media (max-width:480px){
+    .img-grid{grid-template-columns:repeat(2,1fr);}
+    .tool-grid{grid-template-columns:1fr 1fr;}
+    .extinguisher-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="bolt">⚡</span> ELECTRICAL SAFETY MANUAL</div>
+    <button class="navtoggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+    <nav class="mainnav" id="mainNav">
+      <a href="#basics">Basics</a>
+      <a href="#signs">Signs</a>
+      <a href="#ppe">PPE</a>
+      <a href="#rescue">Rescue</a>
+      <a href="#firstaid">First Aid</a>
+      <a href="#fire">Fire</a>
+      <a href="#tools">Tools</a>
+      <a href="#earthing">Earthing</a>
+    </nav>
+  </div>
+</header>
+<div class="stripe"></div>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">20EE01P · Week 1 · CO‑1 · PO‑1,4</div>
+    <h1>Electrical Safety <span>Procedures</span></h1>
+    <p class="lead">A complete field reference for working safely around electricity — precautions, PPE, rescue technique, first aid, fire response, hand tools, and earthing systems.</p>
+  </div>
+  <div class="hero-card">
+    <b>What's inside</b>
+    <ul>
+      <li>Workplace &amp; measuring-instrument precautions</li>
+      <li>Safety signs, symbols &amp; PPE</li>
+      <li>Freeing a person from electrocution + CPR</li>
+      <li>Moving injured people (1‑person / 2‑person)</li>
+      <li>Electric shock effects &amp; first aid</li>
+      <li>Electrical fires, extinguisher classes &amp; PASS method</li>
+      <li>16 electrician hand tools</li>
+      <li>Earthing types &amp; installation procedure</li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+  <!-- 1. BASICS -->
+  <section id="basics">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Meaning &amp; General Precautions</h2></div>
+
+    <p><b>Electrical safety</b> refers to the practices and measures implemented to prevent injuries and damage caused by electricity — protecting people from shocks, burns, and fire through proper training, correct equipment, and strict adherence to safety standards that mitigate risks from high voltage, arcing, and electromagnetic fields.</p>
+
+    <a class="yt-card" href="https://youtu.be/d1SduGLpI6c?si=kAr1H1x44ENLA120" target="_blank" rel="noopener">
+      <img src="https://img.youtube.com/vi/d1SduGLpI6c/hqdefault.jpg" alt="Video thumbnail: General electrical safety precautions">
+      <div class="yt-play"></div>
+      <div class="yt-cap">▶ Watch: General electrical safety precautions</div>
+    </a>
+
+    <div class="cols2" style="margin-top:28px;">
+      <div class="card">
+        <h3>Workplace precautions</h3>
+        <ul class="checklist">
+          <li><b>Lockout / Tag-out:</b> de-energize machinery during maintenance or repair.</li>
+          <li><b>Regular inspection:</b> routinely check tools, cords and devices for wear or damage.</li>
+          <li><b>Proper training:</b> all personnel trained in protocols and task-specific hazards.</li>
+          <li><b>PPE:</b> insulated gloves, safety glasses, flame-resistant clothing at all times.</li>
+          <li><b>Signage:</b> visible warning signs and labels near high-voltage areas.</li>
+          <li><b>Dry conditions:</b> keep work areas free of moisture.</li>
+          <li><b>Safe practices:</b> never operate equipment in wet conditions or with damaged cords.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Using measuring instruments</h3>
+        <ul class="checklist">
+          <li>Use DC meters for DC circuits and AC meters for AC circuits.</li>
+          <li>Connect DC meters with correct polarity and proper range.</li>
+          <li>Always select meters of the correct range.</li>
+          <li>Connect Ammeters in <b>series</b>; Voltmeters in <b>parallel</b> with supply/load.</li>
+          <li>Lay meters flat on the working table to avoid parallax error.</li>
+          <li>Never meddle with connections while power is ON.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SIGNS -->
+  <section id="signs">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Electrical Safety Signs &amp; Symbols</h2></div>
+    <p>Safety symbols warn people that serious injury can occur from burns, electric shock, and other hazards, and remind them to take necessary precautions.</p>
+    <div class="img-grid">
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/High_voltage_warning.svg" alt="High voltage warning triangle sign">
+        <figcaption>High Voltage — Danger</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Danger_High_Voltage.svg" alt="Danger high voltage sign with skull">
+        <figcaption>Danger — Keep Away</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/CSA_Z321_Danger_High_Voltage.svg" alt="CSA danger high voltage sign">
+        <figcaption>Risk of Electric Shock</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/ISO_7010_W012.svg" alt="ISO 7010 electricity hazard warning sign">
+        <figcaption>ISO 7010 — Electricity Hazard</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/BS_5499-5.0044_Electricity.svg" alt="British standard electricity warning sign">
+        <figcaption>BS 5499 — Electricity Warning</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DIN_4844-2_Warnung_vor_gef_el_Spannung_D-W008.svg" alt="DIN warning of dangerous electric voltage sign">
+        <figcaption>DIN — Warning of Voltage</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/EEC_Safety_Sign_1977_-_Danger_Electricity.svg" alt="EEC 1977 danger electricity safety sign">
+        <figcaption>EEC — Danger Electricity</figcaption>
+      </figure>
+      <figure class="sign-tile">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Electrical_danger_sign.jpg" alt="Photograph of a real-world electrical danger sign board">
+        <figcaption>Field signage — Danger board</figcaption>
+      </figure>
+    </div>
+    <ul class="checklist plain" style="margin-top:22px;">
+      <li>Danger — Electrical Equipment: Authorized Personnel Only</li>
+      <li>Danger — Live Electrical Equipment</li>
+      <li>Danger — Electrical Closet</li>
+      <li>Caution — Area in Front of Electrical Panel Kept Clear</li>
+      <li>Danger — Do Not Touch</li>
+      <li>Danger — Overhead Power Lines</li>
+    </ul>
+
+    <a class="search-more-btn" href="https://www.google.com/search?q=electrical+safety+signs+and+symbols&tbm=isch" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      Find more signs &amp; symbols on Google
+    </a>
+  </section>
+
+  <!-- 3. PPE -->
+  <section id="ppe">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Electrical Personal Protective Equipment</h2></div>
+    <p>Electrical PPE is protective equipment used by workers exposed to hazards at voltages above 50 V AC/DC. Employees must be provided appropriate PPE and trained in its selection, use, limitations, inspection, and maintenance.</p>
+    <div class="cols2" style="align-items:start; margin-top:22px;">
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Electric_arc.jpg" alt="An electric arc flash — the hazard electrical PPE is designed to guard against">
+        <figcaption>Arc flash: the sudden release of heat and light PPE must contain</figcaption>
+      </figure>
+      <ul class="checklist">
+        <li><b>Hand protection:</b> rubber gloves prevent injury from live parts or arc-flash burn.</li>
+        <li><b>Foot protection:</b> leather footwear prevents injury from contact with live parts.</li>
+        <li><b>Hearing protection:</b> inserts protect ears from sound pressure above 140 dB during an arc blast.</li>
+        <li><b>Eye protection:</b> face shields and goggles guard against flash injury.</li>
+        <li><b>Head &amp; face protection:</b> non-conductive hard hats prevent injury from shock or arc-flash explosion.</li>
+      </ul>
+    </div>
+
+    <h3>Disposal of waste</h3>
+    <div class="cols2" style="align-items:start;">
+      <ul class="checklist">
+        <li>Collect all waste materials.</li>
+        <li>Identify and segregate: cotton waste, metal pieces, chemical waste, electrical waste.</li>
+        <li>Segregate into saleable and non-saleable waste.</li>
+        <li>Send non-saleable material (cotton, paper, wood) for disposal by burning.</li>
+        <li>Segregate saleable items — Aluminium, Copper, Iron, Screws, nuts — and send to stores.</li>
+        <li>Clean the floor if oil has been spilt.</li>
+      </ul>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Recyclables.JPG" alt="Segregated recyclable scrap materials for disposal">
+        <figcaption>Segregating saleable scrap (Al, Cu, Fe) from non-saleable waste</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 4. RESCUE -->
+  <section id="rescue">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Electrocution &amp; Rescue Technique</h2></div>
+    <p><b>Electrocution</b> is a severe or fatal injury from electric shock, occurring when significant current passes through the body. Severity depends on voltage, current intensity, exposure duration, and current path through the body.</p>
+    <a class="yt-card" href="https://youtu.be/N5KDoYnbQNE?si=GRIYwV65Qg6bIWVa" target="_blank" rel="noopener">
+      <img src="https://img.youtube.com/vi/N5KDoYnbQNE/hqdefault.jpg" alt="Video thumbnail: Freeing a person from electrocution">
+      <div class="yt-play"></div>
+      <div class="yt-cap">▶ Watch: Freeing a person from electrocution</div>
+    </a>
+
+    <div class="cols2" style="margin-top:22px; align-items:start;">
+      <div>
+        <h3>Steps to free a person</h3>
+        <ol class="steps">
+          <li>Do not touch the victim directly while they are still in contact with the source — you risk being shocked too.</li>
+          <li>If power cannot be turned off immediately, use a non-conductive object (wooden stick, plastic tool) to separate the victim from the source.</li>
+          <li>Turn off the source of electricity if possible; otherwise use a non-conducting pole of wood, cardboard, paper, or plastic.</li>
+          <li>Once removed from the source, check for breathing and pulse; administer CPR if trained, until emergency personnel arrive.</li>
+          <li>Call emergency medical services and the electricity supply company helpline immediately.</li>
+          <li>Never approach a victim electrocuted by a high-voltage line — electricity can arc several feet through the air.</li>
+        </ol>
+      </div>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Danger_High_Voltage.svg" alt="Danger high voltage sign — never approach a live wire directly">
+        <figcaption>De-energize or use a non-conductive object first — never touch the victim directly</figcaption>
+      </figure>
+    </div>
+
+    <h3>CPR sequence (if trained)</h3>
+    <div class="cols2" style="align-items:start;">
+      <ul class="checklist plain">
+        <li>1. Check the airway</li>
+        <li>2. Clear the airway</li>
+        <li>3. Check for breathing</li>
+        <li>4. If not breathing, begin compressions</li>
+        <li>5. 30 chest compressions</li>
+        <li>6. 2 rescue breaths — alternate until help arrives</li>
+      </ul>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/CPR_training-04.jpg" alt="Two people performing CPR on a training manikin">
+        <figcaption>CPR: 30 compressions, 2 breaths, repeat</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5. MOVING INJURED -->
+  <section id="moving">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Moving Injured People During Emergency</h2></div>
+
+    <h3>A) By a single person</h3>
+    <p><b>Protecting the spine:</b> do not move someone with a suspected spinal injury. Stabilize the head with towels or pillows on both sides to prevent rolling. Provide first aid, like CPR, without moving the head. Only roll the person onto their side if they are in immediate danger (vomiting or choking on blood) — and only with at least one other person to prevent the body twisting.</p>
+    <div class="cols2" style="align-items:start;">
+      <ul class="checklist">
+        <li><b>Human crutch method:</b> if the person is conscious and can move, and has an injury to only one leg.</li>
+        <li><b>Drag method:</b> safer than lifting — drag by leg, arm, or clothing depending on injury type.</li>
+        <li><b>Cradle method:</b> for carrying a child.</li>
+        <li><b>Backpack carry:</b> for carrying a larger person.</li>
+      </ul>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/CPR_training-01.jpg" alt="First-aid training exercise">
+        <figcaption>Practising first-aid handling technique</figcaption>
+      </figure>
+    </div>
+
+    <h3>B) By two people</h3>
+    <div class="cols2" style="align-items:start;">
+      <div>
+        <p>Check the person for neck and back injuries first. Leave the person on the ground to start. Put your bodies in the proper position, pull the person to a sitting position, then assist them to their feet. Wrap your hands around the injured person's waist, or place their arms over your shoulders, and move out together.</p>
+        <ul class="checklist plain">
+          <li><b>Handed seat / swing carry</b> — for a back or leg injury victim</li>
+          <li><b>Fore and aft method</b> — for an unconscious victim</li>
+          <li><b>Arm carry (alternate)</b> — for an unconscious victim</li>
+        </ul>
+      </div>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/First_aid_kit_for_tropical_country_-_unpacked.jpg" alt="First-aid supplies laid out for emergency handling">
+        <figcaption>Have first-aid supplies ready before attempting a two-person carry</figcaption>
+      </figure>
+    </div>
+
+    <h3>C) Alternative carries</h3>
+    <ul class="checklist plain">
+      <li>Improvise a stretcher from tree branches or straight pole-like objects with a large cloth, blanket, or bedspread.</li>
+      <li>Fashion a stretcher using four interlocked hands.</li>
+      <li>Carry the person with a chair, or construct a "chair" using your hands.</li>
+    </ul>
+  </section>
+
+  <!-- 6. FIRST AID -->
+  <section id="firstaid">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Electric Shock — Effects &amp; First Aid</h2></div>
+    <p><b>Electric shock</b> is the physiological/biological reaction or injury caused by electric current passing through the human body.</p>
+
+    <h3>Effects of current on the body</h3>
+    <div class="current-scale">
+      <div class="current-row"><span class="amt">1 mA</span><div><div class="bar" style="width:8%"></div><p>Just a faint tingle.</p></div></div>
+      <div class="current-row"><span class="amt">5 mA</span><div><div class="bar" style="width:18%"></div><p>Slight shock felt — disturbing but not painful.</p></div></div>
+      <div class="current-row"><span class="amt">6–25 mA (women)<br>9–30 mA (men)</span><div><div class="bar" style="width:35%"></div><p>Painful shock; muscular control is lost.</p></div></div>
+      <div class="current-row"><span class="amt">50–150 mA</span><div><div class="bar" style="width:60%"></div><p>Extremely painful shock. Death is possible.</p></div></div>
+      <div class="current-row"><span class="amt">1–4.3 A</span><div><div class="bar" style="width:82%"></div><p>Heart pumping action becomes arrhythmic. Death is likely.</p></div></div>
+      <div class="current-row"><span class="amt">10 A</span><div><div class="bar" style="width:100%"></div><p>Cardiac arrest and severe burns occur. Death is probable.</p></div></div>
+    </div>
+
+    <h3>First aid steps</h3>
+    <div class="cols2" style="align-items:start;">
+      <ol class="steps">
+        <li>Turn off the power before touching the victim, to prevent further injury.</li>
+        <li>If the power can't be turned off, use a dry wooden stick, rubber gloves, or non-metallic object to separate the person from the source.</li>
+        <li>Call emergency services (<b>emergency no. 112</b>) immediately if unconscious or severely burned.</li>
+        <li>Check breathing and pulse; begin CPR if the victim is unconscious and not breathing.</li>
+        <li>Treat burns: cool with running water for 10–15 minutes. Do not apply ice, ointments, or creams — cover with a sterile non-stick dressing.</li>
+        <li>Prevent shock: lay the person down, elevate their legs, and keep them warm if pale, weak-pulsed, or breathing rapidly.</li>
+        <li>Look for internal injuries even without visible external burns — seek medical attention immediately.</li>
+        <li>Do not apply grease or oil to burns; cover flash burns with a dry sterile dressing and bandage — do not cool them. Keep the victim from getting chilled.</li>
+        <li>Do not let a crowd gather around the person — let them get fresh air.</li>
+      </ol>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/First_aid_kit_for_tropical_country_-_packed.jpg" alt="A packed first-aid kit">
+        <figcaption>Keep a stocked first-aid kit on hand for burns and shock</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 7. FIRE -->
+  <section id="fire">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Electrical Fire, Prevention &amp; Extinguishers</h2></div>
+    <p>An <b>electrical fire</b> starts from a malfunctioning or faulty electrical component — wiring, an appliance, or an outlet — where overheating from excessive current ignites nearby flammable material.</p>
+
+    <div class="cols2" style="align-items:start;">
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fire_Electrical.png" alt="Illustration of an electrical fire hazard">
+        <figcaption>Overheating and sparking wires can ignite a fire</figcaption>
+      </figure>
+      <div>
+        <h3>Causes</h3>
+        <ul class="checklist">
+          <li>Short circuits from damaged or aging wiring.</li>
+          <li>Overloaded circuits drawing too much power.</li>
+          <li>Faulty wiring installations causing sparks.</li>
+          <li>Old or damaged appliances with worn-out cords.</li>
+          <li>Loose connections in outlets/switchboards generating heat.</li>
+          <li>Improper use or overloading of extension cords.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Precautionary measures</h3>
+    <ul class="checklist plain">
+      <li>Regular electrical inspections of wiring, appliances, and outlets.</li>
+      <li>Avoid overloading circuits — use multiple circuits within safe limits.</li>
+      <li>Use surge protectors against voltage spikes.</li>
+      <li>Replace frayed or exposed wiring immediately.</li>
+      <li>Install circuit breakers and fuses.</li>
+      <li>Unplug unused appliances.</li>
+      <li>Educate employees and household members on safe practices.</li>
+    </ul>
+
+    <h3>Rescue technique during a fire hazard</h3>
+    <div class="cols2" style="align-items:start;">
+      <ol class="steps">
+        <li>Pull the nearest fire alarm as you exit the building.</li>
+        <li>Ensure there is no fire danger on the other side before evacuating.</li>
+        <li>If there's smoke, stay low, keep a hand on the wall, and crawl to the nearest exit.</li>
+        <li>Once clear, call your report contact and inform them of the fire.</li>
+        <li>Go to your refuge area and await instructions from emergency personnel.</li>
+        <li>Notify the proper authorities once you are safe.</li>
+      </ol>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Emergency_Exit_ISO_Pictogram_(green).svg" alt="Emergency exit sign">
+        <figcaption>Follow marked emergency exits and refuge points</figcaption>
+      </figure>
+    </div>
+
+    <h3>Classes of fire</h3>
+    <a class="yt-card" href="https://youtu.be/o5QdAEJH43c?si=FhxVM3UkCoNpNWnB" target="_blank" rel="noopener">
+      <img src="https://img.youtube.com/vi/o5QdAEJH43c/hqdefault.jpg" alt="Video thumbnail: Different types of fires">
+      <div class="yt-play"></div>
+      <div class="yt-cap">▶ Watch: Different types of fires</div>
+    </a>
+    <div class="extinguisher-grid">
+      <div class="ext-tile"><div class="letter">A</div><p>Ordinary combustibles — wood, paper, cloth, rubber, plastics</p></div>
+      <div class="ext-tile"><div class="letter">B</div><p>Flammable liquids/gases — gasoline, oils, propane, butane</p></div>
+      <div class="ext-tile"><div class="letter">C</div><p>Energized electrical equipment — computers, motors, transformers</p></div>
+      <div class="ext-tile"><div class="letter">D</div><p>Combustible metals — magnesium, titanium, sodium, lithium</p></div>
+      <div class="ext-tile"><div class="letter">K</div><p>Cooking oils &amp; greases — animal and vegetable fats</p></div>
+    </div>
+
+    <h3>Extinguisher suitability</h3>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Extinguisher</th><th>Class A</th><th>Class B</th><th>Class C</th><th>Class D</th><th>Electrical</th><th>Class K</th></tr>
+      <tr><td>Water</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td></tr>
+      <tr><td>Foam</td><td>✔</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td></tr>
+      <tr><td>Dry Powder</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✘</td></tr>
+      <tr><td>CO₂</td><td>✘</td><td>✔</td><td>✘</td><td>✘</td><td>✔</td><td>✘</td></tr>
+      <tr><td>Wet Chemical</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    </table>
+    </div>
+
+    <div class="cols2" style="margin-top:22px; align-items:start;">
+      <ul class="checklist">
+        <li><b>Carbon Dioxide:</b> removes oxygen and cools with a very cold discharge. Effective on Class B &amp; C fires.</li>
+        <li><b>Dry Chemical:</b> interrupts the fire's chemical reaction — the most widely used, effective on Class A, B, and C.</li>
+        <li><b>Clean Agent:</b> halogenated/halocarbon agents that interrupt the reaction and remove heat — effective on A, B, and C.</li>
+        <li><b>Cartridge Operated Dry Chemical:</b> interrupts the chemical reaction and creates an oxygen barrier on Class A fires — effective on A, B, and C.</li>
+      </ul>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fire-Extinguisher.JPG" alt="A portable red fire extinguisher">
+        <figcaption>A portable fire extinguisher discharges water, foam, gas, or dry chemical</figcaption>
+      </figure>
+    </div>
+
+    <h3>PASS Method</h3>
+    <div class="cols2">
+      <ol class="steps">
+        <li><b>Pull</b> the safety pin.</li>
+        <li><b>Aim</b> at the base of the fire.</li>
+        <li><b>Squeeze</b> the handle to release the agent.</li>
+        <li><b>Sweep</b> the nozzle side to side until the fire is out.</li>
+      </ol>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fire_Extinguisher_Usage.jpg" alt="Demonstration of using a fire extinguisher">
+        <figcaption>PASS: Pull, Aim, Squeeze, Sweep</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 8. TOOLS -->
+  <section id="tools">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Electrician Tools &amp; Functions</h2></div>
+    <p>Common hand tools and instruments used in electrical maintenance and installation work.</p>
+    <div class="tool-grid">
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Locking_pliers.jpg" alt="Cutting pliers"><div class="tc-body"><h4>1. Cutting Plier</h4><p>Cuts wire and holds/grabs it; has an insulated handle.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Long-nosePliers.jpg" alt="Long nose pliers"><div class="tc-body"><h4>2. Long Nose Pliers</h4><p>Holds wires in small spaces; cuts and tightens small nuts.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Wire_stripping.jpg" alt="Wire strippers"><div class="tc-body"><h4>3. Wire Strippers</h4><p>Strips insulation from stranded or solid copper wire.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flathead_screwdriver.JPG" alt="Screwdrivers"><div class="tc-body"><h4>4. Screw Driver</h4><p>Turns screws with slotted heads.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tool-hacksaw.jpg" alt="Hacksaw"><div class="tc-body"><h4>5. Hacksaw</h4><p>Cuts cable armour, conduit pipes, etc.; blade tightened by a wing nut.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Box-cutter.jpg" alt="Utility knife / blade"><div class="tc-body"><h4>6. Razor / Knife / Blade</h4><p>Strips large-gauge wire and cuts/opens boxes.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ball-peen_hammer_380mm.JPG" alt="Ball peen hammer"><div class="tc-body"><h4>7. Ball Peen Hammer</h4><p>Used for striking punches.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Neon_Test_Lamp.jpg" alt="Line tester"><div class="tc-body"><h4>8. Line Tester</h4><p>Tests and identifies the phase / live wire / conductor.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fluke_Clamp_meter.jpg" alt="Clamp-on meter"><div class="tc-body"><h4>9. Clamp-On / Tong Tester</h4><p>Measures high current by magnetic induction.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Cordless_electric_(screw)_drill.jpg" alt="Drilling machine"><div class="tc-body"><h4>10. Drilling Machine</h4><p>Makes round holes or drives fasteners.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Grinder_diamond_blade.jpg" alt="Angle grinder"><div class="tc-body"><h4>11. Angle Grinder</h4><p>Cuts metal conduit pipes and electrical panels.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Heat_Gun.JPG" alt="Heat gun"><div class="tc-body"><h4>12. Heat Gun</h4><p>Shrinks heat-shrink tubing and removes paint from surfaces.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tape_measure.JPG" alt="Measuring tape"><div class="tc-body"><h4>13. Measuring Tape</h4><p>A flexible ruler used to measure size or distance.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Digital_Multimeter.jpg" alt="Multimeter"><div class="tc-body"><h4>14. Multimeter</h4><p>Combines voltage, current, and resistance measurement functions.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Green_electric_cable.jpg" alt="Electrical wires"><div class="tc-body"><h4>15. Wires</h4><p>Copper or aluminium insulated wire with twisted strands — PVC, VIR types common.</p></div></div>
+      <div class="tool-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Electrical-tape_black.jpg" alt="Insulation tape"><div class="tc-body"><h4>16. Insulation Tape</h4><p>Safety tape used to cover and insulate cables and conductive materials.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 9. EARTHING -->
+  <section id="earthing">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Earthing (Grounding)</h2></div>
+    <a class="yt-card" href="https://youtu.be/4t4zGKD1Z0M?si=3FZLlEDNCqbcUPbT" target="_blank" rel="noopener">
+      <img src="https://img.youtube.com/vi/4t4zGKD1Z0M/hqdefault.jpg" alt="Video thumbnail: Earthing — definition, necessity, types and applications">
+      <div class="yt-play"></div>
+      <div class="yt-cap">▶ Watch: Earthing — definition, necessity, types &amp; applications</div>
+    </a>
+
+    <p style="margin-top:16px;"><b>Earthing (grounding)</b> connects the metal body of an appliance or machinery to the earth's conductive surface through a low-resistance wire, to prevent electric shock and ensure safety.</p>
+    <p>Whenever a live wire contacts the body of an appliance, it is connected directly to earth, bringing the body voltage to zero — so the operator gets no shock on contact. During lightning, high voltage induced in overhead lines and tall buildings is safely discharged to earth through the grounding wire, protecting buildings, transformers, and machinery.</p>
+
+    <div class="cols2" style="align-items:start;">
+      <ul class="checklist">
+        <li>Prevents electric shock by diverting excess current safely into the ground.</li>
+        <li>Protects appliances from voltage fluctuations and damage.</li>
+        <li>Prevents fire hazards from short circuits.</li>
+        <li>Ensures stable, balanced voltage levels in the system.</li>
+        <li>Improves overall safety of electrical installations.</li>
+      </ul>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Grounding_terminal-wire.JPG" alt="Copper earthing / grounding terminal and wire connection">
+        <figcaption>A grounding conductor provides a low-resistance path to earth</figcaption>
+      </figure>
+    </div>
+
+    <h3>Types of earthing</h3>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Type</th><th>Description</th></tr>
+      <tr><td>Plate Earthing</td><td>Copper/GI plate buried &gt;3 m deep, embedded in alternate layers of charcoal, sand &amp; salt. Costlier — used for precise equipment like computers, control rooms.</td></tr>
+      <tr><td>Pipe Earthing</td><td>GI pipe buried &gt;3 m deep. Cheap and the most common form — used for domestic, commercial, industrial, and transmission/distribution earthing.</td></tr>
+      <tr><td>Rod Earthing</td><td>A copper or GI rod driven deep into the earth. Common in substations, distribution networks, and individual installations.</td></tr>
+      <tr><td>Strip / Wire Earthing</td><td>Conductive copper or GI strips buried for industrial use — residential buildings, plants, telecom, power plants.</td></tr>
+      <tr><td>Chemical Earthing</td><td>Special compounds enhance conductivity and reduce resistance — used in hospitals, data centers, telecom towers, substations.</td></tr>
+      <tr><td>Grid / Mat Earthing</td><td>A mesh of rods connected by copper conductors, reducing overall grounding resistance and limiting potential gradient.</td></tr>
+    </table>
+    </div>
+
+    <h3>Procedure — Plate earthing</h3>
+    <div class="cols2" style="align-items:start;">
+      <ol class="steps">
+        <li>Excavate an earth pit of 900 mm × 900 mm × minimum 3 m deep (or 1 m × 1 m × 3 m). Level the bottom.</li>
+        <li>Use a GI plate of minimum 600 mm × 600 mm × 6.3 mm (or copper plate, min. 3.15 mm thick).</li>
+        <li>Fix two 50 mm × 6 mm GI strips to the plate with nut, check-nut, bolt and washer at two points each; weld and join at the top.</li>
+        <li>Fix a 19 mm GI pipe with a wire-mesh funnel at the top for watering, to keep the area around the plate moist.</li>
+        <li>Fill around the plate with alternate layers of charcoal and salt; backfill the pit with stone-free soil.</li>
+        <li>Build a 450×450×450 mm inspection brick chamber over a PCC layer, 100 mm above ground, covered with a cast-iron lid.</li>
+      </ol>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/HomeEarthRodAustralia1.jpg" alt="An earth rod / earthing electrode installed at a residential building">
+        <figcaption>The earthing electrode is connected to a low-resistance conductor run to the pit</figcaption>
+      </figure>
+    </div>
+
+    <h3>Procedure — Pipe earthing</h3>
+    <ol class="steps">
+      <li>Make a borehole 500 mm or 1 m diameter, 3.5–3.75 m deep as per approved drawing.</li>
+      <li>Lower a 38/45/50 mm diameter GI perforated pipe electrode (3 m or 2.5 m long) attached to a 19 mm GI pipe with a wire-mesh funnel; a GI strip or 12.7 mm pipe acts as the earthing connection, with 8 SWG GI wire passed through it.</li>
+      <li>Fill the space between electrode and borehole wall with alternating layers of coke/charcoal and common salt up to 2.5 m.</li>
+      <li>Build a 450×450×450 mm brick inspection chamber over a PCC layer, 100 mm above ground, with a cast-iron cover.</li>
+    </ol>
+
+    <h3>Applications of earthing</h3>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Earth Type</th><th>Purpose</th></tr>
+      <tr><td>System earth</td><td>Prevents hazards on the secondary side of a circuit under test during accidental simultaneous contact with high and low voltages.</td></tr>
+      <tr><td>Equipment earth</td><td>Prevents shock caused by poor insulation of electrical equipment.</td></tr>
+      <tr><td>Lightning protection earth</td><td>Provides a safety path to ground for lightning currents.</td></tr>
+      <tr><td>Statics-dissipative earth</td><td>Prevents static buildup and fire hazard from static spark.</td></tr>
+      <tr><td>Earth for fault detection</td><td>Installed at the transformer's secondary side; carries fault current to trigger the earth-leakage relay/RCD.</td></tr>
+      <tr><td>Potential equalization earth</td><td>Used in hospitals; interconnects metal parts to prevent dangerous voltage differences.</td></tr>
+      <tr><td>Noise-reduction earth</td><td>Earth for electronic devices.</td></tr>
+      <tr><td>Functional earth</td><td>Provides stable electrical potential for normal computer operation.</td></tr>
+    </table>
+    </div>
+  </section>
+
+</main>
+
+<div class="stripe thin"></div>
+<footer>
+  <p class="disclaimer">This page is a <b>quick-reference summary</b> only. For complete explanations, diagrams, and exam-relevant detail, please read the <b>original textbook / lab manual provided by your college</b> — this compilation may simplify or omit content found there.</p>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navToggle');
+  const nav = document.getElementById('mainNav');
+  toggle.addEventListener('click', () => nav.classList.toggle('open'));
+  document.querySelectorAll('#mainNav a').forEach(a=>{
+    a.addEventListener('click', ()=> nav.classList.remove('open'));
+  });
+</script>
+
+</body>
+</html>
