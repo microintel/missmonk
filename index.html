@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
 /* ════════════════════════════════════════════
    THEME TOKENS
@@ -780,6 +781,79 @@ a { color:inherit; text-decoration:none; }
   color:var(--blue);
 }
 .modal-btn.share-modal-btn:hover { background:rgba(59,130,246,.2); }
+.modal-btn.complete-modal-btn { color:var(--text2); }
+.modal-btn.complete-modal-btn.done { background:rgba(76,175,125,.15); color:var(--green); }
+.modal-btn.complete-modal-btn:hover { background:rgba(76,175,125,.15); color:var(--green); }
+
+/* ── Completion badges on lesson / book cards ── */
+.link-card { position:relative; }
+.card-done-badge {
+  position:absolute; top:.6rem; right:.6rem;
+  width:22px; height:22px; border-radius:50%;
+  background:var(--green); color:#fff;
+  display:none; align-items:center; justify-content:center;
+  font-size:.7rem; box-shadow:0 2px 8px rgba(76,175,125,.4);
+}
+.link-card.done .card-done-badge { display:flex; }
+.link-card.done { border-color:rgba(76,175,125,.35); }
+
+.book-progress-ring {
+  position:absolute; top:.6rem; left:.6rem; z-index:2;
+  width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center;
+  font-size:.62rem; font-weight:700; color:var(--text);
+  background:conic-gradient(var(--green) calc(var(--pct,0) * 1%), var(--surface3) 0);
+}
+.book-progress-ring::before {
+  content:''; position:absolute; inset:3px; border-radius:50%; background:var(--surface2);
+}
+.book-progress-ring span { position:relative; z-index:1; }
+.book-progress-ring.complete { box-shadow:0 0 0 2px rgba(76,175,125,.5); }
+
+/* ── PROGRESS PAGE ── */
+.progress-grid {
+  display:grid; grid-template-columns:280px 1fr; gap:1.2rem; align-items:start;
+}
+.progress-chart-card {
+  display:flex; flex-direction:column; align-items:center; gap:.9rem;
+}
+.progress-donut-wrap { position:relative; width:190px; height:190px; }
+.progress-donut-center {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; pointer-events:none;
+}
+.progress-donut-pct { font-family:'Clash Display',sans-serif; font-size:1.7rem; font-weight:700; color:var(--text); }
+.progress-donut-lbl { font-size:.7rem; color:var(--text2); }
+.progress-stats-row { display:flex; gap:.6rem; width:100%; }
+.progress-stat-box {
+  flex:1; background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; padding:.7rem .5rem; text-align:center;
+}
+.progress-stat-box .val { font-family:'Clash Display',sans-serif; font-size:1.15rem; font-weight:700; color:var(--text); }
+.progress-stat-box .lbl { font-size:.65rem; color:var(--text2); margin-top:2px; }
+
+.book-progress-list { display:flex; flex-direction:column; gap:.7rem; }
+.book-progress-item {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; padding:.8rem .9rem;
+}
+.book-progress-item.complete { border-color:rgba(76,175,125,.4); }
+.bpi-top { display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.5rem; }
+.bpi-name { font-size:.86rem; font-weight:600; color:var(--text); display:flex; align-items:center; gap:.4rem; min-width:0; }
+.bpi-name span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bpi-name i.bpi-check { color:var(--green); flex-shrink:0; display:none; }
+.book-progress-item.complete .bpi-name i.bpi-check { display:inline-block; }
+.bpi-name i.bpi-icon { color:var(--text2); flex-shrink:0; font-size:.9rem; }
+.book-progress-item.complete .bpi-name i.bpi-icon { color:var(--green); }
+.bpi-pct { font-size:.78rem; font-weight:700; color:var(--text2); flex-shrink:0; }
+.book-progress-item.complete .bpi-pct { color:var(--green); }
+.bpi-bar { height:6px; border-radius:4px; background:var(--surface3); overflow:hidden; }
+.bpi-fill { height:100%; background:var(--green); border-radius:4px; transition:width .4s ease; }
+
+@media (max-width:768px) {
+  .progress-grid { grid-template-columns:1fr; }
+  .progress-donut-wrap { width:170px; height:170px; }
+}
 .modal-iframe { flex:1; border:none; background:#fff; }
 
 /* ── SEARCH RESULTS ── */
@@ -1100,6 +1174,9 @@ a { color:inherit; text-decoration:none; }
   <div class="modal-box">
     <div class="modal-head">
       <span class="modal-head-title" id="modalTitle">Loading…</span>
+      <button class="modal-btn complete-modal-btn" id="modalCompleteBtn" onclick="toggleLessonComplete(modalLessonKey)">
+        <i class="bi bi-check-circle" id="modalCompleteIcon"></i> <span id="modalCompleteLabel">Mark Complete</span>
+      </button>
       <button class="modal-btn share-modal-btn" onclick="shareLesson()"><i class="bi bi-share-fill"></i> Share</button>
       <button class="modal-btn" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
     </div>
@@ -1249,6 +1326,9 @@ let modalLessonKey   = null;
 let modalLessonHref  = null;
 let modalLessonLabel = null;
 let allLessons    = [];
+let completedLessons = new Set();   // set of lesson-lids the signed-in user has completed
+let progressChart     = null;       // Chart.js pie instance on the Progress page
+let progressSaveTimer = null;       // debounce handle for Firestore writes
 let allSearchItems = [];
 
 /* ══════════════════════════════
@@ -1500,6 +1580,7 @@ auth.onAuthStateChanged(async (user) => {
       picture: user.photoURL || ''
     };
     await saveUserToFirestore(user);
+    await loadProgress(user.uid);
     await enterApp();
   } else {
     currentUser = null;
@@ -1553,6 +1634,166 @@ function countLessons(obj) {
 }
 function cleanKey(k) { return String(k).replace(/\t/g,' ').replace(/\s+/g,' ').trim(); }
 function lessonId(path, key) { return btoa(encodeURIComponent([...path, key].join('|'))).replace(/=/g,''); }
+
+/* ══════════════════════════════
+   PROGRESS TRACKING
+   Completed lessons are stored as ONE comma-joined string in a single
+   Firestore field (progress/{uid}.c) — one doc, one field, one read/write
+   per session — to keep storage + quota usage as small as possible.
+══════════════════════════════ */
+
+// Walks a curriculum node collecting lesson-lids using the exact same
+// clean-path convention as renderContent()/navPush(), so ids always match
+// the lid a lesson card was actually opened with.
+function walkLessonLids(obj, cleanPath, out) {
+  if (!obj || typeof obj !== 'object') return;
+  Object.keys(obj).forEach(key => {
+    if (key.startsWith('_')) return;
+    const val = obj[key];
+    if (typeof val === 'string' && extractHref(val)) {
+      out.push(lessonId(cleanPath, key));
+    } else if (val && typeof val === 'object') {
+      walkLessonLids(val, [...cleanPath, cleanKey(key)], out);
+    }
+  });
+}
+function collectAllLessonLids() {
+  const out = [];
+  Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).forEach(course => {
+    walkLessonLids(CURRICULUM[course], [cleanKey(course)], out);
+  });
+  return out;
+}
+// Every "book" node (found the same way the Books tab finds them) plus the
+// lesson-lids that live under it, used to compute per-book % complete.
+function collectBookProgressList() {
+  return findBookNodes().map(node => {
+    const bookObj  = node.pathStack[node.pathStack.length - 1].obj;
+    const cleanPath = node.pathStack.map(p => p.key);
+    const lids = [];
+    walkLessonLids(bookObj, cleanPath, lids);
+    const done = lids.filter(l => completedLessons.has(l)).length;
+    return {
+      name: cleanKey(node.key),
+      author: node.meta.author || '',
+      total: lids.length,
+      done,
+      pct: lids.length ? Math.round((done / lids.length) * 100) : 0
+    };
+  }).filter(b => b.total > 0);
+}
+// Top-level curriculum groupings (e.g. "diploma", "engineering") — the
+// broadest category a lesson belongs to.
+function collectCategoryProgressList() {
+  return Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).map(course => {
+    const lids = [];
+    walkLessonLids(CURRICULUM[course], [cleanKey(course)], lids);
+    const done = lids.filter(l => completedLessons.has(l)).length;
+    const meta = COURSE_META[course] || {};
+    return {
+      name: meta.label || cleanKey(course),
+      icon: meta.icon || '<i class="bi bi-collection-fill"></i>',
+      total: lids.length,
+      done,
+      pct: lids.length ? Math.round((done / lids.length) * 100) : 0
+    };
+  }).filter(c => c.total > 0);
+}
+
+function isLessonComplete(lid) { return !!lid && completedLessons.has(lid); }
+
+// Local cache key — a per-uid backup so a completion is never lost even if
+// the Firestore write is rejected (e.g. missing security rule) or the
+// network drops mid-save. This never leaves the device.
+function progressCacheKey(uid) { return 'lp_progress_' + uid; }
+function readProgressCache(uid) {
+  try {
+    const raw = localStorage.getItem(progressCacheKey(uid));
+    return raw ? raw.split(',').filter(Boolean) : [];
+  } catch (e) { return []; }
+}
+function writeProgressCache(uid) {
+  try { localStorage.setItem(progressCacheKey(uid), Array.from(completedLessons).join(',')); }
+  catch (e) { /* storage full/unavailable — Firestore is still the source of truth */ }
+}
+
+async function loadProgress(uid) {
+  completedLessons = new Set();
+  // 1) Local cache loads instantly and survives even if Firestore is down
+  //    or misconfigured, so a signed-in user never sees their progress
+  //    silently reset to 0.
+  readProgressCache(uid).forEach(id => completedLessons.add(id));
+
+  // 2) Merge in whatever Firestore has (covers progress made on another
+  //    device). Any error here is surfaced, not just logged, since a
+  //    silent failure is exactly what made progress look "lost" before.
+  try {
+    const doc = await db.collection('progress').doc(uid).get();
+    if (doc.exists) {
+      const c = doc.data().c || '';
+      if (c) c.split(',').forEach(id => id && completedLessons.add(id));
+    }
+    // Keep the local cache in sync with the merged result.
+    writeProgressCache(uid);
+  } catch (err) {
+    console.error('Progress load failed:', err);
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Could not sync progress from the cloud — showing your last saved local progress');
+  }
+}
+
+function saveProgressDebounced() {
+  if (!currentUser) return;
+  // Save to the local cache immediately (synchronous, always succeeds) so a
+  // toggle survives even if the debounced cloud write below never fires or
+  // gets rejected.
+  writeProgressCache(currentUser.uid);
+
+  clearTimeout(progressSaveTimer);
+  const uid = currentUser.uid;
+  progressSaveTimer = setTimeout(async () => {
+    try {
+      await db.collection('progress').doc(uid).set({
+        c: Array.from(completedLessons).join(','),
+        u: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch (err) {
+      console.error('Progress save failed:', err);
+      showToast('<i class="bi bi-exclamation-triangle-fill"></i> Progress saved on this device but failed to sync to the cloud');
+    }
+  }, 800);
+}
+
+function toggleLessonComplete(lid) {
+  if (!lid) return;
+  if (completedLessons.has(lid)) completedLessons.delete(lid);
+  else completedLessons.add(lid);
+  saveProgressDebounced();
+
+  // Update the open modal's button if it's the lesson being toggled
+  if (modalLessonKey === lid) updateModalCompleteBtn(lid);
+
+  // Update any visible card badge for this lesson without a full re-render
+  document.querySelectorAll(`.link-card[data-lid="${lid}"]`).forEach(card => {
+    card.classList.toggle('done', isLessonComplete(lid));
+  });
+
+  // Book % badges and the Progress page depend on aggregate state — refresh
+  // them cheaply if they're currently on screen.
+  if (currentView === 'progress') showProgressPage();
+  else if (currentView === 'books') showBooksPage();
+  else if (currentView === 'home' && currentCourse) renderContent();
+}
+
+function updateModalCompleteBtn(lid) {
+  const btn   = document.getElementById('modalCompleteBtn');
+  const icon  = document.getElementById('modalCompleteIcon');
+  const label = document.getElementById('modalCompleteLabel');
+  if (!btn) return;
+  const done = isLessonComplete(lid);
+  btn.classList.toggle('done', done);
+  icon.className = done ? 'bi bi-check-circle-fill' : 'bi bi-check-circle';
+  label.textContent = done ? 'Completed' : 'Mark Complete';
+}
 function highlightQuery(text, q) {
   if (!q) return text;
   const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -1757,7 +1998,8 @@ function renderContent() {
       const lid   = lessonId(pathStack.slice(0,-1).map(p=>p.key), cur.key);
       html += `
         <div class="card-grid">
-          <div class="card link-card" onclick="openLesson('${href}','${label}','${lid}')">
+          <div class="card link-card${isLessonComplete(lid)?' done':''}" data-lid="${lid}" onclick="openLesson('${href}','${label}','${lid}')">
+            <div class="card-done-badge"><i class="bi bi-check-lg"></i></div>
             <div class="card-type-badge teal"><i class="bi bi-file-earmark-text-fill"></i> Lesson</div>
             <div class="card-title">${label}</div>
             <div class="card-footer"><span class="card-count">Click to study</span><span class="card-arrow">↗</span></div>
@@ -1810,7 +2052,8 @@ function renderContent() {
     const subLbl   = depth === 0 ? 'Semester' : depth === 1 ? 'Subject' : depth === 2 ? 'Chapter' : 'Topic';
 
     if (isLink) {
-      html += `<div class="card link-card" data-a="link" data-href="${href}" data-label="${lbl.replace(/"/g,'&quot;')}" data-lid="${lid}">
+      html += `<div class="card link-card${isLessonComplete(lid)?' done':''}" data-a="link" data-href="${href}" data-label="${lbl.replace(/"/g,'&quot;')}" data-lid="${lid}">
+        <div class="card-done-badge"><i class="bi bi-check-lg"></i></div>
         <div class="card-type-badge teal"><i class="bi bi-file-earmark-text-fill"></i> Lesson</div>
         <div class="card-title">${lbl}</div>
         <div class="card-footer"><span class="card-count">Study now</span><span class="card-arrow">↗</span></div>
@@ -1823,7 +2066,11 @@ function renderContent() {
         <div class="card-info-text">${val.trim()}</div>
       </div>`;
     } else if (bookMeta) {
-      html += bookCardHTML(key, bookMeta, lcount);
+      const bookLids = [];
+      walkLessonLids(val, [...pathStack.map(p=>p.key), ck], bookLids);
+      const bookDone = bookLids.filter(l => completedLessons.has(l)).length;
+      const bookPct  = bookLids.length ? Math.round((bookDone / bookLids.length) * 100) : 0;
+      html += bookCardHTML(key, bookMeta, lcount, bookPct);
     } else if (isEmpty) {
       html += `<div class="card empty">
         <div class="card-type-badge muted"><i class="bi bi-cone-striped"></i> Soon</div>
@@ -1897,10 +2144,13 @@ function showWelcome() {
 /* ══════════════════════════════
    BOOK CARDS + COVER LOOKUP
 ══════════════════════════════ */
-function bookCardHTML(key, meta, lcount) {
+function bookCardHTML(key, meta, lcount, pct) {
   const ck = cleanKey(key);
   const fallbackCover = meta.cover ? String(meta.cover).replace(/"/g,'&quot;') : '';
+  const p = typeof pct === 'number' ? pct : 0;
+  const ringHTML = p > 0 ? `<div class="book-progress-ring${p>=100?' complete':''}" style="--pct:${p}" title="${p}% complete"><span>${p>=100?'<i class="bi bi-check-lg"></i>':p+'%'}</span></div>` : '';
   return `<div class="card book-card" data-a="nav" data-key="${String(key).replace(/"/g,'&quot;')}">
+    ${ringHTML}
     <button class="book-download-btn" title="Download PDF" onclick="return false;"><i class="bi bi-file-earmark-pdf-fill"></i></button>
     <button class="book-find-btn" title="Find this book" onclick="return false;"><i class="bi bi-search"></i></button>
     <div class="book-cover-wrap" data-cover-title="${ck.replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
@@ -2073,7 +2323,14 @@ function showBooksPage() {
     html += `<div class="book-list" id="bookList">`;
     books.forEach((b, i) => {
       const fallbackCover = b.meta.cover ? String(b.meta.cover).replace(/"/g,'&quot;') : '';
+      const bookObj  = b.pathStack[b.pathStack.length - 1].obj;
+      const lids = [];
+      walkLessonLids(bookObj, b.pathStack.map(p=>p.key), lids);
+      const done = lids.filter(l => completedLessons.has(l)).length;
+      const pct  = lids.length ? Math.round((done / lids.length) * 100) : 0;
+      const ringHTML = pct > 0 ? `<div class="book-progress-ring${pct>=100?' complete':''}" style="--pct:${pct}" title="${pct}% complete"><span>${pct>=100?'<i class="bi bi-check-lg"></i>':pct+'%'}</span></div>` : '';
       html += `<div class="card book-card" data-a="booknode" data-idx="${i}">
+        ${ringHTML}
         <button class="book-download-btn" title="Download PDF" onclick="return false;"><i class="bi bi-file-earmark-pdf-fill"></i></button>
         <button class="book-find-btn" title="Find this book" onclick="return false;"><i class="bi bi-search"></i></button>
         <div class="book-cover-wrap" data-cover-title="${cleanKey(b.key).replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
@@ -2124,9 +2381,12 @@ function showAccountPage() {
     </div>
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-graph-up-arrow"></i> Progress</div>
-      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
-        Your reading progress, completed lessons, and streaks will appear here as you use the app.
+      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
+        ${(() => { const all = collectAllLessonLids(); const d = all.filter(l=>completedLessons.has(l)).length; const t = all.length; const p = t?Math.round(d/t*100):0; return `${d} of ${t} lesson${t!==1?'s':''} completed (${p}%). Tap below for the full breakdown, including per-book completion.`; })()}
       </p>
+      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="showProgressPage()">
+        <i class="bi bi-graph-up-arrow"></i> View Progress
+      </button>
     </div>
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-palette2"></i> Themes &amp; Settings</div>
@@ -2150,7 +2410,6 @@ function showAccountPage() {
       </p>
       <div class="about-roadmap-lbl">What's coming next</div>
       <ul class="about-roadmap">
-        <li><i class="bi bi-graph-up-arrow"></i> Progress tracking — completed lessons, streaks, and per-course stats</li>
         <li><i class="bi bi-bookmark-star-fill"></i> Bookmarks and personal notes on lessons</li>
         <li><i class="bi bi-cloud-download-fill"></i> Offline / downloadable lessons for reading without internet</li>
         <li><i class="bi bi-bell-fill"></i> Reminders to help you keep a consistent study streak</li>
@@ -2167,21 +2426,96 @@ function showAccountPage() {
 function showProgressPage() {
   currentView = 'progress';
   setBottomNavActive('progress');
-  const total = allLessons.length;
+
+  const allLids   = collectAllLessonLids();
+  const total     = allLids.length;
+  const done      = allLids.filter(l => completedLessons.has(l)).length;
+  const remaining = total - done;
+  const pct       = total ? Math.round((done / total) * 100) : 0;
+
+  const books        = collectBookProgressList();
+  const booksComplete = books.filter(b => b.pct >= 100).length;
+
+  const categories = collectCategoryProgressList();
+  const categoryListHTML = categories.length
+    ? categories.map(c => `
+      <div class="book-progress-item${c.pct>=100?' complete':''}">
+        <div class="bpi-top">
+          <div class="bpi-name">${c.icon.replace('class="', 'class="bpi-icon ')}<span>${c.name}</span><i class="bi bi-check-circle-fill bpi-check"></i></div>
+          <div class="bpi-pct">${c.done}/${c.total} · ${c.pct}%</div>
+        </div>
+        <div class="bpi-bar"><div class="bpi-fill" style="width:${c.pct}%"></div></div>
+      </div>`).join('')
+    : '';
+
+  const bookListHTML = books.length
+    ? books.map(b => `
+      <div class="book-progress-item${b.pct>=100?' complete':''}">
+        <div class="bpi-top">
+          <div class="bpi-name"><i class="bi bi-check-circle-fill bpi-check"></i><span>${b.name}</span></div>
+          <div class="bpi-pct">${b.done}/${b.total} · ${b.pct}%</div>
+        </div>
+        <div class="bpi-bar"><div class="bpi-fill" style="width:${b.pct}%"></div></div>
+      </div>`).join('')
+    : `<div class="empty-state"><div class="ei"><i class="bi bi-book"></i></div><h3>No books yet</h3><p>Books added to the curriculum will track their completion here.</p></div>`;
+
   document.getElementById('content').innerHTML = `
     <div class="page-header">
       <div class="page-tag blue"><i class="bi bi-graph-up-arrow"></i> Progress</div>
       <div class="page-title">Your Progress</div>
-      <div class="page-meta">Signed in — tracking is coming soon</div>
+      <div class="page-meta">${done} of ${total} lesson${total!==1?'s':''} completed · ${booksComplete}/${books.length} book${books.length!==1?'s':''} finished</div>
     </div>
-    <div class="account-card">
-      <div class="account-card-title"><i class="bi bi-bar-chart-line-fill"></i> Overview</div>
-      <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
-        ${total} lesson${total!==1?'s':''} are available across your courses. Once login is enabled,
-        completed lessons, streaks, and per-course progress will show up here.
-      </p>
+    <div class="progress-grid">
+      <div class="account-card progress-chart-card">
+        <div class="progress-donut-wrap">
+          <canvas id="progressPie"></canvas>
+          <div class="progress-donut-center">
+            <div class="progress-donut-pct">${pct}%</div>
+            <div class="progress-donut-lbl">complete</div>
+          </div>
+        </div>
+        <div class="progress-stats-row">
+          <div class="progress-stat-box"><div class="val">${done}</div><div class="lbl">Done</div></div>
+          <div class="progress-stat-box"><div class="val">${remaining}</div><div class="lbl">Left</div></div>
+          <div class="progress-stat-box"><div class="val">${booksComplete}</div><div class="lbl">Books</div></div>
+        </div>
+      </div>
+      <div class="account-card">
+        ${categoryListHTML ? `<div class="account-card-title"><i class="bi bi-tags-fill"></i> Category Completion</div>
+        <div class="book-progress-list" style="margin-bottom:1.1rem;">${categoryListHTML}</div>` : ''}
+        <div class="account-card-title"><i class="bi bi-collection-fill"></i> Book Completion</div>
+        <div class="book-progress-list">${bookListHTML}</div>
+      </div>
     </div>
     <div class="dev-credit">Developed by <strong>Microintel</strong></div>`;
+
+  renderProgressChart(done, remaining);
+}
+
+function renderProgressChart(done, remaining) {
+  const canvas = document.getElementById('progressPie');
+  if (!canvas || typeof Chart === 'undefined') return;
+  if (progressChart) { progressChart.destroy(); progressChart = null; }
+  const styles   = getComputedStyle(document.documentElement);
+  const green    = styles.getPropertyValue('--green').trim()   || '#4caf7d';
+  const surface3 = styles.getPropertyValue('--surface3').trim() || '#1c1c1c';
+  const total = done + remaining;
+  progressChart = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed', 'Remaining'],
+      datasets: [{
+        data: total ? [done, remaining] : [1],
+        backgroundColor: total ? [green, surface3] : [surface3],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      cutout: '68%',
+      plugins: { legend: { display: false }, tooltip: { enabled: total > 0 } }
+    }
+  });
 }
 
 /* ══════════════════════════════
@@ -2214,6 +2548,7 @@ function openLesson(href, label, lid) {
   document.getElementById('modalTitle').textContent = label;
   document.getElementById('modalFrame').src = href;
   document.getElementById('modalBg').classList.add('open');
+  updateModalCompleteBtn(lid);
 }
 
 function closeModal() {
