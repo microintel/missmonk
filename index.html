@@ -635,22 +635,10 @@ a { color:inherit; text-decoration:none; }
 .card.book-card .card-footer { margin-top:auto; }
 
 /* Nut (reels) shortcut button on book cards */
-.book-nut-btn {
-  position:absolute; top:.6rem; right:.6rem; z-index:3;
-  width:28px; height:28px; border-radius:50%;
-  background:var(--surface3); border:1px solid var(--border2);
-  display:flex; align-items:center; justify-content:center;
-  font-size:.85rem; line-height:1;
-  transition:transform .15s, background .15s, border-color .15s;
-  box-shadow:0 2px 8px rgba(0,0,0,.25);
-}
-.book-nut-btn:hover { transform:scale(1.1); border-color:var(--blue); background:var(--surface2); }
-.book-nut-btn:active { transform:scale(.9); }
-
-/* Download button on book cards — shown only when a public-domain
-   downloadable edition exists on Open Library / archive.org */
+/* Download button on book cards — shown only when a downloadable
+   PDF exists for that title on Open Library / archive.org */
 .book-download-btn {
-  position:absolute; top:.6rem; left:.6rem; z-index:3;
+  position:absolute; top:.6rem; right:.6rem; z-index:3;
   width:28px; height:28px; border-radius:50%;
   background:var(--surface3); border:1px solid var(--border2);
   display:none; align-items:center; justify-content:center;
@@ -1867,8 +1855,7 @@ function bookCardHTML(key, meta, lcount) {
   const ck = cleanKey(key);
   const fallbackCover = meta.cover ? String(meta.cover).replace(/"/g,'&quot;') : '';
   return `<div class="card book-card" data-a="nav" data-key="${String(key).replace(/"/g,'&quot;')}">
-    <button class="book-nut-btn" title="Watch nuts from this book" onclick="openBookReels('${ck.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}', event)">🥜</button>
-    <button class="book-download-btn" title="Download book" onclick="return false;"><i class="bi bi-download"></i></button>
+    <button class="book-download-btn" title="Download PDF" onclick="return false;"><i class="bi bi-file-earmark-pdf-fill"></i></button>
     <div class="book-cover-wrap" data-cover-title="${ck.replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
     <div class="book-card-body">
       <div class="card-title">${ck}</div>
@@ -1895,7 +1882,7 @@ function attachBookCovers(root) {
 const bookDataCache = {};
 async function fetchBookData(title) {
   if (bookDataCache[title] !== undefined) return bookDataCache[title];
-  const cacheKey = 'lp_bookdata_' + title;
+  const cacheKey = 'lp_bookdata2_' + title;
   const cached = localStorage.getItem(cacheKey);
   if (cached !== null) {
     try {
@@ -1912,16 +1899,33 @@ async function fetchBookData(title) {
     if (doc) {
       result.foundInOL = true;
       if (doc.cover_i) result.cover = `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`;
-      // Only offer a download when Open Library marks the edition fully
-      // public-domain (freely downloadable), not just borrowable/preview.
+      // Only look for a real PDF when Open Library marks the edition as
+      // fully public-domain (freely downloadable), not borrowable/preview.
       if (doc.ebook_access === 'public' && doc.ia && doc.ia.length) {
-        result.downloadUrl = `https://archive.org/details/${doc.ia[0]}`;
+        result.downloadUrl = await findArchivePdf(doc.ia[0]);
       }
     }
   } catch (e) { /* network/API failure — treat as not found */ }
   bookDataCache[title] = result;
   localStorage.setItem(cacheKey, JSON.stringify(result));
   return result;
+}
+
+/* Looks up an archive.org item's file list and returns a direct download
+   URL for its PDF, if one exists. Returns null when no PDF file is present
+   (e.g. item is text/audio-only or lending-only). */
+async function findArchivePdf(ia) {
+  try {
+    const res  = await fetch(`https://archive.org/metadata/${encodeURIComponent(ia)}`);
+    const meta = await res.json();
+    const files = (meta && meta.files) || [];
+    // Prefer the main scanned PDF over derivative variants (e.g. _text.pdf).
+    const pdf = files.find(f => /\.pdf$/i.test(f.name) && !/_text\.pdf$/i.test(f.name))
+             || files.find(f => /\.pdf$/i.test(f.name));
+    return pdf ? `https://archive.org/download/${ia}/${encodeURIComponent(pdf.name)}` : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 async function loadCoverInto(el, title, fallbackCover) {
@@ -1940,7 +1944,13 @@ async function loadCoverInto(el, title, fallbackCover) {
         dlBtn.classList.add('show');
         dlBtn.onclick = (ev) => {
           ev.stopPropagation(); ev.preventDefault();
-          window.open(data.downloadUrl, '_blank', 'noopener');
+          const a = document.createElement('a');
+          a.href = data.downloadUrl;
+          a.download = '';
+          a.rel = 'noopener';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
         };
       } else {
         dlBtn.remove();
@@ -2009,8 +2019,7 @@ function showBooksPage() {
     books.forEach((b, i) => {
       const fallbackCover = b.meta.cover ? String(b.meta.cover).replace(/"/g,'&quot;') : '';
       html += `<div class="card book-card" data-a="booknode" data-idx="${i}">
-        <button class="book-nut-btn" title="Watch nuts from this book" onclick="openBookReels('${cleanKey(b.key).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}', event)">🥜</button>
-        <button class="book-download-btn" title="Download book" onclick="return false;"><i class="bi bi-download"></i></button>
+        <button class="book-download-btn" title="Download PDF" onclick="return false;"><i class="bi bi-file-earmark-pdf-fill"></i></button>
         <div class="book-cover-wrap" data-cover-title="${cleanKey(b.key).replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
         <div class="book-card-body">
           <div class="card-title">${cleanKey(b.key)}</div>
