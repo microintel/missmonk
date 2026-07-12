@@ -647,6 +647,21 @@ a { color:inherit; text-decoration:none; }
 .book-nut-btn:hover { transform:scale(1.1); border-color:var(--blue); background:var(--surface2); }
 .book-nut-btn:active { transform:scale(.9); }
 
+/* Download button on book cards — shown only when a public-domain
+   downloadable edition exists on Open Library / archive.org */
+.book-download-btn {
+  position:absolute; top:.6rem; left:.6rem; z-index:3;
+  width:28px; height:28px; border-radius:50%;
+  background:var(--surface3); border:1px solid var(--border2);
+  display:none; align-items:center; justify-content:center;
+  font-size:.85rem; line-height:1; color:var(--green);
+  transition:transform .15s, background .15s, border-color .15s;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.book-download-btn.show { display:flex; }
+.book-download-btn:hover { transform:scale(1.1); border-color:var(--green); background:var(--surface2); }
+.book-download-btn:active { transform:scale(.9); }
+
 /* ── ACCOUNT PAGE ── */
 .account-card {
   background:var(--surface);
@@ -1850,9 +1865,11 @@ function showWelcome() {
 ══════════════════════════════ */
 function bookCardHTML(key, meta, lcount) {
   const ck = cleanKey(key);
+  const fallbackCover = meta.cover ? String(meta.cover).replace(/"/g,'&quot;') : '';
   return `<div class="card book-card" data-a="nav" data-key="${String(key).replace(/"/g,'&quot;')}">
     <button class="book-nut-btn" title="Watch nuts from this book" onclick="openBookReels('${ck.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}', event)">🥜</button>
-    <div class="book-cover-wrap" data-cover-title="${ck.replace(/"/g,'&quot;')}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
+    <button class="book-download-btn" title="Download book" onclick="return false;"><i class="bi bi-download"></i></button>
+    <div class="book-cover-wrap" data-cover-title="${ck.replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
     <div class="book-card-body">
       <div class="card-title">${ck}</div>
       <div class="book-card-author">by ${meta.author || 'Unknown author'}</div>
@@ -1871,29 +1888,63 @@ function attachBookCovers(root) {
   const scope = root || document;
   if (!scope) return;
   scope.querySelectorAll('.book-cover-wrap[data-cover-title]').forEach(el => {
-    loadCoverInto(el, el.dataset.coverTitle);
+    loadCoverInto(el, el.dataset.coverTitle, el.dataset.coverFallback || '');
   });
 }
 
-const coverCache = {};
-async function loadCoverInto(el, title) {
+const bookDataCache = {};
+async function fetchBookData(title) {
+  if (bookDataCache[title] !== undefined) return bookDataCache[title];
+  const cacheKey = 'lp_bookdata_' + title;
+  const cached = localStorage.getItem(cacheKey);
+  if (cached !== null) {
+    try {
+      const parsed = JSON.parse(cached);
+      bookDataCache[title] = parsed;
+      return parsed;
+    } catch (e) { /* fall through and re-fetch */ }
+  }
+  let result = { cover: null, downloadUrl: null, foundInOL: false };
   try {
-    let url = coverCache[title];
-    if (url === undefined) {
-      const cached = localStorage.getItem('lp_cover_' + title);
-      if (cached !== null) {
-        url = cached === 'null' ? null : cached;
-      } else {
-        const res  = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1&fields=cover_i`);
-        const data = await res.json();
-        const coverId = data && data.docs && data.docs[0] ? data.docs[0].cover_i : null;
-        url = coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : null;
-        localStorage.setItem('lp_cover_' + title, url || 'null');
+    const res  = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1&fields=cover_i,ia,ebook_access`);
+    const data = await res.json();
+    const doc = data && data.docs && data.docs[0];
+    if (doc) {
+      result.foundInOL = true;
+      if (doc.cover_i) result.cover = `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`;
+      // Only offer a download when Open Library marks the edition fully
+      // public-domain (freely downloadable), not just borrowable/preview.
+      if (doc.ebook_access === 'public' && doc.ia && doc.ia.length) {
+        result.downloadUrl = `https://archive.org/details/${doc.ia[0]}`;
       }
-      coverCache[title] = url;
     }
-    if (url && el.isConnected) {
-      el.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=&quot;book-cover-ph&quot;&gt;&lt;i class=&quot;bi bi-book-fill&quot;&gt;&lt;/i&gt;&lt;/div&gt;'"/>`;
+  } catch (e) { /* network/API failure — treat as not found */ }
+  bookDataCache[title] = result;
+  localStorage.setItem(cacheKey, JSON.stringify(result));
+  return result;
+}
+
+async function loadCoverInto(el, title, fallbackCover) {
+  try {
+    const data = await fetchBookData(title);
+    // Use the Open Library cover when it has one; otherwise fall back to
+    // the manually-provided cover for books Open Library doesn't have.
+    const coverUrl = data.cover || fallbackCover || null;
+    if (coverUrl && el.isConnected) {
+      el.innerHTML = `<img src="${coverUrl}" alt="${title}" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=&quot;book-cover-ph&quot;&gt;&lt;i class=&quot;bi bi-book-fill&quot;&gt;&lt;/i&gt;&lt;/div&gt;'"/>`;
+    }
+    const card  = el.closest('.card.book-card');
+    const dlBtn = card ? card.querySelector('.book-download-btn') : null;
+    if (dlBtn) {
+      if (data.downloadUrl) {
+        dlBtn.classList.add('show');
+        dlBtn.onclick = (ev) => {
+          ev.stopPropagation(); ev.preventDefault();
+          window.open(data.downloadUrl, '_blank', 'noopener');
+        };
+      } else {
+        dlBtn.remove();
+      }
     }
   } catch (e) { /* keep placeholder icon on failure */ }
 }
@@ -1956,9 +2007,11 @@ function showBooksPage() {
   } else {
     html += `<div class="book-list" id="bookList">`;
     books.forEach((b, i) => {
+      const fallbackCover = b.meta.cover ? String(b.meta.cover).replace(/"/g,'&quot;') : '';
       html += `<div class="card book-card" data-a="booknode" data-idx="${i}">
         <button class="book-nut-btn" title="Watch nuts from this book" onclick="openBookReels('${cleanKey(b.key).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}', event)">🥜</button>
-        <div class="book-cover-wrap" data-cover-title="${cleanKey(b.key).replace(/"/g,'&quot;')}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
+        <button class="book-download-btn" title="Download book" onclick="return false;"><i class="bi bi-download"></i></button>
+        <div class="book-cover-wrap" data-cover-title="${cleanKey(b.key).replace(/"/g,'&quot;')}" data-cover-fallback="${fallbackCover}"><div class="book-cover-ph"><i class="bi bi-book-fill"></i></div></div>
         <div class="book-card-body">
           <div class="card-title">${cleanKey(b.key)}</div>
           <div class="book-card-author">by ${b.meta.author || 'Unknown author'}</div>
