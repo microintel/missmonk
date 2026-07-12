@@ -23,6 +23,10 @@
     },
     "The Richest Man in Babylon": {
       "author": "George S. Clason"
+    },
+    "Stock Investing Mastermind": {
+      "author": "Zebra Learn",
+      "cover": "https://zebralearn-store.s3.ap-south-1.amazonaws.com/uploads/all/eIwqSuLObgLyYd67H9qZMEPNRxDLE6WLscTzdjGu.png"
     }
   },
   "diploma": {
@@ -80,7 +84,7 @@
   },
   "engineering": {},
   "Financial": {
-    "Stock Market": {
+    "Stock Investing Mastermind": {
       "Stock Market": {
         "Basics of Stock Market": {
           "Role of Stock Market": {},
