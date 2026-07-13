@@ -7,7 +7,8 @@
       "author": "Morgan Housel"
     },
     "Atomic Habbits": {
-      "author": "James Clear"
+      "author": "James Clear",
+      "cover": "https://cultivatewhatmatters.com/cdn/shop/articles/atomic-habits.jpg?v=1624827508"
     },
     "Deep Work": {
       "author": "Cal Newport"
@@ -30,6 +31,10 @@
     },
     "Attached": {
       "author": "Amir Levine"
+    },
+    "A Foundation Course in Human Values and Professional Ethics": {
+      "author": "R.R. Gaur, R. Sangal, and G.P. Bagaria",
+      "cover": "https://ia600507.us.archive.org/view_archive.php?archive=/8/items/l_covers_0009/l_covers_0009_38.zip&file=0009383917-L.jpg"
     }
   },
   "diploma": {
@@ -290,12 +295,12 @@
         "Chapter 20": ""
       }
     },
-    "Universal Human Values": {
+    "A Foundation Course in Human Values and Professional Ethics": {
       "Section I - Introduction to Value Education": {
-        "Chapter 1: Understanding Value Education": "",
-        "Chapter 2: Self-exploration as the Process for Value Education": "",
-        "Chapter 3: Basic Human Aspirations and their Fulfilment": "",
-        "Chapter 4: Understanding Happiness and Prosperity – Their Continuity and Programme for Fulfilment": ""
+        "Chapter 1: Understanding Value Education": "https://microintel.github.io/missmonk/psychology/universal-human-values/ch1.html",
+        "Chapter 2: Self-exploration as the Process for Value Education": "https://microintel.github.io/missmonk/psychology/universal-human-values/ch2.html",
+        "Chapter 3: Basic Human Aspirations and their Fulfilment": "https://microintel.github.io/missmonk/psychology/universal-human-values/ch3.html",
+        "Chapter 4: Understanding Happiness and Prosperity – Their Continuity and Programme for Fulfilment": "https://microintel.github.io/missmonk/psychology/universal-human-values/ch4.html"
       },
       "Section II - Understanding the Harmony at Various Levels": {
         "Chapter 5: Understanding the Human Being as Co-existence of the Self and the Body": "",
