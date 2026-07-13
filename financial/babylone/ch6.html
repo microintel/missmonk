@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gold Lender of Babylon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Hind:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1120;
+    --bg2:#161b30;
+    --bg3:#1d2340;
+    --gold:#e8b94a;
+    --gold-deep:#c98a2e;
+    --ember:#d9603b;
+    --green:#5fb992;
+    --red:#e06a5a;
+    --text:#f3ecda;
+    --text-dim:#a9a394;
+    --line:rgba(232,185,74,0.22);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Hind',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  h1,h2,h3{font-family:'Rozha One',serif; font-weight:400; margin:0 0 .3em;}
+  .num{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--gold);}
+  ::selection{background:var(--gold); color:#20140a;}
+  :focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+
+  .wrap{max-width:880px; margin:0 auto; padding:0 22px;}
+  section{padding:72px 0; position:relative;}
+  .eyebrow{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.78rem;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);
+    background:rgba(232,185,74,0.08); border:1px solid var(--line);
+    padding:5px 12px; border-radius:99px; margin-bottom:16px;
+  }
+  p{color:var(--text-dim); font-size:1.02rem; max-width:64ch;}
+  .lead{color:var(--text); font-size:1.1rem;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:96svh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center; position:relative; padding:40px 22px; overflow:hidden;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(217,96,59,0.16), transparent 70%),
+      radial-gradient(ellipse 120% 60% at 50% 0%, rgba(232,185,74,0.06), transparent 60%),
+      var(--bg);
+  }
+  .stars{position:absolute; inset:0; z-index:0;}
+  .star{position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; opacity:.6; animation:twinkle 3s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.15;} 50%{opacity:.9;}}
+
+  .wallet{position:relative; width:130px; height:90px; margin:0 auto 20px; z-index:1;}
+  .wallet-body{position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:100px; height:60px; background:linear-gradient(160deg,#5c3d1d,#3b2712); border-radius:10px 10px 16px 16px; box-shadow:0 6px 18px rgba(0,0,0,.45);}
+  .wallet-flap{position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:70px; height:22px; background:#6b4622; border-radius:8px 8px 0 0;}
+  .coin{width:22px; height:22px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fbe3a1, var(--gold) 55%, var(--gold-deep) 100%); box-shadow:0 0 0 2px rgba(0,0,0,.25) inset, 0 2px 6px rgba(0,0,0,.4); position:absolute;}
+  .coin.c1{bottom:44px; left:34px; animation:coinbob 2.2s ease-in-out infinite;}
+  .coin.c2{bottom:50px; left:56px; animation:coinbob 2.2s ease-in-out .3s infinite;}
+  .coin.c3{bottom:46px; left:78px; animation:coinbob 2.2s ease-in-out .6s infinite;}
+  @keyframes coinbob{0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-6px) rotate(8deg);}}
+
+  .hero h1{font-size:clamp(2rem, 6vw, 3.4rem); max-width:16ch; margin-bottom:.25em; position:relative; z-index:1;}
+  .hero h1 .gold-word{color:var(--gold);}
+  .hero p{font-size:1.05rem; max-width:46ch; margin:0 auto 26px; position:relative; z-index:1;}
+  .scroll-cta{
+    display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#20140a; font-weight:700;
+    padding:13px 26px; border-radius:99px; text-decoration:none; font-size:1rem; border:none; cursor:pointer;
+    position:relative; z-index:1; transition:transform .15s ease;
+  }
+  .scroll-cta:hover{transform:translateY(-2px);}
+
+  /* ---------- STORY / GENERIC ---------- */
+  .story-card{
+    background:linear-gradient(180deg, var(--bg2), var(--bg3)); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px; display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:start;
+  }
+  .avatar{
+    width:52px; height:52px; border-radius:50%; background:linear-gradient(160deg, var(--gold), var(--ember));
+    display:flex; align-items:center; justify-content:center; font-family:'Rozha One',serif; font-size:1.4rem; color:#20140a; flex-shrink:0;
+  }
+  .story-names{color:var(--gold); font-weight:600;}
+  .law-num{
+    font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold-deep);
+    border:1px solid var(--line); padding:3px 10px; border-radius:99px;
+  }
+  .law-rule{
+    font-family:'Rozha One',serif; font-size:1.02rem; color:var(--gold); background:rgba(232,185,74,0.06);
+    border-left:3px solid var(--gold); padding:13px 18px; border-radius:0 10px 10px 0; margin:16px 0 22px;
+  }
+  .panel{background:var(--bg2); border:1px solid var(--line); border-radius:var(--radius); padding:24px; margin-top:10px;}
+  .btn{
+    background:var(--gold); color:#20140a; border:none; font-weight:700; padding:11px 22px; border-radius:99px;
+    cursor:pointer; font-size:.95rem; font-family:'Hind',sans-serif;
+  }
+  .btn.secondary{background:transparent; color:var(--gold); border:1px solid var(--gold-deep);}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn.small{padding:8px 16px; font-size:.85rem;}
+  .feedback{margin-top:14px; font-weight:600; min-height:1.4em;}
+  .feedback.good{color:var(--green);}
+  .feedback.bad{color:var(--red);}
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  /* ---------- FABLE ---------- */
+  .fable-stage{background:var(--bg3); border-radius:12px; padding:26px; min-height:170px; display:flex; flex-direction:column; justify-content:center;}
+  .fable-emoji{font-size:2.4rem; margin-bottom:10px;}
+  .fable-text{color:var(--text); font-size:1.05rem; margin:0;}
+  .fable-controls{display:flex; align-items:center; justify-content:space-between; margin-top:18px; gap:10px; flex-wrap:wrap;}
+  .fable-dots{display:flex; gap:7px;}
+  .fdot{width:8px; height:8px; border-radius:50%; background:rgba(232,185,74,0.25);}
+  .fdot.active{background:var(--gold);}
+
+  /* ---------- TOKEN CHEST ---------- */
+  .chest-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:18px 0;}
+  @media(max-width:560px){.chest-grid{grid-template-columns:repeat(3,1fr);}}
+  .token{
+    background:var(--bg3); border:1px solid var(--line); border-radius:10px; padding:14px 6px;
+    text-align:center; cursor:pointer; color:var(--text-dim); font-size:.78rem;
+    transition:border-color .15s ease, transform .15s ease, color .15s ease;
+  }
+  .token .tk-icon{font-size:1.6rem; display:block; margin-bottom:6px;}
+  .token:hover{transform:translateY(-2px);}
+  .token.active{border-color:var(--gold); color:var(--gold); background:rgba(232,185,74,0.08);}
+  .token.seen::after{content:"✓"; color:var(--green); font-size:.7rem; margin-left:4px;}
+  .token-detail{background:var(--bg3); border-radius:10px; padding:20px; min-height:120px;}
+  .badge{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.72rem; padding:3px 10px; border-radius:99px; margin-bottom:10px; letter-spacing:.04em;}
+  .badge.repaid{background:rgba(95,185,146,.15); color:var(--green); border:1px solid var(--green);}
+  .badge.lost{background:rgba(224,106,90,.15); color:var(--red); border:1px solid var(--red);}
+
+  /* ---------- SORT GAME ---------- */
+  .sort-card{background:var(--bg3); border-radius:10px; padding:18px; margin-bottom:14px;}
+  .sort-buttons{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .sort-buttons button{
+    flex:1; min-width:120px; background:transparent; border:1px solid var(--gold-deep); color:var(--gold);
+    padding:10px 8px; border-radius:8px; cursor:pointer; font-family:'Hind',sans-serif; font-size:.88rem;
+  }
+  .sort-buttons button:hover{background:rgba(232,185,74,0.08);}
+  .sort-progress{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:.85rem; color:var(--text-dim);}
+  .score-num{color:var(--gold); font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- DECISION QUIZ ---------- */
+  .quiz-q{font-family:'Rozha One',serif; font-size:1.15rem; color:var(--text); margin-bottom:14px;}
+  .quiz-choices{display:flex; gap:10px; flex-wrap:wrap;}
+  .quiz-choices button{
+    background:var(--bg3); border:1px solid var(--line); color:var(--text); padding:11px 20px; border-radius:8px;
+    cursor:pointer; font-family:'Hind',sans-serif; font-size:.95rem;
+  }
+  .quiz-choices button:hover{border-color:var(--gold);}
+  .verdict{border-radius:10px; padding:18px; margin-top:16px;}
+  .verdict.yes{background:rgba(95,185,146,.1); border:1px solid var(--green);}
+  .verdict.no{background:rgba(224,106,90,.1); border:1px solid var(--red);}
+
+  /* recap flip cards */
+  .recap-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:22px;}
+  .flip-card{perspective:1000px; height:160px; cursor:pointer;}
+  .flip-inner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-front,.flip-back{position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; padding:14px; font-size:.88rem;}
+  .flip-front{background:var(--bg3); border:1px solid var(--line); color:var(--gold); font-family:'Rozha One',serif; font-size:1.05rem;}
+  .flip-back{background:var(--gold); color:#20140a; transform:rotateY(180deg); font-weight:600;}
+
+  footer{text-align:center; padding:56px 22px 40px; color:var(--text-dim); font-size:.85rem; border-top:1px solid var(--line);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}
+  }
+  @media(max-width:600px){
+    section{padding:52px 0;}
+    .story-card{grid-template-columns:1fr; text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="stars" id="stars"></div>
+  <div class="wallet">
+    <div class="wallet-body"></div>
+    <div class="wallet-flap"></div>
+    <div class="coin c1"></div>
+    <div class="coin c2"></div>
+    <div class="coin c3"></div>
+  </div>
+  <span class="eyebrow">Who should you lend gold to?</span>
+  <h1>The <span class="gold-word">Gold Lender</span><br>of Babylon</h1>
+  <p><strong style="color:var(--gold)">Ravi</strong> just got 50 gold coins from the king. Everyone wants a piece. <strong style="color:var(--gold)">Mathur Seth</strong>, the moneylender, teaches him how to tell a good loan from a bad one.</p>
+  <a href="#gift" class="scroll-cta">Start ↓</a>
+</section>
+
+<!-- ================= THE GIFT ================= -->
+<section id="gift">
+  <div class="wrap">
+    <span class="eyebrow">The problem</span>
+    <h2>A gift becomes a headache</h2>
+    <div class="story-card reveal">
+      <div class="avatar">R</div>
+      <div>
+        <p class="lead">Ravi, a toolmaker, got 50 gold coins as a royal reward. Suddenly, everyone wanted a share — especially his sister <span class="story-names">Radha</span>, who wants him to lend it all to her husband <span class="story-names">Anand</span>, so Anand can become a trader.</p>
+        <p>Ravi doesn't know what to do. So he goes to Mathur Seth, the town's moneylender, for advice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FABLE: OX AND DONKEY ================= -->
+<section id="fable">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Mathur Seth's story</span>
+      <h2>The bullock and the donkey</h2>
+      <div class="law-rule">If you want to help a friend, don't end up carrying his burden instead.</div>
+
+      <div class="panel">
+        <div class="fable-stage">
+          <div class="fable-emoji" id="fableEmoji">🐂</div>
+          <p class="fable-text" id="fableText">The bullock is tired of pulling the plough every day. The donkey just carries the farmer around and rests all afternoon.</p>
+        </div>
+        <div class="fable-controls">
+          <button class="btn secondary small" id="fablePrev">← Back</button>
+          <div class="fable-dots" id="fableDots"></div>
+          <button class="btn small" id="fableNext">Next →</button>
+        </div>
+      </div>
+
+      <div class="panel" id="fableQuizPanel" style="display:none; margin-top:14px;">
+        <p class="lead" style="margin:0 0 10px;">What's the real lesson?</p>
+        <div class="quiz-choices" id="fableChoices">
+          <button data-correct="false">Donkeys are lazier than bullocks</button>
+          <button data-correct="true">Helping badly can dump your friend's problem on you</button>
+          <button data-correct="false">Never help anyone, ever</button>
+        </div>
+        <div class="feedback" id="fableFeedback"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TOKEN CHEST ================= -->
+<section id="chest">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Mathur Seth's records</span>
+      <h2>Open the token chest</h2>
+      <p>For every loan, Mathur Seth keeps a token — until it's repaid. Tap each one to hear what happened.</p>
+
+      <div class="panel">
+        <div class="chest-grid" id="chestGrid"></div>
+        <div class="token-detail" id="tokenDetail">
+          <p style="margin:0; color:var(--text-dim);">Tap a token above to open its story.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SORT GAME ================= -->
+<section id="sort">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Test yourself</span>
+      <h2>Sort the loan: safe or risky?</h2>
+      <div class="law-rule">Every loan is safest when it's backed by property, or by steady earning power.</div>
+
+      <div class="panel">
+        <div class="sort-progress">
+          <span>Loan <span class="num" id="sortIndex">1</span> of <span class="num" id="sortTotal">5</span></span>
+          <span>Score: <span class="score-num num" id="sortScore">0</span></span>
+        </div>
+        <div class="sort-card">
+          <p class="lead" id="sortScenario" style="margin:0;">…</p>
+          <div class="sort-buttons" id="sortButtons">
+            <button data-cat="property">🏠 Backed by property</button>
+            <button data-cat="income">💼 Backed by steady income</button>
+            <button data-cat="risky">⚠ No real security</button>
+          </div>
+        </div>
+        <div class="feedback" id="sortFeedback"></div>
+        <button class="btn secondary small" id="sortRestart" style="display:none;">Play again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DECISION QUIZ: ANAND ================= -->
+<section id="decide">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Back to Ravi</span>
+      <h2>Should Ravi lend to Anand?</h2>
+      <p>Mathur Seth always asks one question first. Answer it for Anand.</p>
+
+      <div class="panel" id="decidePanel">
+        <p class="quiz-q" id="decideQ">Does Anand know how to buy low and sell high — has he actually worked in trade before?</p>
+        <div class="quiz-choices" id="decideChoices">
+          <button data-ans="yes">Yes, he has real experience</button>
+          <button data-ans="no">No, he's never traded before</button>
+        </div>
+        <div id="decideVerdict"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECAP ================= -->
+<section id="recap">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Recap</span>
+      <h2>5 rules for lending gold</h2>
+      <p>Tap a card.</p>
+      <div class="recap-grid">
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Rule 1</div>
+          <div class="flip-back">Your gift is yours. No one can force you to share it.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Rule 2</div>
+          <div class="flip-back">Help a friend — but don't take on his burden.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Rule 3</div>
+          <div class="flip-back">Lend only if the borrower has real skill for the plan.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Rule 4</div>
+          <div class="flip-back">Property or steady income makes a loan safer.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Rule 5</div>
+          <div class="flip-back">If you lend, lend carefully — and spread it around.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Based on "The Gold Lender of Babylon" from <em>The Richest Man in Babylon</em>.
+</footer>
+
+<script>
+// ---------- stars ----------
+const starsEl = document.getElementById('stars');
+for(let i=0;i<50;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  s.style.left = Math.random()*100+'%';
+  s.style.top = Math.random()*70+'%';
+  s.style.animationDelay = (Math.random()*3)+'s';
+  starsEl.appendChild(s);
+}
+
+// ---------- reveal on scroll ----------
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ================= FABLE ================
+const fableFrames = [
+  {emoji:'🐂', text:"The bullock is tired of pulling the plough every day. The donkey just carries the farmer around and rests all afternoon."},
+  {emoji:'🐴', text:'"Lie down tomorrow and moan," the donkey tells the bullock. "They\'ll think you\'re sick, and let you rest."'},
+  {emoji:'😮‍💨', text:'Next morning the bullock refuses to get up. The farmer says, "Fine — hitch the donkey to the plough instead."'},
+  {emoji:'🥵', text:'The donkey ploughs all day in the hot sun. His neck aches. His legs are sore. This was not the plan.'},
+  {emoji:'🔪', text:'That evening, the angry donkey warns the bullock: "The farmer said if you\'re sick again, he\'ll call the butcher." The bullock never rests again — and the two are never friends again.'}
+];
+let fableIdx = 0;
+const fableEmoji = document.getElementById('fableEmoji');
+const fableText = document.getElementById('fableText');
+const fableDots = document.getElementById('fableDots');
+const fablePrev = document.getElementById('fablePrev');
+const fableNext = document.getElementById('fableNext');
+const fableQuizPanel = document.getElementById('fableQuizPanel');
+
+fableFrames.forEach((_,i)=>{
+  const d = document.createElement('div');
+  d.className = 'fdot'+(i===0?' active':'');
+  fableDots.appendChild(d);
+});
+
+function renderFable(){
+  fableEmoji.textContent = fableFrames[fableIdx].emoji;
+  fableText.textContent = fableFrames[fableIdx].text;
+  [...fableDots.children].forEach((d,i)=>d.classList.toggle('active', i===fableIdx));
+  fablePrev.disabled = fableIdx===0;
+  if(fableIdx === fableFrames.length-1){
+    fableNext.textContent = 'See the lesson →';
+  } else {
+    fableNext.textContent = 'Next →';
+  }
+}
+fablePrev.addEventListener('click', ()=>{ if(fableIdx>0){ fableIdx--; renderFable(); fableQuizPanel.style.display='none'; }});
+fableNext.addEventListener('click', ()=>{
+  if(fableIdx < fableFrames.length-1){ fableIdx++; renderFable(); }
+  else { fableQuizPanel.style.display='block'; fableQuizPanel.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+});
+renderFable();
+
+const fableChoices = document.getElementById('fableChoices');
+const fableFeedback = document.getElementById('fableFeedback');
+fableChoices.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...fableChoices.children].forEach(b=>b.disabled=true);
+  if(btn.dataset.correct==='true'){
+    fableFeedback.textContent = 'Exactly. The donkey meant well, but ended up doing the bullock\'s job for him.';
+    fableFeedback.className = 'feedback good';
+  } else {
+    fableFeedback.textContent = 'Not quite. The real lesson: helping badly can dump your friend\'s problem onto you.';
+    fableFeedback.className = 'feedback bad';
+  }
+});
+
+// ================= TOKEN CHEST ================
+const tokens = [
+  {icon:'📿', name:'Gold chain', status:'lost', story:'A friend borrowed to please his new wife with a lavish life. The money vanished, and so, tragically, did they both. Lesson: people making big emotional decisions are risky borrowers.'},
+  {icon:'💍', name:'Bone ring', status:'repaid', story:'A farmer borrowed to buy rare wool goats for a new rug business. The business worked — he\'s now rushing to repay early. Lesson: a loan for a real, skilled trade tends to come back.'},
+  {icon:'💎', name:'Gem bangle', status:'lost', story:'A mother borrowed so her son could "become a merchant" with a travelling trader. The trader abandoned the boy in a strange city. Lesson: ambition without real skill is a shaky plan.'},
+  {icon:'🪢', name:'Rope knot', status:'repaid', story:'A cattle trader borrows often to grow his herd, and always repays. Lesson: a proven, steady borrower is the safest one of all.'},
+  {icon:'🪲', name:'Blue beetle', status:'lost', story:'A young man borrowed against his father\'s land to expand fast. He was inexperienced and it collapsed. Lesson: youth in a hurry, backed by someone else\'s security, is a dangerous mix.'}
+];
+const chestGrid = document.getElementById('chestGrid');
+const tokenDetail = document.getElementById('tokenDetail');
+tokens.forEach((t,i)=>{
+  const b = document.createElement('div');
+  b.className = 'token';
+  b.tabIndex = 0;
+  b.innerHTML = `<span class="tk-icon">${t.icon}</span>${t.name}`;
+  b.addEventListener('click', ()=>selectToken(i));
+  b.addEventListener('keypress', (e)=>{ if(e.key==='Enter') selectToken(i); });
+  chestGrid.appendChild(b);
+});
+function selectToken(i){
+  [...chestGrid.children].forEach((el,idx)=>{
+    el.classList.toggle('active', idx===i);
+    if(idx===i) el.classList.add('seen');
+  });
+  const t = tokens[i];
+  tokenDetail.innerHTML = `<span class="badge ${t.status}">${t.status==='repaid'?'✓ Repaid':'✗ Never repaid'}</span><p style="margin:0;">${t.story}</p>`;
+}
+
+// ================= SORT GAME ================
+const sortData = [
+  {text:'Anand wants to open a rug shop, and offers to mortgage his own house if he can\'t repay.', cat:'property'},
+  {text:'A government clerk with a steady monthly salary wants a small loan for his daughter\'s wedding.', cat:'income'},
+  {text:'A stranger with no job and no land asks for gold, promising to "pay you back somehow."', cat:'risky'},
+  {text:'A cattle trader with a long, successful track record wants gold to buy more cattle.', cat:'income'},
+  {text:'A jeweller offers a diamond worth double the loan amount as security.', cat:'property'}
+];
+let sortOrder = [0,1,2,3,4];
+let sortPos = 0, sortScore = 0;
+const sortScenario = document.getElementById('sortScenario');
+const sortButtons = document.getElementById('sortButtons');
+const sortFeedback = document.getElementById('sortFeedback');
+const sortIndexEl = document.getElementById('sortIndex');
+const sortScoreEl = document.getElementById('sortScore');
+const sortRestart = document.getElementById('sortRestart');
+document.getElementById('sortTotal').textContent = sortData.length;
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+function loadSort(){
+  sortOrder = shuffle([0,1,2,3,4]);
+  sortPos = 0; sortScore = 0;
+  sortScoreEl.textContent = 0;
+  sortRestart.style.display = 'none';
+  sortButtons.style.display = 'flex';
+  renderSort();
+}
+function renderSort(){
+  if(sortPos >= sortData.length){
+    sortScenario.textContent = `Done! You scored ${sortScore} out of ${sortData.length}.`;
+    sortButtons.style.display = 'none';
+    sortFeedback.textContent = '';
+    sortRestart.style.display = 'inline-block';
+    return;
+  }
+  sortIndexEl.textContent = sortPos+1;
+  sortScenario.textContent = sortData[sortOrder[sortPos]].text;
+  sortFeedback.textContent = '';
+  [...sortButtons.children].forEach(b=>b.disabled=false);
+}
+sortButtons.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...sortButtons.children].forEach(b=>b.disabled=true);
+  const correct = sortData[sortOrder[sortPos]].cat === btn.dataset.cat;
+  if(correct){
+    sortScore++; sortScoreEl.textContent = sortScore;
+    sortFeedback.textContent = 'Correct.';
+    sortFeedback.className = 'feedback good';
+  } else {
+    sortFeedback.textContent = 'Not quite — think about what actually guarantees repayment.';
+    sortFeedback.className = 'feedback bad';
+  }
+  setTimeout(()=>{ sortPos++; renderSort(); }, 900);
+});
+sortRestart.addEventListener('click', loadSort);
+loadSort();
+
+// ================= DECISION QUIZ ================
+const decideChoices = document.getElementById('decideChoices');
+const decideVerdict = document.getElementById('decideVerdict');
+const decideQ = document.getElementById('decideQ');
+decideChoices.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...decideChoices.children].forEach(b=>b.disabled=true);
+  if(btn.dataset.ans === 'yes'){
+    decideVerdict.innerHTML = `<div class="verdict yes"><strong>Lend, with a clear plan.</strong> If Anand truly knows the trade, a loan can be wise — Mathur Seth himself started this way.</div>`;
+  } else {
+    decideVerdict.innerHTML = `<div class="verdict no"><strong>Don't lend the whole 50 coins.</strong> Ravi worked years for this money. Anand has ambition, but not the skill yet — that's how the widow's son lost everything in the token chest.</div>`;
+  }
+});
+
+// ================= recap flip cards ================
+document.querySelectorAll('.flip-card').forEach(card=>{
+  card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Walls of Babylon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Hind:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1120;
+    --bg2:#161b30;
+    --bg3:#1d2340;
+    --gold:#e8b94a;
+    --gold-deep:#c98a2e;
+    --ember:#d9603b;
+    --green:#5fb992;
+    --amber:#e0a63a;
+    --red:#e06a5a;
+    --text:#f3ecda;
+    --text-dim:#a9a394;
+    --line:rgba(232,185,74,0.22);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Hind',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  h1,h2,h3{font-family:'Rozha One',serif; font-weight:400; margin:0 0 .3em;}
+  .num{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--gold);}
+  ::selection{background:var(--gold); color:#20140a;}
+  :focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+
+  .wrap{max-width:880px; margin:0 auto; padding:0 22px;}
+  section{padding:72px 0; position:relative;}
+  .eyebrow{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.78rem;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);
+    background:rgba(232,185,74,0.08); border:1px solid var(--line);
+    padding:5px 12px; border-radius:99px; margin-bottom:16px;
+  }
+  p{color:var(--text-dim); font-size:1.02rem; max-width:64ch;}
+  .lead{color:var(--text); font-size:1.1rem;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:96svh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center; position:relative; padding:40px 22px; overflow:hidden;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(217,96,59,0.16), transparent 70%),
+      radial-gradient(ellipse 120% 60% at 50% 0%, rgba(232,185,74,0.06), transparent 60%),
+      var(--bg);
+  }
+  .stars{position:absolute; inset:0; z-index:0;}
+  .star{position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; opacity:.6; animation:twinkle 3s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.15;} 50%{opacity:.9;}}
+
+  .wallscene{position:relative; width:min(320px,80vw); height:100px; margin:0 auto 22px; z-index:1;}
+  .brickrow{display:flex; justify-content:center; gap:3px; margin-bottom:3px;}
+  .brick{width:26px; height:16px; background:linear-gradient(160deg,#8a6a3a,#5c4322); border-radius:2px;}
+  .arrow{position:absolute; top:-30px; width:2px; height:22px; background:var(--ember); animation:arrowfall 1.4s linear infinite;}
+  @keyframes arrowfall{ to{ transform:translateY(140px) rotate(20deg); opacity:0; } }
+  .flamepoint{position:absolute; top:-10px; width:10px; height:14px; background:radial-gradient(circle at 50% 70%, #fff2c7, var(--ember)); border-radius:50% 50% 50% 50%/60% 60% 40% 40%; animation:flick 1s ease-in-out infinite;}
+  @keyframes flick{0%,100%{transform:scaleY(1);} 50%{transform:scaleY(1.2);}}
+
+  .hero h1{font-size:clamp(2rem, 6vw, 3.4rem); max-width:16ch; margin-bottom:.25em; position:relative; z-index:1;}
+  .hero h1 .gold-word{color:var(--gold);}
+  .hero p{font-size:1.05rem; max-width:46ch; margin:0 auto 26px; position:relative; z-index:1;}
+  .scroll-cta{
+    display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#20140a; font-weight:700;
+    padding:13px 26px; border-radius:99px; text-decoration:none; font-size:1rem; border:none; cursor:pointer;
+    position:relative; z-index:1; transition:transform .15s ease;
+  }
+  .scroll-cta:hover{transform:translateY(-2px);}
+
+  /* ---------- GENERIC ---------- */
+  .story-card{
+    background:linear-gradient(180deg, var(--bg2), var(--bg3)); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px; display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:start;
+  }
+  .avatar{
+    width:52px; height:52px; border-radius:50%; background:linear-gradient(160deg, var(--gold), var(--ember));
+    display:flex; align-items:center; justify-content:center; font-family:'Rozha One',serif; font-size:1.4rem; color:#20140a; flex-shrink:0;
+  }
+  .story-names{color:var(--gold); font-weight:600;}
+  .law-num{
+    font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold-deep);
+    border:1px solid var(--line); padding:3px 10px; border-radius:99px;
+  }
+  .law-rule{
+    font-family:'Rozha One',serif; font-size:1.02rem; color:var(--gold); background:rgba(232,185,74,0.06);
+    border-left:3px solid var(--gold); padding:13px 18px; border-radius:0 10px 10px 0; margin:16px 0 22px;
+  }
+  .panel{background:var(--bg2); border:1px solid var(--line); border-radius:var(--radius); padding:24px; margin-top:10px;}
+  .btn{
+    background:var(--gold); color:#20140a; border:none; font-weight:700; padding:11px 22px; border-radius:99px;
+    cursor:pointer; font-size:.95rem; font-family:'Hind',sans-serif;
+  }
+  .btn.secondary{background:transparent; color:var(--gold); border:1px solid var(--gold-deep);}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn.small{padding:8px 16px; font-size:.85rem;}
+  .feedback{margin-top:14px; font-weight:600; min-height:1.4em;}
+  .feedback.good{color:var(--green);}
+  .feedback.bad{color:var(--red);}
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  /* ---------- SIEGE DIARY (step-through) ---------- */
+  .fable-stage{background:var(--bg3); border-radius:12px; padding:26px; min-height:170px; display:flex; flex-direction:column; justify-content:center;}
+  .fable-emoji{font-size:2.4rem; margin-bottom:10px;}
+  .fable-text{color:var(--text); font-size:1.05rem; margin:0;}
+  .fable-controls{display:flex; align-items:center; justify-content:space-between; margin-top:18px; gap:10px; flex-wrap:wrap;}
+  .fable-dots{display:flex; gap:7px;}
+  .fdot{width:8px; height:8px; border-radius:50%; background:rgba(232,185,74,0.25);}
+  .fdot.active{background:var(--gold);}
+
+  /* ---------- WALL BUILDER ---------- */
+  .slider-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:14px 0 4px;}
+  input[type=range]{
+    flex:1; min-width:180px; -webkit-appearance:none; appearance:none; height:6px; border-radius:99px;
+    background:linear-gradient(90deg, var(--gold-deep), var(--gold)); outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:22px; height:22px; border-radius:50%; background:#fff2c7; border:3px solid var(--gold-deep); cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:22px; height:22px; border-radius:50%; background:#fff2c7; border:3px solid var(--gold-deep); cursor:pointer;}
+  .slider-label{font-size:.85rem; color:var(--text-dim); min-width:150px;}
+  .val-display{font-family:'JetBrains Mono',monospace; font-size:1.2rem; color:var(--gold); min-width:110px; text-align:right;}
+
+  .wall-visual{margin-top:22px; background:var(--bg3); border-radius:10px; padding:20px; text-align:center;}
+  .wall-rows{display:flex; flex-direction:column-reverse; align-items:center; gap:4px; min-height:210px; justify-content:flex-start;}
+  .wall-brick-row{display:flex; gap:4px; opacity:0; transform:translateY(10px); transition:opacity .35s ease, transform .35s ease;}
+  .wall-brick-row.show{opacity:1; transform:translateY(0);}
+  .wall-brick{width:44px; height:22px; border-radius:3px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.6rem; color:#20140a; font-weight:700;}
+  .wall-brick.red{background:var(--red);}
+  .wall-brick.amber{background:var(--amber);}
+  .wall-brick.green{background:var(--green);}
+  .wall-verdict{margin-top:16px; font-size:.98rem; color:var(--text);}
+  .wall-verdict strong{color:var(--gold);}
+
+  /* ---------- SORT GAME ---------- */
+  .sort-card{background:var(--bg3); border-radius:10px; padding:18px; margin-bottom:14px;}
+  .sort-buttons{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .sort-buttons button{
+    flex:1; min-width:130px; background:transparent; border:1px solid var(--gold-deep); color:var(--gold);
+    padding:10px 8px; border-radius:8px; cursor:pointer; font-family:'Hind',sans-serif; font-size:.85rem;
+  }
+  .sort-buttons button:hover{background:rgba(232,185,74,0.08);}
+  .sort-progress{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:.85rem; color:var(--text-dim);}
+  .score-num{color:var(--gold); font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- DECISION QUIZ ---------- */
+  .quiz-q{font-family:'Rozha One',serif; font-size:1.15rem; color:var(--text); margin-bottom:14px;}
+  .quiz-choices{display:flex; gap:10px; flex-wrap:wrap;}
+  .quiz-choices button{
+    background:var(--bg3); border:1px solid var(--line); color:var(--text); padding:11px 20px; border-radius:8px;
+    cursor:pointer; font-family:'Hind',sans-serif; font-size:.95rem;
+  }
+  .quiz-choices button:hover{border-color:var(--gold);}
+  .verdict{border-radius:10px; padding:18px; margin-top:16px;}
+  .verdict.yes{background:rgba(95,185,146,.1); border:1px solid var(--green);}
+  .verdict.no{background:rgba(224,106,90,.1); border:1px solid var(--red);}
+
+  /* recap flip cards */
+  .recap-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:22px;}
+  .flip-card{perspective:1000px; height:160px; cursor:pointer;}
+  .flip-inner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-front,.flip-back{position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; padding:14px; font-size:.88rem;}
+  .flip-front{background:var(--bg3); border:1px solid var(--line); color:var(--gold); font-family:'Rozha One',serif; font-size:1.05rem;}
+  .flip-back{background:var(--gold); color:#20140a; transform:rotateY(180deg); font-weight:600;}
+
+  footer{text-align:center; padding:56px 22px 40px; color:var(--text-dim); font-size:.85rem; border-top:1px solid var(--line);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}
+  }
+  @media(max-width:600px){
+    section{padding:52px 0;}
+    .story-card{grid-template-columns:1fr; text-align:left;}
+    .wall-brick{width:32px; font-size:.55rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="stars" id="stars"></div>
+  <div class="wallscene" id="wallscene">
+    <div class="brickrow"><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div></div>
+    <div class="brickrow"><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div></div>
+    <div class="brickrow"><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div></div>
+    <div class="brickrow"><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div><div class="brick"></div></div>
+  </div>
+  <span class="eyebrow">Protection before the attack comes</span>
+  <h1>The <span class="gold-word">Walls</span> of Babylon</h1>
+  <p>Babylon survived a month-long siege because of walls built years before. Your family's "walls" are an emergency fund and insurance — built before trouble ever knocks.</p>
+  <a href="#story" class="scroll-cta">Start ↓</a>
+</section>
+
+<!-- ================= STORY ================= -->
+<section id="story">
+  <div class="wrap">
+    <span class="eyebrow">The siege</span>
+    <h2>The gates held. The walls saved the city.</h2>
+    <div class="story-card reveal">
+      <div class="avatar">B</div>
+      <div>
+        <p class="lead">While Babylon's army was far away, enemy soldiers attacked the city without warning. Only a few guards were left — led by the old soldier <span class="story-names">Bhairav</span>.</p>
+        <p>Terrified citizens kept asking him the same thing: "Will we be safe?" His answer never changed: "The walls of Babylon will protect you."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIEGE DIARY (step-through) ================= -->
+<section id="diary">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">The siege, day by day</span>
+      <h2>Twenty-six days behind the wall</h2>
+      <div class="panel">
+        <div class="fable-stage">
+          <div class="fable-emoji" id="fableEmoji">😨</div>
+          <p class="fable-text" id="fableText">Enemy armies surround the city. No warning, no time to prepare. Families crowd the streets, terrified.</p>
+        </div>
+        <div class="fable-controls">
+          <button class="btn secondary small" id="fablePrev">← Back</button>
+          <div class="fable-dots" id="fableDots"></div>
+          <button class="btn small" id="fableNext">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TODAY'S WALL ================= -->
+<section id="wallbuilder">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Build your own wall</span>
+      <h2>Your wall is an emergency fund</h2>
+      <div class="law-rule">A family needs money set aside — before disaster shows up, not after.</div>
+      <p>Money kept aside for surprises: a job loss, a hospital bill, a broken bike. Try it — how many months could your savings cover?</p>
+
+      <div class="panel">
+        <div class="slider-row">
+          <span class="slider-label">Monthly expenses</span>
+          <input type="range" id="expenseSlider" min="10000" max="100000" step="1000" value="25000" aria-label="Monthly expenses in rupees">
+          <div class="val-display num">₹<span id="expenseVal">25,000</span></div>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Months of expenses saved</span>
+          <input type="range" id="monthsSlider" min="0" max="12" step="1" value="1" aria-label="Months of expenses saved">
+          <div class="val-display num"><span id="monthsVal">1</span> mo</div>
+        </div>
+
+        <div class="wall-visual">
+          <div class="wall-rows" id="wallRows"></div>
+          <div class="wall-verdict" id="wallVerdict"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SORT GAME ================= -->
+<section id="sort">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Test yourself</span>
+      <h2>Match the danger to the right wall</h2>
+
+      <div class="panel">
+        <div class="sort-progress">
+          <span>Situation <span class="num" id="sortIndex">1</span> of <span class="num" id="sortTotal">6</span></span>
+          <span>Score: <span class="score-num num" id="sortScore">0</span></span>
+        </div>
+        <div class="sort-card">
+          <p class="lead" id="sortScenario" style="margin:0;">…</p>
+          <div class="sort-buttons" id="sortButtons">
+            <button data-cat="emergency">💰 Emergency fund</button>
+            <button data-cat="health">🏥 Health insurance</button>
+            <button data-cat="life">🧑‍🤝‍🧑 Life insurance</button>
+            <button data-cat="vehicle">🏍 Vehicle insurance</button>
+          </div>
+        </div>
+        <div class="feedback" id="sortFeedback"></div>
+        <button class="btn secondary small" id="sortRestart" style="display:none;">Play again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DECISION QUIZ ================= -->
+<section id="decide">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">One last check</span>
+      <h2>Is Priya's family protected?</h2>
+      <p>Priya just lost her job. She has 4 months of expenses saved, and no health insurance.</p>
+
+      <div class="panel" id="decidePanel">
+        <p class="quiz-q" id="decideQ">Is Priya's family fully protected against life's surprises?</p>
+        <div class="quiz-choices" id="decideChoices">
+          <button data-ans="yes">Yes, she's covered</button>
+          <button data-ans="no">No, something is missing</button>
+        </div>
+        <div id="decideVerdict"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECAP ================= -->
+<section id="recap">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Recap</span>
+      <h2>5 walls worth building</h2>
+      <p>Tap a card.</p>
+      <div class="recap-grid">
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Wall 1</div>
+          <div class="flip-back">Build protection before trouble arrives, not after.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Wall 2</div>
+          <div class="flip-back">Keep 3–6 months of expenses as an emergency fund.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Wall 3</div>
+          <div class="flip-back">Health insurance guards against sudden hospital bills.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Wall 4</div>
+          <div class="flip-back">Life insurance protects the family if an earner is gone.</div>
+        </div></div>
+        <div class="flip-card"><div class="flip-inner">
+          <div class="flip-front">Wall 5</div>
+          <div class="flip-back">No family can afford to stay unprotected.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Based on "The Walls of Babylon" from <em>The Richest Man in Babylon</em>.
+</footer>
+
+<script>
+// ---------- stars ----------
+const starsEl = document.getElementById('stars');
+for(let i=0;i<50;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  s.style.left = Math.random()*100+'%';
+  s.style.top = Math.random()*70+'%';
+  s.style.animationDelay = (Math.random()*3)+'s';
+  starsEl.appendChild(s);
+}
+
+// ---------- hero wall arrows/flames ----------
+const wallscene = document.getElementById('wallscene');
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  for(let i=0;i<5;i++){
+    const a = document.createElement('div');
+    a.className='arrow';
+    a.style.left = (10+i*18)+'%';
+    a.style.animationDelay = (i*0.3)+'s';
+    wallscene.appendChild(a);
+  }
+  for(let i=0;i<3;i++){
+    const f = document.createElement('div');
+    f.className='flamepoint';
+    f.style.left = (20+i*30)+'%';
+    f.style.animationDelay = (i*0.2)+'s';
+    wallscene.appendChild(f);
+  }
+}
+
+// ---------- reveal on scroll ----------
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ================= SIEGE DIARY ================
+const fableFrames = [
+  {emoji:'😨', text:"Enemy armies surround the city. No warning, no time to prepare. Families crowd the streets, terrified."},
+  {emoji:'🏹', text:'Arrows and burning oil rain down as guards defend the gate. A mother, a merchant, a child — all ask the same guard the same question: "Will we be safe?"'},
+  {emoji:'🛡️', text:'"The walls of Babylon will protect you," he tells each one. Not because he\'s sure — because the walls were built strong, long before this day.'},
+  {emoji:'📆', text:'The siege lasts twenty-six days. Every single day, the walls hold.'},
+  {emoji:'🎉', text:'The enemy retreats. Babylon survives — because someone, years earlier, built walls high enough for a day like this.'}
+];
+let fableIdx = 0;
+const fableEmoji = document.getElementById('fableEmoji');
+const fableText = document.getElementById('fableText');
+const fableDots = document.getElementById('fableDots');
+const fablePrev = document.getElementById('fablePrev');
+const fableNext = document.getElementById('fableNext');
+
+fableFrames.forEach((_,i)=>{
+  const d = document.createElement('div');
+  d.className = 'fdot'+(i===0?' active':'');
+  fableDots.appendChild(d);
+});
+function renderFable(){
+  fableEmoji.textContent = fableFrames[fableIdx].emoji;
+  fableText.textContent = fableFrames[fableIdx].text;
+  [...fableDots.children].forEach((d,i)=>d.classList.toggle('active', i===fableIdx));
+  fablePrev.disabled = fableIdx===0;
+  fableNext.disabled = fableIdx===fableFrames.length-1;
+  fableNext.textContent = fableIdx===fableFrames.length-1 ? 'The end' : 'Next →';
+}
+fablePrev.addEventListener('click', ()=>{ if(fableIdx>0){ fableIdx--; renderFable(); }});
+fableNext.addEventListener('click', ()=>{ if(fableIdx<fableFrames.length-1){ fableIdx++; renderFable(); }});
+renderFable();
+
+// ================= WALL BUILDER ================
+const expenseSlider = document.getElementById('expenseSlider');
+const monthsSlider = document.getElementById('monthsSlider');
+const expenseVal = document.getElementById('expenseVal');
+const monthsVal = document.getElementById('monthsVal');
+const wallRows = document.getElementById('wallRows');
+const wallVerdict = document.getElementById('wallVerdict');
+
+function zoneFor(months){
+  if(months < 3) return 'red';
+  if(months < 6) return 'amber';
+  return 'green';
+}
+function renderWall(){
+  const expense = parseInt(expenseSlider.value,10);
+  const months = parseInt(monthsSlider.value,10);
+  expenseVal.textContent = expense.toLocaleString('en-IN');
+  monthsVal.textContent = months;
+
+  wallRows.innerHTML = '';
+  const total = Math.max(months, 1);
+  for(let i=0;i<12;i++){
+    const row = document.createElement('div');
+    row.className = 'wall-brick-row';
+    const brick = document.createElement('div');
+    const filled = i < months;
+    brick.className = 'wall-brick ' + (filled ? zoneFor(months) : '');
+    brick.style.background = filled ? '' : 'rgba(232,185,74,0.08)';
+    brick.textContent = filled ? (i+1) : '';
+    row.appendChild(brick);
+    wallRows.appendChild(row);
+    if(filled) setTimeout(()=>row.classList.add('show'), i*40);
+    else row.classList.add('show');
+  }
+
+  const savedAmount = expense*months;
+  let msg;
+  if(months < 3){
+    msg = `<strong>₹${savedAmount.toLocaleString('en-IN')} saved.</strong> This wall is low — a short job loss could break through it. Aim for at least 3 months.`;
+  } else if(months < 6){
+    msg = `<strong>₹${savedAmount.toLocaleString('en-IN')} saved.</strong> A decent wall — it can survive a few rough months. 6 months is the strong, standard wall.`;
+  } else {
+    msg = `<strong>₹${savedAmount.toLocaleString('en-IN')} saved.</strong> A strong wall — like Babylon's, built high enough before trouble ever arrives.`;
+  }
+  wallVerdict.innerHTML = msg;
+}
+expenseSlider.addEventListener('input', renderWall);
+monthsSlider.addEventListener('input', renderWall);
+renderWall();
+
+// ================= SORT GAME ================
+const sortData = [
+  {text:'Ramesh suddenly needs surgery. The hospital bill is ₹3,00,000.', cat:'health'},
+  {text:'Deepa\'s company shuts down with no notice. She needs money for 4 months while job-hunting.', cat:'emergency'},
+  {text:'The family\'s only earning member wants to make sure his children are provided for if something happens to him.', cat:'life'},
+  {text:'Arjun\'s scooter is hit by a car and needs major repairs.', cat:'vehicle'},
+  {text:'A washing machine breaks and needs a cash repair this week.', cat:'emergency'},
+  {text:'A mother is admitted for a sudden fever and needs a 5-day hospital stay.', cat:'health'}
+];
+let sortOrder = [];
+let sortPos = 0, sortScore = 0;
+const sortScenario = document.getElementById('sortScenario');
+const sortButtons = document.getElementById('sortButtons');
+const sortFeedback = document.getElementById('sortFeedback');
+const sortIndexEl = document.getElementById('sortIndex');
+const sortScoreEl = document.getElementById('sortScore');
+const sortRestart = document.getElementById('sortRestart');
+document.getElementById('sortTotal').textContent = sortData.length;
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+function loadSort(){
+  sortOrder = shuffle([0,1,2,3,4,5]);
+  sortPos = 0; sortScore = 0;
+  sortScoreEl.textContent = 0;
+  sortRestart.style.display = 'none';
+  sortButtons.style.display = 'flex';
+  renderSort();
+}
+function renderSort(){
+  if(sortPos >= sortData.length){
+    sortScenario.textContent = `Done! You scored ${sortScore} out of ${sortData.length}.`;
+    sortButtons.style.display = 'none';
+    sortFeedback.textContent = '';
+    sortRestart.style.display = 'inline-block';
+    return;
+  }
+  sortIndexEl.textContent = sortPos+1;
+  sortScenario.textContent = sortData[sortOrder[sortPos]].text;
+  sortFeedback.textContent = '';
+  [...sortButtons.children].forEach(b=>b.disabled=false);
+}
+sortButtons.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...sortButtons.children].forEach(b=>b.disabled=true);
+  const correct = sortData[sortOrder[sortPos]].cat === btn.dataset.cat;
+  if(correct){
+    sortScore++; sortScoreEl.textContent = sortScore;
+    sortFeedback.textContent = 'Correct.';
+    sortFeedback.className = 'feedback good';
+  } else {
+    sortFeedback.textContent = 'Not quite — think about which wall actually stops that danger.';
+    sortFeedback.className = 'feedback bad';
+  }
+  setTimeout(()=>{ sortPos++; renderSort(); }, 900);
+});
+sortRestart.addEventListener('click', loadSort);
+loadSort();
+
+// ================= DECISION QUIZ ================
+const decideChoices = document.getElementById('decideChoices');
+const decideVerdict = document.getElementById('decideVerdict');
+decideChoices.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...decideChoices.children].forEach(b=>b.disabled=true);
+  if(btn.dataset.ans === 'no'){
+    decideVerdict.innerHTML = `<div class="verdict no"><strong>Right — one wall is missing.</strong> Her 4-month emergency fund covers the job loss. But with no health insurance, a single hospital bill could still break through.</div>`;
+  } else {
+    decideVerdict.innerHTML = `<div class="verdict no"><strong>Not quite.</strong> Her emergency fund helps with the job loss, but she still has no health insurance — one hospital bill could wipe out her savings.</div>`;
+  }
+});
+
+// ================= recap flip cards ================
+document.querySelectorAll('.flip-card').forEach(card=>{
+  card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+});
+</script>
+</body>
+</html>
