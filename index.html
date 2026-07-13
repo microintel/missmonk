@@ -338,6 +338,39 @@ a { color:inherit; text-decoration:none; }
   text-transform:uppercase; color:var(--text3); margin-bottom:.6rem;
 }
 .url-form { display:flex; flex-direction:column; gap:.55rem; }
+/* ── Accent color palette + custom picker ── */
+.accent-swatches { display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:.9rem; }
+.accent-swatch {
+  position:relative; width:32px; height:32px; border-radius:50%;
+  border:2px solid transparent; cursor:pointer; flex-shrink:0;
+  transition:transform .15s, border-color .15s;
+}
+.accent-swatch:hover { transform:scale(1.1); }
+.accent-swatch.active { border-color:var(--text); transform:scale(1.12); }
+.accent-swatch.active i { display:flex; }
+.accent-swatch i {
+  display:none; position:absolute; inset:0; align-items:center; justify-content:center;
+  font-size:.8rem; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+.accent-custom-row {
+  display:flex; align-items:center; gap:.7rem;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:var(--radius); padding:.6rem .75rem; margin-bottom:.5rem;
+}
+.accent-custom-row input[type="color"] {
+  -webkit-appearance:none; appearance:none;
+  width:34px; height:34px; border:none; border-radius:50%;
+  padding:0; background:none; cursor:pointer; flex-shrink:0;
+}
+.accent-custom-row input[type="color"]::-webkit-color-swatch-wrapper { padding:0; border-radius:50%; }
+.accent-custom-row input[type="color"]::-webkit-color-swatch { border:2px solid var(--border2); border-radius:50%; }
+.accent-custom-row input[type="color"]::-moz-color-swatch { border:2px solid var(--border2); border-radius:50%; }
+.accent-custom-lbl { font-size:.78rem; color:var(--text2); flex:1; }
+.accent-reset-btn {
+  background:none; border:1px solid var(--border2); color:var(--text2);
+  font-size:.72rem; font-weight:600; padding:.35rem .6rem; border-radius:8px;
+}
+.accent-reset-btn:hover { color:var(--text); background:var(--surface3); }
 .url-input {
   width:100%; padding:.6rem .85rem;
   background:var(--bg);
@@ -1210,6 +1243,15 @@ a { color:inherit; text-decoration:none; }
   </div>
 
   <hr class="theme-divider"/>
+  <div class="theme-section-lbl">Accent Color <i class="bi bi-palette-fill" style="margin-left:.2rem;"></i></div>
+  <div class="accent-swatches" id="accentSwatches"></div>
+  <div class="accent-custom-row">
+    <input type="color" id="customColorPicker" value="#5b8def" oninput="applyAccentColor(this.value)">
+    <span class="accent-custom-lbl">Pick any custom color</span>
+    <button class="accent-reset-btn" onclick="resetAccentColor()">Reset</button>
+  </div>
+
+  <hr class="theme-divider"/>
   <div class="theme-section-lbl">Load Curriculum from URL</div>
   <div class="url-form">
     <input class="url-input" id="urlInput" type="url" value="https://microintel.github.io/missmonk/data.json" placeholder="https://example.com/curriculum.json" style="display:none;"/>
@@ -1341,9 +1383,90 @@ function applyTheme(theme) {
     el.classList.toggle('active', el.dataset.theme === theme);
   });
   localStorage.setItem('lp_theme', theme);
+
+  // Re-apply any saved custom accent so switching light/dark doesn't lose it,
+  // and recompute the glow opacity to match the new theme.
+  const savedAccent = localStorage.getItem('lp_accent');
+  if (savedAccent) applyAccentColor(savedAccent, false);
+  else initAccentUI();
 }
 function toggleThemePanel() { document.getElementById('themePanel').classList.toggle('open'); }
 function closeThemePanel()  { document.getElementById('themePanel').classList.remove('open'); }
+
+/* ══════════════════════════════
+   ACCENT COLOR — palette + custom picker
+   Overrides --blue / --teal (the app's single accent variable pair) and
+   recomputes --blue-glow so every button, link, highlight, and focus ring
+   across the app updates together. Saved to localStorage so it persists
+   across sessions and devices... locally (per-browser, not per-account).
+══════════════════════════════ */
+const ACCENT_PRESETS = [
+  { name: 'Blue',   hex: '#5b8def' },
+  { name: 'Indigo', hex: '#6366f1' },
+  { name: 'Purple', hex: '#8b5cf6' },
+  { name: 'Pink',   hex: '#ec4899' },
+  { name: 'Rose',   hex: '#f43f5e' },
+  { name: 'Amber',  hex: '#f59e0b' },
+  { name: 'Green',  hex: '#22c55e' },
+  { name: 'Teal',   hex: '#14b8a6' },
+  { name: 'Cyan',   hex: '#06b6d4' }
+];
+const DEFAULT_ACCENT = ACCENT_PRESETS[0].hex;
+
+function renderAccentSwatches() {
+  const box = document.getElementById('accentSwatches');
+  if (!box) return;
+  box.innerHTML = ACCENT_PRESETS.map(p => `
+    <div class="accent-swatch" data-hex="${p.hex}" title="${p.name}"
+         style="background:${p.hex};" onclick="applyAccentColor('${p.hex}')">
+      <i class="bi bi-check-lg"></i>
+    </div>`).join('');
+}
+
+function hexToRgba(hex, alpha) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function applyAccentColor(hex, save = true) {
+  const root  = document.documentElement;
+  const theme = root.getAttribute('data-theme'); // null = dark, 'light' = light
+  root.style.setProperty('--blue', hex);
+  root.style.setProperty('--teal', hex);
+  root.style.setProperty('--blue-glow', hexToRgba(hex, theme === 'light' ? 0.18 : 0.25));
+  if (save) localStorage.setItem('lp_accent', hex);
+  if (!document.getElementById('accentSwatches')?.children.length) renderAccentSwatches();
+  updateAccentUI(hex);
+  if (progressChart) renderProgressChart(
+    progressChart.data.datasets[0].data[0] || 0,
+    progressChart.data.datasets[0].data[1] || 0
+  );
+}
+
+function updateAccentUI(hex) {
+  const norm = hex.toLowerCase();
+  document.querySelectorAll('.accent-swatch').forEach(el => {
+    el.classList.toggle('active', el.dataset.hex.toLowerCase() === norm);
+  });
+  const picker = document.getElementById('customColorPicker');
+  if (picker) picker.value = hex;
+}
+
+function resetAccentColor() {
+  localStorage.removeItem('lp_accent');
+  applyAccentColor(DEFAULT_ACCENT, false);
+}
+
+// Reflects whatever --blue currently resolves to (theme default or a saved
+// custom color) back into the swatch grid + color input, without changing it.
+function initAccentUI() {
+  if (!document.getElementById('accentSwatches')?.children.length) renderAccentSwatches();
+  const current = getComputedStyle(document.documentElement).getPropertyValue('--blue').trim();
+  updateAccentUI(current || DEFAULT_ACCENT);
+}
 
 /* ══════════════════════════════
    URL FETCH
