@@ -1,1 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Life That Truly Feels Good — Human Values, Made Simple</title>
+<style>
+  :root{
+    --night-1:#0b1420;
+    --night-2:#132234;
+    --night-3:#1b3049;
+    --gold:#e8a33d;
+    --gold-soft:#f2c879;
+    --teal:#5fd6c4;
+    --paper:#f4efe4;
+    --paper-dim:#c9c2b4;
+    --line:rgba(244,239,228,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--night-1);
+    color:var(--paper);
+    font-family:'Work Sans', 'Segoe UI', sans-serif;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600&display=swap');
+  h1,h2,h3,.display{font-family:'Fraunces', serif;}
 
+  canvas#bg{
+    position:fixed; inset:0; width:100%; height:100%; z-index:0;
+    background:radial-gradient(ellipse at 20% 10%, var(--night-3), var(--night-1) 60%);
+  }
+
+  .wrap{position:relative; z-index:1;}
+
+  section{
+    max-width:880px;
+    margin:0 auto;
+    padding:70px 24px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:24px;
+  }
+  .eyebrow{
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.72rem;
+    color:var(--teal);
+    margin-bottom:18px;
+    font-weight:500;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 6vw, 3.6rem);
+    font-weight:600;
+    margin:0 0 20px;
+    max-width:15ch;
+    color:var(--paper);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--gold-soft);
+  }
+  .hero p.lead{
+    max-width:52ch;
+    font-size:1.08rem;
+    color:var(--paper-dim);
+    margin:0 0 34px;
+  }
+  .scroll-hint{
+    font-size:.8rem;
+    color:var(--paper-dim);
+    opacity:.7;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .scroll-hint .dot{
+    width:6px;height:6px;border-radius:50%;background:var(--gold);
+    animation:bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(10px);}}
+
+  /* ---------- GENERIC SECTION HEADER ---------- */
+  .kicker{
+    font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--gold); font-weight:600; margin-bottom:10px;
+  }
+  h2.title{
+    font-size:clamp(1.5rem, 4vw, 2.2rem);
+    font-weight:600;
+    margin:0 0 18px;
+    color:var(--paper);
+  }
+  p.body-text{
+    color:var(--paper-dim);
+    font-size:1.02rem;
+    max-width:65ch;
+  }
+
+  /* ---------- CHECK LIST INTERACTIVE ---------- */
+  .fulfil-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
+    margin-top:28px;
+  }
+  .fulfil-card{
+    border:1px solid var(--line);
+    background:rgba(244,239,228,0.03);
+    border-radius:14px;
+    padding:18px;
+    cursor:pointer;
+    transition:.25s;
+    position:relative;
+  }
+  .fulfil-card:hover{
+    background:rgba(244,239,228,0.07);
+    transform:translateY(-3px);
+    border-color:rgba(232,163,61,0.4);
+  }
+  .fulfil-card h4{
+    margin:0 0 6px;
+    font-size:1rem;
+    font-family:'Work Sans';
+    font-weight:600;
+    color:var(--gold-soft);
+    display:flex; align-items:center; gap:8px;
+  }
+  .fulfil-card .num{
+    font-size:.7rem; color:var(--teal); font-weight:600;
+  }
+  .fulfil-card p{
+    margin:0;
+    font-size:.88rem;
+    color:var(--paper-dim);
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:.3s;
+  }
+  .fulfil-card.open p{
+    max-height:200px;
+    opacity:1;
+    margin-top:8px;
+  }
+
+  /* ---------- WHAT/HOW CARDS ---------- */
+  .split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:28px;
+  }
+  @media (max-width:640px){ .split{grid-template-columns:1fr;} }
+  .split-card{
+    border-radius:16px;
+    padding:26px;
+    border:1px solid var(--line);
+  }
+  .split-card.value{
+    background:linear-gradient(160deg, rgba(232,163,61,0.13), rgba(232,163,61,0.02));
+    border-color:rgba(232,163,61,0.35);
+  }
+  .split-card.skill{
+    background:linear-gradient(160deg, rgba(95,214,196,0.12), rgba(95,214,196,0.02));
+    border-color:rgba(95,214,196,0.35);
+  }
+  .split-card h3{margin:0 0 8px; font-size:1.25rem;}
+  .split-card.value h3{color:var(--gold-soft);}
+  .split-card.skill h3{color:var(--teal);}
+  .split-card p{color:var(--paper-dim); font-size:.92rem; margin:0;}
+  .priority-note{
+    margin-top:18px;
+    padding:16px 18px;
+    border-left:3px solid var(--gold);
+    background:rgba(232,163,61,0.06);
+    border-radius:0 10px 10px 0;
+    font-size:.92rem;
+    color:var(--paper-dim);
+  }
+  .priority-note b{color:var(--gold-soft);}
+
+  /* ---------- CIRCLES DIAGRAM ---------- */
+  .circles-zone{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:36px;
+  }
+  .circle-stage{
+    position:relative;
+    width:min(340px, 80vw);
+    height:min(340px, 80vw);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ring{
+    position:absolute;
+    border-radius:50%;
+    border:1.5px solid rgba(244,239,228,0.25);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    cursor:pointer;
+    transition:.25s;
+  }
+  .ring:hover, .ring.active{
+    border-color:var(--gold);
+    box-shadow:0 0 26px rgba(232,163,61,0.25);
+  }
+  .ring span{
+    margin-top:10px;
+    font-size:.8rem;
+    font-weight:600;
+    letter-spacing:.05em;
+    color:var(--paper);
+    background:var(--night-1);
+    padding:2px 10px;
+    border-radius:20px;
+  }
+  .ring.r1{width:100%; height:100%;}
+  .ring.r2{width:74%; height:74%;}
+  .ring.r3{width:48%; height:48%;}
+  .ring.r4{width:24%; height:24%; align-items:center;}
+  .ring.r4 span{margin-top:0;}
+
+  .circle-caption{
+    margin-top:26px;
+    max-width:520px;
+    text-align:center;
+    min-height:70px;
+    padding:16px 20px;
+    border-radius:12px;
+    background:rgba(244,239,228,0.04);
+    border:1px solid var(--line);
+    font-size:.94rem;
+    color:var(--paper-dim);
+    transition:.2s;
+  }
+  .circle-caption b{color:var(--gold-soft);}
+
+  /* ---------- PEOPLE EXAMPLES ---------- */
+  .people{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-top:30px;
+  }
+  .person-card{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:18px;
+    padding:20px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:rgba(244,239,228,0.03);
+    align-items:flex-start;
+  }
+  .avatar{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces';
+    font-weight:700;
+    font-size:1.2rem;
+    color:var(--night-1);
+    flex-shrink:0;
+  }
+  .avatar.a1{background:var(--gold);}
+  .avatar.a2{background:var(--teal);}
+  .avatar.a3{background:#d98a8a;}
+  .person-card h4{margin:0 0 4px; font-size:1.05rem; color:var(--paper);}
+  .person-card .tag{
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--paper-dim); margin-bottom:8px; display:block;
+  }
+  .person-card p{margin:0; color:var(--paper-dim); font-size:.93rem;}
+  .person-card .lesson{
+    margin-top:10px;
+    font-size:.88rem;
+    color:var(--gold-soft);
+    font-style:italic;
+  }
+
+  /* ---------- DO / DONT ---------- */
+  .dodont{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:28px;
+  }
+  @media (max-width:640px){ .dodont{grid-template-columns:1fr;} }
+  .dodont-col{
+    border-radius:16px;
+    padding:22px;
+  }
+  .dodont-col.do{background:rgba(95,214,196,0.08); border:1px solid rgba(95,214,196,0.3);}
+  .dodont-col.dont{background:rgba(217,138,138,0.08); border:1px solid rgba(217,138,138,0.3);}
+  .dodont-col h3{margin:0 0 12px; font-size:1.1rem;}
+  .dodont-col.do h3{color:var(--teal);}
+  .dodont-col.dont h3{color:#e6a3a3;}
+  .dodont-col ul{margin:0; padding-left:18px; color:var(--paper-dim); font-size:.92rem;}
+  .dodont-col li{margin-bottom:8px;}
+
+  footer{
+    text-align:center;
+    padding:50px 24px 80px;
+    color:var(--paper-dim);
+    font-size:.85rem;
+  }
+  footer .quote{
+    font-family:'Fraunces';
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--gold-soft);
+    max-width:44ch;
+    margin:0 auto 18px;
+  }
+
+  ::selection{background:var(--gold); color:var(--night-1);}
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Human Values &amp; Professional Ethics — made simple</div>
+    <h1>What does it take to live a life that <em>truly</em> feels good?</h1>
+    <p class="lead">Not a lecture. Not a list of rules. Just a simple way of looking at yourself, your people, your work and the world — the way a foundation course on human values explains it, but in plain words.</p>
+    <div class="scroll-hint"><div class="dot"></div>Scroll down</div>
+  </section>
+
+  <!-- SECTION 1: FULFILLING LIFE -->
+  <section>
+    <div class="kicker">01 — The starting point</div>
+    <h2 class="title">We all want the same basic thing</h2>
+    <p class="body-text">Whatever your dreams look like — a big house, a good job, a peaceful mind — they usually come down to a few simple things. Tap each card below to see what it really means.</p>
+
+    <div class="fulfil-grid" id="fulfilGrid">
+      <div class="fulfil-card" data-i="1">
+        <h4><span class="num">01</span> A happy feeling inside</h4>
+        <p>Not just happy when something good happens — a quiet happiness that stays with you most of the time, no matter what's going on outside.</p>
+      </div>
+      <div class="fulfil-card" data-i="2">
+        <h4><span class="num">02</span> A healthy body</h4>
+        <p>A body that works well and doesn't stop you from doing what you want to do in life.</p>
+      </div>
+      <div class="fulfil-card" data-i="3">
+        <h4><span class="num">03</span> Enough, and a feeling of enough</h4>
+        <p>Having what you need — plus actually feeling that it's enough, instead of always chasing more.</p>
+      </div>
+      <div class="fulfil-card" data-i="4">
+        <h4><span class="num">04</span> Good relationships</h4>
+        <p>People around you — family, friends, colleagues — that you feel connected to, not tense with.</p>
+      </div>
+      <div class="fulfil-card" data-i="5">
+        <h4><span class="num">05</span> A peaceful society</h4>
+        <p>Living in a place that feels safe, fair and free of constant conflict.</p>
+      </div>
+      <div class="fulfil-card" data-i="6">
+        <h4><span class="num">06</span> A healthy planet</h4>
+        <p>Clean air, water and nature around you — not something being slowly destroyed.</p>
+      </div>
+      <div class="fulfil-card" data-i="7">
+        <h4><span class="num">07</span> Understanding yourself</h4>
+        <p>Knowing what you actually want, instead of just copying what everyone else seems to want.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: VALUE OF A HUMAN BEING -->
+  <section>
+    <div class="kicker">02 — What "value" really means</div>
+    <h2 class="title">Value simply means: how you help the things around you</h2>
+    <p class="body-text">A pen is valuable because it can write. A plant is valuable because it feeds us. In the same way, <b style="color:var(--gold-soft)">a person's value is the good they naturally bring to the people and world around them</b> — inside themselves, in their family, in society, and in nature. And here's the interesting part: doing this actually makes <em>you</em> feel happy too. It's not a sacrifice — it's a two-way gift.</p>
+
+    <div class="circles-zone">
+      <div class="circle-stage">
+        <div class="ring r1" data-ring="nature"><span>Nature</span></div>
+        <div class="ring r2" data-ring="society"><span>Society</span></div>
+        <div class="ring r3" data-ring="family"><span>Family</span></div>
+        <div class="ring r4" data-ring="self"><span>Me</span></div>
+      </div>
+      <div class="circle-caption" id="ringCaption">Tap a ring above — start from the middle and move outward.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: VALUES VS SKILLS -->
+  <section>
+    <div class="kicker">03 — Two different questions</div>
+    <h2 class="title">"What to do" comes before "how to do it"</h2>
+    <p class="body-text">In life we're always solving two kinds of questions. Most schools and colleges are very good at teaching one of them — but almost forget the other.</p>
+
+    <div class="split">
+      <div class="split-card value">
+        <h3>What to do? → Values</h3>
+        <p>This is about deciding the right direction — what's actually worth doing with your time, money, and skill. This is the part that gives your life meaning.</p>
+      </div>
+      <div class="split-card skill">
+        <h3>How to do it? → Skills</h3>
+        <p>This is your technical know-how — coding, medicine, management, machines. Skill makes you effective, but it doesn't tell you which way to point that ability.</p>
+      </div>
+    </div>
+
+    <div class="priority-note">
+      Think of a train ticket. The clerk doesn't ask "how fast do you want to go" — first he asks <b>"where do you want to go?"</b> Skills are the speed of the train. Values decide the destination. Going very fast in the wrong direction doesn't help anyone.
+    </div>
+  </section>
+
+  <!-- SECTION 4: PEOPLE -->
+  <section>
+    <div class="kicker">04 — Seeing it in real people</div>
+    <h2 class="title">Three familiar stories</h2>
+    <p class="body-text">These ideas are easier to see in people than in theory. Here are three simple, everyday examples.</p>
+
+    <div class="people">
+      <div class="person-card">
+        <div class="avatar a1">P</div>
+        <div>
+          <span class="tag">Skill without direction</span>
+          <h4>Pranav — chasing money, missing life</h4>
+          <p>Pranav is brilliant at his job and earns very well. But he skips family dinners, ignores his health, and feels tired and empty even after a big salary hike. He has the "how" completely sorted — but never paused to ask "what am I actually doing this for?"</p>
+          <p class="lesson">Lesson: Skill without a clear "why" can make you successful but not fulfilled.</p>
+        </div>
+      </div>
+
+      <div class="person-card">
+        <div class="avatar a2">V</div>
+        <div>
+          <span class="tag">Borrowed goals</span>
+          <h4>Vignesh — living someone else's plan</h4>
+          <p>Vignesh picked his college branch because his friends did. He's now choosing a career the same way, and feels quietly confused and directionless, even though he's "doing well" on paper. He hasn't yet asked himself what he actually wants.</p>
+          <p class="lesson">Lesson: A goal that isn't your own rarely feels fulfilling, even when you achieve it.</p>
+        </div>
+      </div>
+
+      <div class="person-card">
+        <div class="avatar a3">M</div>
+        <div>
+          <span class="tag">Values + skill together</span>
+          <h4>Mahadevaswamy — skill used with purpose</h4>
+          <p>Mahadevaswamy, a small-town veterinary doctor, could easily charge high fees in a big city. Instead he treats farm animals in his own village at fair rates, because he knows what it means to a farmer's family when their only cow falls sick. His skill and his sense of what matters are pointed the same way.</p>
+          <p class="lesson">Lesson: When skill is guided by a clear value, the same hard work becomes deeply fulfilling — for him and for the people he helps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: DO / DONT -->
+  <section>
+    <div class="kicker">05 — Putting it into practice</div>
+    <h2 class="title">So, what should you actually do?</h2>
+    <p class="body-text">You don't need to memorise any theory. Just keep these in mind as you go about ordinary life.</p>
+
+    <div class="dodont">
+      <div class="dodont-col do">
+        <h3>Do this</h3>
+        <ul>
+          <li>Pause sometimes and ask: "Is this really what I want, or am I just copying someone?"</li>
+          <li>Notice that you feel genuinely happy whenever you help family, friends, or strangers — that feeling is a clue, not a coincidence.</li>
+          <li>Learn skills, but also decide clearly what purpose they will serve.</li>
+          <li>Treat your health, your relationships, your work and nature as equally important — not one at the cost of the other.</li>
+          <li>Question your own beliefs sometimes instead of just repeating what you've always heard.</li>
+        </ul>
+      </div>
+      <div class="dodont-col dont">
+        <h3>Avoid this</h3>
+        <ul>
+          <li>Don't chase money or status while quietly ignoring health and relationships — it rarely ends up feeling worth it.</li>
+          <li>Don't let skill run ahead of purpose — a powerful tool used carelessly can harm more than it helps.</li>
+          <li>Don't borrow your life goals from friends, trends, or social media without checking if they're really yours.</li>
+          <li>Don't treat nature as something separate from you — using it up carelessly comes back to affect your own life.</li>
+          <li>Don't assume a belief is true just because you've heard it repeated often — check it for yourself.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="quote">"When I fulfil my part in even the smallest way, I feel happy. That's really all there is to it."</p>
+    <p>A simple explanation, inspired by a foundation course on Human Values &amp; Professional Ethics.</p>
+  </footer>
+
+</div>
+
+<script>
+// ---------- Background animation: values gently falling like seeds of light ----------
+// Concept: each falling mote represents a small value settling into place —
+// as they drift close to one another, a soft thread of "harmony" briefly connects them.
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let w, h, motes = [];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight; // fixed viewport background
+}
+window.addEventListener('resize', resize);
+resize();
+
+const PALETTE = ['rgba(232,163,61,0.75)', 'rgba(95,214,196,0.7)', 'rgba(244,239,228,0.55)'];
+
+function makeMote(spawnAnywhere){
+  return {
+    x: Math.random()*w,
+    y: spawnAnywhere ? Math.random()*h : -20 - Math.random()*h*0.3,
+    r: Math.random()*2 + 1,
+    speed: Math.random()*0.5 + 0.18,
+    sway: Math.random()*0.6 + 0.2,
+    swayOffset: Math.random()*Math.PI*2,
+    color: PALETTE[Math.floor(Math.random()*PALETTE.length)],
+    glow: Math.random()*0.5 + 0.5
+  };
+}
+
+const MOTE_COUNT = Math.min(110, Math.floor((w*h)/9000));
+for(let i=0;i<MOTE_COUNT;i++){
+  motes.push(makeMote(true));
+}
+
+let t = 0;
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  t += 0.008;
+
+  // draw connecting threads first (behind the motes) = quiet harmony between values
+  for(let i=0;i<motes.length;i++){
+    for(let j=i+1;j<motes.length;j++){
+      const a = motes[i], b = motes[j];
+      const dx = a.x-b.x, dy = a.y-b.y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist < 110){
+        ctx.strokeStyle = `rgba(95,214,196,${0.09 * (1 - dist/110)})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  for(const m of motes){
+    // soft glow
+    const grad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r*4);
+    grad.addColorStop(0, m.color);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.r*4, 0, Math.PI*2);
+    ctx.fill();
+
+    // solid core
+    ctx.fillStyle = m.color;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+    ctx.fill();
+
+    if(!reduceMotion){
+      m.y += m.speed;
+      m.x += Math.sin(t + m.swayOffset) * m.sway * 0.05;
+      if(m.y > h + 20){
+        Object.assign(m, makeMote(false));
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ---------- Fulfilling life cards toggle ----------
+document.querySelectorAll('.fulfil-card').forEach(card=>{
+  card.addEventListener('click', ()=> card.classList.toggle('open'));
+});
+
+// ---------- Concentric rings interaction ----------
+const ringInfo = {
+  self: "<b>Me:</b> I have a role toward myself — keeping my body healthy and my mind at peace. Everything else starts from here.",
+  family: "<b>Family:</b> I have a role in my family — building trust, and creating a feeling of closeness and support.",
+  society: "<b>Society:</b> I have a role in society — being fair, honest, and helpful in my work and with people around me.",
+  nature: "<b>Nature:</b> I have a role toward nature — using resources with care, so the earth stays liveable for everyone."
+};
+const rings = document.querySelectorAll('.ring');
+const caption = document.getElementById('ringCaption');
+rings.forEach(ring=>{
+  ring.addEventListener('click', ()=>{
+    rings.forEach(r=>r.classList.remove('active'));
+    ring.classList.add('active');
+    caption.innerHTML = ringInfo[ring.dataset.ring];
+  });
+});
+</script>
+
+</body>
+</html>
