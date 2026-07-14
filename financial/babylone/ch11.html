@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Babylon: A City Built From Nothing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12100c;
+    --bg2:#1c1710;
+    --sand:#cfa15a;
+    --sand-light:#eccf94;
+    --clay:#a8623b;
+    --river:#3f8079;
+    --parchment:#ede1c8;
+    --ink:#2a2018;
+    --text:#f2e9d8;
+    --text-dim:#b9a789;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Nunito Sans', sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Cinzel', serif; letter-spacing:.02em;}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- animated background ---------- */
+  #bgCanvas{
+    position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;
+  }
+  .sky{
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse at 50% 15%, #3a2c18 0%, transparent 55%),
+      linear-gradient(180deg, #100d09 0%, #1a140c 45%, #221a10 100%);
+  }
+  .dune{
+    position:fixed; left:-10%; width:120%; z-index:0; pointer-events:none;
+    opacity:.9;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; z-index:2;
+    min-height:92vh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center; padding:40px 20px;
+  }
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--sand); margin-bottom:18px; font-weight:700;
+  }
+  .hero h1{
+    font-size:clamp(2rem, 7vw, 3.6rem); color:var(--sand-light);
+    max-width:820px; line-height:1.15; text-shadow:0 0 40px rgba(207,161,90,.25);
+  }
+  .hero p{
+    margin-top:22px; font-size:1.05rem; color:var(--text-dim); max-width:520px;
+  }
+  .scrollcue{
+    margin-top:56px; font-size:.75rem; color:var(--sand); letter-spacing:.15em;
+    text-transform:uppercase; opacity:.75; animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  /* ---------- sections ---------- */
+  section{position:relative; z-index:2; padding:90px 0;}
+  .kicker{
+    display:inline-block; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--river); font-weight:700; margin-bottom:14px;
+  }
+  section h2{
+    font-size:clamp(1.5rem,4.2vw,2.2rem); color:var(--sand-light); margin-bottom:20px;
+  }
+  section p{ color:var(--text); font-size:1.02rem; margin-bottom:16px; max-width:640px;}
+  .lede{ font-size:1.12rem; color:var(--sand-light); font-weight:600; }
+
+  /* tablet card - the recurring signature element */
+  .tablet{
+    background:linear-gradient(155deg, var(--parchment), #dfd0ac);
+    color:var(--ink);
+    border-radius:6px;
+    padding:26px 28px;
+    box-shadow:0 18px 40px -14px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.06);
+    position:relative;
+    margin:22px 0;
+  }
+  .tablet::before{
+    content:"";
+    position:absolute; inset:8px;
+    border:1px dashed rgba(42,32,24,.18);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .tablet h3{ font-family:'Cinzel',serif; font-size:1.05rem; color:var(--clay); margin-bottom:10px;}
+  .tablet p{ color:var(--ink); font-size:.98rem; margin-bottom:8px;}
+
+  /* toggle cards: had / didn't have */
+  .have-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:26px;}
+  @media (max-width:560px){ .have-grid{grid-template-columns:1fr;} }
+  .have-card{
+    background:var(--bg2); border:1px solid rgba(207,161,90,.18); border-radius:10px;
+    padding:18px; cursor:pointer; transition:.25s;
+  }
+  .have-card:hover{border-color:var(--sand);}
+  .have-card h4{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px;}
+  .have-card.yes h4{color:var(--river);}
+  .have-card.no h4{color:var(--clay);}
+  .have-card ul{padding-left:18px; color:var(--text-dim); font-size:.92rem;}
+  .have-card li{margin-bottom:6px;}
+
+  /* canal slider */
+  .canal-box{
+    background:var(--bg2); border-radius:12px; padding:24px; margin-top:24px;
+    border:1px solid rgba(63,128,121,.25);
+  }
+  .canal-box label{font-size:.85rem; color:var(--text-dim); display:block; margin-bottom:10px;}
+  input[type=range]{ width:100%; accent-color:var(--river); }
+  .horse-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; min-height:34px;}
+  .horse{font-size:1.5rem; opacity:0; transform:translateY(6px); transition:.3s;}
+  .horse.show{opacity:1; transform:translateY(0);}
+  .canal-caption{margin-top:10px; font-size:.88rem; color:var(--sand-light);}
+
+  /* wall chart */
+  .chart-box{ margin-top:26px; }
+  .bar-row{ display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+  .bar-label{ width:150px; flex-shrink:0; font-size:.85rem; color:var(--text-dim);}
+  .bar-track{ flex:1; background:rgba(255,255,255,.06); border-radius:6px; height:22px; overflow:hidden;}
+  .bar-fill{ height:100%; width:0; border-radius:6px; transition:width 1.4s cubic-bezier(.2,.8,.2,1);}
+  .bar-fill.old{background:linear-gradient(90deg,#8a6636,var(--sand));}
+  .bar-fill.new{background:linear-gradient(90deg,var(--clay),#d98e5e);}
+  .bar-fill.modern{background:linear-gradient(90deg,#2a5a55,var(--river));}
+  .bar-val{width:70px; text-align:right; font-size:.82rem; color:var(--sand-light); flex-shrink:0;}
+
+  /* tablet flip example */
+  .flip-wrap{ perspective:1200px; margin-top:24px; }
+  .flip-card{
+    position:relative; height:auto; cursor:pointer;
+  }
+  .flip-hint{ font-size:.78rem; color:var(--text-dim); margin-top:8px; text-align:center;}
+
+  /* timeline */
+  .timeline{ margin-top:28px; border-left:2px solid rgba(207,161,90,.3); padding-left:22px;}
+  .tl-item{ position:relative; margin-bottom:26px;}
+  .tl-item::before{
+    content:""; position:absolute; left:-28px; top:4px; width:10px; height:10px; border-radius:50%;
+    background:var(--sand); box-shadow:0 0 0 4px rgba(207,161,90,.15);
+  }
+  .tl-year{ font-weight:800; color:var(--sand); font-size:.95rem;}
+  .tl-text{ color:var(--text-dim); font-size:.92rem; margin-top:4px;}
+
+  /* do / dont */
+  .dd-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px;}
+  @media (max-width:620px){ .dd-grid{grid-template-columns:1fr;} }
+  .dd-card{ border-radius:12px; padding:24px; }
+  .dd-card.do{ background:rgba(63,128,121,.12); border:1px solid rgba(63,128,121,.35);}
+  .dd-card.dont{ background:rgba(168,98,59,.12); border:1px solid rgba(168,98,59,.35);}
+  .dd-card h3{font-family:'Cinzel',serif; font-size:1.1rem; margin-bottom:14px;}
+  .dd-card.do h3{color:var(--river);}
+  .dd-card.dont h3{color:var(--clay);}
+  .dd-card ul{padding-left:20px;}
+  .dd-card li{margin-bottom:12px; font-size:.94rem; color:var(--text);}
+
+  footer{ text-align:center; padding:50px 20px 80px; color:var(--text-dim); font-size:.85rem; position:relative; z-index:2;}
+
+  ::selection{background:var(--sand); color:var(--ink);}
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<canvas id="bgCanvas"></canvas>
+
+<div class="hero">
+  <div class="eyebrow">An ancient wonder, retold simply</div>
+  <h1>Babylon: A City<br>Built From Nothing</h1>
+  <p>No forests. No mountains. No rain. Just dry mud, a river, and thousands of years of human effort turned into the most famous city in the ancient world.</p>
+  <div class="scrollcue">scroll ↓</div>
+</div>
+
+<div class="wrap">
+
+  <section id="place">
+    <div class="kicker">01 · The Setting</div>
+    <h2>A City That Shouldn't Have Existed</h2>
+    <p class="lede">Picture the richest, most dazzling city in the ancient world. You'd probably imagine jungles, mountains full of gold, or thick forests nearby. Babylon had none of that.</p>
+    <p>It sat in a flat, dry desert next to the Euphrates river. No stone to build with. No wood. No mines. Barely any rain. Everything — every wall, every field, every canal — was made by people, from almost nothing.</p>
+    <div class="have-grid">
+      <div class="have-card yes">
+        <h4>What Babylon actually had</h4>
+        <ul><li>Soft, fertile soil</li><li>Water in the Euphrates river</li><li>People willing to dig</li></ul>
+      </div>
+      <div class="have-card no">
+        <h4>What Babylon didn't have</h4>
+        <ul><li>Forests or timber</li><li>Mines or stone</li><li>Reliable rainfall</li><li>A natural trade route</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="water">
+    <div class="kicker">02 · Engineering</div>
+    <h2>Turning Dust Into Farmland</h2>
+    <p>Babylon's engineers built dams and canals that carried river water for miles across the dry valley, straight onto the fields. It's one of the earliest big engineering projects in history — and it worked so well that the harvests were the richest anyone had seen.</p>
+    <p>Some canals were so wide that a dozen horses could walk side by side along the dry bottom. Drag the slider and picture that width for yourself.</p>
+    <div class="canal-box">
+      <label>How many horses wide was the canal? <span id="horseCount">1</span></label>
+      <input type="range" min="1" max="12" value="1" id="horseSlider">
+      <div class="horse-row" id="horseRow"></div>
+      <div class="canal-caption">That's how wide some of Babylon's irrigation canals really were — big enough to ride a dozen horses across, side by side.</div>
+    </div>
+  </section>
+
+  <section id="walls">
+    <div class="kicker">03 · The Great Walls</div>
+    <h2>Walls So Big They Made the "Wonders" List</h2>
+    <p>Babylon's walls were rebuilt twice — first by Queen Semiramis, then centuries later by King Nabopolassar and finished by his son, Nebuchadnezzar. The second version was almost too big to believe.</p>
+    <div class="chart-box" id="wallChart">
+      <div class="bar-row">
+        <div class="bar-label">First walls</div>
+        <div class="bar-track"><div class="bar-fill old" data-target="35"></div></div>
+        <div class="bar-val">~55 ft</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Nebuchadnezzar's walls</div>
+        <div class="bar-track"><div class="bar-fill new" data-target="95"></div></div>
+        <div class="bar-val">~160 ft</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">A modern 15-floor building</div>
+        <div class="bar-track"><div class="bar-fill modern" data-target="95"></div></div>
+        <div class="bar-val">~160 ft</div>
+      </div>
+    </div>
+    <p>The top of the wall was so wide that a chariot pulled by six horses could turn around on it. Total length: somewhere between 9 and 11 miles, wrapped around the whole city.</p>
+  </section>
+
+  <section id="tablets">
+    <div class="kicker">04 · Records</div>
+    <h2>Clay Tablets: The World's First Paperwork</h2>
+    <p>Babylon had no paper. Instead, people pressed writing into wet clay, then baked it hard — like a little brick that lasted for thousands of years. On these tablets they wrote poetry, laws, letters, property titles, and everyday deals.</p>
+    <p>One surviving tablet is basically a shopkeeper's receipt: a customer traded a cow for seven sacks of wheat — three delivered right away, four more to be collected later. Ordinary life, carved in clay.</p>
+
+    <div class="flip-wrap">
+      <div class="tablet flip-card" id="flipTablet">
+        <h3 id="flipTitle">Then: a clay tablet deal</h3>
+        <p id="flipBody">A farmer trades one cow for 7 sacks of wheat. 3 sacks handed over today. The other 4 are noted down, to be collected later. The clay tablet is the proof.</p>
+        <div class="flip-hint">tap the tablet to see the same idea, today</div>
+      </div>
+    </div>
+
+    <div class="tablet">
+      <h3>A modern version of the same idea</h3>
+      <p><b>Vignesh</b> lends <b>Pranav</b> money to fix his bike. They don't just shake hands — they write it down: amount, date, and when it'll be paid back. <b>Dhanush</b> signs as a witness.</p>
+      <p>It's the exact same instinct as the Babylonians had almost 3,000 years ago: don't trust memory for a deal — write it down, so both sides know exactly what was agreed.</p>
+    </div>
+  </section>
+
+  <section id="rulers">
+    <div class="kicker">05 · Leadership</div>
+    <h2>Kings Who Built, Not Just Conquered</h2>
+    <p>Babylon fought wars, but usually to defend itself, not to grab land. Its most remembered kings are remembered for wisdom, fairness, and big building projects — irrigation, walls, temples — not for chasing glory on the battlefield.</p>
+  </section>
+
+  <section id="fall">
+    <div class="kicker">06 · The Fall</div>
+    <h2>The Walls Were Never Broken — the Army Was</h2>
+    <p>For centuries, no army could get through Babylon's walls by force. When the city finally fell to Cyrus around 540 BC, it wasn't because the walls failed. The king's advisors talked him into marching his army outside the city to fight Cyrus in the open — and lost. The army fled, and Cyrus simply walked in through the open gates.</p>
+    <p>The lesson hiding in that story: the strongest walls in the world can't save you if the decision-making outside them goes wrong.</p>
+  </section>
+
+  <section id="today">
+    <div class="kicker">07 · What's Left</div>
+    <h2>From Wonder of the World to a Mound of Dirt</h2>
+    <p>Once people stopped maintaining the canals and walls, the desert took everything back. For centuries travelers walked right past Babylon's ruins thinking they were just hills. Only broken pottery washing out after rainstorms gave it away — and archaeologists eventually dug up an entire buried city.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-year">~8000 years ago</div><div class="tl-text">Earliest proven dates for walled cities in the region, confirmed using records of a solar eclipse found on the tablets.</div></div>
+      <div class="tl-item"><div class="tl-year">~600 BC</div><div class="tl-text">Nebuchadnezzar finishes the massive second set of walls.</div></div>
+      <div class="tl-item"><div class="tl-year">~540 BC</div><div class="tl-text">Babylon falls to Cyrus — not by broken walls, but a lost battle outside them.</div></div>
+      <div class="tl-item"><div class="tl-year">Since</div><div class="tl-text">The city is slowly abandoned and buried under desert dust, until archaeologists rediscover it centuries later.</div></div>
+    </div>
+  </section>
+
+  <section id="lessons">
+    <div class="kicker">08 · Takeaways</div>
+    <h2>What This City Still Teaches Us</h2>
+    <div class="dd-grid">
+      <div class="dd-card do">
+        <h3>Do</h3>
+        <ul>
+          <li>Use what you actually have fully — Babylon had only soil and water, and built an empire on those two things.</li>
+          <li>Build systems that outlast you — the canals kept working for generations after the people who dug them died.</li>
+          <li>Write things down clearly, like the tablets did — a clear record beats a fuzzy memory every time.</li>
+          <li>Value leaders for wisdom and fairness, not just strength or conquest.</li>
+        </ul>
+      </div>
+      <div class="dd-card dont">
+        <h3>Don't</h3>
+        <ul>
+          <li>Don't assume big defenses alone will protect you — Babylon's walls never fell, but a bad decision outside them did.</li>
+          <li>Don't chase glory through conquest — Babylon's best-remembered rulers weren't the ones who fought the most.</li>
+          <li>Don't neglect the thing that keeps everything alive — when the irrigation stopped, the whole city eventually died with it.</li>
+          <li>Don't assume something great lasts forever without upkeep — even a wonder of the world can end up as a mound of dirt.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Based on "An Historical Sketch of Babylon," from The Richest Man in Babylon.</footer>
+
+<script>
+// ---------- animated sand/dust background ----------
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function makeParticles(){
+  particles = [];
+  const count = Math.min(90, Math.floor(W/16));
+  for(let i=0;i<count;i++){
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.6+0.4,
+      speed: Math.random()*0.35+0.08,
+      drift: Math.random()*0.4-0.1,
+      alpha: Math.random()*0.5+0.15
+    });
+  }
+}
+makeParticles();
+window.addEventListener('resize', makeParticles);
+
+function drawDunes(){
+  // soft parallax dune shapes near bottom
+  const layers = [
+    {y: H*0.82, amp: 26, color:'rgba(60,45,26,0.55)', speed:0.02},
+    {y: H*0.90, amp: 34, color:'rgba(40,30,18,0.75)', speed:0.035}
+  ];
+  const t = performance.now()*0.00006;
+  layers.forEach((l,idx)=>{
+    ctx.beginPath();
+    ctx.moveTo(0,H);
+    for(let x=0;x<=W;x+=20){
+      const y = l.y + Math.sin((x*0.006)+t*(idx+1)*40)*l.amp;
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(W,H);
+    ctx.closePath();
+    ctx.fillStyle = l.color;
+    ctx.fill();
+  });
+}
+
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  drawDunes();
+  ctx.save();
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(207,161,90,${p.alpha})`;
+    ctx.fill();
+    if(!reduceMotion){
+      p.x += p.speed;
+      p.y += p.drift*0.3;
+      if(p.x > W+5){ p.x = -5; p.y = Math.random()*H; }
+    }
+  });
+  ctx.restore();
+  requestAnimationFrame(tick);
+}
+tick();
+
+// ---------- canal horse slider ----------
+const slider = document.getElementById('horseSlider');
+const horseRow = document.getElementById('horseRow');
+const horseCount = document.getElementById('horseCount');
+function renderHorses(n){
+  horseRow.innerHTML = '';
+  for(let i=0;i<n;i++){
+    const span = document.createElement('span');
+    span.className = 'horse';
+    span.textContent = '🐎';
+    horseRow.appendChild(span);
+    setTimeout(()=>span.classList.add('show'), i*35);
+  }
+  horseCount.textContent = n;
+}
+renderHorses(1);
+slider.addEventListener('input', e => renderHorses(parseInt(e.target.value)));
+
+// ---------- wall bar chart animate on scroll ----------
+const bars = document.querySelectorAll('.bar-fill');
+const barObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const fill = entry.target;
+      fill.style.width = fill.dataset.target + '%';
+      barObserver.unobserve(fill);
+    }
+  });
+},{threshold:0.4});
+bars.forEach(b=>barObserver.observe(b));
+
+// ---------- flip tablet ----------
+const flipTablet = document.getElementById('flipTablet');
+const flipTitle = document.getElementById('flipTitle');
+const flipBody = document.getElementById('flipBody');
+let flipped = false;
+flipTablet.addEventListener('click', ()=>{
+  flipped = !flipped;
+  if(flipped){
+    flipTitle.textContent = 'Now: same trade, today';
+    flipBody.textContent = 'Vignesh sells his old phone to Pranav. They text each other the price and the date — a digital version of the same "written proof" idea the clay tablet gave 3,000 years ago.';
+  } else {
+    flipTitle.textContent = 'Then: a clay tablet deal';
+    flipBody.textContent = 'A farmer trades one cow for 7 sacks of wheat. 3 sacks handed over today. The other 4 are noted down, to be collected later. The clay tablet is the proof.';
+  }
+});
+
+// ---------- fade-in sections on scroll ----------
+const sections = document.querySelectorAll('section');
+sections.forEach(s=>{ s.style.opacity = 0; s.style.transform='translateY(18px)'; s.style.transition='opacity .7s ease, transform .7s ease'; });
+const secObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = 'translateY(0)';
+      secObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.12});
+sections.forEach(s=>secObserver.observe(s));
+</script>
+</body>
+</html>

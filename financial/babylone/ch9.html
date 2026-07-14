@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Richest Man in Babylon — Dabasir's Secret</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --clay-dark:#1a140f;
+    --clay-deep:#241b13;
+    --clay-mid:#4a3b28;
+    --brass:#c9a227;
+    --brass-bright:#e8c15a;
+    --terracotta:#c0603a;
+    --parchment:#ece0c4;
+    --parchment-dim:#b8ac8e;
+    --crack:#0d0a07;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--clay-dark);
+    color:var(--parchment);
+    font-family:'Inter',sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  a{color:var(--brass-bright);}
+  ::selection{background:var(--brass);color:var(--clay-dark);}
+
+  /* ---------- animated dust / cuneiform background ---------- */
+  #dustCanvas{
+    position:fixed;
+    top:0;left:0;width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.55;
+  }
+  .bg-glow{
+    position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 800px 500px at 20% -10%, rgba(201,162,39,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 90% 30%, rgba(192,96,58,0.08), transparent 60%);
+    z-index:0;pointer-events:none;
+  }
+
+  .wrap{position:relative;z-index:1;}
+
+  section{
+    max-width:760px;
+    margin:0 auto;
+    padding:90px 24px;
+  }
+  @media (max-width:640px){
+    section{padding:60px 20px;}
+  }
+
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:0.72rem;
+    color:var(--brass);
+    margin-bottom:14px;
+    font-weight:600;
+  }
+
+  /* ---------- hero ---------- */
+  #hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    max-width:820px;
+    padding-top:40px;
+  }
+  .hero-tag{
+    font-size:0.85rem;
+    color:var(--parchment-dim);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  #hero h1{
+    font-size:clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.03;
+    color:var(--parchment);
+  }
+  #hero h1 span{
+    color:var(--brass-bright);
+    font-style:italic;
+    font-weight:600;
+  }
+  .hero-sub{
+    margin-top:26px;
+    font-size:1.15rem;
+    max-width:560px;
+    color:var(--parchment-dim);
+  }
+  .scroll-cue{
+    margin-top:60px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.85rem;
+    color:var(--parchment-dim);
+  }
+  .scroll-cue .line{
+    width:36px;height:1px;background:var(--brass);
+    animation:pulseLine 2s ease-in-out infinite;
+  }
+  @keyframes pulseLine{
+    0%,100%{opacity:0.4;} 50%{opacity:1;}
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- clay tablet card (signature element) ---------- */
+  .tablet{
+    position:relative;
+    background:linear-gradient(160deg, #2b2015, #221a10);
+    border-radius:6px;
+    padding:32px 30px;
+    margin:28px 0;
+    box-shadow:
+      inset 0 0 0 1px rgba(201,162,39,0.12),
+      0 20px 40px -20px rgba(0,0,0,0.6);
+  }
+  .tablet::before{
+    content:"";
+    position:absolute;inset:0;
+    border-radius:6px;
+    background-image:
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.10) 0px, transparent 2px, transparent 40px),
+      repeating-linear-gradient(10deg, rgba(0,0,0,0.08) 0px, transparent 1px, transparent 30px);
+    mix-blend-mode:multiply;
+    pointer-events:none;
+  }
+  .tablet::after{
+    content:"";
+    position:absolute;
+    width:2px;height:60%;
+    background:linear-gradient(var(--crack), transparent);
+    top:15%;
+    opacity:0.5;
+  }
+  .tablet.crack-left::after{ left:14%; }
+  .tablet.crack-right::after{ right:20%; top:5%; }
+  .tablet h3{
+    color:var(--brass-bright);
+    font-size:1.35rem;
+    margin-bottom:12px;
+  }
+  .tablet p{ color:var(--parchment); }
+  .tablet p + p{ margin-top:12px; }
+  .tablet-number{
+    position:absolute;
+    top:18px; right:22px;
+    font-family:'Fraunces',serif;
+    font-size:0.75rem;
+    color:var(--parchment-dim);
+    letter-spacing:0.08em;
+  }
+
+  p.lead{ font-size:1.08rem; color:var(--parchment); }
+  p.lead + p.lead{ margin-top:16px; }
+
+  h2.section-title{
+    font-size:clamp(1.6rem,4vw,2.3rem);
+    margin-bottom:20px;
+    color:var(--parchment);
+  }
+
+  /* ---------- the plan / rule visual ---------- */
+  .plan-rule{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin:16px 0;
+    padding:16px 18px;
+    background:rgba(255,255,255,0.03);
+    border-left:3px solid var(--brass);
+    border-radius:4px;
+  }
+  .plan-rule .num{
+    font-family:'Fraunces',serif;
+    font-size:1.8rem;
+    color:var(--brass-bright);
+    min-width:60px;
+  }
+  .plan-rule .txt strong{ color:var(--parchment); }
+  .plan-rule .txt{ color:var(--parchment-dim); font-size:0.96rem; }
+
+  .chart-box{
+    background:rgba(255,255,255,0.025);
+    border:1px solid rgba(201,162,39,0.15);
+    border-radius:10px;
+    padding:20px;
+    margin:26px 0;
+  }
+  .chart-caption{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--parchment-dim);
+    margin-top:10px;
+  }
+
+  /* ---------- people cards (Vignesh, Pranav, Dhanush) ---------- */
+  .people-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:26px 0;
+  }
+  @media (max-width:640px){
+    .people-grid{grid-template-columns:1fr;}
+  }
+  .person-card{
+    background:rgba(255,255,255,0.03);
+    border-radius:10px;
+    padding:20px;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:transform 0.3s ease, border-color 0.3s ease;
+  }
+  .person-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--brass);
+  }
+  .person-card .avatar{
+    width:44px;height:44px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--brass), var(--terracotta));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    color:var(--clay-dark);
+    margin-bottom:12px;
+    font-size:1.1rem;
+  }
+  .person-card h4{
+    font-family:'Fraunces',serif;
+    color:var(--parchment);
+    margin-bottom:6px;
+    font-size:1.1rem;
+  }
+  .person-card p{
+    color:var(--parchment-dim);
+    font-size:0.92rem;
+  }
+  .person-card .amount{
+    margin-top:12px;
+    font-size:0.85rem;
+    color:var(--brass-bright);
+    font-weight:600;
+  }
+
+  /* ---------- do / dont ---------- */
+  .dd-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:24px;
+  }
+  @media (max-width:640px){
+    .dd-grid{grid-template-columns:1fr;}
+  }
+  .dd-col{
+    border-radius:10px;
+    padding:22px;
+  }
+  .dd-col.do{
+    background:rgba(201,162,39,0.07);
+    border:1px solid rgba(201,162,39,0.25);
+  }
+  .dd-col.dont{
+    background:rgba(192,96,58,0.07);
+    border:1px solid rgba(192,96,58,0.25);
+  }
+  .dd-col h4{
+    font-family:'Fraunces',serif;
+    margin-bottom:12px;
+    font-size:1.15rem;
+  }
+  .dd-col.do h4{ color:var(--brass-bright); }
+  .dd-col.dont h4{ color:var(--terracotta); }
+  .dd-col ul{ list-style:none; }
+  .dd-col li{
+    padding-left:22px;
+    position:relative;
+    margin-bottom:10px;
+    color:var(--parchment);
+    font-size:0.94rem;
+  }
+  .dd-col.do li::before{ content:"✓"; position:absolute; left:0; color:var(--brass-bright); font-weight:700;}
+  .dd-col.dont li::before{ content:"✕"; position:absolute; left:0; color:var(--terracotta); font-weight:700;}
+
+  /* ---------- closing ---------- */
+  #closing{
+    text-align:center;
+    padding-bottom:120px;
+  }
+  #closing h2{
+    font-size:clamp(1.8rem,5vw,2.6rem);
+    margin-bottom:18px;
+  }
+  #closing p{
+    color:var(--parchment-dim);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .seal{
+    width:64px;height:64px;
+    margin:36px auto 0;
+    border-radius:50%;
+    border:2px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    color:var(--brass-bright);
+    font-size:1.4rem;
+    opacity:0.8;
+  }
+
+  .divider{
+    width:60px;height:2px;
+    background:var(--brass);
+    margin:36px 0;
+    opacity:0.5;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 20px 50px;
+    color:var(--parchment-dim);
+    font-size:0.8rem;
+    position:relative;
+    z-index:1;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="dustCanvas"></canvas>
+<div class="bg-glow"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-tag">A story dug out of five-thousand-year-old clay</div>
+    <h1>The Richest Man <br><span>in Babylon</span></h1>
+    <p class="hero-sub">In 1934, a professor translates five clay tablets found in the ruins of Babylon. They belong to a man named Dabasir — a camel trader who was once sold as a slave because of his debts. What he carved onto the clay is still one of the simplest money plans ever written.</p>
+    <div class="scroll-cue"><div class="line"></div> scroll to read the tablets</div>
+  </section>
+
+  <!-- THE LETTER -->
+  <section class="reveal">
+    <div class="eyebrow">Where the story begins</div>
+    <h2 class="section-title">A letter from a dusty dig site</h2>
+    <p class="lead">A British team is digging in the ruins of an old Mesopotamian city. Among the broken pottery, they find five clay tablets covered in strange writing. A professor in England spends weeks translating them.</p>
+    <p class="lead">He expects old myths and adventure stories. Instead, he finds something surprising: a man from five thousand years ago, writing down exactly how he paid off his debts and became wealthy. Nothing about money, it turns out, has really changed.</p>
+  </section>
+
+  <!-- WHO WAS DABASIR -->
+  <section class="reveal">
+    <div class="eyebrow">Tablet one</div>
+    <h2 class="section-title">Who was Dabasir?</h2>
+    <p class="lead">Dabasir was a camel trader in Babylon who lived beyond his means. He borrowed from friends, from a jeweller, from his landlord, from a moneylender — ten people in total. When the debts piled up, instead of facing them, he ran away to another city looking for quick riches.</p>
+    <p class="lead">It went badly. He ended up broke, then kidnapped, then sold as a slave in Syria. Years later, he escaped and made his way back home to Babylon — with nothing, but with a plan given to him by an old friend, a moneylender named Mathon.</p>
+
+    <div class="tablet crack-left">
+      <div class="tablet-number">TABLET I</div>
+      <h3>Mathon's Rule</h3>
+      <p>"That man who keepeth in his purse both gold and silver that he need not spend is good to his family and loyal to his king. But the man who hath naught in his purse is unkind to his family, for his own heart is bitter."</p>
+      <p>In plain words: if you never keep anything for yourself, money will always make you anxious and bitter — no matter how much you earn.</p>
+    </div>
+  </section>
+
+  <!-- THE PLAN -->
+  <section class="reveal">
+    <div class="eyebrow">Tablet two</div>
+    <h2 class="section-title">The plan: split every payday into three</h2>
+    <p class="lead">Dabasir owed 119 pieces of silver and 141 pieces of copper to ten different people. Instead of panicking, Mathon gave him one simple rule to follow every single time he earned money.</p>
+
+    <div class="plan-rule">
+      <div class="num">1/10</div>
+      <div class="txt"><strong>Keep it.</strong> Set aside one-tenth of everything earned, and never touch it. This becomes real savings — money that works for you later.</div>
+    </div>
+    <div class="plan-rule">
+      <div class="num">7/10</div>
+      <div class="txt"><strong>Live on it.</strong> Seven-tenths covers food, rent, clothes, and a little enjoyment. The rule: never spend more than this share, no matter what.</div>
+    </div>
+    <div class="plan-rule">
+      <div class="num">2/10</div>
+      <div class="txt"><strong>Pay it back.</strong> Two-tenths goes to every creditor, split fairly between all of them, every single payday, without skipping.</div>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="planChart" height="220"></canvas>
+      <div class="chart-caption">How Dabasir split every payment he earned</div>
+    </div>
+  </section>
+
+  <!-- DABASIR'S JOURNEY -->
+  <section class="reveal">
+    <div class="eyebrow">Tablets three, four and five</div>
+    <h2 class="section-title">Twelve months, one clay tablet at a time</h2>
+    <p class="lead">Not every creditor was kind about it. Ahmar called him names. Alkahad, the house owner, threatened trouble. Dabasir didn't argue — he simply kept showing up with his small, honest payment, moon after moon.</p>
+    <p class="lead">Some months were good — he'd catch a fine herd of camels and earn 42 pieces of silver. Some months were lean — only 11 pieces. But the one-tenth was always saved, and the two-tenths always paid, no matter how small.</p>
+
+    <div class="chart-box">
+      <canvas id="journeyChart" height="240"></canvas>
+      <div class="chart-caption">Illustration: how his debt shrank and his own savings grew, moon by moon</div>
+    </div>
+
+    <div class="tablet crack-right">
+      <div class="tablet-number">TABLET V</div>
+      <h3>The last payment</h3>
+      <p>After twelve full moons, Dabasir finished paying every single creditor. Old Alkahad — once his harshest critic — told him: "Thou wert once a piece of soft clay to be pressed by any hand. Now thou art bronze, capable of holding an edge."</p>
+    </div>
+  </section>
+
+  <!-- MODERN EXAMPLE -->
+  <section class="reveal">
+    <div class="eyebrow">The same plan, today</div>
+    <h2 class="section-title">Three friends, one payday</h2>
+    <p class="lead">The plan works the same today as it did in Babylon. Picture three friends, Vignesh, Pranav and Dhanush, each getting their monthly pay and choosing to follow Dabasir's rule.</p>
+
+    <div class="people-grid">
+      <div class="person-card">
+        <div class="avatar">V</div>
+        <h4>Vignesh</h4>
+        <p>Puts one-tenth of every paycheck into a separate savings account before he spends on anything else. He never sees that money as "available."</p>
+        <div class="amount">Pays himself first</div>
+      </div>
+      <div class="person-card">
+        <div class="avatar">P</div>
+        <h4>Pranav</h4>
+        <p>Still has an old laptop loan. He automates two-tenths of his salary to go straight to repayment the day he's paid — before he can spend it elsewhere.</p>
+        <div class="amount">Pays debts on schedule</div>
+      </div>
+      <div class="person-card">
+        <div class="avatar">D</div>
+        <h4>Dhanush</h4>
+        <p>Built his monthly budget around living on seven-tenths of his income — rent, food, travel, fun — and refuses to let it creep higher.</p>
+        <div class="amount">Lives on the rest</div>
+      </div>
+    </div>
+    <p class="lead">None of them earn a huge salary. What changes their situation is the order they do things in — save first, pay debts on purpose, then live on what's left.</p>
+  </section>
+
+  <!-- THE PROFESSOR -->
+  <section class="reveal">
+    <div class="eyebrow">Two years later</div>
+    <h2 class="section-title">The professor tries it himself</h2>
+    <p class="lead">The same professor who translated the tablets was quietly drowning in his own debts. He and his wife tried Dabasir's exact plan: twenty percent to creditors, ten percent kept, seventy percent to live on.</p>
+    <p class="lead">They asked every person they owed money to for patience, showed them the numbers, and stuck to the plan without exception. Within about two years, every debt was gone — and they had a growing investment fund besides.</p>
+
+    <div class="chart-box">
+      <canvas id="professorChart" height="220"></canvas>
+      <div class="chart-caption">Illustration: debt falling while savings climb, over roughly two years</div>
+    </div>
+  </section>
+
+  <!-- DO AND DONT -->
+  <section class="reveal">
+    <div class="eyebrow">The takeaway</div>
+    <h2 class="section-title">What to do, and what to avoid</h2>
+    <p class="lead">Strip away the camels and the clay, and the whole story comes down to a short list of habits.</p>
+
+    <div class="dd-grid">
+      <div class="dd-col do">
+        <h4>Do this</h4>
+        <ul>
+          <li>Save a fixed portion the moment you're paid, before spending anything</li>
+          <li>Build your spending to fit inside what's left, on purpose</li>
+          <li>Pay every debt something, every time, even if it's small</li>
+          <li>Be honest with people you owe, and stay consistent</li>
+          <li>Keep going even through the bad months</li>
+        </ul>
+      </div>
+      <div class="dd-col dont">
+        <h4>Avoid this</h4>
+        <ul>
+          <li>Don't wait for "extra" money to start saving — it never arrives on its own</li>
+          <li>Don't run away from debts instead of facing them</li>
+          <li>Don't let spending quietly grow past what you earn</li>
+          <li>Don't pay one creditor in full while ignoring the rest</li>
+          <li>Don't give up the plan the first time a month goes badly</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section id="closing" class="reveal">
+    <div class="seal">✦</div>
+    <h2>One rule, five thousand years old</h2>
+    <p>Save a tenth. Live on seven-tenths. Pay your debts with the rest. Dabasir carved it into clay so it would outlast him — and somehow, it has.</p>
+  </section>
+
+</div>
+
+<footer>Based on "The Clay Tablets from Babylon," from The Richest Man in Babylon by George S. Clason.</footer>
+
+<script>
+// ---------------- animated dust / drifting particles ----------------
+const canvas = document.getElementById('dustCanvas');
+const ctx = canvas.getContext('2d');
+let w, h, particles = [];
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const symbols = ['𒀭','𒁀','𒂗','𒃵','𒄿','𒅋','𒆗','𒇉'];
+const count = window.innerWidth < 640 ? 22 : 40;
+
+function makeParticle(){
+  return {
+    x: Math.random()*w,
+    y: Math.random()*h,
+    r: Math.random()*1.6 + 0.4,
+    vy: -(Math.random()*0.18 + 0.04),
+    vx: (Math.random()-0.5)*0.12,
+    isGlyph: Math.random() < 0.06,
+    glyph: symbols[Math.floor(Math.random()*symbols.length)],
+    alpha: Math.random()*0.35 + 0.08,
+    size: Math.random()*10 + 10
+  };
+}
+for(let i=0;i<count;i++) particles.push(makeParticle());
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    if(p.isGlyph){
+      ctx.fillStyle = '#c9a227';
+      ctx.font = p.size + 'px serif';
+      ctx.fillText(p.glyph, p.x, p.y);
+    } else {
+      ctx.fillStyle = '#e8c15a';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+    p.x += p.vx;
+    p.y += p.vy;
+    if(p.y < -20){ p.y = h + 20; p.x = Math.random()*w; }
+    if(p.x < -20) p.x = w+20;
+    if(p.x > w+20) p.x = -20;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ---------------- scroll reveal ----------------
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el=>io.observe(el));
+
+// ---------------- Chart.js defaults ----------------
+Chart.defaults.color = '#b8ac8e';
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+// 1) The plan split — donut
+new Chart(document.getElementById('planChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Keep for yourself (1/10)', 'Living costs (7/10)', 'Pay creditors (2/10)'],
+    datasets: [{
+      data: [10, 70, 20],
+      backgroundColor: ['#e8c15a', '#4a3b28', '#c0603a'],
+      borderColor: '#1a140f',
+      borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, boxWidth: 14 } }
+    },
+    cutout: '62%'
+  }
+});
+
+// 2) Dabasir's 12-month journey — debt down, savings up
+const months = Array.from({length:12}, (_,i)=>'Moon '+(i+1));
+const debt = [119,113,104,99,84,77,70,63,49,34,17,0];
+const savings = [0,2.1,4.3,6.6,9.1,11.5,14.2,17.0,20.5,24.3,28.6,33.0];
+new Chart(document.getElementById('journeyChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Silver still owed',
+        data: debt,
+        borderColor: '#c0603a',
+        backgroundColor: 'rgba(192,96,58,0.12)',
+        tension: 0.35,
+        fill: true,
+        pointRadius: 2
+      },
+      {
+        label: 'Silver kept as his own',
+        data: savings,
+        borderColor: '#e8c15a',
+        backgroundColor: 'rgba(232,193,90,0.10)',
+        tension: 0.35,
+        fill: true,
+        pointRadius: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { position: 'bottom', labels:{boxWidth:14,padding:16} } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, title: { display:true, text:'Pieces of silver' } }
+    }
+  }
+});
+
+// 3) Professor Shrewsbury — ~2 years, debt vs investment
+const pMonths = ['Start','Q1','Q2','Q3','Q4','Yr 1','Q5','Q6','Q7','Yr 2'];
+const pDebt = [100,88,74,58,42,30,20,11,4,0];
+const pInvest = [0,4,9,14,20,26,33,41,50,60];
+new Chart(document.getElementById('professorChart'), {
+  type: 'bar',
+  data: {
+    labels: pMonths,
+    datasets: [
+      { label: 'Debt remaining (%)', data: pDebt, backgroundColor: '#c0603a' },
+      { label: 'Investment growing (relative)', data: pInvest, backgroundColor: '#e8c15a' }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels:{boxWidth:14,padding:16} } },
+    scales: {
+      x: { grid: { display:false } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Luckiest Man in Babylon — A Simple Story</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Mulish:wght@400;500;700;800&display=swap');
+
+  :root{
+    --night: #171009;
+    --night2: #241708;
+    --sand: #e8c99a;
+    --sand-dim: #b89a72;
+    --clay: #a8632f;
+    --rust: #c4551f;
+    --gold: #d9a441;
+    --line: rgba(232,201,154,0.15);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--night);
+    color:var(--sand);
+    font-family:'Mulish',sans-serif;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  h1,h2,h3,.serif{
+    font-family:'Amiri',serif;
+  }
+
+  /* ===== ANIMATED DESERT BACKGROUND ===== */
+  #bgCanvas{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:-2;
+  }
+
+  .dune-layer{
+    position:fixed;
+    left:0; width:100%;
+    z-index:-1;
+    pointer-events:none;
+    opacity:0.9;
+  }
+  #dune1{bottom:-2%; height:26vh;}
+  #dune2{bottom:-4%; height:32vh;}
+
+  .caravan{
+    position:fixed;
+    bottom:8vh;
+    left:-15%;
+    width:120px;
+    opacity:0.55;
+    z-index:-1;
+    animation:crossDesert 60s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes crossDesert{
+    0%{ left:-15%; }
+    100%{ left:115%; }
+  }
+
+  /* ===== LAYOUT ===== */
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:0 22px;
+  }
+
+  section{
+    padding:70px 0;
+    position:relative;
+  }
+
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:0.72rem;
+    color:var(--gold);
+    font-weight:800;
+    margin-bottom:10px;
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px 22px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 8vw, 3.8rem);
+    font-weight:700;
+    line-height:1.15;
+    background:linear-gradient(90deg,var(--sand),var(--gold) 60%, var(--rust));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    max-width:680px;
+  }
+  .hero p{
+    margin-top:18px;
+    font-size:1.05rem;
+    color:var(--sand-dim);
+    max-width:480px;
+  }
+  .hero .tag{
+    margin-top:34px;
+    font-size:0.85rem;
+    color:var(--sand-dim);
+    letter-spacing:1px;
+  }
+  .scrollcue{
+    margin-top:6px;
+    font-size:1.4rem;
+    animation:bounce 1.8s ease-in-out infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+
+  /* ===== STORY SCENES ===== */
+  .scene{
+    background:rgba(36,23,8,0.55);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px 24px;
+    margin:20px 0;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .scene.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .scene h3{
+    font-size:1.25rem;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .scene p{
+    font-size:0.98rem;
+    color:var(--sand);
+  }
+  .scene .who{
+    display:inline-block;
+    margin-top:12px;
+    font-size:0.78rem;
+    color:var(--sand-dim);
+    font-style:italic;
+  }
+
+  /* ===== SECTION TITLES ===== */
+  .sec-title{
+    font-size:clamp(1.6rem,5vw,2.3rem);
+    margin-bottom:8px;
+  }
+  .sec-sub{
+    color:var(--sand-dim);
+    margin-bottom:30px;
+    font-size:0.98rem;
+    max-width:520px;
+  }
+
+  /* ===== THREE WORKERS CARDS ===== */
+  .workers{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media(min-width:640px){
+    .workers{grid-template-columns:repeat(3,1fr);}
+  }
+  .worker-card{
+    background:var(--night2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    cursor:pointer;
+    transition:transform 0.3s ease, border-color 0.3s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .worker-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--gold);
+  }
+  .worker-card .icon{
+    font-size:1.8rem;
+    margin-bottom:8px;
+    display:block;
+  }
+  .worker-card h4{
+    font-family:'Amiri',serif;
+    font-size:1.15rem;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  .worker-card p{
+    font-size:0.88rem;
+    color:var(--sand-dim);
+  }
+  .worker-card .detail{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.4s ease, margin-top 0.4s ease;
+    font-size:0.85rem;
+    color:var(--sand);
+  }
+  .worker-card.open .detail{
+    max-height:200px;
+    margin-top:10px;
+  }
+  .tap-hint{
+    font-size:0.72rem;
+    color:var(--rust);
+    margin-top:10px;
+    letter-spacing:0.5px;
+  }
+
+  /* ===== CHART ===== */
+  .chart-box{
+    background:var(--night2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    margin-top:26px;
+  }
+  #outcomeChart{
+    width:100%;
+    height:auto;
+  }
+  .legend{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-top:14px;
+    font-size:0.8rem;
+  }
+  .legend span{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--sand-dim);
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    display:inline-block;
+  }
+
+  /* ===== BIG IDEA ===== */
+  .big-idea{
+    text-align:center;
+    padding:60px 22px;
+  }
+  .big-idea blockquote{
+    font-family:'Amiri',serif;
+    font-size:clamp(1.4rem,5vw,2.1rem);
+    font-style:italic;
+    color:var(--gold);
+    line-height:1.4;
+  }
+  .big-idea .credit{
+    margin-top:14px;
+    color:var(--sand-dim);
+    font-size:0.85rem;
+  }
+
+  /* ===== TABLET BREAK ANIMATION ===== */
+  .tablet-section{
+    text-align:center;
+    padding:70px 22px;
+  }
+  #tabletWrap{
+    position:relative;
+    width:180px;
+    height:120px;
+    margin:30px auto;
+  }
+  .tablet-piece{
+    position:absolute;
+    width:60px;height:40px;
+    background:linear-gradient(145deg,#c98f4e,#8b5a2b);
+    border:1px solid #6e4520;
+    top:40px;left:60px;
+    transition:transform 1.2s cubic-bezier(.2,.8,.3,1), opacity 1.2s ease;
+    border-radius:3px;
+  }
+  .tablet-piece:nth-child(1){transform-origin:center;}
+  #tabletWrap.broken .p1{transform:translate(-70px,-40px) rotate(-35deg); opacity:0.9;}
+  #tabletWrap.broken .p2{transform:translate(50px,-30px) rotate(25deg); opacity:0.9;}
+  #tabletWrap.broken .p3{transform:translate(-30px,50px) rotate(50deg); opacity:0.85;}
+  #tabletWrap.broken .p4{transform:translate(40px,55px) rotate(-40deg); opacity:0.85;}
+  .tablet-caption{
+    color:var(--sand-dim);
+    font-size:0.9rem;
+    margin-top:10px;
+  }
+  .tap-btn{
+    margin-top:20px;
+    background:var(--rust);
+    color:var(--sand);
+    border:none;
+    padding:12px 26px;
+    border-radius:30px;
+    font-family:'Mulish',sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition:transform 0.2s ease, background 0.2s ease;
+  }
+  .tap-btn:hover{
+    transform:scale(1.05);
+    background:#d9601f;
+  }
+
+  /* ===== MODERN EXAMPLE ===== */
+  .modern-cards{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .modern-card{
+    background:var(--night2);
+    border-left:3px solid var(--gold);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .modern-card h4{
+    font-family:'Amiri',serif;
+    color:var(--gold);
+    font-size:1.1rem;
+    margin-bottom:6px;
+  }
+  .modern-card p{
+    font-size:0.92rem;
+    color:var(--sand);
+  }
+
+  /* ===== DO / DONT ===== */
+  .dodont{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media(min-width:640px){
+    .dodont{grid-template-columns:1fr 1fr;}
+  }
+  .do, .dont{
+    border-radius:14px;
+    padding:22px;
+  }
+  .do{
+    background:rgba(217,164,65,0.09);
+    border:1px solid rgba(217,164,65,0.35);
+  }
+  .dont{
+    background:rgba(196,85,31,0.09);
+    border:1px solid rgba(196,85,31,0.35);
+  }
+  .do h4{color:var(--gold);}
+  .dont h4{color:var(--rust);}
+  .do h4, .dont h4{
+    font-family:'Amiri',serif;
+    font-size:1.2rem;
+    margin-bottom:12px;
+  }
+  .do ul, .dont ul{
+    list-style:none;
+  }
+  .do li, .dont li{
+    font-size:0.92rem;
+    padding:6px 0 6px 22px;
+    position:relative;
+    color:var(--sand);
+  }
+  .do li:before{
+    content:"✓";
+    position:absolute;left:0;
+    color:var(--gold);
+    font-weight:800;
+  }
+  .dont li:before{
+    content:"✗";
+    position:absolute;left:0;
+    color:var(--rust);
+    font-weight:800;
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 22px 60px;
+    color:var(--sand-dim);
+    font-size:0.8rem;
+    border-top:1px solid var(--line);
+    margin-top:40px;
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<svg id="dune2" class="dune-layer" viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0,180 Q300,80 600,160 T1200,140 V300 H0 Z" fill="#241708"/></svg>
+<svg id="dune1" class="dune-layer" viewBox="0 0 1200 260" preserveAspectRatio="none"><path d="M0,140 Q250,220 550,140 T1200,180 V260 H0 Z" fill="#1c1206"/></svg>
+<svg class="caravan" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <g fill="#4a2f14">
+    <ellipse cx="30" cy="45" rx="10" ry="4"/>
+    <rect x="20" y="20" width="20" height="14" rx="6"/>
+    <ellipse cx="80" cy="45" rx="10" ry="4"/>
+    <rect x="70" y="15" width="22" height="20" rx="6"/>
+    <ellipse cx="140" cy="45" rx="10" ry="4"/>
+    <rect x="128" y="22" width="24" height="14" rx="6"/>
+  </g>
+</svg>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="eyebrow">A Story From "The Richest Man in Babylon"</div>
+  <h1>The Luckiest Man in Babylon</h1>
+  <p>A tale about a slave, a chain, and one simple habit that set him free — told in plain, easy words.</p>
+  <div class="tag">Scroll down to read the story</div>
+  <div class="scrollcue">↓</div>
+</section>
+
+<div class="wrap">
+
+<!-- ================= STORY ================= -->
+<section id="story">
+  <div class="eyebrow">Part 1</div>
+  <h2 class="sec-title">The Story, Made Simple</h2>
+  <p class="sec-sub">An old, rich merchant named Sharru Nada is riding into Babylon with a spoiled young man, Hadan Gula, who thinks work is only for slaves. So Sharru Nada tells him the truth about his own past.</p>
+
+  <div class="scene">
+    <h3>🐫 A Rich Man, A Lazy Boy</h3>
+    <p>Sharru Nada is now a famous, wealthy trader. Hadan Gula, riding beside him, wears jewels and says work is "for slaves." Sharru Nada stays quiet — because he was once a slave himself, and work is the reason he isn't one anymore.</p>
+    <span class="who">Setting: the road into Babylon</span>
+  </div>
+
+  <div class="scene">
+    <h3>⛓️ Chained on the Road</h3>
+    <p>Years ago, young Sharru Nada was sold into slavery because of his brother's crime. He marched to Babylon in chains next to three very different men — Megiddo, Zabado, and a man called Pirate.</p>
+    <span class="who">Setting: the slave column, on the way to Babylon</span>
+  </div>
+
+  <div class="scene">
+    <h3>🍞 A Lucky Break</h3>
+    <p>At the slave market, most men were bought to build the city walls — brutal, deadly work. But Sharru Nada convinced a baker to buy him instead by promising to work hard. He believed this was his lucky break.</p>
+    <span class="who">Setting: the slave market</span>
+  </div>
+
+  <div class="scene">
+    <h3>🍯 Selling Honey Cakes</h3>
+    <p>He asked his master for a side job: baking extra honey cakes and selling them on the street in his free time. His master agreed to share the profit. Slowly, coin by coin, his purse grew heavier.</p>
+    <span class="who">Setting: the streets of Babylon</span>
+  </div>
+
+  <div class="scene">
+    <h3>🕯️ Freedom, Lost and Found</h3>
+    <p>Just when he was close to buying his freedom, his master's gambling debts caused him to be sold again — this time to dig canals in the brutal desert heat. He nearly broke. But his old friend Arad Gula (the rug seller who always bought his cakes) never stopped looking for him — and finally bought his freedom and made him a business partner.</p>
+    <span class="who">Setting: the Grand Canal, then back home</span>
+  </div>
+</section>
+
+<!-- ================= THREE WORKERS ================= -->
+<section id="workers">
+  <div class="eyebrow">Part 2</div>
+  <h2 class="sec-title">Three Men, Three Chains, Three Choices</h2>
+  <p class="sec-sub">Chained together on the same road, each man picked a different way to deal with hard times. Tap a card to see what happened to each of them.</p>
+
+  <div class="workers">
+    <div class="worker-card" data-p="1">
+      <span class="icon">🌾</span>
+      <h4>Megiddo</h4>
+      <p>"Work is my best friend."</p>
+      <div class="detail">He worked hard for every master, never complained, and became a trusted foreman. He earned enough to bring his family to him and dreamed of buying back his farm.</div>
+      <div class="tap-hint">Tap to see what happened →</div>
+    </div>
+    <div class="worker-card" data-p="2">
+      <span class="icon">🐑</span>
+      <h4>Zabado</h4>
+      <p>"Why work hard if you can avoid it?"</p>
+      <div class="detail">He tried to get by with the least effort possible. Years later, he was found starving and covered in whip-scars, still a slave, still stuck.</div>
+      <div class="tap-hint">Tap to see what happened →</div>
+    </div>
+    <div class="worker-card" data-p="3">
+      <span class="icon">🗡️</span>
+      <h4>"Pirate"</h4>
+      <p>"I'll fight instead of work."</p>
+      <div class="detail">His anger got him nowhere. He was later executed for killing a guard — his body left hanging as a warning to others.</div>
+      <div class="tap-hint">Tap to see what happened →</div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="eyebrow">One Chain, Three Very Different Paths</div>
+    <svg id="outcomeChart" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="legend">
+      <span><i class="dot" style="background:#d9a441"></i>Megiddo — kept working</span>
+      <span><i class="dot" style="background:#b89a72"></i>Zabado — avoided work</span>
+      <span><i class="dot" style="background:#c4551f"></i>Pirate — fought back</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BIG IDEA ================= -->
+<section class="big-idea">
+  <div class="eyebrow">Part 3 — The Big Idea</div>
+  <blockquote>"Work is the best friend I've ever known — it brought me everything I have."</blockquote>
+  <p class="credit">— what Megiddo told a scared young slave, and what stuck with him for life</p>
+</section>
+
+<!-- ================= TABLET BREAK ================= -->
+<section class="tablet-section">
+  <div class="eyebrow">The Moment Everything Changed</div>
+  <h2 class="sec-title">Freedom Is a Broken Tablet</h2>
+  <p class="sec-sub">In old Babylon, a slave's ownership was written on a clay tablet. When Arad Gula bought back his friend's freedom, he smashed the tablet on the ground — freedom, in pieces of clay.</p>
+  <div id="tabletWrap">
+    <div class="tablet-piece p1"></div>
+    <div class="tablet-piece p2"></div>
+    <div class="tablet-piece p3"></div>
+    <div class="tablet-piece p4"></div>
+  </div>
+  <button class="tap-btn" onclick="breakTablet()">Break the tablet</button>
+  <p class="tablet-caption">Tap the button to see it shatter</p>
+</section>
+
+<!-- ================= MODERN EXAMPLES ================= -->
+<section id="modern">
+  <div class="eyebrow">Part 4 — Same Story, Today</div>
+  <h2 class="sec-title">This Still Happens Now</h2>
+  <p class="sec-sub">You don't need chains or deserts to see this pattern. It shows up in ordinary jobs and daily habits.</p>
+
+  <div class="modern-cards">
+    <div class="modern-card">
+      <h4>Vignesh — The Megiddo</h4>
+      <p>Vignesh takes on the boring tasks at work without complaining and always finishes what he starts. A year later, he's the one his manager trusts with bigger projects.</p>
+    </div>
+    <div class="modern-card">
+      <h4>Pranav — The Zabado</h4>
+      <p>Pranav does the least he can get away with, hoping no one notices. He stays stuck in the same role while people around him grow.</p>
+    </div>
+    <div class="modern-card">
+      <h4>Dhanush — The Pirate</h4>
+      <p>Dhanush gets angry at every hard task and picks fights with his team instead of solving problems. He burns bridges he later needs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DO / DON'T ================= -->
+<section id="dodont">
+  <div class="eyebrow">Part 5 — Take This With You</div>
+  <h2 class="sec-title">What To Do, What Not To Do</h2>
+
+  <div class="dodont">
+    <div class="do">
+      <h4>Do this</h4>
+      <ul>
+        <li>Treat hard work as a friend, not a punishment</li>
+        <li>Do your best even when no one is watching</li>
+        <li>Use small side efforts to build something extra, like the honey cakes</li>
+        <li>Stay loyal to people who help you — it comes back around</li>
+        <li>Keep going even when results are slow to show</li>
+      </ul>
+    </div>
+    <div class="dont">
+      <h4>Don't do this</h4>
+      <ul>
+        <li>Don't do the least you can get away with</li>
+        <li>Don't let anger replace effort when things get hard</li>
+        <li>Don't wait for luck instead of building your own chances</li>
+        <li>Don't judge people only by where they started</li>
+        <li>Don't forget the people who believed in you early on</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Based on "The Luckiest Man in Babylon" chapter, from The Richest Man in Babylon by George S. Clason.
+</footer>
+
+<script>
+// ---------- Animated starfield desert-night background ----------
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let w, h, stars = [];
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function initStars(){
+  stars = [];
+  const count = Math.floor((w*h)/9000);
+  for(let i=0;i<count;i++){
+    stars.push({
+      x: Math.random()*w,
+      y: Math.random()*h*0.7,
+      r: Math.random()*1.4+0.3,
+      tw: Math.random()*Math.PI*2,
+      speed: Math.random()*0.02+0.005
+    });
+  }
+}
+initStars();
+window.addEventListener('resize', initStars);
+
+function drawSky(){
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'#0d0904');
+  grad.addColorStop(0.6,'#1c1206');
+  grad.addColorStop(1,'#241708');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,w,h);
+}
+
+function animate(){
+  drawSky();
+  stars.forEach(s=>{
+    s.tw += s.speed;
+    const alpha = 0.4 + Math.sin(s.tw)*0.4;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(232,201,154,${Math.max(alpha,0.1)})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ---------- Scroll reveal for story scenes ----------
+const scenes = document.querySelectorAll('.scene');
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('show');
+    }
+  });
+},{threshold:0.2});
+scenes.forEach(s=>revealObserver.observe(s));
+
+// ---------- Worker cards tap to expand ----------
+document.querySelectorAll('.worker-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    card.classList.toggle('open');
+  });
+});
+
+// ---------- Tablet break animation ----------
+function breakTablet(){
+  const t = document.getElementById('tabletWrap');
+  t.classList.toggle('broken');
+}
+
+// ---------- Outcome line chart (three paths) ----------
+function drawChart(){
+  const svg = document.getElementById('outcomeChart');
+  svg.innerHTML = '';
+  const W = 400, H = 220, pad = 30;
+  const ns = 'http://www.w3.org/2000/svg';
+
+  // axis line
+  const axis = document.createElementNS(ns,'line');
+  axis.setAttribute('x1',pad); axis.setAttribute('y1',H-pad);
+  axis.setAttribute('x2',W-10); axis.setAttribute('y2',H-pad);
+  axis.setAttribute('stroke','rgba(232,201,154,0.25)');
+  svg.appendChild(axis);
+
+  const labelY = document.createElementNS(ns,'text');
+  labelY.setAttribute('x', 10); labelY.setAttribute('y', 18);
+  labelY.setAttribute('fill','#b89a72'); labelY.setAttribute('font-size','9');
+  labelY.textContent = 'life outcome ↑';
+  svg.appendChild(labelY);
+
+  const labelX = document.createElementNS(ns,'text');
+  labelX.setAttribute('x', W-90); labelX.setAttribute('y', H-8);
+  labelX.setAttribute('fill','#b89a72'); labelX.setAttribute('font-size','9');
+  labelX.textContent = 'years pass →';
+  svg.appendChild(labelX);
+
+  // three simple paths, points 0..1 normalized
+  const paths = [
+    {color:'#d9a441', pts:[0.15,0.25,0.45,0.6,0.8,0.95]}, // Megiddo rises
+    {color:'#b89a72', pts:[0.15,0.15,0.18,0.15,0.12,0.1]}, // Zabado flat/low
+    {color:'#c4551f', pts:[0.15,0.2,0.25,0.15,0.05,0.02]}  // Pirate crashes
+  ];
+
+  paths.forEach(p=>{
+    let d = '';
+    p.pts.forEach((val,i)=>{
+      const x = pad + (i/(p.pts.length-1))*(W-pad-20);
+      const y = (H-pad) - val*(H-pad-20);
+      d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    });
+    const path = document.createElementNS(ns,'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke', p.color);
+    path.setAttribute('stroke-width','3');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('stroke-linejoin','round');
+    const len = 500;
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    svg.appendChild(path);
+  });
+
+  // animate draw-in when in view
+  const chartObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        svg.querySelectorAll('path').forEach((path,i)=>{
+          setTimeout(()=>{
+            path.style.transition = 'stroke-dashoffset 1.4s ease';
+            path.style.strokeDashoffset = 0;
+          }, i*200);
+        });
+        chartObserver.disconnect();
+      }
+    });
+  },{threshold:0.3});
+  chartObserver.observe(svg);
+}
+drawChart();
+</script>
+
+</body>
+</html>
