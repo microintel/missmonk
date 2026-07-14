@@ -6,7 +6,8 @@
 <title>Nuts — Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <style>
 :root {
   --bg:        #000000;
@@ -25,6 +26,13 @@
   --frame-w:   100%;
   --frame-radius: 0px;
   --frame-top: 0px;
+  /* Real, JS-corrected viewport height unit. Falls back to 1dvh (already
+     accurate on modern browsers) until the startup script below overwrites
+     it with a value derived from window.visualViewport — this is what
+     actually fixes the "cropped at the bottom" issue on mobile browsers
+     whose address/tab bar resizes the viewport (or that don't support
+     dvh at all, e.g. some in-app webviews). */
+  --vh: 1dvh;
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html,body { height:100%; overscroll-behavior-y:contain; }
@@ -80,18 +88,18 @@ a { color:inherit; text-decoration:none; }
 /* ── REEL FEED ── */
 .reel-feed {
   position:relative; z-index:1;
-  height:calc(100dvh - var(--frame-top) * 2); width:var(--frame-w);
+  height:calc(var(--vh, 1dvh) * 100 - var(--frame-top) * 2); width:var(--frame-w);
   margin:var(--frame-top) auto 0;
   border-radius:var(--frame-radius);
-  overflow-y:scroll;
-  overflow-x:hidden;
-  scroll-snap-type:y mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  scroll-behavior:smooth;
-  overflow-anchor:none; /* we compensate scroll position manually when pruning cards; letting the browser also do it double-adjusts and causes jumps */
+  overflow:hidden;
 }
-.reel-feed::-webkit-scrollbar { display:none; }
+/* Swiper (vertical, virtual slides) now owns paging/snap/touch — this
+   keeps our reel visuals but lets Swiper only mount the handful of cards
+   near the current one, which is what keeps scrolling smooth once the
+   feed has a lot of reels in it. */
+.reel-feed.swiper { touch-action:pan-x; }
+.reel-feed .swiper-wrapper { height:100%; }
+.reel-feed .swiper-slide { height:100%; width:100%; }
 @media (min-width:640px) {
   .reel-feed { box-shadow:0 0 0 1px var(--border2), 0 30px 80px rgba(0,0,0,.55); }
 }
@@ -99,24 +107,19 @@ a { color:inherit; text-decoration:none; }
 .reel-card {
   position:relative;
   height:100%; width:100%;
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
   overflow:hidden;
   isolation:isolate;
   touch-action:manipulation;
-  content-visibility:auto;
-  contain-intrinsic-size:100% 100%;
 }
-.reel-particles {
+/* Each card's accent color (--rc-a, set per-card via cardHtml) now shows up
+   as a soft static glow instead of particles.js — same per-reel visual
+   variety, no extra library, no runtime cost. */
+.reel-card::before {
+  content:'';
   position:absolute; inset:0; z-index:-2;
-}
-.reel-monogram {
-  position:absolute; z-index:-1;
-  right:-.35em; bottom:-.28em;
-  font-family:'Clash Display',sans-serif; font-weight:700;
-  font-size:min(72vw, 62vh);
-  line-height:1; color:var(--text);
-  opacity:.05; user-select:none; pointer-events:none;
+  background:
+    radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--rc-a) 28%, transparent), transparent 55%),
+    radial-gradient(circle at 12% 92%, color-mix(in srgb, var(--rc-a) 20%, transparent), transparent 60%);
 }
 
 .reel-center {
@@ -489,6 +492,7 @@ a { color:inherit; text-decoration:none; }
   <button class="rt-back" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i></button>
   <div class="rt-title"><span class="rt-nut-icon">🥜</span> Nuts</div>
   <div style="display:flex; align-items:center; gap:.5rem;">
+    <button class="rt-liked" id="lastReadBtn" onclick="jumpToLastRead()" title="Go to last read" disabled><i class="bi bi-bookmark-check"></i></button>
     <button class="rt-liked" id="rtSearchBtn" onclick="toggleSearch()" title="Search books"><i class="bi bi-search"></i></button>
   </div>
 </div>
@@ -506,9 +510,32 @@ a { color:inherit; text-decoration:none; }
   <div class="search-suggestions" id="searchSuggestions"></div>
 </div>
 
-<div class="reel-feed" id="reelFeed"></div>
+<div class="reel-feed swiper" id="reelFeed"></div>
 
 <script>
+/* Declared up front so setViewportHeightVar (which runs immediately,
+   before Swiper is created) can safely check it without hitting a
+   temporal-dead-zone error. */
+let swiperInstance = null;
+
+/* ══════════════════════════════
+   VIEWPORT HEIGHT FIX
+   Mobile browsers resize their visible viewport (address bar, tab bar,
+   in-app webview chrome) after load, and some don't support dvh at all —
+   both show up as the feed being cropped at the bottom. Deriving the
+   real height from visualViewport (falling back to innerHeight) and
+   re-checking on every resize/orientation change keeps --vh accurate.
+══════════════════════════════ */
+function setViewportHeightVar() {
+  const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+  if (swiperInstance) swiperInstance.update();
+}
+setViewportHeightVar();
+window.addEventListener('resize', setViewportHeightVar);
+window.addEventListener('orientationchange', () => setTimeout(setViewportHeightVar, 60));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', setViewportHeightVar);
+
 /* ══════════════════════════════
    CONFIG
    Feed format: an object keyed by index, each value:
@@ -520,83 +547,6 @@ const REELS_URL = 'https://microintel.github.io/missmonk/reel-data.json';
    LOAD & RENDER
 ══════════════════════════════ */
 const ACCENTS = ['#5b8def', '#e0b34a', '#4caf7d', '#e0645f', '#5cc4c4'];
-
-/* A different particle "personality" per reel, cycled by index. */
-const PARTICLE_PRESETS = [
-  // 0 — drifting dust
-  (color) => ({
-    particles: {
-      number: { value:60, density:{ enable:true, value_area:900 } },
-      color:  { value:color },
-      shape:  { type:'circle' },
-      opacity:{ value:0.4, random:true, anim:{ enable:true, speed:0.4, opacity_min:0.05, sync:false } },
-      size:   { value:2.2, random:true },
-      line_linked: { enable:false },
-      move:   { enable:true, speed:0.5, direction:'none', random:true, out_mode:'out' }
-    }
-  }),
-  // 1 — confetti triangles, gentle fall
-  (color) => ({
-    particles: {
-      number: { value:35, density:{ enable:true, value_area:900 } },
-      color:  { value:color },
-      shape:  { type:'triangle' },
-      opacity:{ value:0.5, random:true },
-      size:   { value:4, random:true },
-      line_linked: { enable:false },
-      move:   { enable:true, speed:1.1, direction:'bottom', random:true, straight:false, out_mode:'out' }
-    }
-  }),
-  // 2 — constellation network
-  (color) => ({
-    particles: {
-      number: { value:45, density:{ enable:true, value_area:900 } },
-      color:  { value:color },
-      shape:  { type:'circle' },
-      opacity:{ value:0.5 },
-      size:   { value:2, random:true },
-      line_linked: { enable:true, distance:130, color:color, opacity:0.3, width:1 },
-      move:   { enable:true, speed:0.7, direction:'none', random:true, out_mode:'out' }
-    }
-  }),
-  // 3 — twinkling stars
-  (color) => ({
-    particles: {
-      number: { value:80, density:{ enable:true, value_area:900 } },
-      color:  { value:color },
-      shape:  { type:'star' },
-      opacity:{ value:0.6, random:true, anim:{ enable:true, speed:1, opacity_min:0.1, sync:false } },
-      size:   { value:2.5, random:true },
-      line_linked: { enable:false },
-      move:   { enable:true, speed:0.25, direction:'none', random:true, out_mode:'out' }
-    }
-  }),
-  // 4 — floating bubbles
-  (color) => ({
-    particles: {
-      number: { value:28, density:{ enable:true, value_area:900 } },
-      color:  { value:color },
-      shape:  { type:'polygon', polygon:{ nb_sides:6 } },
-      opacity:{ value:0.35, random:true },
-      size:   { value:6, random:true },
-      line_linked: { enable:false },
-      move:   { enable:true, speed:0.8, direction:'top', random:true, straight:false, out_mode:'out' }
-    }
-  })
-];
-
-function particleConfigFor(i) {
-  const color = ACCENTS[i % ACCENTS.length];
-  const preset = PARTICLE_PRESETS[i % PARTICLE_PRESETS.length](color);
-  return {
-    ...preset,
-    interactivity: {
-      detect_on:'canvas',
-      events:{ onhover:{ enable:false }, onclick:{ enable:false }, resize:true }
-    },
-    retina_detect:true
-  };
-}
 
 /* New feed format:
    {
@@ -638,16 +588,25 @@ function normalizeItems(raw) {
 }
 
 /* ══════════════════════════════
-   LIKES — stored in IndexedDB, keyed by the reel's stable idx
+   LIKES + LAST READ — both stored in IndexedDB (one DB, two object
+   stores). Likes are keyed by the reel's stable idx; last-read is a
+   single value under a fixed key in the 'meta' store.
 ══════════════════════════════ */
-const LIKES_DB_NAME = 'reelsLikesDB';
+const DB_NAME       = 'reelsLikesDB';
+const DB_VERSION    = 2;
 const LIKES_STORE   = 'likes';
+const META_STORE    = 'meta';
+const LAST_READ_KEY = 'lastReadIdx';
 let likedIndices = new Set();
 
 function dbOpen() {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(LIKES_DB_NAME, 1);
-    req.onupgradeneeded = () => { req.result.createObjectStore(LIKES_STORE); };
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(LIKES_STORE)) db.createObjectStore(LIKES_STORE);
+      if (!db.objectStoreNames.contains(META_STORE))  db.createObjectStore(META_STORE);
+    };
     req.onsuccess = () => resolve(req.result);
     req.onerror   = () => reject(req.error);
   });
@@ -675,6 +634,28 @@ async function dbSetLiked(idx, liked) {
     });
   } catch (e) { console.warn('IndexedDB write failed', e); }
 }
+async function dbSaveLastRead(idx) {
+  try {
+    const db = await dbOpen();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(META_STORE, 'readwrite');
+      tx.objectStore(META_STORE).put(idx, LAST_READ_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = () => reject(tx.error);
+    });
+  } catch (e) { console.warn('IndexedDB write failed (last read)', e); }
+}
+async function dbLoadLastRead() {
+  try {
+    const db = await dbOpen();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(META_STORE, 'readonly');
+      const req = tx.objectStore(META_STORE).get(LAST_READ_KEY);
+      req.onsuccess = () => resolve(typeof req.result === 'number' ? req.result : -1);
+      req.onerror   = () => reject(req.error);
+    });
+  } catch (e) { console.warn('IndexedDB unavailable (last read)', e); return -1; }
+}
 
 /* Some browser contexts (Safari private mode, in-app webviews, blocked
    third-party storage) let indexedDB.open() hang forever without ever
@@ -690,25 +671,38 @@ function withTimeout(promise, ms, fallback) {
 /* ══════════════════════════════
    LAST READ — remembers the last reel you had settled on (by its stable
    idx) so you can jump straight back to it later, even after reloading.
+   Kept in memory after the initial IndexedDB load so the topbar button
+   and jumpToLastRead() can read it synchronously; writes still go to
+   IndexedDB every time it changes.
 ══════════════════════════════ */
-const LAST_READ_KEY = 'reelsLastReadIdx';
-function saveLastRead(idx) {
-  try { localStorage.setItem(LAST_READ_KEY, String(idx)); } catch (e) { /* storage unavailable — not critical */ }
+let lastReadIdx = -1;
+
+async function initLastRead() {
+  let idx = await withTimeout(dbLoadLastRead(), 1500, -1);
+  if (idx < 0) {
+    // one-time migration from the old localStorage-based version of this feature
+    try {
+      const legacy = localStorage.getItem('reelsLastReadIdx');
+      if (legacy !== null) {
+        const n = parseInt(legacy, 10);
+        if (Number.isFinite(n)) { idx = n; dbSaveLastRead(n); localStorage.removeItem('reelsLastReadIdx'); }
+      }
+    } catch (e) { /* storage unavailable — not critical */ }
+  }
+  lastReadIdx = idx;
   updateLastReadBtn();
 }
-function loadLastRead() {
-  try {
-    const v = localStorage.getItem(LAST_READ_KEY);
-    if (v === null) return -1;
-    const n = parseInt(v, 10);
-    return Number.isFinite(n) ? n : -1;
-  } catch (e) { return -1; }
+
+function saveLastRead(idx) {
+  lastReadIdx = idx;
+  dbSaveLastRead(idx);
+  updateLastReadBtn();
 }
+function loadLastRead() { return lastReadIdx; }
 function updateLastReadBtn() {
   const btn = document.getElementById('lastReadBtn');
   if (!btn) return;
-  const idx = loadLastRead();
-  btn.disabled = !(idx >= 0 && idx < allItems.length);
+  btn.disabled = !(lastReadIdx >= 0 && lastReadIdx < allItems.length);
 }
 
 /* ══════════════════════════════
@@ -717,7 +711,6 @@ function updateLastReadBtn() {
 let allItems = [];
 let mode = null;
 let feedOrder = [];
-let renderSeq = 0;
 
 async function loadReels() {
   const feed = document.getElementById('reelFeed');
@@ -729,7 +722,7 @@ async function loadReels() {
     allItems = normalizeItems(data);
     if (!allItems.length) throw new Error('Empty feed');
     likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
-    updateLastReadBtn();
+    await initLastRead();
     computeBookNames();
 
     const shared = findSharedLink();
@@ -840,7 +833,6 @@ function switchMode(newMode) {
   }
 
   renderFull(feedOrder);
-  feed.scrollTo({ top: 0 });
   setTimeout(() => { modeSwitching = false; }, 300);
 }
 
@@ -866,14 +858,8 @@ function jumpToIndex(targetIdx) {
   closeSearchPanel();
   document.getElementById('rtLikedBtn')?.classList.remove('active');
 
-  renderFull(allItems.map(it => it.idx));
-
-  const feed = document.getElementById('reelFeed');
-  requestAnimationFrame(() => {
-    const child = feed.children[targetIdx];
-    if (child) feed.scrollTop = child.offsetTop; // instant — no scroll-behavior:smooth animation for a direct jump
-    modeSwitching = false;
-  });
+  renderFull(allItems.map(it => it.idx), targetIdx);
+  modeSwitching = false;
 }
 
 /* ══════════════════════════════
@@ -885,18 +871,13 @@ function jumpToIndex(targetIdx) {
 ══════════════════════════════ */
 function cardHtml(idx) {
   const it = allItems[idx];
-  const seq = ++renderSeq;
   const color = ACCENTS[idx % ACCENTS.length];
   const initial = (it.title || '?').trim().charAt(0).toUpperCase();
   const liked = likedIndices.has(idx);
   const escapedBook = it.book.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-  return {
-    idx, seq,
-    html: `
-    <section class="reel-card" data-idx="${idx}" data-seq="${seq}" style="--rc-a:${color};">
-      <div class="reel-particles" id="particles-${seq}"></div>
-      <div class="reel-monogram">${initial}</div>
-      <div class="reel-center" onclick="handleCenterTap(event, ${idx}, ${seq})">
+  return `
+    <section class="reel-card" data-idx="${idx}" style="--rc-a:${color};">
+      <div class="reel-center" onclick="handleCenterTap(event, ${idx})">
         <div class="reel-title">${escapeHtml(it.title)}</div>
         <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
       </div>
@@ -933,60 +914,55 @@ function cardHtml(idx) {
           </div>
         </div>
       </div>
-    </section>`
-  };
+    </section>`;
 }
 
-let navReady = false;
-
-/* particles.js keeps its own registry (window.pJSDom) of running instances
-   with their own requestAnimationFrame loops. Just removing the container
-   div from the DOM leaves that loop running in the background — this
-   properly stops and unregisters it so removed cards don't leak CPU. */
-function destroyParticlesIn(container) {
-  if (!container || !window.pJSDom) return;
-  const canvas = container.querySelector('canvas');
-  if (!canvas) return;
-  const i = window.pJSDom.findIndex(p => p && p.pJS && p.pJS.canvas && p.pJS.canvas.el === canvas);
-  if (i !== -1) {
-    try { window.pJSDom[i].pJS.fn.vendors.destroypJS(); } catch (e) { /* already gone */ }
-    window.pJSDom.splice(i, 1);
-  }
-}
-function destroyAllParticles(feed) {
-  feed.querySelectorAll('.reel-particles').forEach(destroyParticlesIn);
-}
-
-function renderFull(order) {
+/* ══════════════════════════════
+   RENDER
+   feedOrder is always a fixed, finite list (every reel once, in the
+   chosen order — no shuffling, no repeats). Swiper's Virtual module reads
+   card HTML from this array on demand, mounting only the cards near
+   whichever one is current, so a large feed stays just as smooth as a
+   short one.
+══════════════════════════════ */
+function renderFull(order, initialIndex) {
   feedOrder = order;
   const feed = document.getElementById('reelFeed');
-  destroyAllParticles(feed);
-  feed.innerHTML = '';
-  renderSeq = 0;
 
-  const cards = feedOrder.map(idx => cardHtml(idx));
-  feed.insertAdjacentHTML('beforeend', cards.map(c => c.html).join(''));
-  cards.forEach(c => particlesJS(`particles-${c.seq}`, particleConfigFor(c.idx)));
+  if (swiperInstance) { swiperInstance.destroy(true, true); swiperInstance = null; }
+  feed.innerHTML = '<div class="swiper-wrapper"></div>';
 
-  if (!navReady) {
-    enableSwipeNav(feed);
-    enableReadTracking(feed);
-    navReady = true;
-  }
-}
-
-/* Debounced tracking of whichever reel the feed has settled on, saved as
-   the 'last read' position. */
-function enableReadTracking(feed) {
-  let settleTimer = null;
-  feed.addEventListener('scroll', () => {
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(() => {
-      const idx = Math.round(feed.scrollTop / (feed.clientHeight || 1));
-      const itemIdx = feedOrder[idx];
-      if (itemIdx !== undefined) saveLastRead(itemIdx);
-    }, 220);
+  swiperInstance = new Swiper(feed, {
+    direction: 'vertical',
+    slidesPerView: 1,
+    speed: 380,
+    threshold: 5,
+    mousewheel: { forceToAxis: true },
+    keyboard: { enabled: true },
+    virtual: {
+      slides: feedOrder.map(idx => cardHtml(idx)),
+      cache: true,
+      addSlidesBefore: 1,
+      addSlidesAfter: 1
+    },
+    on: {
+      slideChangeTransitionEnd(sw) {
+        const itemIdx = feedOrder[sw.activeIndex];
+        if (itemIdx !== undefined) saveLastRead(itemIdx);
+      }
+    }
   });
+
+  /* Swiper's `initialSlide` option doesn't reliably combine with the
+     Virtual module (a known upstream limitation), so instead of setting
+     it at construction time we jump right after, via slideTo — which is
+     the combination that actually works. 0ms duration = instant, no
+     visible animation, exactly like a direct jump should feel. */
+  if (initialIndex) {
+    requestAnimationFrame(() => {
+      if (swiperInstance) swiperInstance.slideTo(initialIndex, 0, false);
+    });
+  }
 }
 
 /* ══════════════════════════════
@@ -1084,17 +1060,19 @@ async function handleLikeClick(e, idx, btnEl) {
 
   if (mode === 'liked' && !nowLiked) {
     const card = btnEl.closest('.reel-card');
-    if (card) {
-      card.classList.add('removing');
-      setTimeout(() => {
-        destroyParticlesIn(card.querySelector('.reel-particles'));
-        card.remove();
-        feedOrder = feedOrder.filter(i => i !== idx);
-        if (!feedOrder.length) {
-          showState(document.getElementById('reelFeed'), 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
-        }
-      }, 220);
-    }
+    if (card) card.classList.add('removing');
+    setTimeout(() => {
+      const removedPos = feedOrder.indexOf(idx);
+      const newOrder = feedOrder.filter(i => i !== idx);
+      if (!newOrder.length) {
+        if (swiperInstance) { swiperInstance.destroy(true, true); swiperInstance = null; }
+        feedOrder = newOrder;
+        showState(document.getElementById('reelFeed'), 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
+        return;
+      }
+      const nextIndex = Math.min(removedPos, newOrder.length - 1);
+      renderFull(newOrder, nextIndex);
+    }, 220);
   }
 }
 
@@ -1126,13 +1104,13 @@ function spawnLikeBurst(container) {
    rather than dblclick, so mouse and touch behave identically and it never
    double-toggles. */
 let lastTapTime = 0;
-function handleCenterTap(e, idx, seq) {
+function handleCenterTap(e, idx) {
   const now = Date.now();
   const isDouble = now - lastTapTime < 320;
   lastTapTime = isDouble ? 0 : now;
   if (!isDouble) return;
 
-  const card = document.querySelector(`.reel-card[data-seq="${seq}"]`);
+  const card = e.currentTarget.closest('.reel-card');
   if (!card) return;
   spawnBigHeart(card);
   if (!likedIndices.has(idx)) {
@@ -1236,12 +1214,10 @@ function handleBookShareClick(e, bookName, btnEl) {
 function showSharedReel(idx) {
   mode = 'shared';
   feedOrder = [idx];
-  const feed = document.getElementById('reelFeed');
   document.getElementById('rtLikedBtn')?.classList.remove('active');
   closeSearchPanel();
 
   renderFull(feedOrder);
-  feed.scrollTo({ top: 0 });
   showFilterBanner(allItems[idx].title, 'Shared', allItems[idx].book);
 }
 
@@ -1264,7 +1240,6 @@ function enterBookMode(bookName, source) {
   }
 
   renderFull(feedOrder);
-  feed.scrollTo({ top: 0 });
   showFilterBanner(bookName, source === 'shared' ? 'Shared' : 'Book', bookName);
 }
 
@@ -1450,59 +1425,6 @@ function goToChapter(link) {
   const url = decodeURI(link);
   if (!url || url === '#') return;
   window.location.href = url;
-}
-
-/* One reel per gesture — mirrors Instagram Reels paging (native touch swipe
-   already snaps per-card via CSS scroll-snap; this adds the same deliberate
-   behavior for mouse wheel + keyboard, with a short lock so a single
-   scroll/key doesn't skip past more than one card). */
-function enableSwipeNav(feed) {
-  const cards = () => Array.from(feed.children);
-  let locked = false;
-  let wheelAccum = 0;
-  let wheelResetTimer = null;
-
-  function currentIndex() {
-    const items = cards();
-    let best = 0, bestDist = Infinity;
-    items.forEach((el, i) => {
-      const d = Math.abs(el.offsetTop - feed.scrollTop);
-      if (d < bestDist) { bestDist = d; best = i; }
-    });
-    return best;
-  }
-
-  function goTo(index) {
-    const items = cards();
-    if (index < 0 || index >= items.length) return;
-    locked = true;
-    feed.scrollTo({ top: items[index].offsetTop, behavior:'smooth' });
-    clearTimeout(goTo._t);
-    goTo._t = setTimeout(() => { locked = false; }, 550);
-  }
-
-  function step(dir) {
-    if (locked) return;
-    goTo(currentIndex() + dir);
-  }
-
-  feed.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if (locked) return;
-    wheelAccum += e.deltaY;
-    clearTimeout(wheelResetTimer);
-    wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, 150);
-    if (Math.abs(wheelAccum) > 35) {
-      step(wheelAccum > 0 ? 1 : -1);
-      wheelAccum = 0;
-    }
-  }, { passive:false });
-
-  document.onkeydown = (e) => {
-    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-    e.preventDefault();
-    step(e.key === 'ArrowDown' ? 1 : -1);
-  };
 }
 
 loadReels();
