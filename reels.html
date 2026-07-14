@@ -766,7 +766,7 @@ function findSharedLink() {
     const idx = allItems.findIndex(it => it.book === book && it.title === title);
     return { idx };
   }
-  return allItems.some(it => it.book === book) ? { book } : null;
+  return allItems.some(it => it.book === book) ? { idx: -1, book } : null;
 }
 
 function showState(feed, kind, title, detail) {
