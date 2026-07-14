@@ -283,6 +283,21 @@ a { color:inherit; text-decoration:none; }
 }
 .nav-icon-btn:hover { background:var(--surface2); color:var(--text); }
 
+/* Notification bell + badge */
+.notif-btn-wrap { position:relative; }
+.notif-badge {
+  position:absolute; top:1px; right:1px;
+  min-width:16px; height:16px; padding:0 4px;
+  background:var(--rose); color:#fff;
+  border-radius:999px; font-size:.62rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  line-height:1; box-shadow:0 0 0 2px var(--nav-bg);
+  pointer-events:none;
+}
+@media (max-width:768px) {
+  #navNutsBtn { display:none; }
+}
+
 /* Hamburger */
 .nav-burger {
   display:none; background:none; border:none;
@@ -291,6 +306,96 @@ a { color:inherit; text-decoration:none; }
   transition:background .15s;
 }
 .nav-burger:hover { background:var(--surface2); }
+
+/* ── NOTIFICATIONS PANEL ── */
+.notif-panel {
+  position:fixed; top:0; right:0; bottom:0; z-index:150;
+  width:340px; max-width:92vw; background:var(--surface);
+  border-left:1px solid var(--border2);
+  box-shadow:-8px 0 40px rgba(0,0,0,0.4);
+  padding:1.4rem 1.3rem;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+}
+.notif-panel.open { transform:translateX(0); }
+.notif-panel-title {
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem; font-weight:700; margin-bottom:1.1rem;
+  display:flex; align-items:center; gap:.5rem;
+  color:var(--text);
+}
+.notif-panel-title .notif-close {
+  margin-left:auto; background:none; border:none; color:var(--text3);
+  font-size:1.1rem; cursor:pointer; padding:.2rem; border-radius:6px;
+}
+.notif-panel-title .notif-close:hover { color:var(--text); background:var(--surface2); }
+.notif-compose {
+  position:relative; overflow:hidden;
+  background:linear-gradient(165deg, var(--surface2) 0%, var(--bg) 60%);
+  border:1.5px solid var(--border2);
+  border-radius:var(--radius-lg); padding:1rem 1rem 1.05rem;
+  margin-bottom:1.3rem;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
+}
+.notif-compose::before {
+  content:''; position:absolute; top:-40%; right:-30%;
+  width:180px; height:180px; border-radius:50%;
+  background:radial-gradient(circle, var(--blue-glow) 0%, transparent 70%);
+  pointer-events:none;
+}
+.notif-compose-lbl {
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:.6rem;
+  margin-bottom:.85rem;
+}
+.notif-compose-badge {
+  width:32px; height:32px; border-radius:10px; flex-shrink:0;
+  background:linear-gradient(140deg, var(--blue), #7aa4f5);
+  display:grid; place-items:center; color:#fff; font-size:1rem;
+  box-shadow:0 4px 14px var(--blue-glow);
+}
+.notif-compose-lbl-text { display:flex; flex-direction:column; gap:1px; }
+.notif-compose-lbl-title { font-size:.82rem; font-weight:700; color:var(--text); font-family:'Clash Display',sans-serif; }
+.notif-compose-lbl-sub   { font-size:.68rem; color:var(--text3); }
+.notif-compose textarea {
+  position:relative; z-index:1;
+  width:100%; resize:vertical; min-height:70px; max-height:180px;
+  background:var(--surface); border:1.5px solid var(--border); border-radius:12px;
+  padding:.75rem .85rem; color:var(--text); font-family:inherit; font-size:.87rem;
+  outline:none; margin-bottom:.7rem; transition:border-color .2s, box-shadow .2s;
+}
+.notif-compose textarea::placeholder { color:var(--text3); }
+.notif-compose textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-glow); }
+.notif-compose .btn-sm {
+  position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center; gap:.45rem;
+  background:linear-gradient(135deg, var(--blue), #4a78d6);
+  box-shadow:0 6px 18px var(--blue-glow);
+  letter-spacing:.02em;
+}
+.notif-list { display:flex; flex-direction:column; gap:.6rem; }
+.notif-item {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
+  padding:.75rem .85rem; position:relative;
+}
+.notif-item.unread { border-color:var(--blue); }
+.notif-item-top { display:flex; align-items:center; gap:.4rem; margin-bottom:.3rem; }
+.notif-item-sender { font-weight:700; font-size:.82rem; color:var(--text); }
+.notif-item-dot { width:7px; height:7px; border-radius:50%; background:var(--blue); flex-shrink:0; }
+.notif-item-time { font-size:.7rem; color:var(--text3); margin-left:auto; white-space:nowrap; }
+.notif-item-del {
+  background:none; border:none; color:var(--text3);
+  font-size:.85rem; padding:.15rem; border-radius:6px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .15s, background .15s;
+}
+.notif-item-del:hover { color:var(--rose); background:rgba(224,100,95,.14); }
+.notif-item-text { font-size:.84rem; color:var(--text2); line-height:1.55; white-space:pre-wrap; word-break:break-word; }
+.notif-empty { text-align:center; padding:2.2rem 1rem; color:var(--text3); }
+.notif-empty i { font-size:1.8rem; margin-bottom:.6rem; display:block; }
+.notif-empty p { font-size:.82rem; }
+@media (max-width:768px) { .notif-panel { width:92vw; max-width:360px; } }
 
 /* ── THEME PICKER PANEL ── */
 .theme-panel {
@@ -645,6 +750,18 @@ a { color:inherit; text-decoration:none; }
 .card-count { font-size:.71rem; color:var(--text3); font-weight:400; }
 .card-arrow { color:var(--text3); font-size:1rem; transition:transform .2s, color .2s; }
 .card:not(.empty):hover .card-arrow { color:var(--blue); transform:translate(2px,-2px); }
+
+/* Footer action group (reels shortcut + arrow) on book cards */
+.card-footer-actions { display:flex; align-items:center; gap:.55rem; }
+.book-reels-btn {
+  display:flex; align-items:center; justify-content:center;
+  width:26px; height:26px; border-radius:50%; padding:0;
+  background:var(--surface2); border:1px solid var(--border2);
+  font-size:.85rem; line-height:1;
+  transition:transform .15s, background .15s, border-color .15s;
+}
+.book-reels-btn:hover { transform:scale(1.12); border-color:var(--amber); background:var(--surface3); }
+.book-reels-btn:active { transform:scale(.92); }
 
 .card.link-card {
   border-color:rgba(91,141,239,.25);
@@ -1162,7 +1279,11 @@ a { color:inherit; text-decoration:none; }
       <div class="search-results" id="searchResults"></div>
     </div>
 
-    <button class="nav-icon-btn" title="Nuts" onclick="location.href='reels.html'">🥜</button>
+    <button class="nav-icon-btn" id="navNutsBtn" title="Nuts" onclick="location.href='reels.html'">🥜</button>
+    <button class="nav-icon-btn notif-btn-wrap" id="notifBellBtn" title="Notifications" onclick="openNotifPanel()">
+      <i class="bi bi-bell-fill"></i>
+      <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+    </button>
     <button class="nav-icon-btn nav-account-btn" title="Account" onclick="showAccountPage()"><i class="bi bi-person-circle"></i></button>
   </nav>
 
@@ -1263,6 +1384,35 @@ a { color:inherit; text-decoration:none; }
     <p style="font-size:.72rem;color:var(--text3);line-height:1.5;">
       JSON must be an object matching the curriculum format.
     </p>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-title">
+    <i class="bi bi-bell-fill"></i> Notifications
+    <button class="notif-close" onclick="closeNotifPanel()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="notif-compose" id="notifCompose" style="display:none;">
+    <div class="notif-compose-lbl">
+      <div class="notif-compose-badge"><i class="bi bi-megaphone-fill"></i></div>
+      <div class="notif-compose-lbl-text">
+        <span class="notif-compose-lbl-title">Send an update</span>
+        <span class="notif-compose-lbl-sub">Broadcasts as "From MissMonk" to everyone</span>
+      </div>
+    </div>
+    <textarea id="notifComposeText" placeholder="Write a message for everyone…"></textarea>
+    <button class="btn-sm" style="width:100%;" onclick="sendFounderNotification()">
+      <i class="bi bi-send-fill"></i> Send
+    </button>
+  </div>
+
+  <div class="notif-list" id="notifList">
+    <div class="notif-empty">
+      <i class="bi bi-bell-slash"></i>
+      <p>No notifications yet</p>
+    </div>
   </div>
 </div>
 
@@ -1665,6 +1815,7 @@ async function enterApp() {
   document.getElementById('loginGate').style.display = 'none';
   document.getElementById('appShell').style.display = 'flex';
   document.getElementById('bottomNav').style.display = '';
+  initNotifications();
   await initAppData();
 }
 
@@ -1697,6 +1848,8 @@ async function initAppData() {
       document.getElementById('searchResults').classList.remove('open');
     if (!document.getElementById('themePanel')?.contains(e.target) && !e.target.closest('.nav-icon-btn'))
       document.getElementById('themePanel')?.classList.remove('open');
+    if (!document.getElementById('notifPanel')?.contains(e.target) && !e.target.closest('#notifBellBtn'))
+      document.getElementById('notifPanel')?.classList.remove('open');
   });
 }
 
@@ -1715,9 +1868,192 @@ auth.onAuthStateChanged(async (user) => {
     await enterApp();
   } else {
     currentUser = null;
+    teardownNotifications();
     showLoginGate();
   }
 });
+
+/* ══════════════════════════════
+   NOTIFICATIONS
+   Founder (From MissMonk) broadcasts messages via the 'notifications'
+   collection. Every signed-in user only ever reads them. Read state is
+   tracked per-user in 'notifReads/{uid}.lastReadAt' — a message is
+   "unread" for a user if it was created after that user's lastReadAt.
+   This means each person's badge/unread state is fully independent:
+   one user opening the panel marks it read only for them, everyone
+   else keeps seeing their own unread count until they open it too.
+   Nothing is ever deleted — messages stay visible, just marked read.
+══════════════════════════════ */
+let notifItems      = [];
+let notifLastReadAt = null;
+let notifUnsubMsgs  = null;
+let notifUnsubRead  = null;
+
+function initNotifications() {
+  teardownNotifications();
+  if (!currentUser) return;
+
+  notifUnsubMsgs = db.collection('notifications')
+    .orderBy('createdAt', 'desc')
+    .limit(50)
+    .onSnapshot(snap => {
+      notifItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderNotifBadgeAndList();
+    }, err => console.error('Notifications listener failed:', err));
+
+  notifUnsubRead = db.collection('notifReads').doc(currentUser.uid)
+    .onSnapshot(doc => {
+      notifLastReadAt = doc.exists ? (doc.data().lastReadAt || null) : null;
+      renderNotifBadgeAndList();
+    }, err => console.error('Notif read-state listener failed:', err));
+}
+
+function teardownNotifications() {
+  if (notifUnsubMsgs) { notifUnsubMsgs(); notifUnsubMsgs = null; }
+  if (notifUnsubRead) { notifUnsubRead(); notifUnsubRead = null; }
+  notifItems = [];
+  notifLastReadAt = null;
+  const badge = document.getElementById('notifBadge');
+  if (badge) badge.style.display = 'none';
+}
+
+function isNotifUnread(item) {
+  if (!item.createdAt || !item.createdAt.toMillis) return false; // still writing server timestamp
+  if (!notifLastReadAt || !notifLastReadAt.toMillis) return true;
+  return item.createdAt.toMillis() > notifLastReadAt.toMillis();
+}
+
+function renderNotifBadgeAndList() {
+  const unreadCount = notifItems.filter(isNotifUnread).length;
+  const badge = document.getElementById('notifBadge');
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+  renderNotifList();
+}
+
+function renderNotifList() {
+  const list = document.getElementById('notifList');
+  if (!list) return;
+  if (!notifItems.length) {
+    list.innerHTML = `<div class="notif-empty"><i class="bi bi-bell-slash"></i><p>No notifications yet</p></div>`;
+    return;
+  }
+  const founder = isFounder();
+  list.innerHTML = notifItems.map(item => {
+    const unread = isNotifUnread(item);
+    return `<div class="notif-item${unread ? ' unread' : ''}">
+      <div class="notif-item-top">
+        ${unread ? '<span class="notif-item-dot"></span>' : ''}
+        <span class="notif-item-sender">${escapeNotifHtml(item.sender || 'From MissMonk')}</span>
+        <span class="notif-item-time">${notifTimeAgo(item.createdAt)}</span>
+        ${founder ? `<button class="notif-item-del" title="Delete message" data-id="${item.id}"><i class="bi bi-trash3-fill"></i></button>` : ''}
+      </div>
+      <div class="notif-item-text">${escapeNotifHtml(item.text || '')}</div>
+    </div>`;
+  }).join('');
+  if (founder) {
+    list.querySelectorAll('.notif-item-del').forEach(btn => {
+      btn.onclick = (ev) => {
+        ev.stopPropagation();
+        deleteFounderNotification(btn.dataset.id);
+      };
+    });
+  }
+}
+
+function notifTimeAgo(ts) {
+  if (!ts || !ts.toMillis) return 'sending…';
+  const diff = Date.now() - ts.toMillis();
+  const min  = Math.floor(diff / 60000);
+  if (min < 1)  return 'just now';
+  if (min < 60) return min + 'm ago';
+  const hr = Math.floor(min / 60);
+  if (hr < 24)  return hr + 'h ago';
+  const day = Math.floor(hr / 24);
+  if (day < 7)  return day + 'd ago';
+  return new Date(ts.toMillis()).toLocaleDateString();
+}
+
+function escapeNotifHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function openNotifPanel() {
+  if (!currentUser) return;
+  document.getElementById('notifCompose').style.display = isFounder() ? 'block' : 'none';
+  document.getElementById('notifPanel').classList.add('open');
+  document.getElementById('themePanel')?.classList.remove('open');
+  markNotificationsRead();
+}
+function closeNotifPanel() {
+  document.getElementById('notifPanel').classList.remove('open');
+}
+
+// Marks all current notifications read for this user only (per-user
+// lastReadAt). Badge hides immediately; other users are unaffected.
+async function markNotificationsRead() {
+  if (!currentUser) return;
+  const badge = document.getElementById('notifBadge');
+  if (badge) badge.style.display = 'none';
+  try {
+    await db.collection('notifReads').doc(currentUser.uid).set({
+      lastReadAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.error('Failed to mark notifications read:', err);
+  }
+}
+
+// Founder-only: broadcasts a message to every signed-in user.
+async function sendFounderNotification() {
+  if (!isFounder()) {
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Not authorized');
+    return;
+  }
+  const textarea = document.getElementById('notifComposeText');
+  const text = (textarea.value || '').trim();
+  if (!text) {
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Write a message first');
+    return;
+  }
+  try {
+    await db.collection('notifications').add({
+      text,
+      sender: 'From MissMonk',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    textarea.value = '';
+    showToast('<i class="bi bi-send-check-fill"></i> Sent to everyone');
+  } catch (err) {
+    console.error('Failed to send notification:', err);
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to send — check permissions');
+  }
+}
+
+// Founder-only: permanently removes a broadcast for everyone. Regular
+// users never see a delete option — this button only renders for the
+// founder account (see renderNotifList), and Firestore rules restrict
+// writes/deletes on 'notifications' to the founder as well.
+async function deleteFounderNotification(id) {
+  if (!isFounder() || !id) {
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Not authorized');
+    return;
+  }
+  if (!window.confirm('Delete this message for everyone? This can\'t be undone.')) return;
+  try {
+    await db.collection('notifications').doc(id).delete();
+    showToast('<i class="bi bi-trash3-fill"></i> Message deleted');
+  } catch (err) {
+    console.error('Failed to delete notification:', err);
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to delete — check permissions');
+  }
+}
 
 /* ══════════════════════════════
    LESSON INDEX
@@ -2233,6 +2569,9 @@ function renderContent() {
   document.querySelectorAll('#cardGrid .card[data-a="link"]').forEach(card => {
     card.onclick = () => openLesson(card.dataset.href, card.dataset.label, card.dataset.lid);
   });
+  document.querySelectorAll('#cardGrid .book-reels-btn').forEach(btn => {
+    btn.onclick = (ev) => openBookReels(btn.dataset.book, ev);
+  });
 }
 
 /* ══════════════════════════════
@@ -2288,7 +2627,13 @@ function bookCardHTML(key, meta, lcount, pct) {
     <div class="book-card-body">
       <div class="card-title">${ck}</div>
       <div class="book-card-author">by ${meta.author || 'Unknown author'}</div>
-      <div class="card-footer"><span class="card-count">${lcount} lesson${lcount!==1?'s':''}</span><span class="card-arrow">→</span></div>
+      <div class="card-footer">
+        <span class="card-count">${lcount} lesson${lcount!==1?'s':''}</span>
+        <div class="card-footer-actions">
+          <button class="book-reels-btn" title="Read as reels" data-book="${ck.replace(/"/g,'&quot;')}"><span aria-hidden="true">🥜</span></button>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
     </div>
   </div>`;
 }
@@ -2468,7 +2813,13 @@ function showBooksPage() {
         <div class="book-card-body">
           <div class="card-title">${cleanKey(b.key)}</div>
           <div class="book-card-author">by ${b.meta.author || 'Unknown author'}</div>
-          <div class="card-footer"><span class="card-count">${b.lcount} lesson${b.lcount!==1?'s':''}</span><span class="card-arrow">→</span></div>
+          <div class="card-footer">
+            <span class="card-count">${b.lcount} lesson${b.lcount!==1?'s':''}</span>
+            <div class="card-footer-actions">
+              <button class="book-reels-btn" title="Read as reels" data-book="${cleanKey(b.key).replace(/"/g,'&quot;')}"><span aria-hidden="true">🥜</span></button>
+              <span class="card-arrow">→</span>
+            </div>
+          </div>
         </div>
       </div>`;
     });
@@ -2478,6 +2829,9 @@ function showBooksPage() {
   attachBookCovers(document.getElementById('bookList'));
   document.querySelectorAll('#bookList .card[data-a="booknode"]').forEach(card => {
     card.onclick = () => openBookNode(books[Number(card.dataset.idx)]);
+  });
+  document.querySelectorAll('#bookList .book-reels-btn').forEach(btn => {
+    btn.onclick = (ev) => openBookReels(btn.dataset.book, ev);
   });
 }
 
