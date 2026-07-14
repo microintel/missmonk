@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Nuts — Missmonk</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<style>
+:root {
+  --bg:        #000000;
+  --surface:   #0d0d0d;
+  --surface2:  #141414;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --blue:      #5b8def;
+  --amber:     #e0b34a;
+  --rose:      #e0645f;
+  --green:     #4caf7d;
+  --teal:      #5cc4c4;
+  --text:      #f2f2f2;
+  --text2:     #a1a1a1;
+  --text3:     #6b6b6b;
+  --frame-w:   100%;
+  --frame-radius: 0px;
+  --frame-top: 0px;
+  /* Real, JS-corrected viewport height unit. Falls back to 1dvh (already
+     accurate on modern browsers) until the startup script below overwrites
+     it with a value derived from window.visualViewport — this is what
+     actually fixes the "cropped at the bottom" issue on mobile browsers
+     whose address/tab bar resizes the viewport (or that don't support
+     dvh at all, e.g. some in-app webviews). */
+  --vh: 1dvh;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overscroll-behavior-y:contain; }
+body {
+  font-family:'Satoshi',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+
+/* ── RESPONSIVE FRAME (tablet / desktop) ──
+   On wide viewports the reel column narrows to a phone-proportioned
+   frame centered on screen instead of ugly full-width stretched cards. */
+@media (min-width:640px) {
+  :root { --frame-w:420px; }
+  body {
+    background:
+      radial-gradient(circle at 50% 15%, rgba(91,141,239,0.10), transparent 55%),
+      #030303;
+  }
+}
+@media (min-width:900px) {
+  :root { --frame-w:440px; --frame-radius:26px; --frame-top:20px; }
+}
+button { cursor:pointer; font-family:inherit; border:none; background:none; color:inherit; }
+a { color:inherit; text-decoration:none; }
+
+/* ── TOP BAR ── */
+.reels-topbar {
+  position:fixed; top:var(--frame-top); left:50%; z-index:44;
+  transform:translateX(-50%);
+  width:var(--frame-w);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1rem .9rem;
+  background:linear-gradient(rgba(0,0,0,.55), transparent);
+  border-radius:var(--frame-radius) var(--frame-radius) 0 0;
+  pointer-events:none;
+}
+.reels-topbar * { pointer-events:auto; }
+.rt-back {
+  width:38px; height:38px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.rt-title {
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:1rem;
+  color:#fff; letter-spacing:.02em; display:flex; align-items:center; gap:.4rem;
+}
+.rt-nut-icon { font-size:1.1rem; line-height:1; }
+
+/* ── REEL FEED ── */
+.reel-feed {
+  position:relative; z-index:1;
+  height:calc(var(--vh, 1dvh) * 100 - var(--frame-top) * 2); width:var(--frame-w);
+  margin:var(--frame-top) auto 0;
+  border-radius:var(--frame-radius);
+  overflow:hidden;
+}
+/* Swiper (vertical, virtual slides) now owns paging/snap/touch — this
+   keeps our reel visuals but lets Swiper only mount the handful of cards
+   near the current one, which is what keeps scrolling smooth once the
+   feed has a lot of reels in it. */
+.reel-feed.swiper { touch-action:pan-x; }
+.reel-feed.swiper-cube { overflow:visible; perspective:1000px; }
+.reel-feed.swiper-cube .swiper-slide { box-shadow:0 0 30px rgba(0,0,0,.35); }
+.reel-feed .swiper-wrapper { height:100%; }
+.reel-feed .swiper-slide { height:100%; width:100%; background:var(--bg); }
+@media (min-width:640px) {
+  .reel-feed { box-shadow:0 0 0 1px var(--border2), 0 30px 80px rgba(0,0,0,.55); }
+}
+
+.reel-card {
+  position:relative;
+  height:100%; width:100%;
+  overflow:hidden;
+  isolation:isolate;
+  touch-action:manipulation;
+}
+/* Each card's accent color (--rc-a, set per-card via cardHtml) now shows up
+   as a soft static glow instead of particles.js — same per-reel visual
+   variety, no extra library, no runtime cost. */
+.reel-card::before {
+  content:'';
+  position:absolute; inset:0; z-index:-2;
+  background:
+    radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--rc-a) 28%, transparent), transparent 55%),
+    radial-gradient(circle at 12% 92%, color-mix(in srgb, var(--rc-a) 20%, transparent), transparent 60%);
+}
+
+.reel-center {
+  position:absolute; z-index:2; left:0; right:0; top:50%;
+  transform:translateY(-50%);
+  padding:0 1.4rem;
+  max-width:560px; margin:0 auto;
+  text-align:center;
+  touch-action:manipulation;
+}
+.reel-title {
+  font-family:'Clash Display',sans-serif; font-weight:700;
+  font-size:clamp(1.5rem, 6vw, 2.1rem);
+  line-height:1.15; margin-bottom:1.2rem;
+  text-wrap:balance;
+}
+.reel-meaning {
+  font-size:.95rem; line-height:1.55; color:var(--text2);
+  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.reel-author-row {
+  position:absolute; z-index:2; left:0; right:0;
+  bottom:calc(2.4rem + env(safe-area-inset-bottom));
+  padding:0 1.2rem; max-width:640px; margin:0 auto;
+  display:flex; flex-direction:column; align-items:flex-start; gap:.4rem;
+}
+.reel-author-main {
+  display:flex; align-items:center; gap:.6rem; width:100%;
+}
+.reel-book {
+  font-size:.75rem; font-weight:600; letter-spacing:.03em;
+  color:var(--text2); margin-left:calc(36px + .6rem);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:calc(100% - 36px - .6rem);
+}
+.reel-avatar {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  background:var(--rc-a); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:1rem;
+}
+.reel-author {
+  font-weight:700; font-size:.92rem; color:var(--text);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  flex:1; min-width:0;
+}
+.reel-follow {
+  margin-left:.3rem;
+  padding:.4rem 1rem;
+  border-radius:20px;
+  background:var(--rc-a); color:#fff;
+  font-size:.78rem; font-weight:700;
+  display:flex; align-items:center; gap:.4rem;
+  flex-shrink:0;
+  transition:transform .15s, opacity .15s;
+}
+.reel-follow:active { transform:scale(.95); opacity:.9; }
+.reel-book-share-btn {
+  width:30px; height:30px; border-radius:50%; flex-shrink:0;
+  background:rgba(255,255,255,.12); color:#fff;
+  border:1px solid rgba(255,255,255,.14);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.82rem;
+  transition:transform .15s, background .15s;
+}
+.reel-book-share-btn:active { transform:scale(.85); background:rgba(255,255,255,.22); }
+.reel-book-share-btn.copied { background:var(--green); border-color:var(--green); }
+
+/* States */
+.reel-state {
+  position:absolute; inset:0; z-index:5;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.9rem; text-align:center; padding:2rem;
+  background:var(--bg); color:var(--text2);
+}
+.reel-state i { font-size:1.8rem; color:var(--text3); }
+.reel-state .rs-title { font-family:'Clash Display',sans-serif; font-weight:700; color:var(--text); font-size:1.05rem; }
+.reel-spinner {
+  width:34px; height:34px; border-radius:50%;
+  border:3px solid var(--border2); border-top-color:var(--blue);
+  animation:rspin .8s linear infinite;
+}
+@keyframes rspin { to { transform:rotate(360deg); } }
+.reel-retry {
+  padding:.55rem 1.1rem; border-radius:10px; background:var(--blue); color:#fff;
+  font-size:.82rem; font-weight:700;
+}
+
+.rt-liked {
+  width:38px; height:38px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.05rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:background .15s, color .15s, transform .15s;
+}
+.rt-liked.active { background:var(--rose); color:#fff; border-color:var(--rose); }
+.rt-liked:active { transform:scale(.9); }
+.rt-liked:disabled { opacity:.35; pointer-events:none; }
+
+/* ── LIKE / SHARE / WHATSAPP ROW — sits below author name and book name ── */
+.reel-icon-row {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  width:100%;
+  margin-top:.5rem;
+}
+.reel-icon-col {
+  position:relative;
+  display:flex; flex-direction:column; align-items:center; gap:.28rem;
+}
+.reel-like-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.45rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s, background .2s, border-color .2s;
+  position:relative;
+}
+.reel-like-btn i { transition:transform .2s; }
+.reel-like-btn.liked { background:#0a0a0a; color:var(--rose); border-color:#0a0a0a; }
+.reel-like-btn.liked i { transform:scale(1.12); }
+.reel-like-btn:active { transform:scale(.85); }
+.reel-like-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+.reel-share-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:#f2f2f2; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:#0a0a0a;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s, background .2s;
+}
+.reel-share-btn:active { transform:scale(.85); }
+.reel-share-btn.copied { background:var(--green); color:#fff; }
+.reel-share-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+.reel-whatsapp-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:#25D366; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s;
+}
+.reel-whatsapp-btn i { transition:transform .2s; }
+.reel-whatsapp-btn:active { transform:scale(.85); }
+.reel-whatsapp-btn.sending i { animation:shareSwoosh .6s ease; }
+.reel-whatsapp-btn.sending { animation:shareRing .6s ease-out; }
+.reel-whatsapp-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
+/* ── SHARED-LINK FILTER BANNER ── */
+.shared-banner {
+  position:fixed; z-index:41; left:50%;
+  transform:translateX(-50%);
+  width:var(--frame-w);
+  top:calc(var(--frame-top) + 6.6rem + env(safe-area-inset-top));
+  display:flex; justify-content:center; pointer-events:none;
+}
+.shared-banner-inner {
+  pointer-events:auto;
+  display:flex; flex-direction:column; gap:.55rem;
+  background:rgba(20,20,20,.94); border:1px solid var(--border2);
+  padding:.7rem .8rem .8rem; border-radius:18px;
+  font-size:.78rem; color:var(--text2);
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  width:min(88vw, 320px);
+}
+.shared-banner-inner strong { color:var(--text); }
+.shared-banner-text {
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  padding:0 .1rem;
+}
+.shared-banner-actions { display:flex; gap:.5rem; }
+.shared-banner-btn {
+  flex:1;
+  padding:.5rem .8rem; border-radius:14px;
+  background:var(--blue); color:#fff;
+  font-size:.78rem; font-weight:700; white-space:nowrap;
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.shared-banner-share {
+  background:rgba(255,255,255,.1); color:var(--text);
+  border:1px solid var(--border2);
+}
+.shared-banner-share.copied { background:var(--green); color:#fff; border-color:var(--green); }
+
+/* ── SEARCH ── */
+#rtSearchBtn.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+
+.search-panel {
+  position:fixed; z-index:41; top:var(--frame-top); left:50%;
+  transform:translateX(-50%) translateY(-12px);
+  width:var(--frame-w);
+  border-radius:0 0 18px 18px;
+  background:rgba(10,10,10,.96);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border2);
+  padding:calc(3.6rem + env(safe-area-inset-top)) 1rem 1rem;
+  opacity:0; pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  max-height:70dvh; overflow-y:auto; scrollbar-width:none;
+}
+.search-panel::-webkit-scrollbar { display:none; }
+.search-panel.open { opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+.search-panel-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:.6rem;
+}
+.search-panel-title {
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:.92rem; color:var(--text);
+}
+.search-close {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text2); font-size:.85rem; background:rgba(255,255,255,.08);
+  transition:background .15s;
+}
+.search-close:active { background:rgba(255,255,255,.16); }
+.search-input-row {
+  display:flex; align-items:center; gap:.55rem;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:14px; padding:.7rem .9rem;
+}
+.search-input-icon { color:var(--text3); font-size:.95rem; }
+.search-input-row input {
+  flex:1; background:none; border:none; outline:none;
+  color:var(--text); font-family:'Satoshi',sans-serif; font-size:.92rem;
+}
+.search-input-row input::placeholder { color:var(--text3); }
+.search-clear {
+  width:26px; height:26px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text2); font-size:.8rem; background:rgba(255,255,255,.06);
+}
+.search-suggestions { display:flex; flex-direction:column; gap:.3rem; margin-top:.7rem; }
+.search-suggestion {
+  display:flex; align-items:center; gap:.6rem;
+  text-align:left; width:100%;
+  padding:.65rem .8rem; border-radius:11px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--text); font-size:.88rem; font-weight:500;
+  transition:background .15s, border-color .15s;
+}
+.search-suggestion i { color:var(--text3); font-size:.85rem; }
+.search-suggestion:active { background:var(--surface2); }
+@media (hover:hover) and (pointer:fine) {
+  .search-suggestion:hover { background:var(--surface2); border-color:var(--border2); }
+}
+.search-empty { color:var(--text3); font-size:.82rem; padding:.6rem .2rem; text-align:center; }
+
+/* ── SHARE FALLBACK OVERLAY ── */
+.share-fallback {
+  position:fixed; inset:0; z-index:60;
+  background:rgba(0,0,0,.6);
+  display:flex; align-items:center; justify-content:center;
+  padding:1.2rem;
+}
+.share-fallback-card {
+  width:min(92vw, 340px);
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:16px; padding:1.1rem;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.share-fallback-title {
+  font-family:'Clash Display',sans-serif; font-weight:700; font-size:.95rem;
+  color:var(--text); margin-bottom:.7rem;
+}
+.share-fallback-input {
+  width:100%; padding:.65rem .8rem; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border2);
+  color:var(--text); font-size:.8rem; font-family:'Satoshi',sans-serif;
+  margin-bottom:.8rem;
+}
+.share-fallback-actions { display:flex; gap:.5rem; }
+.share-fallback-copy, .share-fallback-close {
+  flex:1; padding:.6rem .8rem; border-radius:12px;
+  font-size:.82rem; font-weight:700;
+}
+.share-fallback-copy { background:var(--blue); color:#fff; }
+.share-fallback-close { background:rgba(255,255,255,.1); color:var(--text); }
+
+.reel-card.removing { animation:rcfade .25s ease forwards; }
+@keyframes rcfade { to { opacity:0; transform:scale(.96); } }
+
+/* ── LIKE ANIMATION ── */
+@keyframes likePop {
+  0%   { transform:scale(1); }
+  35%  { transform:scale(1.4) rotate(-6deg); }
+  55%  { transform:scale(.9); }
+  75%  { transform:scale(1.12); }
+  100% { transform:scale(1); }
+}
+.reel-like-btn.pop i { animation:likePop .5s ease; }
+@keyframes ringPop {
+  0%   { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 0 rgba(224,100,95,.55); }
+  100% { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 20px rgba(224,100,95,0); }
+}
+.reel-like-btn.pop { animation:ringPop .55s ease-out; }
+
+@keyframes floatHeart {
+  0%   { transform:translate(-50%,0) scale(.4) rotate(0deg); opacity:1; }
+  70%  { opacity:1; }
+  100% { transform:translate(calc(-50% + var(--dx,0px)),-72px) scale(var(--sc,1.1)) rotate(var(--rot,0deg)); opacity:0; }
+}
+.like-burst-heart {
+  position:absolute; left:50%; bottom:44px;
+  font-size:1rem; pointer-events:none;
+  animation:floatHeart .95s cubic-bezier(.17,.67,.3,1) forwards;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+
+/* Big center heart on double-tap, Instagram-style */
+.big-heart {
+  position:absolute; z-index:6; left:50%; top:50%;
+  transform:translate(-50%,-50%) scale(.3);
+  color:#fff; font-size:6rem; opacity:0;
+  pointer-events:none;
+  filter:drop-shadow(0 0 22px rgba(224,100,95,.65)) drop-shadow(0 4px 18px rgba(0,0,0,.5));
+}
+.big-heart.show { animation:bigHeartPop .9s cubic-bezier(.17,.89,.32,1.49) forwards; }
+@keyframes bigHeartPop {
+  0%   { opacity:0;  transform:translate(-50%,-50%) scale(.3)  rotate(-10deg); }
+  18%  { opacity:1;  transform:translate(-50%,-50%) scale(1.18) rotate(5deg); }
+  34%  { transform:translate(-50%,-50%) scale(.94) rotate(-3deg); }
+  48%  { transform:translate(-50%,-50%) scale(1.05) rotate(0deg); }
+  78%  { opacity:1;  transform:translate(-50%,-50%) scale(1.02); }
+  100% { opacity:0;  transform:translate(-50%,-50%) scale(1.08); }
+}
+
+/* ── SHARE ANIMATION ── */
+@keyframes shareSwoosh {
+  0%   { transform:translate(0,0) rotate(0deg) scale(1); }
+  40%  { transform:translate(9px,-13px) rotate(22deg) scale(1.15); }
+  70%  { transform:translate(2px,-4px) rotate(6deg) scale(.92); }
+  100% { transform:translate(0,0) rotate(0deg) scale(1); }
+}
+.reel-share-btn.sending i { animation:shareSwoosh .6s ease; }
+@keyframes shareRing {
+  0%   { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 0 rgba(91,141,239,.55); }
+  100% { box-shadow:0 2px 8px rgba(0,0,0,.35), 0 0 0 18px rgba(91,141,239,0); }
+}
+.reel-share-btn.sending { animation:shareRing .6s ease-out; }
+@keyframes sharePopCopied { 0%{transform:scale(1);} 45%{transform:scale(1.22);} 100%{transform:scale(1);} }
+.reel-share-btn.copied { animation:sharePopCopied .4s ease; }
+
+/* ── SHORT / LANDSCAPE SCREENS ── */
+@media (max-height:480px) {
+  .reel-center { top:44%; }
+  .reel-title { font-size:1.25rem; margin-bottom:.5rem; }
+  .reel-meaning { -webkit-line-clamp:2; font-size:.82rem; }
+  .reel-author-row { bottom:calc(1rem + env(safe-area-inset-bottom)); gap:.25rem; }
+  .reel-icon-row { margin-top:.3rem; gap:.8rem; }
+  .reel-like-btn, .reel-share-btn, .reel-whatsapp-btn { width:40px; height:40px; font-size:1.1rem; }
+  .big-heart { font-size:4rem; }
+}
+
+/* ── POINTER / DESKTOP HOVER ── */
+@media (hover:hover) and (pointer:fine) {
+  .reel-like-btn:hover, .reel-share-btn:hover, .reel-whatsapp-btn:hover, .reel-book-share-btn:hover, .rt-liked:hover { transform:translateY(-1px) scale(1.05); }
+  .reel-follow:hover { opacity:.88; }
+  .rt-back:hover { opacity:.85; }
+}
+</style>
+</head>
+<body>
+
+<div class="reels-topbar">
+  <button class="rt-back" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i></button>
+  <div class="rt-title"><span class="rt-nut-icon">🥜</span> Nuts</div>
+  <div style="display:flex; align-items:center; gap:.5rem;">
+    <button class="rt-liked" id="lastReadBtn" onclick="jumpToLastRead()" title="Go to last read" disabled><i class="bi bi-bookmark-check"></i></button>
+    <button class="rt-liked" id="rtSearchBtn" onclick="toggleSearch()" title="Search books"><i class="bi bi-search"></i></button>
+  </div>
+</div>
+
+<div class="search-panel" id="searchPanel">
+  <div class="search-panel-head">
+    <span class="search-panel-title">Search books</span>
+    <button class="search-close" onclick="closeSearchPanel()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="search-input-row">
+    <i class="bi bi-search search-input-icon"></i>
+    <input type="text" id="searchInput" placeholder="Search book name…" autocomplete="off" oninput="onSearchInput()" onkeydown="onSearchKeydown(event)"/>
+    <button class="search-clear" onclick="clearSearchInput()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="search-suggestions" id="searchSuggestions"></div>
+</div>
+
+<div class="reel-feed swiper" id="reelFeed"></div>
+
+<script>
+/* Declared up front so setViewportHeightVar (which runs immediately,
+   before Swiper is created) can safely check it without hitting a
+   temporal-dead-zone error. */
+let swiperInstance = null;
+
+/* ══════════════════════════════
+   VIEWPORT HEIGHT FIX
+   Mobile browsers resize their visible viewport (address bar, tab bar,
+   in-app webview chrome) after load, and some don't support dvh at all —
+   both show up as the feed being cropped at the bottom. Deriving the
+   real height from visualViewport (falling back to innerHeight) and
+   re-checking on every resize/orientation change keeps --vh accurate.
+══════════════════════════════ */
+function setViewportHeightVar() {
+  const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+  if (swiperInstance) swiperInstance.update();
+}
+setViewportHeightVar();
+window.addEventListener('resize', setViewportHeightVar);
+window.addEventListener('orientationchange', () => setTimeout(setViewportHeightVar, 60));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', setViewportHeightVar);
+
+/* ══════════════════════════════
+   CONFIG
+   Feed format: an object keyed by index, each value:
+   { "title": "...", "author": "...", "meaning": "...", "link": "https://.../chapter.html" }
+══════════════════════════════ */
+const REELS_URL = 'https://microintel.github.io/missmonk/reel-data.json';
+
+/* ══════════════════════════════
+   LOAD & RENDER
+══════════════════════════════ */
+const ACCENTS = ['#5b8def', '#e0b34a', '#4caf7d', '#e0645f', '#5cc4c4'];
+
+/* New feed format:
+   {
+     "Book Name": {
+       "author": "...",
+       "chapters": [
+         { "title": "...", "meaning": "...", "link": "..." },
+         ...
+       ]
+     },
+     ...
+   }
+   A chapter is only included if it has both a non-empty title AND meaning —
+   chapters missing either (like placeholders) are silently skipped. */
+function normalizeItems(raw) {
+  const items = [];
+  if (!raw || typeof raw !== 'object') return items;
+
+  Object.keys(raw).forEach(bookName => {
+    const book = raw[bookName] || {};
+    const chapters = Array.isArray(book.chapters) ? book.chapters : [];
+    chapters.forEach(ch => {
+      const title = (ch && ch.title || '').trim();
+      const meaning = (ch && ch.meaning || '').trim();
+      if (!title || !meaning) return; // incomplete chapter — skip
+
+      items.push({
+        idx: items.length,
+        book:    bookName,
+        title,
+        meaning,
+        author:  book.author || 'Unknown',
+        link:    (ch.link && ch.link.trim()) || '#'
+      });
+    });
+  });
+
+  return items;
+}
+
+/* ══════════════════════════════
+   LIKES + LAST READ — both stored in IndexedDB (one DB, two object
+   stores). Likes are keyed by the reel's stable idx; last-read is a
+   single value under a fixed key in the 'meta' store.
+══════════════════════════════ */
+const DB_NAME       = 'reelsLikesDB';
+const DB_VERSION    = 2;
+const LIKES_STORE   = 'likes';
+const META_STORE    = 'meta';
+const LAST_READ_KEY = 'lastReadIdx';
+let likedIndices = new Set();
+
+function dbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(LIKES_STORE)) db.createObjectStore(LIKES_STORE);
+      if (!db.objectStoreNames.contains(META_STORE))  db.createObjectStore(META_STORE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+async function dbLoadLikes() {
+  try {
+    const db = await dbOpen();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(LIKES_STORE, 'readonly');
+      const req = tx.objectStore(LIKES_STORE).getAllKeys();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror   = () => reject(req.error);
+    });
+  } catch (e) { console.warn('IndexedDB unavailable', e); return []; }
+}
+async function dbSetLiked(idx, liked) {
+  try {
+    const db = await dbOpen();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(LIKES_STORE, 'readwrite');
+      const store = tx.objectStore(LIKES_STORE);
+      if (liked) store.put(true, idx); else store.delete(idx);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = () => reject(tx.error);
+    });
+  } catch (e) { console.warn('IndexedDB write failed', e); }
+}
+async function dbSaveLastRead(idx) {
+  try {
+    const db = await dbOpen();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(META_STORE, 'readwrite');
+      tx.objectStore(META_STORE).put(idx, LAST_READ_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = () => reject(tx.error);
+    });
+  } catch (e) { console.warn('IndexedDB write failed (last read)', e); }
+}
+async function dbLoadLastRead() {
+  try {
+    const db = await dbOpen();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(META_STORE, 'readonly');
+      const req = tx.objectStore(META_STORE).get(LAST_READ_KEY);
+      req.onsuccess = () => resolve(typeof req.result === 'number' ? req.result : -1);
+      req.onerror   = () => reject(req.error);
+    });
+  } catch (e) { console.warn('IndexedDB unavailable (last read)', e); return -1; }
+}
+
+/* Some browser contexts (Safari private mode, in-app webviews, blocked
+   third-party storage) let indexedDB.open() hang forever without ever
+   firing onsuccess/onerror. Race any DB call against a timeout so a stuck
+   IndexedDB can never block the feed from loading. */
+function withTimeout(promise, ms, fallback) {
+  return Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(() => resolve(fallback), ms))
+  ]);
+}
+
+/* ══════════════════════════════
+   LAST READ — remembers the last reel you had settled on (by its stable
+   idx) so you can jump straight back to it later, even after reloading.
+   Kept in memory after the initial IndexedDB load so the topbar button
+   and jumpToLastRead() can read it synchronously; writes still go to
+   IndexedDB every time it changes.
+══════════════════════════════ */
+let lastReadIdx = -1;
+
+async function initLastRead() {
+  let idx = await withTimeout(dbLoadLastRead(), 1500, -1);
+  if (idx < 0) {
+    // one-time migration from the old localStorage-based version of this feature
+    try {
+      const legacy = localStorage.getItem('reelsLastReadIdx');
+      if (legacy !== null) {
+        const n = parseInt(legacy, 10);
+        if (Number.isFinite(n)) { idx = n; dbSaveLastRead(n); localStorage.removeItem('reelsLastReadIdx'); }
+      }
+    } catch (e) { /* storage unavailable — not critical */ }
+  }
+  lastReadIdx = idx;
+  updateLastReadBtn();
+}
+
+function saveLastRead(idx) {
+  lastReadIdx = idx;
+  dbSaveLastRead(idx);
+  updateLastReadBtn();
+}
+function loadLastRead() { return lastReadIdx; }
+function updateLastReadBtn() {
+  const btn = document.getElementById('lastReadBtn');
+  if (!btn) return;
+  btn.disabled = !(lastReadIdx >= 0 && lastReadIdx < allItems.length);
+}
+
+/* ══════════════════════════════
+   LOAD
+══════════════════════════════ */
+let allItems = [];
+let mode = null;
+let feedOrder = [];
+
+async function loadReels() {
+  const feed = document.getElementById('reelFeed');
+  showState(feed, 'spinner', 'Loading…');
+  try {
+    const res = await fetch(REELS_URL, { cache:'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    allItems = normalizeItems(data);
+    if (!allItems.length) throw new Error('Empty feed');
+    likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
+    await initLastRead();
+    computeBookNames();
+
+    const shared = findSharedLink();
+    if (shared && shared.idx !== -1) {
+      showSharedReel(shared.idx);
+    } else if (shared && shared.book) {
+      enterBookMode(shared.book, 'shared');
+    } else {
+      switchMode('sequential');
+    }
+  } catch (err) {
+    showState(feed, 'error', "Couldn't load the feed", err.message);
+  }
+}
+
+/* Every distinct book title present in the feed, in first-seen order —
+   used to power the search suggestions. */
+let bookNames = [];
+function computeBookNames() {
+  const seen = new Set();
+  bookNames = [];
+  allItems.forEach(it => {
+    if (!seen.has(it.book)) { seen.add(it.book); bookNames.push(it.book); }
+  });
+}
+
+/* Reads ?book=...&title=... from the URL (set by the share feature).
+   If a title is present, it's a single shared reel — find its index.
+   If only a book is present (a book-level share, or a search-selected
+   book), that book's whole set of reels should be shown instead. Clears
+   the params from the address bar once read, so refreshing later doesn't
+   keep re-filtering. */
+function findSharedLink() {
+  const params = new URLSearchParams(location.search);
+  const book = params.get('book');
+  const title = params.get('title');
+  if (!book) return null;
+
+  history.replaceState(null, '', location.pathname + location.hash);
+  if (title) {
+    const idx = allItems.findIndex(it => it.book === book && it.title === title);
+    return { idx };
+  }
+  return allItems.some(it => it.book === book) ? { idx: -1, book } : null;
+}
+
+function showState(feed, kind, title, detail) {
+  if (kind === 'spinner') {
+    feed.innerHTML = `<div class="reel-state"><div class="reel-spinner"></div><div class="rs-title">${title}</div></div>`;
+  } else if (kind === 'empty') {
+    feed.innerHTML = `<div class="reel-state">
+      <i class="bi bi-heart"></i>
+      <div class="rs-title">${title}</div>
+      <div style="font-size:.8rem;max-width:260px;">${detail || ''}</div>
+      <button class="reel-retry" onclick="switchMode('sequential')">Browse nuts</button>
+    </div>`;
+  } else {
+    feed.innerHTML = `<div class="reel-state">
+      <i class="bi bi-exclamation-triangle"></i>
+      <div class="rs-title">${title}</div>
+      <div style="font-size:.8rem;max-width:260px;">${detail || ''}</div>
+      <button class="reel-retry" onclick="loadReels()">Try again</button>
+    </div>`;
+  }
+}
+
+/* ══════════════════════════════
+   MODE SWITCHING
+   - sequential: every reel, in order, first to last, no repeats
+   - liked:      only reels the user has liked
+   - search:     only reels belonging to one searched book
+══════════════════════════════ */
+let modeSwitching = false;
+
+/* The topbar heart is a toggle: tap it to open Liked, tap it again (from
+   Liked) to go back to browsing everything. */
+function toggleLikedMode() {
+  if (mode === 'liked') {
+    switchMode('sequential');
+  } else {
+    switchMode('liked');
+  }
+}
+
+/* 'liked' is reached via the heart button in the topbar; 'sequential' is
+   the only browsing mode otherwise — straight through every reel in order,
+   once each, ending when you reach the last one. */
+function switchMode(newMode) {
+  if (!allItems.length || modeSwitching || newMode === mode) return;
+  modeSwitching = true;
+  mode = newMode;
+  removeFilterBanner();
+  closeSearchPanel();
+
+  document.getElementById('rtLikedBtn')?.classList.toggle('active', mode === 'liked');
+
+  if (mode === 'sequential') {
+    feedOrder = allItems.map(it => it.idx);
+  } else if (mode === 'liked') {
+    feedOrder = allItems.filter(it => likedIndices.has(it.idx)).map(it => it.idx);
+  }
+
+  const feed = document.getElementById('reelFeed');
+  if (mode === 'liked' && !feedOrder.length) {
+    showState(feed, 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
+    setTimeout(() => { modeSwitching = false; }, 300);
+    return;
+  }
+
+  renderFull(feedOrder);
+  setTimeout(() => { modeSwitching = false; }, 300);
+}
+
+/* ══════════════════════════════
+   JUMP TO LAST READ
+   Jumps straight to a specific reel (by its stable idx). Since Sequential
+   order is just every idx in order, targetIdx maps 1:1 to its position in
+   feedOrder — no searching needed. Mounts a small window of cards around
+   it and scrolls there instantly, rather than doing a full mode switch
+   (which always resets to the top).
+══════════════════════════════ */
+function jumpToLastRead() {
+  const idx = loadLastRead();
+  if (idx < 0 || idx >= allItems.length) return;
+  jumpToIndex(idx);
+}
+
+function jumpToIndex(targetIdx) {
+  if (!allItems.length || modeSwitching) return;
+  modeSwitching = true;
+  mode = 'sequential';
+  removeFilterBanner();
+  closeSearchPanel();
+  document.getElementById('rtLikedBtn')?.classList.remove('active');
+
+  renderFull(allItems.map(it => it.idx), targetIdx);
+  modeSwitching = false;
+}
+
+/* ══════════════════════════════
+   RENDER
+   The feed is always a fixed, finite list (every reel once, in order —
+   no shuffling, no repeats, no dynamically-loaded chunks). Every card is
+   mounted up front, so scrolling only ever moves through real, already-
+   rendered content and can never appear to loop or load "more".
+══════════════════════════════ */
+function cardHtml(idx) {
+  const it = allItems[idx];
+  const color = ACCENTS[idx % ACCENTS.length];
+  const initial = (it.title || '?').trim().charAt(0).toUpperCase();
+  const liked = likedIndices.has(idx);
+  const escapedBook = it.book.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return `
+    <section class="reel-card" data-idx="${idx}" style="--rc-a:${color};">
+      <div class="reel-center" onclick="handleCenterTap(event, ${idx})">
+        <div class="reel-title">${escapeHtml(it.title)}</div>
+        <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
+      </div>
+      <div class="reel-author-row">
+        <div class="reel-author-main">
+          <div class="reel-avatar">${initial}</div>
+          <div class="reel-author">${escapeHtml(it.author)}</div>
+          <button class="reel-follow" onclick="goToChapter('${encodeURI(it.link)}')">
+            <i class="bi bi-arrow-right-circle-fill"></i> Follow
+          </button>
+          <button class="reel-book-share-btn" onclick="handleBookShareClick(event, '${escapedBook}', this)" title="Share this whole book">
+            <i class="bi bi-share-fill"></i>
+          </button>
+        </div>
+        <div class="reel-book">${escapeHtml(it.book)}</div>
+        <div class="reel-icon-row">
+          <div class="reel-icon-col">
+            <button class="reel-like-btn${liked ? ' liked' : ''}" data-idx="${idx}" onclick="handleLikeClick(event, ${idx}, this)">
+              <i class="bi ${liked ? 'bi-heart-fill' : 'bi-heart'}"></i>
+            </button>
+            <span class="reel-like-label">Like</span>
+          </div>
+          <div class="reel-icon-col">
+            <button class="reel-share-btn" data-idx="${idx}" onclick="handleShareClick(event, ${idx}, this)">
+              <i class="bi bi-share-fill"></i>
+            </button>
+            <span class="reel-share-label">Share</span>
+          </div>
+          <div class="reel-icon-col">
+            <button class="reel-whatsapp-btn" data-idx="${idx}" onclick="handleWhatsAppShare(event, ${idx}, this)" title="Share this nut on WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </button>
+            <span class="reel-whatsapp-label">WhatsApp</span>
+          </div>
+        </div>
+      </div>
+    </section>`;
+}
+
+/* ══════════════════════════════
+   RENDER
+   feedOrder is always a fixed, finite list (every reel once, in the
+   chosen order — no shuffling, no repeats). Swiper's Virtual module reads
+   card HTML from this array on demand, mounting only the cards near
+   whichever one is current, so a large feed stays just as smooth as a
+   short one.
+══════════════════════════════ */
+function renderFull(order, initialIndex) {
+  feedOrder = order;
+  const feed = document.getElementById('reelFeed');
+
+  if (swiperInstance) { swiperInstance.destroy(true, true); swiperInstance = null; }
+  feed.innerHTML = '<div class="swiper-wrapper"></div>';
+
+  swiperInstance = new Swiper(feed, {
+    direction: 'vertical',
+    slidesPerView: 1,
+    speed: 380,
+    threshold: 5,
+    mousewheel: { forceToAxis: true },
+    keyboard: { enabled: true },
+    effect: 'cube',
+    grabCursor: true,
+    cubeEffect: {
+      shadow: true,
+      slideShadows: true,
+      shadowOffset: 20,
+      shadowScale: 0.94
+    },
+    virtual: {
+      slides: feedOrder.map(idx => cardHtml(idx)),
+      cache: true,
+      addSlidesBefore: 1,
+      addSlidesAfter: 1
+    },
+    on: {
+      slideChangeTransitionEnd(sw) {
+        const itemIdx = feedOrder[sw.activeIndex];
+        if (itemIdx !== undefined) saveLastRead(itemIdx);
+      }
+    }
+  });
+
+  /* Swiper's `initialSlide` option doesn't reliably combine with the
+     Virtual module (a known upstream limitation), so instead of setting
+     it at construction time we jump right after, via slideTo — which is
+     the combination that actually works. 0ms duration = instant, no
+     visible animation, exactly like a direct jump should feel. */
+  if (initialIndex) {
+    requestAnimationFrame(() => {
+      if (swiperInstance) swiperInstance.slideTo(initialIndex, 0, false);
+    });
+  }
+}
+
+/* ══════════════════════════════
+   SOUND — tiny synthesized tones via Web Audio, no external audio files
+   to fetch, so it works instantly and offline. Context is created lazily
+   on first tap (autoplay policies require a user gesture).
+══════════════════════════════ */
+let audioCtx = null;
+function getAudioCtx() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  } catch (e) { return null; }
+}
+/* A single soft, rounded note: sine core + a faint quiet upper harmonic for
+   warmth, passed through a gentle low-pass so nothing sounds thin or buzzy,
+   with a smooth attack/decay envelope (no clicks, no pitch-bending). */
+function tone(freq, start, dur, peak, filterFreq) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = filterFreq || 3600;
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0, start);
+  gain.gain.linearRampToValueAtTime(peak || 0.13, start + 0.025);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  osc.connect(filter).connect(gain).connect(ctx.destination);
+  osc.start(start);
+  osc.stop(start + dur + 0.03);
+
+  // faint octave shimmer, much quieter than the core note
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(freq * 2, start);
+  gain2.gain.setValueAtTime(0, start);
+  gain2.gain.linearRampToValueAtTime((peak || 0.13) * 0.22, start + 0.025);
+  gain2.gain.exponentialRampToValueAtTime(0.0001, start + dur * 0.85);
+  osc2.connect(filter).connect(gain2).connect(ctx.destination);
+  osc2.start(start);
+  osc2.stop(start + dur + 0.03);
+}
+/* Warm two-note ascending chime (like a soft "confirm" bell) */
+function playLikeSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  tone(587.33, now,        0.22, 0.12, 3800); // D5
+  tone(880.00, now + 0.10, 0.30, 0.11, 3800); // A5
+}
+/* A single gentle, slightly lower note — calm rather than abrupt */
+function playUnlikeSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  tone(392.00, now, 0.20, 0.10, 2800); // G4
+}
+/* Soft two-note "send" chime, brighter and quicker than the like sound so
+   it reads as distinct, but still smooth and rounded rather than sweeping */
+function playShareSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  tone(659.25, now,        0.16, 0.10, 4200); // E5
+  tone(987.77, now + 0.07, 0.22, 0.09, 4200); // B5
+}
+
+/* ══════════════════════════════
+   LIKE HANDLING
+══════════════════════════════ */
+async function handleLikeClick(e, idx, btnEl) {
+  e.stopPropagation();
+  const nowLiked = !likedIndices.has(idx);
+  if (nowLiked) likedIndices.add(idx); else likedIndices.delete(idx);
+  btnEl.classList.toggle('liked', nowLiked);
+  btnEl.querySelector('i').className = 'bi ' + (nowLiked ? 'bi-heart-fill' : 'bi-heart');
+  await dbSetLiked(idx, nowLiked);
+
+  if (nowLiked) {
+    playLikeSound();
+    if (navigator.vibrate) navigator.vibrate(18);
+    btnEl.classList.remove('pop');
+    void btnEl.offsetWidth; // restart animation
+    btnEl.classList.add('pop');
+    setTimeout(() => btnEl.classList.remove('pop'), 550);
+    spawnLikeBurst(btnEl.parentElement);
+  } else {
+    playUnlikeSound();
+  }
+
+  if (mode === 'liked' && !nowLiked) {
+    const card = btnEl.closest('.reel-card');
+    if (card) card.classList.add('removing');
+    setTimeout(() => {
+      const removedPos = feedOrder.indexOf(idx);
+      const newOrder = feedOrder.filter(i => i !== idx);
+      if (!newOrder.length) {
+        if (swiperInstance) { swiperInstance.destroy(true, true); swiperInstance = null; }
+        feedOrder = newOrder;
+        showState(document.getElementById('reelFeed'), 'empty', 'No liked nuts yet', 'Tap the heart on one to save it here.');
+        return;
+      }
+      const nextIndex = Math.min(removedPos, newOrder.length - 1);
+      renderFull(newOrder, nextIndex);
+    }, 220);
+  }
+}
+
+/* A little confetti burst of hearts in mixed colors/sizes/rotations,
+   floating up from the like button. */
+function spawnLikeBurst(container) {
+  if (!container) return;
+  for (let i = 0; i < 7; i++) {
+    const h = document.createElement('span');
+    h.className = 'like-burst-heart';
+    h.innerHTML = '<i class="bi bi-heart-fill"></i>';
+    const dx    = Math.round(Math.random() * 60 - 30);
+    const rot   = Math.round(Math.random() * 50 - 25);
+    const scale = (0.75 + Math.random() * 0.7).toFixed(2);
+    h.style.setProperty('--dx', dx + 'px');
+    h.style.setProperty('--rot', rot + 'deg');
+    h.style.setProperty('--sc', scale);
+    h.style.color = i % 3 === 0 ? 'var(--amber)' : 'var(--rose)';
+    h.style.marginLeft = Math.round(Math.random() * 20 - 10) + 'px';
+    h.style.animationDelay = (i * 0.045) + 's';
+    container.appendChild(h);
+    setTimeout(() => h.remove(), 1050);
+  }
+}
+
+/* Double-tap on the title/meaning text (Instagram-style): shows one big
+   heart in the center of the card and likes the reel if not already liked.
+   Tracked manually off the click event (fires for both mouse and touch)
+   rather than dblclick, so mouse and touch behave identically and it never
+   double-toggles. */
+let lastTapTime = 0;
+function handleCenterTap(e, idx) {
+  const now = Date.now();
+  const isDouble = now - lastTapTime < 320;
+  lastTapTime = isDouble ? 0 : now;
+  if (!isDouble) return;
+
+  const card = e.currentTarget.closest('.reel-card');
+  if (!card) return;
+  spawnBigHeart(card);
+  if (!likedIndices.has(idx)) {
+    const btn = card.querySelector('.reel-like-btn');
+    if (btn) handleLikeClick(e, idx, btn);
+  } else {
+    playLikeSound();
+    if (navigator.vibrate) navigator.vibrate(12);
+  }
+}
+function spawnBigHeart(card) {
+  const heart = document.createElement('div');
+  heart.className = 'big-heart';
+  heart.innerHTML = '<i class="bi bi-heart-fill"></i>';
+  card.appendChild(heart);
+  requestAnimationFrame(() => heart.classList.add('show'));
+  setTimeout(() => heart.remove(), 950);
+}
+
+/* ══════════════════════════════
+   SHARE — encode the reel's book + chapter title in the URL so that
+   whoever opens the link lands directly on that single reel.
+══════════════════════════════ */
+function buildShareUrl(idx) {
+  const it = allItems[idx];
+  const url = new URL(location.href);
+  url.search = '';
+  url.searchParams.set('book', it.book);
+  url.searchParams.set('title', it.title);
+  return url.toString();
+}
+
+async function handleShareClick(e, idx, btnEl) {
+  e.stopPropagation();
+  const it = allItems[idx];
+  const url = buildShareUrl(idx);
+
+  playShareSound();
+  if (navigator.vibrate) navigator.vibrate(12);
+  btnEl.classList.remove('sending');
+  void btnEl.offsetWidth; // restart animation
+  btnEl.classList.add('sending');
+  setTimeout(() => btnEl.classList.remove('sending'), 650);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: it.title, text: `${it.title} — from ${it.book}`, url });
+    } catch (err) { /* user dismissed the share sheet — nothing to do */ }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    flashShareCopied(btnEl);
+  } catch (err) {
+    showShareFallback(url, it.title);
+  }
+}
+
+function flashShareCopied(btnEl) {
+  const icon = btnEl.querySelector('i');
+  const prevClass = icon.className;
+  btnEl.classList.add('copied');
+  icon.className = 'bi bi-check-lg';
+  setTimeout(() => {
+    btnEl.classList.remove('copied');
+    icon.className = prevClass;
+  }, 1200);
+}
+
+/* Sends this one specific reel straight to WhatsApp's share composer.
+   wa.me works whether or not WhatsApp is installed (falls back to
+   WhatsApp Web), and opening the resulting link on either end filters
+   straight to this single reel via the same ?book=&title= params. */
+function handleWhatsAppShare(e, idx, btnEl) {
+  e.stopPropagation();
+  const it = allItems[idx];
+  const url = buildShareUrl(idx);
+  const text = `${it.title} — from ${it.book}\n${url}`;
+
+  playShareSound();
+  if (navigator.vibrate) navigator.vibrate(12);
+  btnEl.classList.remove('sending');
+  void btnEl.offsetWidth; // restart animation
+  btnEl.classList.add('sending');
+  setTimeout(() => btnEl.classList.remove('sending'), 650);
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+
+/* Share button living in the author row (right after Follow) — shares
+   the whole book, same as the "Share book" button in the search banner. */
+function handleBookShareClick(e, bookName, btnEl) {
+  e.stopPropagation();
+  shareBookLink(bookName, btnEl);
+}
+
+/* Land on a single shared reel, filtered out from the rest of the feed,
+   with a banner offering to go back to browsing everything (and to share
+   the whole book it came from). */
+function showSharedReel(idx) {
+  mode = 'shared';
+  feedOrder = [idx];
+  document.getElementById('rtLikedBtn')?.classList.remove('active');
+  closeSearchPanel();
+
+  renderFull(feedOrder);
+  showFilterBanner(allItems[idx].title, 'Shared', allItems[idx].book);
+}
+
+/* Filters the feed down to one book's nuts only — used both by a
+   book-level shared link (?book=... with no title) and by picking a book
+   from the search box. Shows a banner offering to go back to browsing
+   everything (and to share the book itself). */
+function enterBookMode(bookName, source) {
+  mode = source === 'shared' ? 'shared' : 'search';
+  feedOrder = allItems.filter(it => it.book === bookName).map(it => it.idx);
+
+  const feed = document.getElementById('reelFeed');
+  document.getElementById('rtLikedBtn')?.classList.remove('active');
+  closeSearchPanel();
+
+  if (!feedOrder.length) {
+    showState(feed, 'empty', 'No nuts found', `Couldn't find any nuts for "${bookName}".`);
+    removeFilterBanner();
+    return;
+  }
+
+  renderFull(feedOrder);
+  showFilterBanner(bookName, source === 'shared' ? 'Shared' : 'Book', bookName);
+}
+
+/* shareBookName, when given, adds a share button to the banner that sends
+   a book-only link (?book=...) — opening it lands anyone on every reel
+   from that book, not just one. */
+function showFilterBanner(displayName, label, shareBookName) {
+  removeFilterBanner();
+  const banner = document.createElement('div');
+  banner.className = 'shared-banner';
+  banner.id = 'sharedBanner';
+  const escapedBook = shareBookName ? shareBookName.replace(/\\/g, '\\\\').replace(/'/g, "\\'") : '';
+  const shareBtn = shareBookName
+    ? `<button class="shared-banner-btn shared-banner-share" onclick="shareBookLink('${escapedBook}', this)" title="Share whole book"><i class="bi bi-share-fill"></i> Share book</button>`
+    : '';
+  banner.innerHTML = `
+    <div class="shared-banner-inner">
+      <div class="shared-banner-text">${escapeHtml(label)}: <strong>${escapeHtml(displayName)}</strong></div>
+      <div class="shared-banner-actions">
+        ${shareBtn}
+        <button class="shared-banner-btn" onclick="exitSharedView()">Browse all</button>
+      </div>
+    </div>`;
+  document.body.appendChild(banner);
+}
+
+/* Builds a book-only share link and sends it via the native share sheet,
+   or copies it to the clipboard as a fallback. */
+async function shareBookLink(bookName, btnEl) {
+  const url = new URL(location.href);
+  url.search = '';
+  url.searchParams.set('book', bookName);
+  const shareUrl = url.toString();
+
+  playShareSound();
+  if (navigator.vibrate) navigator.vibrate(12);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: bookName, text: `Nuts from "${bookName}"`, url: shareUrl });
+    } catch (err) { /* user dismissed the share sheet — nothing to do */ }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+    flashShareCopied(btnEl);
+  } catch (err) {
+    showShareFallback(shareUrl, bookName);
+  }
+}
+
+/* Guaranteed-visible fallback for when neither the native share sheet nor
+   clipboard access is available (common in embedded/preview browsers that
+   block window.prompt too) — shows the link on-screen in a selectable box
+   with its own copy button, so sharing is always possible. */
+function showShareFallback(url, label) {
+  removeShareFallback();
+  const overlay = document.createElement('div');
+  overlay.className = 'share-fallback';
+  overlay.id = 'shareFallback';
+  overlay.innerHTML = `
+    <div class="share-fallback-card">
+      <div class="share-fallback-title">Share${label ? ': ' + escapeHtml(label) : ''}</div>
+      <input type="text" class="share-fallback-input" id="shareFallbackInput" readonly value="${escapeHtml(url)}"/>
+      <div class="share-fallback-actions">
+        <button class="share-fallback-copy" id="shareFallbackCopyBtn" onclick="copyShareFallback()">Copy link</button>
+        <button class="share-fallback-close" onclick="removeShareFallback()">Close</button>
+      </div>
+    </div>`;
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) removeShareFallback(); });
+  document.body.appendChild(overlay);
+  const input = document.getElementById('shareFallbackInput');
+  input.focus();
+  input.select();
+}
+
+function removeShareFallback() {
+  const el = document.getElementById('shareFallback');
+  if (el) el.remove();
+}
+
+async function copyShareFallback() {
+  const input = document.getElementById('shareFallbackInput');
+  const btn = document.getElementById('shareFallbackCopyBtn');
+  if (!input) return;
+  input.focus();
+  input.select();
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(input.value);
+    copied = true;
+  } catch (err) {
+    try { copied = document.execCommand('copy'); } catch (err2) { copied = false; }
+  }
+  if (btn) {
+    const prevText = btn.textContent;
+    btn.textContent = copied ? 'Copied!' : 'Select & copy manually';
+    setTimeout(() => { btn.textContent = prevText; }, 1400);
+  }
+}
+
+function removeFilterBanner() {
+  const el = document.getElementById('sharedBanner');
+  if (el) el.remove();
+}
+
+function exitSharedView() {
+  removeFilterBanner();
+  mode = null; // let switchMode actually run even though it may equal a prior mode
+  switchMode('sequential');
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* ══════════════════════════════
+   SEARCH — a book-name search box in the topbar with live suggestions.
+   Picking (or entering) a book filters the feed down to that book's nuts
+   only, the same filtered view used by shared links.
+══════════════════════════════ */
+let searchOpen = false;
+
+function toggleSearch() {
+  if (searchOpen) { closeSearchPanel(); return; }
+  searchOpen = true;
+  document.getElementById('rtSearchBtn').classList.add('active');
+  document.getElementById('searchPanel').classList.add('open');
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  renderSearchSuggestions(bookNames);
+  setTimeout(() => input.focus(), 60);
+}
+
+function closeSearchPanel() {
+  searchOpen = false;
+  const btn = document.getElementById('rtSearchBtn');
+  const panel = document.getElementById('searchPanel');
+  if (btn) btn.classList.remove('active');
+  if (panel) panel.classList.remove('open');
+}
+
+function clearSearchInput() {
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  renderSearchSuggestions(bookNames);
+  input.focus();
+}
+
+function renderSearchSuggestions(list) {
+  const box = document.getElementById('searchSuggestions');
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<div class="search-empty">No matching books</div>';
+    return;
+  }
+  box.innerHTML = list.map(name => `
+    <button class="search-suggestion" onclick="selectSearchBook('${name.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">
+      <i class="bi bi-journal-bookmark"></i>${escapeHtml(name)}
+    </button>`).join('');
+}
+
+function onSearchInput() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const matches = q ? bookNames.filter(n => n.toLowerCase().includes(q)) : bookNames;
+  renderSearchSuggestions(matches);
+}
+
+function onSearchKeydown(e) {
+  if (e.key !== 'Enter') return;
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+  const match = bookNames.find(n => n.toLowerCase() === q) || bookNames.find(n => n.toLowerCase().includes(q));
+  if (match) selectSearchBook(match);
+}
+
+function selectSearchBook(bookName) {
+  enterBookMode(bookName, 'search');
+}
+
+function goToChapter(link) {
+  const url = decodeURI(link);
+  if (!url || url === '#') return;
+  window.location.href = url;
+}
+
+loadReels();
+</script>
+</body>
+</html>
