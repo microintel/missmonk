@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freedom — The Psychology of Money, Chapter 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --night:#111A33;
+    --night-2:#1E2B52;
+    --dawn-orange:#FF6B3D;
+    --dawn-gold:#FFB84D;
+    --cream:#FDF7EE;
+    --ink:#1C1A2B;
+    --muted:#6B6580;
+    --gold:#E8A23D;
+    --coral:#FF6B4A;
+    --line:#E7DFD0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    overflow:hidden;
+    background:linear-gradient(180deg,var(--night) 0%,var(--night-2) 40%,#3A3560 65%,var(--dawn-orange) 90%,var(--dawn-gold) 100%);
+  }
+  .sky-glow{
+    position:absolute;
+    bottom:-10%;
+    left:50%;
+    transform:translateX(-50%);
+    width:120vw;
+    height:60vh;
+    background:radial-gradient(ellipse at center, rgba(255,184,77,0.55) 0%, rgba(255,107,61,0.25) 35%, transparent 70%);
+    filter:blur(20px);
+    pointer-events:none;
+    animation:pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.7;}
+    50%{opacity:1;}
+  }
+  .sun{
+    position:absolute;
+    bottom:-6%;
+    left:50%;
+    transform:translateX(-50%);
+    width:180px;height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE9B8, var(--dawn-gold) 55%, var(--dawn-orange) 100%);
+    box-shadow:0 0 80px rgba(255,178,77,0.7);
+    transition:transform 0.1s linear;
+  }
+  .stars{
+    position:absolute;top:0;left:0;width:100%;height:45%;
+  }
+  .star{
+    position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;
+    animation:twinkle 3s infinite ease-in-out;
+  }
+  @keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
+  .bird{
+    position:absolute;
+    font-size:14px;
+    color:rgba(255,255,255,0.85);
+    animation:fly linear infinite;
+    opacity:0;
+  }
+  @keyframes fly{
+    0%{transform:translateX(-10vw) translateY(0);opacity:0;}
+    10%{opacity:0.9;}
+    90%{opacity:0.9;}
+    100%{transform:translateX(110vw) translateY(-40px);opacity:0;}
+  }
+  .hero-content{position:relative;z-index:3;padding:2rem;}
+  .eyebrow{
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    font-size:0.75rem;
+    color:rgba(255,255,255,0.75);
+    margin-bottom:1rem;
+    font-weight:600;
+  }
+  .hero h1{
+    font-size:clamp(3rem,10vw,7rem);
+    color:#fff;
+    font-weight:700;
+    line-height:0.95;
+    text-shadow:0 4px 30px rgba(0,0,0,0.3);
+  }
+  .hero-sub{
+    margin-top:1.5rem;
+    font-size:clamp(1.05rem,2.2vw,1.4rem);
+    color:rgba(255,255,255,0.92);
+    max-width:520px;
+    margin-left:auto;margin-right:auto;
+    font-style:italic;
+    font-family:'Fraunces',serif;
+  }
+  .scroll-cue{
+    position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+    color:rgba(255,255,255,0.8);
+    font-size:0.8rem;
+    letter-spacing:0.15em;
+    z-index:3;
+    animation:bob 2s infinite ease-in-out;
+  }
+  @keyframes bob{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,8px);}}
+
+  /* ===== SECTIONS ===== */
+  section{
+    padding:5rem 1.5rem;
+    max-width:920px;
+    margin:0 auto;
+  }
+  .section-tag{
+    color:var(--coral);
+    font-weight:700;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    font-size:0.75rem;
+    margin-bottom:0.8rem;
+  }
+  h2{
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    font-weight:600;
+    margin-bottom:1.2rem;
+    line-height:1.15;
+  }
+  p{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:#3A3650;
+    margin-bottom:1rem;
+  }
+  .lede{
+    font-size:1.25rem;
+    font-family:'Fraunces',serif;
+    color:var(--ink);
+    line-height:1.5;
+    margin-bottom:1.5rem;
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ===== LADDER ===== */
+  .ladder{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    margin:2.5rem 0;
+    border-left:3px solid var(--gold);
+    padding-left:1.5rem;
+  }
+  .rung{
+    position:relative;
+    padding:1.1rem 0;
+  }
+  .rung::before{
+    content:'';
+    position:absolute;
+    left:-1.94rem;
+    top:1.35rem;
+    width:12px;height:12px;
+    border-radius:50%;
+    background:var(--dawn-orange);
+    box-shadow:0 0 0 4px rgba(255,107,61,0.15);
+  }
+  .rung h4{
+    font-family:'Fraunces',serif;
+    font-size:1.1rem;
+    margin-bottom:0.3rem;
+  }
+  .rung p{margin-bottom:0;font-size:0.98rem;}
+
+  /* ===== STORY CARDS ===== */
+  .story{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:2rem;
+    margin:2rem 0;
+    box-shadow:0 10px 30px rgba(20,20,50,0.05);
+  }
+  .story-tag{
+    display:inline-block;
+    background:#FFF1E0;
+    color:var(--coral);
+    font-weight:700;
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:0.3rem 0.7rem;
+    border-radius:20px;
+    margin-bottom:1rem;
+  }
+  .story-tag.good{background:#E8F5E9;color:#2E7D4F;}
+  .story h3{font-size:1.4rem;margin-bottom:0.6rem;}
+
+  /* ===== CHART BLOCKS ===== */
+  .chart-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:1.8rem;
+    margin:2rem 0;
+    box-shadow:0 10px 30px rgba(20,20,50,0.05);
+  }
+  .chart-box canvas{max-height:320px;}
+  .chart-caption{
+    font-size:0.9rem;
+    color:var(--muted);
+    margin-top:0.8rem;
+    text-align:center;
+  }
+
+  /* ===== QUOTE ===== */
+  .quote-block{
+    background:var(--night);
+    color:#fff;
+    border-radius:18px;
+    padding:2.5rem;
+    margin:2rem 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .quote-block::before{
+    content:'"';
+    font-family:'Fraunces',serif;
+    font-size:8rem;
+    position:absolute;
+    top:-1.5rem;left:1rem;
+    color:rgba(255,184,77,0.25);
+    line-height:1;
+  }
+  .quote-block p{
+    position:relative;
+    color:#F3EFE4;
+    font-family:'Fraunces',serif;
+    font-size:1.3rem;
+    font-style:italic;
+    line-height:1.5;
+  }
+  .quote-attr{
+    font-family:'Work Sans',sans-serif;
+    font-style:normal;
+    font-size:0.9rem;
+    color:var(--dawn-gold);
+    margin-top:1rem;
+    font-weight:600;
+  }
+
+  /* ===== DO/DONT ===== */
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.2rem;
+    margin:2rem 0;
+  }
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+  .card{
+    border-radius:16px;
+    padding:1.6rem;
+  }
+  .card.do{background:#EEF7EF;border:1px solid #CFE8D2;}
+  .card.dont{background:#FBEDEC;border:1px solid #F2CFCB;}
+  .card h4{font-family:'Fraunces',serif;font-size:1.15rem;margin-bottom:0.8rem;}
+  .card.do h4{color:#2E7D4F;}
+  .card.dont h4{color:#C0453A;}
+  .card ul{padding-left:1.2rem;}
+  .card li{margin-bottom:0.55rem;font-size:0.98rem;color:#3A3650;line-height:1.5;}
+
+  /* ===== FOOTER ===== */
+  footer{
+    text-align:center;
+    padding:3rem 1.5rem 4rem;
+    color:var(--muted);
+    font-size:0.9rem;
+  }
+  footer .display{font-size:1.3rem;color:var(--ink);margin-bottom:0.5rem;}
+
+  ::selection{background:var(--dawn-gold);color:var(--ink);}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="stars" id="stars"></div>
+  <div id="birds"></div>
+  <div class="sky-glow"></div>
+  <div class="sun" id="sun"></div>
+  <div class="hero-content">
+    <div class="eyebrow">The Psychology of Money · Chapter 7</div>
+    <h1>Freedom</h1>
+    <p class="hero-sub">Controlling your time is the highest dividend money pays.</p>
+  </div>
+  <div class="scroll-cue">SCROLL ↓</div>
+</div>
+
+<!-- INTRO -->
+<section class="reveal">
+  <div class="section-tag">The Big Idea</div>
+  <h2>Money's real superpower isn't stuff. It's control.</h2>
+  <p class="lede">The highest form of wealth is waking up and saying, "I can do whatever I want today."</p>
+  <p>People chase money hoping it will make them happier. But happiness means different things to different people. If there's one thing that comes closest to a universal rule, it's this: people are happiest when they feel in control of their own life — what they do, when they do it, and who they do it with.</p>
+  <p>A psychologist named <strong>Angus Campbell</strong> studied this for decades. He found that a strong sense of control over your own life predicts happiness better than your salary, your house, or your job title. Not richer people. Not more educated people. People who <em>control their time.</em></p>
+</section>
+
+<!-- LADDER -->
+<section class="reveal">
+  <div class="section-tag">How This Plays Out</div>
+  <h2>Every rupee saved buys you a little more "no"</h2>
+  <p>Money doesn't buy happiness in a shop. It buys the power to say no — to a boss, a bad job, a bad day — without it wrecking you. Here's how that power grows in stages:</p>
+  <div class="ladder">
+    <div class="rung">
+      <h4>A small cushion</h4>
+      <p>Take a sick day without panicking about your salary getting cut. Small, but life-changing if you've never had it.</p>
+    </div>
+    <div class="rung">
+      <h4>A bit more</h4>
+      <p>Wait for the right job after a layoff, instead of grabbing the first offer out of fear.</p>
+    </div>
+    <div class="rung">
+      <h4>Six months' expenses saved</h4>
+      <p>Stop being afraid of your manager. You know one bad appraisal won't ruin you.</p>
+    </div>
+    <div class="rung">
+      <h4>More still</h4>
+      <p>Take the job with a shorter commute and better hours, even if the pay is a little lower.</p>
+    </div>
+    <div class="rung">
+      <h4>Real freedom</h4>
+      <p>Retire when <em>you</em> choose to — not when you're forced to.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STORY: THE TRAP -->
+<section class="reveal">
+  <div class="section-tag">A Story</div>
+  <div class="story">
+    <span class="story-tag">The Trap</span>
+    <h3>Vignesh's dream job</h3>
+    <p>Vignesh always wanted to work at a top investment bank. The money was the whole draw — ₹40 lakh a year, straight out of college. He landed an internship and thought he'd won the lottery.</p>
+    <p>On day one, he understood why the pay was so high: 90-hour weeks. "If you skip Saturday, don't bother showing up Sunday" was practically the office motto. The work was interesting. It paid brilliantly. It made him feel important.</p>
+    <p>He quit in a month. Not because the work was bad — he loved it — but because <strong>every waking hour belonged to someone else.</strong> Doing something you love on a schedule you don't control can feel just like doing something you hate.</p>
+  </div>
+</section>
+
+<!-- STORY: THE WIN -->
+<section class="reveal">
+  <div class="story">
+    <span class="story-tag good">The Win</span>
+    <h3>Pranav's ₹1.5 lakh</h3>
+    <p>Pranav took a modest design job in Bengaluru. He kept his costs low — no eating out, no cabs — and saved almost half his salary for two years. By 24, he had ₹1.5 lakh set aside.</p>
+    <p>That was enough. He quit his job, picked up freelance clients to cover his basic costs, and never took a full-time job again. Years later, when a friend asked how he "made it," Pranav said the big client and the bigger payday later didn't change his life much. <strong>The real shift happened the day he saved enough to walk away.</strong> That's when he became free.</p>
+  </div>
+</section>
+
+<!-- CHART 1: STRESS -->
+<section class="reveal">
+  <div class="section-tag">The Paradox</div>
+  <h2>We're richer than ever. We're not calmer.</h2>
+  <p>Median income in the US more than doubled between 1955 and 2019, adjusted for inflation. Homes got twice as big. Cars got faster. Yet a 2019 global survey found Americans reported more daily worry and stress than the rest of the world.</p>
+  <div class="chart-box">
+    <canvas id="stressChart"></canvas>
+    <div class="chart-caption">Share of people who felt "a lot of" worry/stress the previous day — 2019 Gallup Global Emotions survey</div>
+  </div>
+  <p>Part of the reason: we used our extra wealth to buy bigger houses and faster cars — but we gave up control over our time to get it. At best, those two things cancel out.</p>
+</section>
+
+<!-- CHART 2: INCOME VS HOME SIZE -->
+<section class="reveal">
+  <div class="chart-box">
+    <canvas id="growthChart"></canvas>
+    <div class="chart-caption">US median family income vs. average new home size, 1955 → 2019 (indexed to 100 at 1955)</div>
+  </div>
+</section>
+
+<!-- ROCKEFELLER -->
+<section class="reveal">
+  <div class="section-tag">A Shift Nobody Noticed</div>
+  <h2>Your job followed you home — and it never left</h2>
+  <p>John D. Rockefeller barely spoke in meetings. He'd sit quietly, let others talk, and think. His real work wasn't with his hands — it was inside his head, all day, every day, even when he looked like he was doing nothing.</p>
+  <p>In his time, that was rare. In 1870, over 80% of American jobs involved farming or making things with your hands — work you could physically leave behind at the end of the day. Today, most of us have decision-making or service jobs, much closer to Rockefeller's. And a mind-based job never really clocks out.</p>
+  <div class="chart-box">
+    <canvas id="jobChart"></canvas>
+    <div class="chart-caption">US jobs by type: hands-on labor vs. decision/service work, 1870 vs. today</div>
+  </div>
+  <p>If your job is to weld car parts, you leave your tools at the factory. If your job is to plan a product launch, your "tool" is your brain — and it comes with you on the commute, at dinner, and at 3 a.m. when you can't sleep. This is why so many of us feel like we're always working, even when we're technically off the clock.</p>
+</section>
+
+<!-- REACTANCE QUOTE -->
+<section class="reveal">
+  <div class="quote-block">
+    <p>People like to feel like they're in the driver's seat. When we try to get them to do something, they feel disempowered — like we made the choice for them. So doing something you'd have gladly chosen on your own can feel miserable the moment it's forced on you.</p>
+    <div class="quote-attr">— The psychology of "reactance," Jonah Berger</div>
+  </div>
+</section>
+
+<!-- WHAT ACTUALLY MATTERS -->
+<section class="reveal">
+  <div class="section-tag">The Real Lesson</div>
+  <h2>Ask the people who've actually lived it</h2>
+  <p>A gerontologist named Karl Pillemer interviewed a thousand elderly Americans about the biggest lessons from their lives. Out of a thousand people:</p>
+  <p><strong>Not one</strong> said you should work as hard as possible just to buy more things.<br>
+  <strong>Not one</strong> said you should try to be richer than your neighbours.<br>
+  <strong>Not one</strong> said you should pick your career based on future earning power.</p>
+  <p>What they valued instead: real friendships, being part of something bigger than themselves, and unstructured time with their kids. As Pillemer put it — your children don't want your money nearly as much as they want <em>you</em>, sitting with them.</p>
+</section>
+
+<!-- DO / DONT -->
+<section class="reveal">
+  <div class="section-tag">Putting It To Use</div>
+  <h2>What to actually do with this</h2>
+  <div class="grid2">
+    <div class="card do">
+      <h4>Do this</h4>
+      <ul>
+        <li>Build an emergency fund before chasing a raise — it buys you the power to say no.</li>
+        <li>Weigh a job offer by hours <em>and</em> flexibility, not just the salary number.</li>
+        <li>Treat "control over my time" as a real, countable benefit — like a bonus you can bank.</li>
+        <li>Protect unstructured time with people who matter to you. It's the dividend money can't beat.</li>
+      </ul>
+    </div>
+    <div class="card dont">
+      <h4>Avoid this</h4>
+      <ul>
+        <li>Don't take the highest-paying option automatically — check what it costs you in hours and freedom.</li>
+        <li>Don't upgrade your lifestyle (bigger house, bigger EMI) every time your income rises — it quietly locks up your future time.</li>
+        <li>Don't assume a "dream job" title makes 80-hour weeks worth it. Loving the work doesn't cancel a schedule you can't control.</li>
+        <li>Don't measure your progress only in salary. Measure it in how much of your day is actually yours.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="display">Controlling your time is the highest dividend money pays.</div>
+  <div>The Psychology of Money — Chapter 7, Freedom · Morgan Housel</div>
+</footer>
+
+<script>
+  // Twinkling stars
+  const starsEl = document.getElementById('stars');
+  for(let i=0;i<50;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    starsEl.appendChild(s);
+  }
+
+  // Flying birds
+  const birdsEl = document.getElementById('birds');
+  const birdGlyphs = ['⌃','⌄'];
+  for(let i=0;i<7;i++){
+    const b = document.createElement('div');
+    b.className='bird';
+    b.textContent = birdGlyphs[i%2];
+    b.style.top = (10+Math.random()*30)+'%';
+    b.style.animationDuration = (10+Math.random()*10)+'s';
+    b.style.animationDelay = (Math.random()*10)+'s';
+    birdsEl.appendChild(b);
+  }
+
+  // Sun rises as you scroll through hero
+  const sun = document.getElementById('sun');
+  const hero = document.getElementById('hero');
+  window.addEventListener('scroll', () => {
+    const h = hero.offsetHeight;
+    const p = Math.min(window.scrollY / h, 1);
+    sun.style.transform = `translateX(-50%) translateY(${-p*220}px)`;
+  });
+
+  // Reveal on scroll
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // Charts
+  const chartFont = "'Work Sans', sans-serif";
+  Chart.defaults.font.family = chartFont;
+  Chart.defaults.color = '#5C5470';
+
+  new Chart(document.getElementById('stressChart'), {
+    type:'bar',
+    data:{
+      labels:['Worry — US','Worry — Global','Stress — US','Stress — Global'],
+      datasets:[{
+        data:[45,39,55,35],
+        backgroundColor:['#FF6B4A','#FFD3A8','#E8A23D','#FFE3BD'],
+        borderRadius:8,
+        maxBarThickness:60
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false},title:{display:false}},
+      scales:{y:{beginAtZero:true,max:60,ticks:{callback:v=>v+'%'}}}
+    }
+  });
+
+  new Chart(document.getElementById('growthChart'), {
+    type:'line',
+    data:{
+      labels:['1955','2019'],
+      datasets:[
+        {label:'Median family income', data:[100, 214], borderColor:'#E8A23D', backgroundColor:'rgba(232,162,61,0.15)', fill:true, tension:0.3, borderWidth:3},
+        {label:'Average new home size', data:[100, 248], borderColor:'#FF6B4A', backgroundColor:'rgba(255,107,74,0.12)', fill:true, tension:0.3, borderWidth:3}
+      ]
+    },
+    options:{
+      plugins:{legend:{position:'bottom'}},
+      scales:{y:{ticks:{callback:v=>v}}}
+    }
+  });
+
+  new Chart(document.getElementById('jobChart'), {
+    type:'doughnut',
+    data:{
+      labels:['Hands-on labor (1870)','Decision / service work (Today)'],
+      datasets:[{
+        data:[81,79],
+        backgroundColor:['#1E2B52','#FFB84D'],
+        borderWidth:0
+      }]
+    },
+    options:{
+      plugins:{legend:{position:'bottom'}},
+      cutout:'60%'
+    }
+  });
+</script>
+</body>
+</html>

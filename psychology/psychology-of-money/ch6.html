@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tails, You Win — The Psychology of Money</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #0a0c11;
+    --bg-2: #10131b;
+    --surface: #151924;
+    --surface-2: #1b202e;
+    --gold: #d9a441;
+    --gold-dim: #a8813a;
+    --ink: #eee9dd;
+    --ink-dim: #9aa0ae;
+    --ink-faint: #5e6472;
+    --win: #57b592;
+    --loss: #c96a58;
+    --rule: rgba(217,164,65,0.18);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  @font-face{
+    font-family:'Fraunces';
+    src: local('Georgia');
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold); color:#12141c;}
+
+  /* ---------- ambient background ---------- */
+  #bg-canvas{
+    position:fixed; inset:0; z-index:0; opacity:0.55; pointer-events:none;
+  }
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{position:relative; z-index:2;}
+  section{padding:6rem 1.5rem; max-width:920px; margin:0 auto; position:relative;}
+  @media (max-width:640px){ section{padding:4rem 1.25rem;} }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:1rem; display:flex; align-items:center; gap:0.6rem;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--gold-dim);}
+
+  h1,h2,h3{font-family:var(--serif); font-weight:700; margin:0 0 1rem; letter-spacing:-0.01em;}
+  h2{font-size:clamp(1.7rem,4vw,2.5rem); color:var(--ink);}
+  p{color:var(--ink-dim); font-size:1.05rem; max-width:62ch;}
+  strong{color:var(--ink); font-weight:600;}
+  .lead{font-size:1.2rem; color:var(--ink); max-width:58ch;}
+
+  a{color:var(--gold);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding-top:4rem; padding-bottom:4rem;
+  }
+  .coin-stage{
+    width:min(46vw,240px); height:min(46vw,240px); margin:0 auto 2.2rem;
+    perspective:1200px;
+  }
+  .coin{
+    width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    animation:flip 3.6s cubic-bezier(.68,-0.15,.27,1.15) infinite;
+  }
+  @keyframes flip{
+    0%{transform:rotateY(0deg) rotateZ(0deg);}
+    45%{transform:rotateY(900deg) rotateZ(0deg);}
+    55%{transform:rotateY(900deg) rotateZ(0deg);}
+    100%{transform:rotateY(1800deg) rotateZ(0deg);}
+  }
+  .coin-face{
+    position:absolute; inset:0; border-radius:50%; backface-visibility:hidden;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    background:
+      radial-gradient(circle at 32% 28%, #f3d488, #d9a441 42%, #a8752c 78%, #7c5620 100%);
+    border:3px solid #7c5620;
+    box-shadow: inset 0 0 0 6px rgba(0,0,0,0.12), inset 0 0 18px rgba(0,0,0,0.35), 0 10px 40px rgba(217,164,65,0.18);
+  }
+  .coin-face.back{ transform:rotateY(180deg); }
+  .coin-face .glyph{ font-family:var(--serif); font-size:2.6rem; color:#3d2a10; font-weight:700; }
+  .coin-face .tiny{ font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; color:#5a3d16; margin-top:0.3rem; text-transform:uppercase; }
+
+  .hero .kicker{font-family:var(--mono); font-size:0.78rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:0.8rem;}
+  .hero h1{font-size:clamp(2.6rem,9vw,4.6rem); line-height:0.98; margin-bottom:1.1rem;}
+  .hero h1 em{font-style:normal; color:var(--gold);}
+  .hero .sub{font-size:clamp(1.05rem,2.4vw,1.3rem); color:var(--ink-dim); max-width:34ch; margin:0 auto;}
+  .scroll-cue{margin-top:3rem; font-family:var(--mono); font-size:0.72rem; letter-spacing:0.14em; color:var(--ink-faint); text-transform:uppercase; animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);}}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- story card ---------- */
+  .card{
+    background:linear-gradient(180deg,var(--surface),var(--bg-2));
+    border:1px solid var(--rule); border-radius:14px; padding:1.8rem 1.9rem;
+    margin-top:1.6rem;
+  }
+  .card .tag{font-family:var(--mono); font-size:0.68rem; letter-spacing:0.14em; color:var(--gold); text-transform:uppercase; margin-bottom:0.6rem;}
+  .card p{margin:0; color:var(--ink); font-size:1rem;}
+  .card p + p{margin-top:0.7rem;}
+
+  /* ---------- long tail curve ---------- */
+  .curve-box{margin-top:2.2rem;}
+  svg.curve{width:100%; height:auto; display:block;}
+  .curve-path{
+    fill:none; stroke:var(--gold); stroke-width:2.4;
+    stroke-dasharray:900; stroke-dashoffset:900;
+    transition:stroke-dashoffset 1.8s ease;
+  }
+  .curve-path.in{stroke-dashoffset:0;}
+  .curve-fill{opacity:0; transition:opacity 1.2s ease 1s;}
+  .curve-fill.in{opacity:1;}
+  .curve-label{font-family:var(--mono); font-size:0.66rem; fill:var(--ink-faint); letter-spacing:0.05em;}
+  .curve-label.hot{fill:var(--gold);}
+
+  /* ---------- stat grid ---------- */
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:0.9rem; margin-top:1.8rem;}
+  @media (max-width:640px){ .stat-grid{grid-template-columns:repeat(2,1fr);} }
+  .stat{
+    background:var(--surface); border:1px solid var(--rule); border-radius:12px;
+    padding:1.1rem 1rem; text-align:center;
+  }
+  .stat .num{font-family:var(--mono); font-size:1.5rem; color:var(--gold); font-weight:600;}
+  .stat .lbl{font-size:0.76rem; color:var(--ink-faint); margin-top:0.3rem; line-height:1.3;}
+
+  /* ---------- chart wrap ---------- */
+  .chart-wrap{
+    background:var(--surface); border:1px solid var(--rule); border-radius:14px;
+    padding:1.4rem 1.2rem 1rem; margin-top:1.8rem;
+  }
+  .chart-wrap canvas{max-height:320px;}
+  .chart-note{font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint); margin-top:0.8rem; text-align:right;}
+
+  /* ---------- callout / carolco ---------- */
+  .callout{
+    display:flex; gap:1.1rem; align-items:flex-start; margin-top:1.8rem;
+    background:linear-gradient(120deg, rgba(201,106,88,0.12), transparent);
+    border:1px solid rgba(201,106,88,0.28); border-radius:12px; padding:1.2rem 1.3rem;
+  }
+  .callout .icon{font-size:1.6rem; line-height:1;}
+  .callout h4{margin:0 0 0.3rem; font-family:var(--serif); color:var(--ink); font-size:1.05rem;}
+  .callout p{margin:0; font-size:0.92rem;}
+
+  /* ---------- people comparison ---------- */
+  .people{display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem; margin-top:1.8rem;}
+  @media (max-width:700px){ .people{grid-template-columns:1fr;} }
+  .person{
+    background:var(--surface); border:1px solid var(--rule); border-radius:12px; padding:1.1rem;
+    text-align:center;
+  }
+  .person .avatar{
+    width:52px; height:52px; border-radius:50%; margin:0 auto 0.7rem;
+    display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:700; font-size:1.2rem;
+    background:radial-gradient(circle at 35% 30%, #2a3040, #171b26); color:var(--gold); border:1px solid var(--rule);
+  }
+  .person .name{font-weight:600; color:var(--ink); font-size:0.98rem;}
+  .person .role{font-size:0.78rem; color:var(--ink-faint); margin:0.2rem 0 0.7rem;}
+  .person .result{font-family:var(--mono); font-size:1.15rem; color:var(--win);}
+  .person.mid .result{color:var(--ink-dim);}
+  .person.low .result{color:var(--loss);}
+
+  /* ---------- quotes strip ---------- */
+  .quote-strip{display:flex; flex-direction:column; gap:1rem; margin-top:1.8rem;}
+  .quote{
+    border-left:2px solid var(--gold-dim); padding:0.3rem 0 0.3rem 1.1rem;
+  }
+  .quote p{color:var(--ink); font-style:italic; font-size:1rem; margin:0;}
+  .quote span{display:block; font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint); margin-top:0.4rem; font-style:normal;}
+
+  /* ---------- do / dont ---------- */
+  .dodont{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.8rem;}
+  @media (max-width:640px){ .dodont{grid-template-columns:1fr;} }
+  .dodont .col{border-radius:12px; padding:1.3rem 1.3rem; border:1px solid var(--rule);}
+  .dodont .do{background:linear-gradient(160deg, rgba(87,181,146,0.1), transparent);}
+  .dodont .dont{background:linear-gradient(160deg, rgba(201,106,88,0.1), transparent);}
+  .dodont h4{font-family:var(--mono); font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 0.9rem;}
+  .dodont .do h4{color:var(--win);}
+  .dodont .dont h4{color:var(--loss);}
+  .dodont ul{margin:0; padding:0; list-style:none;}
+  .dodont li{font-size:0.94rem; color:var(--ink-dim); padding:0.5rem 0; border-top:1px solid var(--rule);}
+  .dodont li:first-child{border-top:none; padding-top:0;}
+
+  /* ---------- closer ---------- */
+  .closer{text-align:center; padding-bottom:8rem;}
+  .closer h2{font-size:clamp(1.6rem,4vw,2.3rem);}
+  .closer p{margin:0 auto;}
+  .footer-note{margin-top:3rem; font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint);}
+
+  .section-num{
+    position:absolute; top:1.5rem; right:1.5rem; font-family:var(--mono); font-size:0.7rem; color:var(--ink-faint);
+    opacity:0.6;
+  }
+  @media (max-width:640px){ .section-num{display:none;} }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grain"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker">The Psychology of Money · Chapter 6</div>
+    <div class="coin-stage">
+      <div class="coin">
+        <div class="coin-face front">
+          <div class="glyph">₹</div>
+          <div class="tiny">Heads</div>
+        </div>
+        <div class="coin-face back">
+          <div class="glyph">T</div>
+          <div class="tiny">Tails</div>
+        </div>
+      </div>
+    </div>
+    <h1>Tails, <em>You Win.</em></h1>
+    <p class="sub">You can be wrong half the time — and still end up rich. Here's the one idea that explains almost every big fortune ever made.</p>
+    <div class="scroll-cue">keep flipping ↓</div>
+  </section>
+
+  <!-- 1: THE COLLECTOR -->
+  <section id="s1">
+    <div class="section-num">01</div>
+    <div class="eyebrow reveal">The Story</div>
+    <h2 class="reveal">A man who was wrong almost every time</h2>
+    <p class="lead reveal">Heinz Berggruen ran from Nazi Germany with nothing, and later became one of the greatest art dealers alive. He didn't have a gift for spotting genius. He had a habit: buy a lot, hold on, and wait.</p>
+    <div class="card reveal">
+      <div class="tag">What actually happened</div>
+      <p>Berggruen bought paintings the way a fisherman casts a wide net — hundreds of them, from painters no one had heard of yet. Most turned out to be worthless. A handful were Picassos.</p>
+      <p>In the year 2000 he sold part of that collection to Germany for over €100 million. Its real value was well past a billion. One winning slice paid for every mistake, forever.</p>
+    </div>
+    <div class="card reveal" style="border-color:rgba(217,164,65,0.35)">
+      <div class="tag">🇮🇳 Closer to home</div>
+      <p><strong>Vignesh</strong>, an engineer in Coimbatore, buys 15–20 small-cap stocks a year through his broker app. Most go sideways or lose money. He barely remembers half their names.</p>
+      <p>One of them — a tiny logistics company nobody was watching — turned into a 22-bagger. That single stock now outweighs every loss he's ever taken, combined.</p>
+    </div>
+  </section>
+
+  <!-- 2: THE MATH -->
+  <section id="s2">
+    <div class="section-num">02</div>
+    <div class="eyebrow reveal">The Idea</div>
+    <h2 class="reveal">A tiny sliver does almost all the work</h2>
+    <p class="lead reveal">This isn't luck or magic. It's how "long tails" work — a small number of extreme results quietly produce most of the outcome, while the crowd in the middle barely matters.</p>
+    <div class="curve-box reveal">
+      <svg class="curve" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="tailfill" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#d9a441" stop-opacity="0"/>
+            <stop offset="70%" stop-color="#d9a441" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="#d9a441" stop-opacity="0.35"/>
+          </linearGradient>
+        </defs>
+        <line x1="20" y1="220" x2="780" y2="220" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <path class="curve-fill" d="M20,220 C120,220 160,60 260,50 C400,35 500,150 620,195 C680,210 730,218 780,220 L780,220 L20,220 Z" fill="url(#tailfill)"/>
+        <path class="curve-path" d="M20,220 C120,220 160,60 260,50 C400,35 500,150 620,195 C680,210 730,218 780,220" />
+        <text x="60" y="245" class="curve-label">most bets</text>
+        <text x="330" y="30" class="curve-label">a few winners</text>
+        <text x="640" y="245" class="curve-label hot">the long tail →</text>
+      </svg>
+    </div>
+    <p class="reveal" style="margin-top:1rem">Read this curve like a portfolio: the tall hump on the left is every ordinary, forgettable bet. The thin trail stretching right, almost flat against the ground, is the one or two results so big they carry the entire outcome.</p>
+  </section>
+
+  <!-- 3: VC -->
+  <section id="s3">
+    <div class="section-num">03</div>
+    <div class="eyebrow reveal">The Proof — Venture Capital</div>
+    <h2 class="reveal">Even the pros fail most of the time</h2>
+    <p class="lead reveal">Correlation Ventures studied 21,000+ startup investments made between 2004 and 2014. The results should terrify anyone who expects to be right often.</p>
+    <div class="chart-wrap reveal">
+      <canvas id="vcChart"></canvas>
+      <div class="chart-note">Source: Correlation Ventures, 2004–2014</div>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat"><div class="num">65%</div><div class="lbl">lost money outright</div></div>
+      <div class="stat"><div class="num">2.5%</div><div class="lbl">returned 10x–20x</div></div>
+      <div class="stat"><div class="num">1%</div><div class="lbl">returned 20x+</div></div>
+      <div class="stat"><div class="num">0.5%</div><div class="lbl">returned 50x+ — and funded the industry</div></div>
+    </div>
+  </section>
+
+  <!-- 4: PUBLIC MARKETS -->
+  <section id="s4">
+    <div class="section-num">04</div>
+    <div class="eyebrow reveal">The Proof — Public Markets</div>
+    <h2 class="reveal">The stock market isn't any gentler</h2>
+    <p class="lead reveal">You'd think buying "safe," established public companies avoids this. It doesn't. J.P. Morgan tracked the Russell 3000 — a broad index of big U.S. companies — since 1980.</p>
+    <div class="chart-wrap reveal">
+      <canvas id="sectorChart"></canvas>
+      <div class="chart-note">Share of companies per sector that lost 70%+ of their value and never recovered, 1980–2014</div>
+    </div>
+    <p class="reveal" style="margin-top:1.2rem"><strong>40% of all companies in the index were effectively failures.</strong> Yet the whole index still grew 73-fold — because 7% of its companies produced almost all of the gain.</p>
+    <div class="callout reveal">
+      <div class="icon">🎬</div>
+      <div>
+        <h4>From Rambo to Rupees Zero</h4>
+        <p>Carolco Pictures made the biggest hits of the '80s — Rambo, Terminator 2, Total Recall — and was worth $400M by 1991. Five years later, it was bankrupt. Stock: zero. This isn't a rare story. It's the normal fate of nearly 4 in 10 public companies.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: YOUR BEHAVIOUR -->
+  <section id="s5">
+    <div class="section-num">05</div>
+    <div class="eyebrow reveal">The Twist</div>
+    <h2 class="reveal">You are a tail event too</h2>
+    <p class="lead reveal">It's not just which stocks you pick. It's how you behave during the scary months. A study invested $1 every month from 1900–2019 through three different mindsets.</p>
+    <div class="people reveal">
+      <div class="person">
+        <div class="avatar">V</div>
+        <div class="name">Vignesh</div>
+        <div class="role">Invests every month, recession or not. Never touches it.</div>
+        <div class="result">$435,551</div>
+      </div>
+      <div class="person mid">
+        <div class="avatar">P</div>
+        <div class="name">Pranav</div>
+        <div class="role">Sells the moment a recession hits, waits for calm to re-enter.</div>
+        <div class="result">$257,386</div>
+      </div>
+      <div class="person low">
+        <div class="avatar">D</div>
+        <div class="name">Dhanush</div>
+        <div class="role">Sells 6 months late, re-enters 6 months late — hesitates both ways.</div>
+        <div class="result">$234,476</div>
+      </div>
+    </div>
+    <div class="chart-wrap reveal">
+      <canvas id="peopleChart"></canvas>
+      <div class="chart-note">Same $1/month, same 119 years — only the reaction to fear changed</div>
+    </div>
+    <p class="reveal" style="margin-top:1.2rem">Recessions covered barely <strong>22% of those 119 years.</strong> Staying calm through just that sliver of time is worth nearly double, over a lifetime. Your reaction during the worst few months matters more than every calm decision you'll ever make.</p>
+  </section>
+
+  <!-- 6: WHAT THE MASTERS KNOW -->
+  <section id="s6">
+    <div class="section-num">06</div>
+    <div class="eyebrow reveal">In Their Own Words</div>
+    <h2 class="reveal">The people at the top say this out loud</h2>
+    <div class="quote-strip reveal">
+      <div class="quote"><p>Bezos once told shareholders not to worry about the Fire Phone flop — bigger failures were already brewing, on purpose.</p><span>Jeff Bezos, Amazon</span></div>
+      <div class="quote"><p>Netflix's Reed Hastings said his team's "hit rate" was too high, and pushed them to cancel more shows, take more risk.</p><span>Reed Hastings, Netflix</span></div>
+      <div class="quote"><p>Buffett has owned 400–500 stocks in his life. Ten of them made almost all his fortune.</p><span>Warren Buffett, Berkshire Hathaway</span></div>
+      <div class="quote"><p>Munger added: strip out Berkshire's handful of best bets, and the rest of the record looks perfectly average.</p><span>Charlie Munger, Berkshire Hathaway</span></div>
+      <div class="quote"><p>Soros put it simply — being right or wrong matters less than how much you make when right, and how little you lose when wrong.</p><span>George Soros, investor</span></div>
+    </div>
+  </section>
+
+  <!-- 7: HOW TO USE THIS -->
+  <section id="s7">
+    <div class="section-num">07</div>
+    <div class="eyebrow reveal">Take It Home</div>
+    <h2 class="reveal">How to actually live by this</h2>
+    <div class="dodont reveal">
+      <div class="col do">
+        <h4>Do</h4>
+        <ul>
+          <li>Spread bets wide — one strong winner is meant to carry many quiet losers</li>
+          <li>Expect most of your picks to disappoint. That's not failure, that's normal</li>
+          <li>Judge yourself on the process you followed, not any single outcome</li>
+          <li>Stay invested through the scary months — that's where the real return lives</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h4>Don't</h4>
+        <ul>
+          <li>Panic-sell because a handful of picks went to zero</li>
+          <li>Judge a strategy by its worst month or its best story</li>
+          <li>Expect to be right most of the time — even Peter Lynch was right 6 out of 10</li>
+          <li>Play it so safe you remove any chance of catching your own "Picasso"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSER -->
+  <section class="closer">
+    <div class="eyebrow reveal" style="justify-content:center;">Last Thought</div>
+    <h2 class="reveal">The longest tail of all</h2>
+    <p class="reveal">Out of a hundred billion planets in our galaxy, exactly one grew intelligent life. You reading this sentence is the rarest tail event imaginable. Everything else — one bad quarter, one failed stock — is small by comparison.</p>
+    <div class="footer-note reveal">The Psychology of Money — Morgan Housel · Chapter 6, retold</div>
+  </section>
+
+</div>
+
+<script>
+// ---------- reveal on scroll ----------
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+const curveIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelector('.curve-path').classList.add('in');
+      document.querySelector('.curve-fill').classList.add('in');
+      curveIO.disconnect();
+    }
+  });
+},{threshold:0.4});
+curveIO.observe(document.querySelector('.curve-box'));
+
+// ---------- ambient background: drifting coins ----------
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W,H,coins=[];
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = document.body.scrollHeight;
+}
+function initCoins(){
+  coins = [];
+  const count = Math.max(10, Math.floor(W/160));
+  for(let i=0;i<count;i++){
+    coins.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: 10 + Math.random()*22,
+      speed: 0.08 + Math.random()*0.18,
+      wobble: Math.random()*Math.PI*2,
+      wspeed: 0.002 + Math.random()*0.004,
+      alpha: 0.04 + Math.random()*0.08
+    });
+  }
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  coins.forEach(c=>{
+    c.wobble += c.wspeed;
+    c.y -= c.speed;
+    if(c.y < -30){ c.y = H+30; c.x = Math.random()*W; }
+    const rx = c.r * Math.abs(Math.cos(c.wobble));
+    ctx.beginPath();
+    ctx.ellipse(c.x + Math.sin(c.wobble)*14, c.y, Math.max(2,rx), c.r, 0, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(217,164,65,${c.alpha})`;
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(217,164,65,${c.alpha*1.6})`;
+    ctx.stroke();
+  });
+  if(!prefersReduced) requestAnimationFrame(draw);
+}
+resize(); initCoins();
+if(!prefersReduced){ draw(); } else { draw(); ctx.clearRect(0,0,0,0); }
+window.addEventListener('resize', ()=>{ resize(); initCoins(); });
+
+// ---------- charts ----------
+Chart.defaults.color = '#9aa0ae';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 12;
+
+function baseGrid(){
+  return { color:'rgba(255,255,255,0.06)', drawTicks:false };
+}
+
+new Chart(document.getElementById('vcChart'), {
+  type:'bar',
+  data:{
+    labels:['Lost money','Modest gains','10x–20x','20x+','50x+'],
+    datasets:[{
+      data:[65,31,2.5,1,0.5],
+      backgroundColor:['#c96a58','#2a3040','#d9a441','#d9a441','#f3d488'],
+      borderRadius:6,
+      maxBarThickness:56
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.y+'% of all deals'}}},
+    scales:{
+      y:{ grid:baseGrid(), ticks:{callback:(v)=>v+'%'}, beginAtZero:true },
+      x:{ grid:{display:false} }
+    }
+  }
+});
+
+new Chart(document.getElementById('sectorChart'), {
+  type:'bar',
+  data:{
+    labels:['Tech','Telecom','Energy','Cons. discretionary','Health care','Industrials','Materials','Cons. staples','Financials','Utilities'],
+    datasets:[{
+      data:[57,51,47,43,42,35,34,26,25,13],
+      backgroundColor:'#d9a441',
+      borderRadius:5,
+      maxBarThickness:34
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.y+'% saw a catastrophic loss'}}},
+    scales:{
+      y:{ grid:baseGrid(), ticks:{callback:(v)=>v+'%'}, beginAtZero:true },
+      x:{ grid:{display:false}, ticks:{maxRotation:45, minRotation:45, font:{size:10}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('peopleChart'), {
+  type:'bar',
+  data:{
+    labels:['Vignesh — stayed invested','Dhanush — hesitated both ways','Pranav — sold in fear'],
+    datasets:[{
+      data:[435551,234476,257386],
+      backgroundColor:['#57b592','#c9a24a','#c96a58'],
+      borderRadius:6,
+      maxBarThickness:60
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>'$'+c.parsed.x.toLocaleString()}}},
+    scales:{
+      x:{ grid:baseGrid(), ticks:{callback:(v)=>'$'+(v/1000)+'k'}, beginAtZero:true },
+      y:{ grid:{display:false} }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

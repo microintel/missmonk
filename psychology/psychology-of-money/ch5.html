@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Wealthy vs. Staying Wealthy — Chapter 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg-0:#0a0f16;
+    --bg-1:#0d1622;
+    --bg-2:#131f2e;
+    --gold:#c9a24b;
+    --gold-bright:#e6c479;
+    --forest:#3f7c5a;
+    --forest-2:#4a7c66;
+    --forest-deep:#254036;
+    --ember:#c15b3f;
+    --parchment:#ece3d2;
+    --muted:#93a0b3;
+    --line:rgba(236,227,210,0.12);
+    --maxw:920px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg-0);
+    color:var(--parchment);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--gold); color:var(--bg-0); }
+
+  h1,h2,h3,.serif{ font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono',monospace; letter-spacing:0.04em; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+  section{ position:relative; padding:96px 0; }
+  @media (max-width:640px){ section{ padding:64px 0; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:48px 0 32px;
+    position:relative;
+    overflow:hidden;
+  }
+  #treeCanvas{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:min(1100px,140vw);
+    height:100%;
+    z-index:0;
+    opacity:0.55;
+    pointer-events:none;
+  }
+  .rings-bg{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(circle at 50% 105%, rgba(201,162,75,0.10) 0%, transparent 45%),
+      radial-gradient(circle at 15% 20%, rgba(63,124,90,0.08) 0%, transparent 40%);
+  }
+  .hero-content{ position:relative; z-index:2; text-align:center; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold);
+    margin-bottom:28px;
+  }
+  .eyebrow::before,.eyebrow::after{ content:""; width:26px; height:1px; background:var(--gold); opacity:0.6; }
+  h1.title{
+    font-size:clamp(2.4rem,7vw,4.6rem);
+    line-height:1.04;
+    margin:0 0 28px;
+    color:var(--parchment);
+  }
+  h1.title em{ font-style:italic; color:var(--gold-bright); }
+  .subhead{
+    max-width:560px; margin:0 auto; color:var(--muted);
+    font-size:clamp(1rem,2vw,1.15rem);
+  }
+  .scroll-cue{
+    margin-top:64px; display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--muted); font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.1em;
+    position:relative; z-index:2;
+    animation:bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+  .scroll-cue .line{ width:1px; height:36px; background:linear-gradient(var(--gold),transparent); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:block;
+  }
+  h2.section-title{
+    font-size:clamp(1.7rem,4.4vw,2.5rem); margin:0 0 20px; color:var(--parchment);
+  }
+  .lead{ color:var(--muted); font-size:1.05rem; max-width:640px; }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- BRIEF SUMMARY GRID ---------- */
+  .brief-grid{ margin-top:40px; display:flex; flex-direction:column; gap:0; }
+  .brief-item{
+    display:grid; grid-template-columns:64px 1fr; gap:20px; align-items:start;
+    padding:20px 0; border-bottom:1px solid var(--line); color:var(--parchment); font-size:0.98rem;
+  }
+  .brief-item:last-child{ border-bottom:none; }
+  .b-num{
+    font-family:'IBM Plex Mono',monospace; font-size:0.95rem; color:var(--gold-bright);
+    background:var(--bg-2); border:1px solid var(--line); border-radius:20px;
+    padding:6px 4px; text-align:center;
+  }
+
+  /* ---------- STORY BLOCKS ---------- */
+  .story{
+    background:var(--bg-1);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .story-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px; margin-top:44px;
+  }
+  @media (max-width:760px){ .story-grid{ grid-template-columns:1fr; } }
+  .story-card{
+    background:var(--bg-2); border:1px solid var(--line); border-radius:2px;
+    padding:32px; position:relative;
+  }
+  .story-card .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; padding:4px 10px; border:1px solid currentColor; border-radius:20px;
+    display:inline-block; margin-bottom:18px;
+  }
+  .story-card.win .tag{ color:var(--forest-2); }
+  .story-card.loss .tag{ color:var(--ember); }
+  .story-card h3{ font-size:1.35rem; margin:0 0 12px; }
+  .story-card p{ color:var(--muted); font-size:0.98rem; margin:0 0 10px; }
+  .story-card .quote{
+    font-family:'Fraunces',serif; font-style:italic; color:var(--gold-bright);
+    font-size:1.05rem; margin-top:16px; padding-top:16px; border-top:1px solid var(--line);
+  }
+  .twist-banner{
+    margin-top:40px; padding:24px 28px; background:var(--bg-0);
+    border-left:3px solid var(--ember); font-size:0.98rem; color:var(--parchment);
+  }
+  .twist-banner b{ color:var(--gold-bright); }
+
+  /* ---------- BARBELL / TWO SKILLS ---------- */
+  .barbell-wrap{ margin-top:48px; }
+  .barbell{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;
+  }
+  @media (max-width:640px){ .barbell{ grid-template-columns:1fr; gap:24px; } }
+  .plate{
+    padding:28px; border-radius:2px;
+  }
+  .plate.get{ background:linear-gradient(135deg, rgba(193,91,63,0.14), transparent); border:1px solid rgba(193,91,63,0.35); }
+  .plate.keep{ background:linear-gradient(135deg, rgba(63,124,90,0.16), transparent); border:1px solid rgba(63,124,90,0.4); }
+  .plate h4{ margin:0 0 14px; font-size:1.1rem; font-family:'Fraunces',serif; }
+  .plate.get h4{ color:var(--ember); }
+  .plate.keep h4{ color:var(--forest-2); }
+  .plate ul{ margin:0; padding-left:18px; color:var(--muted); font-size:0.94rem; }
+  .plate li{ margin-bottom:8px; }
+  .bar-connector{
+    height:6px; background:linear-gradient(90deg,var(--ember),var(--gold),var(--forest-2));
+    margin:0 -4px; position:relative;
+  }
+  @media (max-width:640px){ .bar-connector{ display:none; } }
+
+  /* ---------- GUERIN CASE STUDY ---------- */
+  .case-toggle{
+    display:flex; gap:12px; margin:36px 0 8px; flex-wrap:wrap;
+  }
+  .case-btn{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.05em;
+    background:transparent; border:1px solid var(--line); color:var(--muted);
+    padding:10px 18px; border-radius:20px; cursor:pointer; transition:all 0.25s ease;
+  }
+  .case-btn.active{ background:var(--gold); color:var(--bg-0); border-color:var(--gold); font-weight:600; }
+  .case-panel{ display:none; margin-top:24px; background:var(--bg-2); border:1px solid var(--line); padding:28px; border-radius:2px; }
+  .case-panel.active{ display:block; }
+  .case-panel h4{ margin:0 0 6px; font-size:1.2rem; }
+  .case-panel .role{ color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px; display:block;}
+  .case-panel p{ color:var(--muted); margin:0 0 10px; }
+  .crash-btn{
+    margin-top:18px; background:var(--ember); color:var(--parchment); border:none;
+    padding:12px 22px; border-radius:4px; font-family:'Inter',sans-serif; font-weight:600;
+    cursor:pointer; font-size:0.9rem;
+  }
+  .crash-btn:hover{ filter:brightness(1.1); }
+  .outcome{
+    margin-top:18px; padding:16px 18px; border-left:3px solid var(--gold); background:var(--bg-0);
+    font-size:0.92rem; display:none;
+  }
+  .outcome.show{ display:block; }
+
+  /* ---------- CHART ---------- */
+  .chart-card{
+    background:var(--bg-2); border:1px solid var(--line); border-radius:2px; padding:24px;
+    margin-top:36px;
+  }
+  .chart-card canvas{ max-height:340px; }
+  .chart-note{ color:var(--muted); font-size:0.82rem; margin-top:12px; }
+
+  /* ---------- SURVIVAL PRINCIPLES ---------- */
+  .principle{
+    display:grid; grid-template-columns:64px 1fr; gap:22px; margin-top:44px;
+    padding-bottom:36px; border-bottom:1px solid var(--line);
+  }
+  .principle:last-child{ border-bottom:none; }
+  .p-num{
+    font-family:'Fraunces',serif; font-size:2.2rem; color:var(--gold); opacity:0.55; line-height:1;
+  }
+  .principle h3{ margin:0 0 10px; font-size:1.25rem; }
+  .principle p{ color:var(--muted); margin:0 0 12px; }
+  .example-box{
+    margin-top:14px; padding:16px 18px; background:var(--bg-2); border-radius:2px;
+    border-left:3px solid var(--forest-2); font-size:0.92rem;
+  }
+  .example-box b{ color:var(--gold-bright); }
+
+  /* ---------- MARGIN OF SAFETY SLIDER ---------- */
+  .slider-card{
+    background:var(--bg-2); border:1px solid var(--line); border-radius:2px; padding:28px; margin-top:16px;
+  }
+  .slider-row{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .slider-row input[type=range]{
+    flex:1; min-width:180px; -webkit-appearance:none; height:4px; border-radius:2px;
+    background:linear-gradient(90deg,var(--ember),var(--gold),var(--forest-2)); outline:none;
+  }
+  .slider-row input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--parchment); border:3px solid var(--gold); cursor:pointer;
+  }
+  .slider-val{ font-family:'IBM Plex Mono',monospace; font-size:1.4rem; color:var(--gold-bright); min-width:64px; text-align:right; }
+  .odds-bar-track{ height:10px; background:var(--bg-0); border-radius:6px; margin-top:20px; overflow:hidden; }
+  .odds-bar-fill{ height:100%; background:linear-gradient(90deg,var(--ember),var(--forest-2)); width:35%; transition:width 0.4s ease; border-radius:6px; }
+  .odds-label{ display:flex; justify-content:space-between; margin-top:10px; font-size:0.85rem; color:var(--muted); }
+
+  /* ---------- GROWTH AMID LOSS ---------- */
+  .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:36px; }
+  @media (max-width:640px){ .stat-row{ grid-template-columns:1fr 1fr; } }
+  .stat{ background:var(--bg-2); border:1px solid var(--line); padding:20px 16px; text-align:center; border-radius:2px; }
+  .stat .num{ font-family:'Fraunces',serif; font-size:1.9rem; color:var(--gold-bright); display:block; }
+  .stat .lbl{ font-size:0.78rem; color:var(--muted); margin-top:6px; display:block; }
+
+  /* ---------- TAKEAWAY ---------- */
+  .takeaway{ background:var(--bg-1); border-top:1px solid var(--line); }
+  .ta-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:40px; }
+  @media (max-width:640px){ .ta-grid{ grid-template-columns:1fr; } }
+  .ta-col h4{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.08em;
+    text-transform:uppercase; margin:0 0 18px; display:flex; align-items:center; gap:8px;
+  }
+  .ta-col.do h4{ color:var(--forest-2); }
+  .ta-col.dont h4{ color:var(--ember); }
+  .ta-col ul{ list-style:none; margin:0; padding:0; }
+  .ta-col li{
+    padding:12px 0 12px 28px; position:relative; color:var(--parchment); font-size:0.96rem;
+    border-bottom:1px solid var(--line);
+  }
+  .ta-col li::before{ position:absolute; left:0; top:12px; font-family:'IBM Plex Mono',monospace; font-weight:600; }
+  .ta-col.do li::before{ content:"✓"; color:var(--forest-2); }
+  .ta-col.dont li::before{ content:"✕"; color:var(--ember); }
+
+  footer{ text-align:center; padding:56px 24px; color:var(--muted); font-size:0.85rem; }
+  footer .signoff{ font-family:'Fraunces',serif; font-style:italic; color:var(--gold-bright); font-size:1.1rem; margin-bottom:10px; }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="treeCanvas"></canvas>
+  <div class="rings-bg"></div>
+  <div class="wrap hero-content">
+    <span class="eyebrow">Chapter 5 · The Psychology of Money</span>
+    <h1 class="title">Getting Wealthy <em>vs.</em><br>Staying Wealthy</h1>
+    <p class="subhead">Good investing isn't about making brilliant moves. It's about consistently not blowing yourself up — for long enough that time can do the heavy lifting.</p>
+  </div>
+  <div class="scroll-cue"><span class="line"></span>SCROLL</div>
+</section>
+
+<!-- CHAPTER IN BRIEF -->
+<section class="story">
+  <div class="wrap">
+    <span class="kicker reveal">The chapter in brief</span>
+    <h2 class="section-title reveal">One idea, five parts</h2>
+    <div class="brief-grid reveal">
+      <div class="brief-item"><span class="b-num">1929</span>Jesse Livermore made a fortune shorting the crash. Abraham Germansky, over-invested, lost everything and vanished the same week. Same event, opposite outcomes.</div>
+      <div class="brief-item"><span class="b-num">1933</span>Four years later, Livermore lost it all too — over-leveraged and over-confident. Getting rich and staying rich turned out to be two different skills, and he only had one of them.</div>
+      <div class="brief-item"><span class="b-num">1974</span>Rick Guerin, once in the same league as Buffett and Munger, got wiped out by a margin call in a downturn. Buffett and Munger, debt-free, simply waited — and compounded for 50 more years.</div>
+      <div class="brief-item"><span class="b-num">∞</span>Compounding needs time above all else. A tree looks like nothing for years, then becomes something extraordinary — but only if nothing cuts it down first.</div>
+      <div class="brief-item"><span class="b-num">✓</span>Survival &gt; skill. Keep a buffer, plan for the plan to fail, and stay optimistic long-term while staying paranoid short-term.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TWO MEN, ONE CRASH -->
+<section>
+  <div class="wrap">
+    <span class="kicker reveal">October 1929</span>
+    <h2 class="section-title reveal">Two men, one crash</h2>
+    <div class="story-grid">
+      <div class="story-card win reveal">
+        <span class="tag">Fortune made</span>
+        <h3>Jesse Livermore</h3>
+        <p>Shorted the crash and made <b>$3B+ in a day</b> — one of the richest men alive, overnight.</p>
+      </div>
+      <div class="story-card loss reveal">
+        <span class="tag">Fortune lost</span>
+        <h3>Abraham Germansky</h3>
+        <p>Over-invested in the boom. Vanished from Wall Street the same week — never found.</p>
+      </div>
+    </div>
+    <div class="twist-banner reveal">
+      <b>The twist:</b> by 1933 Livermore, over-confident and now in debt, lost everything too. Same flaw as Germansky in the end — great at <em>getting</em> rich, terrible at <em>staying</em> rich.
+    </div>
+  </div>
+</section>
+
+<!-- TWO DIFFERENT SKILLS -->
+<section class="story">
+  <div class="wrap">
+    <span class="kicker reveal">Not the same muscle</span>
+    <h2 class="section-title reveal">Getting money vs. keeping money</h2>
+
+    <div class="barbell-wrap reveal">
+      <div class="barbell">
+        <div class="plate get">
+          <h4>Getting wealthy needs</h4>
+          <ul>
+            <li>Taking risk</li>
+            <li>Optimism</li>
+            <li>Confidence</li>
+          </ul>
+        </div>
+        <div class="bar-connector"></div>
+        <div class="plate keep">
+          <h4>Staying wealthy needs</h4>
+          <ul>
+            <li>Avoiding risk</li>
+            <li>Humility about luck</li>
+            <li>Frugality</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="lead reveal" style="margin-top:22px;"><b style="color:var(--gold-bright)">4 in 10</b> companies that go public lose nearly all their value. The Forbes 400 turns over ~20% every decade. Skill alone doesn't protect a fortune.</p>
+  </div>
+</section>
+
+<!-- RICK GUERIN CASE STUDY -->
+<section>
+  <div class="wrap">
+    <span class="kicker reveal">The lesson, applied</span>
+    <h2 class="section-title reveal">Two paths, same market crash</h2>
+
+    <div class="case-toggle reveal">
+      <button class="case-btn active" data-case="vignesh">Vignesh — trades on margin</button>
+      <button class="case-btn" data-case="pranav">Pranav — invests through SIPs</button>
+    </div>
+
+    <div class="case-panel active reveal" id="panel-vignesh">
+      <span class="role">The Rick Guerin path</span>
+      <h4>Borrows to invest more, keeps no buffer</h4>
+      <button class="crash-btn" data-target="vignesh">▸ Simulate a 40% market crash</button>
+      <div class="outcome" id="outcome-vignesh">
+        Margin call. Forced to sell his best stocks at the bottom — the loss becomes permanent, even after the market recovers.
+      </div>
+    </div>
+
+    <div class="case-panel" id="panel-pranav">
+      <span class="role">The Buffett &amp; Munger path</span>
+      <h4>No leverage, keeps a 6-month emergency fund</h4>
+      <button class="crash-btn" data-target="pranav">▸ Simulate a 40% market crash</button>
+      <div class="outcome" id="outcome-pranav">
+        Barely affected. Keeps the SIP running through the dip, buying more at lower prices. Fully recovers — then keeps compounding.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SURVIVAL = COMPOUNDING -->
+<section class="story">
+  <div class="wrap">
+    <span class="kicker reveal">Why survival beats skill</span>
+    <h2 class="section-title reveal">The oak tree problem</h2>
+    <p class="lead reveal">Compounding needs years to work. A sapling looks like nothing for a year, real after ten, extraordinary after fifty — but only if nothing chops it down. Buffett's edge was never just stock-picking: no big debt, no panic-selling through a dozen-plus recessions, no chasing trends. He simply survived, from age 10 to 89.</p>
+
+    <div class="chart-card reveal">
+      <canvas id="growthChart"></canvas>
+      <p class="chart-note">Illustrative: steady compounding over 40 years, log scale. Flat and unremarkable early — sharp only much later.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THREE PRINCIPLES -->
+<section>
+  <div class="wrap">
+    <span class="kicker reveal">Putting survival into practice</span>
+    <h2 class="section-title reveal">Three habits of a survival mindset</h2>
+
+    <div class="principle reveal">
+      <span class="p-num">01</span>
+      <div>
+        <h3>Choose "unbreakable" over "maximum returns"</h3>
+        <p>Idle cash feels wasteful next to a rising market — but cash you never touch buys you the ability to never sell in a panic. That's worth more than the interest it earns.</p>
+        <div class="example-box"><b>Pranav:</b> a ₹3L liquid-fund buffer let him stay fully invested through the 2020 crash.</div>
+      </div>
+    </div>
+
+    <div class="principle reveal">
+      <span class="p-num">02</span>
+      <div>
+        <h3>Plan for the plan to go wrong</h3>
+        <p>No 20-year plan survives untouched. A good plan leaves room for error — this buffer is the <b style="color:var(--gold-bright)">margin of safety</b>.</p>
+        <div class="slider-card">
+          <label class="mono" style="font-size:0.85rem; color:var(--muted);">Drag to add a margin of safety to a goal</label>
+          <div class="slider-row" style="margin-top:14px;">
+            <input type="range" id="safetySlider" min="0" max="50" value="10" step="5">
+            <span class="slider-val"><span id="safetyVal">10</span>%</span>
+          </div>
+          <div class="odds-bar-track"><div class="odds-bar-fill" id="oddsFill"></div></div>
+          <div class="odds-label"><span>Fragile plan</span><span id="oddsText">Some breathing room</span><span>Hard to break</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="principle reveal">
+      <span class="p-num">03</span>
+      <div>
+        <h3>Be a barbell: optimistic long-term, paranoid short-term</h3>
+        <p>Not a contradiction. Believe the next 20 years will be good, while staying paranoid about the next 2 — that paranoia is what keeps you around long enough for the optimism to pay off.</p>
+        <div class="example-box"><b>Vignesh, after his margin call:</b> still bullish on the next 20 years, but never leverages and never invests money he needs soon.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GROWTH AMID LOSS -->
+<section class="story">
+  <div class="wrap">
+    <span class="kicker reveal">Growth doesn't feel like growth</span>
+    <h2 class="section-title reveal">Progress and destruction look the same</h2>
+    <p class="lead reveal">Real growth almost always comes bundled with crashes, wars, and years that feel like the end of the world. Both can be true at once.</p>
+    <div class="stat-row reveal">
+      <div class="stat"><span class="num">33</span><span class="lbl">US recessions, last 170 yrs</span></div>
+      <div class="stat"><span class="num">99.9%</span><span class="lbl">of companies ever started, failed</span></div>
+      <div class="stat"><span class="num">20×</span><span class="lbl">rise in living standards, same period</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAY -->
+<section class="takeaway">
+  <div class="wrap">
+    <span class="kicker reveal">Carry this forward</span>
+    <h2 class="section-title reveal">What to do — and what not to do</h2>
+    <div class="ta-grid">
+      <div class="ta-col do reveal">
+        <h4>Do</h4>
+        <ul>
+          <li>Keep a cash buffer you never invest, even if it "underperforms"</li>
+          <li>Build room for error into every plan — savings rate, timeline, expected returns</li>
+          <li>Stay invested for decades; let compounding do the work quietly</li>
+          <li>Treat luck and risk as two sides of the same coin — respect both</li>
+          <li>Be optimistic about the next 20 years and paranoid about the next 2</li>
+        </ul>
+      </div>
+      <div class="ta-col dont reveal">
+        <h4>Don't</h4>
+        <ul>
+          <li>Borrow money to invest more than you can afford to lose</li>
+          <li>Assume a winning streak means you've become invincible</li>
+          <li>Build a plan that only works if everything goes exactly right</li>
+          <li>Confuse a "boring" strategy for a bad one</li>
+          <li>Panic-sell to make a temporary problem feel solved</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="signoff">"Survival gave Buffett longevity. And longevity is what let compounding work wonders."</div>
+  Based on Chapter 5, <em>The Psychology of Money</em> by Morgan Housel · Adapted for everyday reading
+</footer>
+
+<script>
+// ---------- Scroll reveal ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.15});
+revealEls.forEach((el,i)=>{ el.style.transitionDelay = (i%4)*70+'ms'; io.observe(el); });
+
+// ---------- Hero oak tree canvas ----------
+const canvas = document.getElementById('treeCanvas');
+const ctx = canvas.getContext('2d');
+let W,H,DPR;
+function resize(){
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  W = canvas.clientWidth; H = canvas.clientHeight;
+  canvas.width = W*DPR; canvas.height = H*DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+let progress = 0;
+const maxDepth = 9;
+function drawBranch(x,y,len,angle,depth,growth){
+  if(depth===0 || len<3) return;
+  const localGrowth = Math.min(1, Math.max(0,(growth*maxDepth) - (maxDepth-depth)));
+  if(localGrowth<=0) return;
+  const x2 = x + Math.cos(angle)*len*localGrowth;
+  const y2 = y - Math.sin(angle)*len*localGrowth;
+  const t = depth/maxDepth;
+  ctx.strokeStyle = depth>4 ? `rgba(63,124,90,${0.55+t*0.2})` : `rgba(201,162,75,${0.5+t*0.2})`;
+  ctx.lineWidth = Math.max(0.6, depth*0.9);
+  ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+
+  if(localGrowth>=0.98){
+    const spread = 0.42 + Math.random()*0.15;
+    drawBranch(x2,y2,len*0.78, angle-spread, depth-1, growth);
+    drawBranch(x2,y2,len*0.78, angle+spread, depth-1, growth);
+    if(depth%3===0) drawBranch(x2,y2,len*0.6, angle+(Math.random()-0.5)*0.3, depth-1, growth);
+  }
+}
+function drawRoots(x,y,len,angle,depth,growth){
+  if(depth===0 || len<3) return;
+  const localGrowth = Math.min(1, Math.max(0,(growth*5) - (5-depth)));
+  if(localGrowth<=0) return;
+  const x2 = x + Math.cos(angle)*len*localGrowth;
+  const y2 = y + Math.sin(angle)*len*localGrowth;
+  ctx.strokeStyle = `rgba(201,162,75,${0.25+depth*0.05})`;
+  ctx.lineWidth = Math.max(0.5, depth*0.7);
+  ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+  drawRoots(x2,y2,len*0.75, angle-0.35, depth-1, growth);
+  drawRoots(x2,y2,len*0.75, angle+0.35, depth-1, growth);
+}
+let seedRand = [];
+function seedRandomness(){
+  seedRand = [];
+  for(let i=0;i<400;i++) seedRand.push(Math.random());
+}
+seedRandomness();
+function renderTree(){
+  ctx.clearRect(0,0,W,H);
+  const baseX = W/2, baseY = H*0.86;
+  const g = Math.min(1, progress);
+  Math.random = (function(orig, arr){ let i=0; return function(){ i=(i+1)%arr.length; return arr[i]; }; })(Math.random, seedRand);
+  drawBranch(baseX, baseY, H*0.19, Math.PI/2, maxDepth, g);
+  drawRoots(baseX, baseY, H*0.09, 0.35, 5, g);
+  drawRoots(baseX, baseY, H*0.09, Math.PI-0.35, 5, g);
+}
+function loop(){
+  if(progress<1){ progress += 0.006; }
+  renderTree();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// ---------- Case study toggle ----------
+const caseBtns = document.querySelectorAll('.case-btn');
+caseBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    caseBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.case-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.case).classList.add('active');
+  });
+});
+document.querySelectorAll('.crash-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.getElementById('outcome-'+btn.dataset.target).classList.add('show');
+    btn.disabled = true;
+    btn.style.opacity = 0.5;
+  });
+});
+
+// ---------- Margin of safety slider ----------
+const slider = document.getElementById('safetySlider');
+const safetyVal = document.getElementById('safetyVal');
+const oddsFill = document.getElementById('oddsFill');
+const oddsText = document.getElementById('oddsText');
+function updateSlider(){
+  const v = parseInt(slider.value,10);
+  safetyVal.textContent = v;
+  const pct = 25 + v*1.4; // illustrative curve
+  oddsFill.style.width = Math.min(100,pct)+'%';
+  oddsText.textContent = v<15 ? 'Some breathing room' : v<35 ? 'Comfortable buffer' : 'Very hard to break';
+}
+slider.addEventListener('input', updateSlider);
+updateSlider();
+
+// ---------- Growth chart ----------
+const years = [];
+const values = [];
+let v = 1;
+for(let y=0; y<=40; y++){
+  years.push(1985+y);
+  // steady compounding with mild noise to feel real, no crashes below zero
+  const noise = 1 + (Math.sin(y*1.7)*0.06);
+  v = v * 1.115 * (y===0?1:noise);
+  values.push(Math.round(v*100)/100);
+}
+const chartCtx = document.getElementById('growthChart').getContext('2d');
+new Chart(chartCtx, {
+  type:'line',
+  data:{
+    labels: years,
+    datasets:[{
+      label:'Value of ₹1 invested (illustrative)',
+      data: values,
+      borderColor:'#c9a24b',
+      backgroundColor:'rgba(201,162,75,0.08)',
+      borderWidth:2.5,
+      pointRadius:0,
+      fill:true,
+      tension:0.25
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{ labels:{ color:'#93a0b3', font:{family:'Inter'} } }
+    },
+    scales:{
+      x:{ ticks:{ color:'#93a0b3', maxTicksLimit:9 }, grid:{ color:'rgba(236,227,210,0.06)' } },
+      y:{ type:'logarithmic', ticks:{ color:'#93a0b3' }, grid:{ color:'rgba(236,227,210,0.06)' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

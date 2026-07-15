@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Man in the Car Paradox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0e14;
+    --bg2:#0f131c;
+    --panel:#161b26;
+    --panel2:#1b212f;
+    --chrome:#eceef2;
+    --muted:#8b93a5;
+    --gold:#f2b84b;
+    --gold-dim:#8a6a2c;
+    --tail:#e6533c;
+    --line:#242a38;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--chrome);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--gold);color:#1a1400;}
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:1px;background:var(--gold-dim);
+    display:inline-block;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:80px 20px 60px;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 0%, #161c2a 0%, var(--bg) 60%);
+    overflow:hidden;
+  }
+  .road-line{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:38%;
+    background:linear-gradient(180deg, transparent, #060810 70%);
+    border-top:1px solid var(--line);
+  }
+  .road-line::before{
+    content:"";
+    position:absolute;
+    top:22px; left:0; right:0; height:3px;
+    background:repeating-linear-gradient(90deg, var(--gold-dim) 0 40px, transparent 40px 80px);
+    opacity:.5;
+    animation:roadmove 4s linear infinite;
+  }
+  @keyframes roadmove{ to{ background-position-x:-80px; } }
+
+  .stars{
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 20%, #fff3, transparent),
+      radial-gradient(1px 1px at 70% 15%, #fff2, transparent),
+      radial-gradient(1.5px 1.5px at 85% 35%, #fff3, transparent),
+      radial-gradient(1px 1px at 40% 10%, #fff2, transparent),
+      radial-gradient(1px 1px at 60% 45%, #fff2, transparent);
+    opacity:.6;
+  }
+
+  h1.title{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:clamp(2.4rem, 8vw, 5rem);
+    line-height:1.02;
+    margin:18px 0 6px;
+    letter-spacing:-.01em;
+  }
+  h1.title em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--gold);
+  }
+  .subtitle{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:400;
+    color:var(--muted);
+    font-size:clamp(1rem, 2.6vw, 1.3rem);
+    max-width:520px;
+    margin:0 auto 34px;
+  }
+
+  .car-wrap{
+    position:relative;
+    width:min(90vw, 460px);
+    margin:10px auto 26px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  svg#car path.body{
+    fill:none;
+    stroke:var(--chrome);
+    stroke-width:3;
+    stroke-linejoin:round;
+    stroke-linecap:round;
+  }
+  svg#car circle.wheel{
+    fill:#05070c;
+    stroke:var(--chrome);
+    stroke-width:3;
+  }
+  svg#car circle.hub{
+    fill:var(--muted);
+  }
+  .headlight{
+    fill:var(--gold);
+    filter:drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 14px var(--gold));
+    animation:glow 2.4s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{ opacity:.75; }
+    50%{ opacity:1; }
+  }
+  .beam{
+    position:absolute;
+    top:38%; left:2%;
+    width:46%;
+    height:60px;
+    background:linear-gradient(90deg, rgba(242,184,75,.35), transparent);
+    filter:blur(6px);
+    transform:skewY(-4deg);
+    pointer-events:none;
+  }
+
+  .tap-hint{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:.05em;
+    margin-top:6px;
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+
+  .bubble{
+    position:absolute;
+    max-width:180px;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 12px;
+    font-size:13px;
+    line-height:1.35;
+    opacity:0;
+    transform:translateY(8px) scale(.92);
+    transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;
+    text-align:left;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  .bubble b{ color:var(--gold); display:block; font-size:11px; font-family:'JetBrains Mono',monospace; letter-spacing:.04em; margin-bottom:3px; text-transform:uppercase;}
+  .bubble.you{ top:-18px; left:-8px; }
+  .bubble.them{ top:-46px; right:-10px; }
+  .car-wrap.active .bubble{ opacity:1; transform:translateY(0) scale(1); }
+
+  /* ---------- GENERIC SECTION ---------- */
+  section{
+    padding:70px 20px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(1.6rem, 4vw, 2.3rem);
+    margin:14px 0 18px;
+    line-height:1.15;
+  }
+  p{
+    color:#c7cbd6;
+    font-size:clamp(.98rem, 2vw, 1.08rem);
+    line-height:1.7;
+    margin:0 0 14px;
+  }
+  .lede{
+    color:var(--chrome);
+    font-size:clamp(1.05rem, 2.3vw, 1.2rem);
+  }
+
+  /* ---------- STORY (Vignesh / Pranav) ---------- */
+  .story-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:26px;
+  }
+  @media (max-width:560px){ .story-cards{ grid-template-columns:1fr; } }
+  .story-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .story-card .who{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .story-card .say{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .story-card .desc{
+    font-size:.92rem;
+    color:#aeb4c2;
+    line-height:1.55;
+  }
+  .arrow-loop{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    margin:18px 0 4px;
+    letter-spacing:.05em;
+  }
+
+  /* ---------- FLIP CARD ---------- */
+  .flip-outer{
+    margin-top:30px;
+    perspective:1200px;
+  }
+  .flip-card{
+    position:relative;
+    width:100%;
+    min-height:190px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .flip-inner{
+    position:relative;
+    width:100%; height:100%;
+    min-height:190px;
+    transition:transform .6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    border-radius:16px;
+    border:1px solid var(--line);
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .face.front{ background:var(--panel); }
+  .face.back{
+    background:linear-gradient(160deg, #221a0f, var(--panel));
+    transform:rotateY(180deg);
+    border-color:var(--gold-dim);
+  }
+  .face .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .face.back .tag{ color:var(--gold); }
+  .face .line{
+    font-family:'Fraunces',serif;
+    font-size:clamp(1.15rem,3vw,1.5rem);
+    line-height:1.3;
+  }
+  .flip-hint{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:10px;
+    letter-spacing:.05em;
+  }
+
+  /* ---------- ATTENTION CHART ---------- */
+  .chart-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px 22px;
+    margin-top:24px;
+  }
+  .bar-row{ margin-bottom:22px; }
+  .bar-row:last-child{ margin-bottom:0; }
+  .bar-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:.85rem;
+    color:var(--muted);
+    margin-bottom:8px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .bar-track{
+    height:14px;
+    background:#0e121b;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:8px;
+    transition:width 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .bar-fill.gold{ background:linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+  .bar-fill.tail{ background:linear-gradient(90deg, #7a2c22, var(--tail)); }
+  .chart-note{
+    font-size:.82rem;
+    color:var(--muted);
+    margin-top:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- TAKEAWAY ---------- */
+  .grid3{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin-top:24px;
+  }
+  @media (max-width:640px){ .grid3{ grid-template-columns:1fr; } }
+  .take-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 18px;
+    text-align:center;
+  }
+  .take-card .icon{
+    width:44px; height:44px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:#0e121b;
+    border:1px solid var(--gold-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+  }
+  .take-card h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.05rem;
+    margin:0 0 6px;
+    color:var(--gold);
+  }
+  .take-card p{
+    font-size:.85rem;
+    color:#aeb4c2;
+    margin:0;
+    line-height:1.5;
+  }
+
+  /* ---------- CLOSING ---------- */
+  .closing{
+    text-align:center;
+    padding:90px 20px 110px;
+  }
+  .closing .quote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.4rem, 4.2vw, 2.1rem);
+    line-height:1.35;
+    max-width:640px;
+    margin:0 auto 18px;
+    color:var(--chrome);
+  }
+  .closing .quote .hl{ color:var(--gold); }
+  .closing .source{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:.06em;
+  }
+  .keyicon{
+    width:34px; opacity:.7; margin:0 auto 26px; display:block;
+    animation:pulse 3s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="stars"></div>
+  <div class="road-line"></div>
+
+  <div class="eyebrow">Chapter 8 · The Psychology of Money</div>
+  <h1 class="title">Man in the <em>Car</em> Paradox</h1>
+  <p class="subtitle">No one is impressed with your possessions<br>as much as you are.</p>
+
+  <div class="car-wrap" id="carWrap">
+    <div class="beam"></div>
+    <svg id="car" viewBox="0 0 600 220" width="100%">
+      <path class="body" d="M40,150 L60,150 C65,120 90,95 130,90 L200,60 C230,45 300,42 340,55 L420,90 C470,92 520,110 550,150 L555,150"/>
+      <circle class="wheel" cx="150" cy="155" r="30"/>
+      <circle class="hub" cx="150" cy="155" r="9"/>
+      <circle class="wheel" cx="440" cy="155" r="30"/>
+      <circle class="hub" cx="440" cy="155" r="9"/>
+      <circle class="headlight" cx="548" cy="128" r="7"/>
+    </svg>
+    <div class="bubble you">
+      <b>Vignesh (buyer)</b>
+      "Everyone will finally respect me for this."
+    </div>
+    <div class="bubble them">
+      <b>Pranav (bystander)</b>
+      "I wish that car was mine."
+    </div>
+  </div>
+  <div class="tap-hint">↳ tap the car</div>
+</div>
+
+<!-- STORY -->
+<section>
+  <div class="reveal">
+    <div class="eyebrow">The real story</div>
+    <h2>A valet learns what money can't buy</h2>
+    <p class="lede">Morgan Housel parked Ferraris and Lamborghinis for a living. He dreamed of owning one — until he noticed something: he never once admired the <em>driver</em>. Only the car.</p>
+    <p>He realised every guest gawking at those cars probably felt admired. But not one of them knew that the valet gawking at their car wasn't thinking about them at all. He was imagining <em>himself</em> in the driver's seat.</p>
+  </div>
+
+  <div class="story-cards reveal">
+    <div class="story-card">
+      <div class="who">Vignesh · buys a BMW</div>
+      <div class="say">"Now people will see how far I've come."</div>
+      <div class="desc">He wants respect. He believes the car will carry that message for him.</div>
+    </div>
+    <div class="story-card">
+      <div class="who">Pranav · sees the BMW</div>
+      <div class="say">"Imagine if that were mine."</div>
+      <div class="desc">He isn't admiring Vignesh at all. He's picturing his own life with that car.</div>
+    </div>
+  </div>
+  <div class="arrow-loop reveal">Vignesh's respect → redirected into Pranav's own wanting</div>
+</section>
+
+<!-- FLIP -->
+<section>
+  <div class="reveal">
+    <div class="eyebrow">The paradox</div>
+    <h2>What you expect vs. what actually happens</h2>
+    <p>You buy something expensive hoping people will look at <em>you</em> differently. In reality, they mostly use it as a mirror for their own wants — and barely register you at all.</p>
+  </div>
+  <div class="flip-outer reveal">
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner">
+        <div class="face front">
+          <div class="tag">What Vignesh expects</div>
+          <div class="line">"People will look at my car and think — <b>he's</b> made it. He must be respected."</div>
+        </div>
+        <div class="face back">
+          <div class="tag">What actually happens</div>
+          <div class="line">People look at the car and think — <b>I</b> want one of those. Vignesh, the person, is barely noticed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="flip-hint">↳ tap to flip</div>
+  </div>
+</section>
+
+<!-- ATTENTION CHART -->
+<section>
+  <div class="reveal">
+    <div class="eyebrow">Where attention actually goes</div>
+    <h2>The object gets noticed. Not the owner.</h2>
+    <p>This isn't survey data — it's simply how attention works. A conceptual picture of what's really happening in a stranger's head when they see something expensive.</p>
+  </div>
+  <div class="chart-box reveal" id="chartBox">
+    <div class="bar-row">
+      <div class="bar-label"><span>Attention on the object (the car)</span><span>90%</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="90"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Attention on the owner (the person)</span><span>10%</span></div>
+      <div class="bar-track"><div class="bar-fill tail" data-width="10"></div></div>
+    </div>
+    <div class="chart-note">Almost all the attention lands on the thing itself — and turns into the viewer's own daydream. Very little of it ever turns into admiration for the person who bought it.</div>
+  </div>
+</section>
+
+<!-- TAKEAWAY -->
+<section>
+  <div class="reveal">
+    <div class="eyebrow">So what actually earns respect</div>
+    <h2>Not horsepower. These three, instead.</h2>
+  </div>
+  <div class="grid3 reveal">
+    <div class="take-card">
+      <div class="icon">🙏</div>
+      <h3>Humility</h3>
+      <p>Showing you know you don't have all the answers.</p>
+    </div>
+    <div class="take-card">
+      <div class="icon">💛</div>
+      <h3>Kindness</h3>
+      <p>Small, consistent acts people actually remember.</p>
+    </div>
+    <div class="take-card">
+      <div class="icon">🤝</div>
+      <h3>Empathy</h3>
+      <p>Making others feel seen — the thing money can't fake.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<div class="closing">
+  <svg class="keyicon" viewBox="0 0 100 40" fill="none" stroke="#f2b84b" stroke-width="4">
+    <circle cx="20" cy="20" r="14"/>
+    <line x1="34" y1="20" x2="90" y2="20"/>
+    <line x1="70" y1="20" x2="70" y2="32"/>
+    <line x1="82" y1="20" x2="82" y2="28"/>
+  </svg>
+  <div class="quote reveal">"No one is impressed with your possessions <span class="hl">as much as you are.</span>"</div>
+  <div class="source">— Morgan Housel, <i>The Psychology of Money</i>, Ch. 8</div>
+</div>
+
+<script>
+  // Car tap → thought bubbles
+  const carWrap = document.getElementById('carWrap');
+  carWrap.addEventListener('click', () => carWrap.classList.toggle('active'));
+
+  // Flip card
+  const flipCard = document.getElementById('flipCard');
+  flipCard.addEventListener('click', () => flipCard.classList.toggle('flipped'));
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Chart bars animate once visible
+  const chartBox = document.getElementById('chartBox');
+  const bars = chartBox.querySelectorAll('.bar-fill');
+  const chartIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        bars.forEach(b => { b.style.width = b.dataset.width + '%'; });
+        chartIO.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  chartIO.observe(chartBox);
+</script>
+
+</body>
+</html>
