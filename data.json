@@ -460,5 +460,34 @@
     "UI /UX": {},
     "Unix": {},
     "embedded systems": {}
+  },
+  "Engeneering": {
+    "2025-2028 (Reference Syllabus )": {
+      "CSE": {
+        "Sem 3": {
+          "A PROBABILITY AND INTEGRAL TRANSFORMS": {},
+          "DESIGN OF ANALOG AND DIGITAL CIRCUITS": {},
+          "DATA STRUCTURES USING C": {},
+          "COMPUTER ORGANIZATION AND MICROPROCESSORS": {},
+          "DATA STRUCTURES LAB USING C": {},
+          "OOP WITH JAVA": {},
+          "SOCIAL CONNECT AND RESPONSIBILITY": {},
+          "C# PROGRAMMING": {}
+        },
+        "Sem 4": {
+          "DESIGN AND ANALYSIS OF ALGORITHMS": {},
+          "SOFTWARE ENGINEERING AND PROJECT MANAGEMENT": {},
+          "APPLIED DISCRETE MATHEMATICAL STRUCTURES AND GRAPH THEORY": {},
+          "DATABASE MANAGEMENT SYSTEM": {},
+          "INTRODUCTION TO IMAGE PROCESSING": {},
+          "DESIGN AND ANALYSIS OF ALGORITHMS LAB": {},
+          "COMPUTER GRAPHICS AND VISUALIZATION": {},
+          "MOBILE APPLICATION DEVELOPMENT": {},
+          "BIOLOGY FOR ENGINEERS": {},
+          "UNIVERSAL HUMAN VALUES-II: UNDERSTANDING HARMONY and ETHICAL \rHUMAN CONDUCT": {}
+        },
+        "Sem 5": {}
+      }
+    }
   }
 }
