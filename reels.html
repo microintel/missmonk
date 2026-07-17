@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Nuts — Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <style>
@@ -272,6 +272,17 @@ a { color:inherit; text-decoration:none; }
 .reel-whatsapp-btn.sending { animation:shareRing .6s ease-out; }
 .reel-whatsapp-label { font-size:.68rem; color:var(--text2); font-weight:600; }
 
+.reel-chatgpt-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:#10a37f; border:1px solid rgba(0,0,0,.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s;
+}
+.reel-chatgpt-btn:active { transform:scale(.85); }
+.reel-chatgpt-label { font-size:.68rem; color:var(--text2); font-weight:600; }
+
 /* ── SHARED-LINK FILTER BANNER ── */
 .shared-banner {
   position:fixed; z-index:41; left:50%;
@@ -474,13 +485,13 @@ a { color:inherit; text-decoration:none; }
   .reel-meaning { -webkit-line-clamp:2; font-size:.82rem; }
   .reel-author-row { bottom:calc(1rem + env(safe-area-inset-bottom)); gap:.25rem; }
   .reel-icon-row { margin-top:.3rem; gap:.8rem; }
-  .reel-like-btn, .reel-share-btn, .reel-whatsapp-btn { width:40px; height:40px; font-size:1.1rem; }
+  .reel-like-btn, .reel-share-btn, .reel-whatsapp-btn, .reel-chatgpt-btn { width:40px; height:40px; font-size:1.1rem; }
   .big-heart { font-size:4rem; }
 }
 
 /* ── POINTER / DESKTOP HOVER ── */
 @media (hover:hover) and (pointer:fine) {
-  .reel-like-btn:hover, .reel-share-btn:hover, .reel-whatsapp-btn:hover, .reel-book-share-btn:hover, .rt-liked:hover { transform:translateY(-1px) scale(1.05); }
+  .reel-like-btn:hover, .reel-share-btn:hover, .reel-whatsapp-btn:hover, .reel-book-share-btn:hover, .reel-chatgpt-btn:hover, .rt-liked:hover { transform:translateY(-1px) scale(1.05); }
   .reel-follow:hover { opacity:.88; }
   .rt-back:hover { opacity:.85; }
 }
@@ -912,6 +923,12 @@ function cardHtml(idx) {
             </button>
             <span class="reel-whatsapp-label">WhatsApp</span>
           </div>
+          <div class="reel-icon-col">
+            <button class="reel-chatgpt-btn" data-idx="${idx}" onclick="handleChatGPTClick(event, ${idx})" title="Ask ChatGPT to explain this">
+              <i class="bi bi-openai"></i>
+            </button>
+            <span class="reel-chatgpt-label">Explain</span>
+          </div>
         </div>
       </div>
     </section>`;
@@ -1199,6 +1216,20 @@ function handleWhatsAppShare(e, idx, btnEl) {
   setTimeout(() => btnEl.classList.remove('sending'), 650);
 
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+
+/* Opens ChatGPT in a new tab with a prefilled prompt asking it to explain
+   this nut — includes the title, its meaning, and the book it's from, so
+   the person lands straight in a conversation instead of retyping it. */
+function handleChatGPTClick(e, idx) {
+  e.stopPropagation();
+  const it = allItems[idx];
+  const prompt = `Explain this to me: "${it.title}" — ${it.meaning} (From the book "${it.book}")`;
+
+  playShareSound();
+  if (navigator.vibrate) navigator.vibrate(12);
+
+  window.open('https://chatgpt.com/?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
 }
 
 /* Share button living in the author row (right after Follow) — shares
