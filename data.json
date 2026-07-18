@@ -38,6 +38,9 @@
     },
     "The Intelligent Investor": {
       "author": "Benjamin Graham"
+    },
+    "Love The Psychology of Attraction": {
+      "author": "Leslie Becker-Phelps"
     }
   },
   "diploma": {
@@ -436,6 +439,32 @@
     "Attached": {
       "1. Decoding Relationship Behavior": "https://microintel.github.io/missmonk/psychology/attached/ch1.html",
       "2. Dependency Is Not a Bad Word": "https://microintel.github.io/missmonk/psychology/attached/ch2.html"
+    },
+    "Love The Psychology of Attraction": {
+      "1] You : Are You Ready for Love?": {
+        "Evolution calling: Why we fall in love": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch1.html",
+        "Secure, anxious or avoidant: What's your style?": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch2.html",
+        "Clashing expectations: When insecure types get together": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch3.html",
+        "Great expectations: Mental images of ourselves and other people": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch4.html",
+        "Thinking straight: How not to talk yourself down": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch5.html",
+        "Let's fall in love: How susceptible are you?": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch6.html",
+        "Why do I never learn? The secret of repeating patterns": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch7.html",
+        "Giving up your independence? How to balance autonomy and connection": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch8.html",
+        "Your own worst enemy? How mental habits hinder or help": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch9.html",
+        "You deserve the best: Healthy positive thinking": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch10.html",
+        "Extrovert or introvert? Where you draw energy from": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch11.html",
+        "A little help from your friends: Platonic lessons in love": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch12.html",
+        "Be honest with me: Getting help from your loved ones": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch13.html",
+        "I always go for...: You and your type": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch14.html",
+        "The scent of chemistry: How smell works on our feelings": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch15.html",
+        "Smile please: The bond of humor": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch17.html",
+        "Wishing on a star: When you need to listen to yourself": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch16.html",
+        "Give yourself a break: Coping with the lonely times": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch18.html"
+      },
+      "2] The Search : Finding the Right Person for You": {},
+      "3] Dating : Making It Work": {},
+      "4] Establishing the Relationship : Making It Work": {},
+      "5] Together : On The Road To Lasting Love": {}
     }
   },
   "Ancient Literature": {
