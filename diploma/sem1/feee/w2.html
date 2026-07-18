@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circuit Primer — Fundamentals of Electrical &amp; Electronics Engg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E12;
+    --panel:#121820;
+    --panel-alt:#171F29;
+    --line:#232C38;
+    --copper:#C8793D;
+    --copper-soft:#8a5228;
+    --live:#57D9C7;
+    --volt:#F2B33D;
+    --danger:#E4573D;
+    --text:#ECE7DD;
+    --muted:#8B93A0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(87,217,199,0.07), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(200,121,61,0.08), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,h4{ font-family:'Space Grotesk', sans-serif; margin:0; letter-spacing:-0.01em; }
+  p{ line-height:1.55; color:var(--text); }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  ::selection{ background:var(--live); color:#062421; }
+  :focus-visible{ outline:2px solid var(--live); outline-offset:2px; }
+
+  /* ---------- Header / Nav ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,14,18,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto; padding:12px 20px;
+    display:flex; align-items:center; gap:18px; justify-content:space-between;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .dot{
+    width:12px; height:12px; border-radius:50%;
+    background:var(--live);
+    box-shadow:0 0 0 3px rgba(87,217,199,0.15), 0 0 10px rgba(87,217,199,0.6);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  .brand-name{ font-family:'Space Grotesk'; font-weight:700; font-size:15px; letter-spacing:0.02em; }
+  .brand-sub{ font-size:11px; color:var(--muted); font-family:'IBM Plex Mono'; }
+
+  nav.tabs{
+    display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;
+    max-width:1180px; margin:0 auto; padding:0 20px 12px;
+  }
+  nav.tabs::-webkit-scrollbar{ display:none; }
+  nav.tabs button{
+    flex:none;
+    font-family:'IBM Plex Mono'; font-size:12.5px; letter-spacing:0.02em;
+    background:var(--panel); color:var(--muted);
+    border:1px solid var(--line); border-radius:999px;
+    padding:8px 14px; cursor:pointer; white-space:nowrap;
+    transition:all .18s ease;
+  }
+  nav.tabs button:hover{ color:var(--text); border-color:var(--copper); }
+  nav.tabs button.active{
+    background:linear-gradient(135deg, var(--copper), var(--copper-soft));
+    color:#1b0f05; border-color:transparent; font-weight:600;
+  }
+
+  main{ max-width:1180px; margin:0 auto; padding:28px 20px 90px; }
+  section.panel{ display:none; animation:fadein .35s ease; }
+  section.panel.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--live);
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:''; width:18px; height:1px; background:var(--live); }
+  .section-title{ font-size:clamp(24px,4vw,34px); margin-bottom:6px; }
+  .section-desc{ color:var(--muted); max-width:640px; margin-bottom:26px; font-size:14.5px; }
+
+  /* ---------- Cards / grids ---------- */
+  .grid{ display:grid; gap:16px; }
+  .grid-3{ grid-template-columns:repeat(3,1fr); }
+  .grid-2{ grid-template-columns:repeat(2,1fr); }
+  @media(max-width:820px){ .grid-3{grid-template-columns:1fr 1fr;} .grid-2{grid-template-columns:1fr;} }
+  @media(max-width:560px){ .grid-3{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px; position:relative; overflow:hidden;
+  }
+
+  /* ---------- HOME ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.1fr 1fr; gap:34px; align-items:center;
+    padding:20px 0 40px;
+  }
+  @media(max-width:820px){ .hero{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(32px,5.4vw,52px); line-height:1.04; }
+  .hero .accent{ color:var(--copper); }
+  .hero p.lead{ color:var(--muted); font-size:15.5px; max-width:480px; margin-top:14px; }
+  .hero-cta{ display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; }
+  .btn{
+    font-family:'IBM Plex Mono'; font-size:12.5px; border-radius:10px; padding:11px 18px;
+    border:1px solid var(--line); background:var(--panel-alt); color:var(--text); cursor:pointer;
+    transition:all .15s ease;
+  }
+  .btn.primary{ background:var(--live); color:#052322; border-color:transparent; font-weight:600; }
+  .btn:hover{ transform:translateY(-1px); border-color:var(--copper); }
+
+  /* signature circuit demo */
+  .circuit-box{
+    background:radial-gradient(circle at 30% 20%, #182432, var(--panel));
+    border:1px solid var(--line); border-radius:18px; padding:26px;
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+  }
+  .circuit-svg-wrap{ width:100%; max-width:340px; }
+  .bulb-fill{ transition:fill .25s ease, filter .25s ease; }
+  .switch-group{ cursor:pointer; }
+  .wire{ stroke:#3a4453; stroke-width:4; fill:none; }
+  .wire.live{ stroke:var(--copper); }
+  .electron{ fill:var(--live); filter:drop-shadow(0 0 4px var(--live)); }
+  .circuit-readout{
+    display:flex; gap:22px; font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted);
+  }
+  .circuit-readout b{ color:var(--text); font-size:15px; display:block; }
+  .circuit-hint{ font-size:12px; color:var(--muted); text-align:center; }
+
+  /* ---------- Sources sorter ---------- */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+  .chip{
+    font-family:'IBM Plex Mono'; font-size:13px; background:var(--panel-alt);
+    border:1px solid var(--line); border-radius:10px; padding:10px 14px; cursor:pointer;
+    transition:all .15s ease; user-select:none;
+  }
+  .chip:hover{ border-color:var(--live); }
+  .chip.picked-r{ background:rgba(87,217,199,0.14); border-color:var(--live); color:var(--live); }
+  .chip.picked-n{ background:rgba(228,87,61,0.13); border-color:var(--danger); color:#ff9784; }
+  .sorter-cols{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:600px){ .sorter-cols{ grid-template-columns:1fr; } }
+  .sorter-target{
+    min-height:130px; border:1.5px dashed var(--line); border-radius:12px; padding:14px;
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted);
+  }
+  .sorter-target h4{ font-size:13px; margin-bottom:10px; }
+  .score-line{ margin-top:14px; font-family:'IBM Plex Mono'; font-size:13px; color:var(--muted); }
+  .score-line b{ color:var(--live); }
+
+  .feedback-toast{
+    font-family:'IBM Plex Mono'; font-size:12px; padding:8px 12px; border-radius:8px;
+    display:inline-block; margin-bottom:16px; border:1px solid var(--line); color:var(--muted);
+  }
+
+  /* ---------- Power Plants ---------- */
+  .plant-card{ padding:0; overflow:hidden; display:flex; flex-direction:column; }
+  .plant-img{ width:100%; height:150px; object-fit:cover; display:block; background:#1a212b; }
+  .plant-body{ padding:16px; flex:1; display:flex; flex-direction:column; gap:8px; }
+  .plant-tag{
+    font-family:'IBM Plex Mono'; font-size:10.5px; color:var(--volt); letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .plant-body h3{ font-size:17px; }
+  .plant-body p{ font-size:13px; color:var(--muted); margin:0; }
+  .plant-example{
+    font-size:12px; background:var(--panel-alt); border-radius:8px; padding:8px 10px;
+    border-left:2px solid var(--copper); color:var(--text);
+  }
+  .yt-thumb{
+    position:relative; border-radius:10px; overflow:hidden; display:block; margin-top:4px;
+    border:1px solid var(--line);
+  }
+  .yt-thumb img{ width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+  .yt-play{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+  .yt-play svg{ width:44px; height:44px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+  .yt-label{
+    position:absolute; bottom:6px; left:8px; font-family:'IBM Plex Mono'; font-size:10px;
+    background:rgba(0,0,0,0.6); padding:3px 7px; border-radius:5px; letter-spacing:.03em;
+  }
+
+  /* ---------- Effects grid ---------- */
+  .effects-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:18px; }
+  @media(max-width:820px){ .effects-grid{ grid-template-columns:repeat(3,1fr); } }
+  .effect-btn{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 8px;
+    text-align:center; cursor:pointer; transition:all .15s ease;
+  }
+  .effect-btn .icon{ font-size:22px; display:block; margin-bottom:6px; }
+  .effect-btn span{ font-family:'IBM Plex Mono'; font-size:11px; color:var(--muted); }
+  .effect-btn.active{ border-color:var(--live); background:rgba(87,217,199,0.08); }
+  .effect-btn.active span{ color:var(--live); }
+  .effect-stage{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; min-height:160px; display:flex; gap:22px; align-items:center; flex-wrap:wrap;
+  }
+  .effect-anim{ width:90px; height:90px; flex:none; display:flex; align-items:center; justify-content:center; }
+  .effect-info h3{ font-size:18px; margin-bottom:6px; }
+  .effect-info p{ font-size:13.5px; color:var(--muted); max-width:520px; }
+
+  /* mini css animations for effects */
+  .lamp-glow{ width:46px; height:46px; border-radius:50%; background:#3a3a1a; box-shadow:none; animation:lampPulse 1.6s ease-in-out infinite; }
+  @keyframes lampPulse{ 0%,100%{ background:#443b1a; box-shadow:0 0 6px rgba(242,179,61,.2);} 50%{ background:var(--volt); box-shadow:0 0 26px 8px rgba(242,179,61,.55);} }
+  .coil{ width:60px; height:36px; border:6px solid #5a3320; border-radius:8px; animation:heatPulse 1.4s ease-in-out infinite; }
+  @keyframes heatPulse{ 0%,100%{ border-color:#5a3320; } 50%{ border-color:#ff5a2e; box-shadow:0 0 22px rgba(255,90,46,.5);} }
+  .fanicon{ font-size:44px; display:inline-block; animation:spin 1s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .magnetlines{ position:relative; width:70px; height:70px; }
+  .magnetlines span{
+    position:absolute; inset:0; border:2px solid var(--live); border-radius:50%;
+    opacity:0; animation:ripple 1.8s ease-out infinite;
+  }
+  .magnetlines span:nth-child(2){ animation-delay:.6s; }
+  .magnetlines span:nth-child(3){ animation-delay:1.2s; }
+  @keyframes ripple{ 0%{ transform:scale(.3); opacity:.9;} 100%{ transform:scale(1.6); opacity:0;} }
+  .soundbars{ display:flex; gap:4px; align-items:flex-end; height:50px; }
+  .soundbars i{ width:7px; background:var(--copper); border-radius:3px; animation:bar 1s ease-in-out infinite; }
+  .soundbars i:nth-child(1){ height:20%; animation-delay:0s; }
+  .soundbars i:nth-child(2){ height:60%; animation-delay:.15s; }
+  .soundbars i:nth-child(3){ height:100%; animation-delay:.3s; }
+  .soundbars i:nth-child(4){ height:45%; animation-delay:.45s; }
+  .soundbars i:nth-child(5){ height:75%; animation-delay:.6s; }
+  @keyframes bar{ 0%,100%{ transform:scaleY(.4);} 50%{ transform:scaleY(1);} }
+  .bubbles{ position:relative; width:60px; height:70px; }
+  .bubbles i{
+    position:absolute; bottom:0; width:8px; height:8px; border-radius:50%;
+    background:var(--live); opacity:.8; animation:rise 2s ease-in infinite;
+  }
+  .bubbles i:nth-child(1){ left:6px; animation-delay:0s; }
+  .bubbles i:nth-child(2){ left:24px; animation-delay:.5s; }
+  .bubbles i:nth-child(3){ left:42px; animation-delay:1s; }
+  @keyframes rise{ 0%{ transform:translateY(0) scale(.6); opacity:.9;} 100%{ transform:translateY(-65px) scale(1.1); opacity:0;} }
+
+  /* ---------- Quantities ---------- */
+  .qty-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:26px; }
+  @media(max-width:700px){ .qty-grid{ grid-template-columns:1fr; } }
+  .qty-card h3{ font-size:16px; margin-bottom:4px; }
+  .qty-sym{ font-family:'IBM Plex Mono'; font-size:22px; color:var(--live); }
+  .qty-meta{ font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--muted); margin-top:8px; }
+  .qty-meta b{ color:var(--copper); }
+
+  table.mtable{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.mtable th, table.mtable td{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); }
+  table.mtable th{ font-family:'IBM Plex Mono'; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  details.mref{ margin-top:26px; border:1px solid var(--line); border-radius:12px; padding:4px 16px; background:var(--panel);}
+  details.mref summary{ cursor:pointer; padding:12px 0; font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--copper); }
+
+  .deep-dive-btn{
+    display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--text);
+    background:linear-gradient(135deg, rgba(87,217,199,0.10), rgba(200,121,61,0.10));
+    border:1px solid var(--live); border-radius:14px; padding:16px 18px; margin-bottom:28px;
+    transition:all .18s ease;
+  }
+  .deep-dive-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 22px rgba(87,217,199,0.12); }
+  .dd-icon{ font-size:22px; flex:none; }
+  .dd-title{ display:block; font-family:'Space Grotesk'; font-weight:600; font-size:15px; }
+  .dd-sub{ display:block; font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .dd-arrow{ margin-left:auto; font-size:20px; color:var(--live); flex:none; }
+
+  /* ---------- Ohm's Law Lab ---------- */
+  .lab-grid{ display:grid; grid-template-columns:1fr 1.15fr; gap:22px; }
+  @media(max-width:900px){ .lab-grid{ grid-template-columns:1fr; } }
+  .triangle-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .triangle{ position:relative; width:220px; height:190px; }
+  .tri-seg{
+    position:absolute; display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk'; font-weight:700; font-size:26px; cursor:pointer;
+    border-radius:8px; transition:all .15s ease; color:var(--text);
+  }
+  .tri-bg{ width:100%; height:100%; }
+  #segV{ top:6px; left:78px; width:64px; height:56px; }
+  #segI{ bottom:6px; left:14px; width:96px; height:64px; }
+  #segR{ bottom:6px; right:14px; width:96px; height:64px; }
+  .tri-seg.solve{ background:rgba(87,217,199,0.18); color:var(--live); box-shadow:0 0 0 2px var(--live) inset; }
+  .lab-inputs{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .lab-inputs label{ font-family:'IBM Plex Mono'; font-size:11px; color:var(--muted); display:block; margin-bottom:4px; }
+  .lab-inputs input{
+    width:100px; background:var(--panel-alt); border:1px solid var(--line); border-radius:8px;
+    padding:9px 10px; color:var(--text); font-family:'IBM Plex Mono'; font-size:14px;
+  }
+  .lab-result{
+    font-family:'IBM Plex Mono'; font-size:13px; color:var(--muted); text-align:center; min-height:20px;
+  }
+  .lab-result b{ color:var(--live); font-size:16px; }
+
+  .sim-panel{ display:flex; flex-direction:column; gap:16px; }
+  .sim-sliders label{ font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--muted); display:flex; justify-content:space-between; }
+  .sim-sliders input[type=range]{ width:100%; accent-color: var(--copper); margin:6px 0 14px; }
+  .sim-circuit{ display:flex; justify-content:center; }
+  .meter-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .meter{
+    background:var(--panel-alt); border:1px solid var(--line); border-radius:10px;
+    padding:10px 16px; text-align:center; min-width:110px;
+  }
+  .meter .val{ font-family:'IBM Plex Mono'; font-size:19px; color:var(--live); }
+  .meter .lbl{ font-family:'IBM Plex Mono'; font-size:10px; color:var(--muted); margin-top:2px; }
+
+  /* ---------- Circuit States ---------- */
+  .states-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:820px){ .states-grid{ grid-template-columns:1fr; } }
+  .state-controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  .state-msg{ font-family:'IBM Plex Mono'; font-size:12.5px; margin-top:12px; min-height:18px; }
+  .state-msg.warn{ color:var(--danger); }
+  .state-msg.ok{ color:var(--live); }
+  .spark{ opacity:0; }
+  .spark.show{ animation:sparkFlash .5s steps(2) 3; }
+  @keyframes sparkFlash{ 0%,100%{opacity:0;} 50%{opacity:1;} }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--line); margin-top:50px; padding:26px 20px 60px;
+    max-width:1180px; margin-left:auto; margin-right:auto;
+  }
+  .footer-inner{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+  .footer-note{
+    font-size:12.5px; color:var(--muted); max-width:520px; line-height:1.6;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px;
+  }
+  .footer-brand{ font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted); text-align:right; }
+  .footer-brand b{ color:var(--copper); font-family:'Space Grotesk'; font-size:14px; }
+  @media(max-width:600px){ .footer-inner{ flex-direction:column; } .footer-brand{ text-align:left; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="brand-name">Circuit Primer</div>
+        <div class="brand-sub">FEEE 20EE01P — quick revision</div>
+      </div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabNav">
+    <button data-target="home" class="active">⌁ Home</button>
+    <button data-target="sources">Sources of Electricity</button>
+    <button data-target="plants">Power Plants</button>
+    <button data-target="effects">Effects &amp; Uses</button>
+    <button data-target="quantities">Quantities &amp; Meters</button>
+    <button data-target="lab">Ohm's Law Lab</button>
+    <button data-target="states">Circuit States</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section class="panel active" id="home">
+    <div class="hero">
+      <div>
+        <h1>Electricity,<br><span class="accent">click by click.</span></h1>
+        <p class="lead">A tap-through revision tool for Week&nbsp;2 of Fundamentals of Electrical &amp; Electronics Engineering — sources, power plants, current effects, Ohm's Law, and circuit conditions. Interact first, read second.</p>
+        <div class="hero-cta">
+          <button class="btn primary" onclick="showTab('lab')">Try the Ohm's Law Lab →</button>
+          <button class="btn" onclick="showTab('plants')">Explore Power Plants</button>
+        </div>
+      </div>
+      <div class="circuit-box">
+        <div class="circuit-svg-wrap">
+          <svg viewBox="0 0 300 200" width="100%">
+            <path class="wire" d="M40,150 L40,40 L120,40" />
+            <path class="wire" d="M180,40 L260,40 L260,150" />
+            <path class="wire" id="wireBottom" d="M40,150 L260,150" />
+            <!-- battery -->
+            <g transform="translate(40,150)">
+              <line x1="0" y1="-14" x2="0" y2="14" stroke="#3a4453" stroke-width="5"/>
+              <line x1="-8" y1="-6" x2="8" y2="-6" stroke="#3a4453" stroke-width="3"/>
+              <text x="-24" y="-14" fill="#8B93A0" font-size="10" font-family="IBM Plex Mono">+</text>
+              <text x="-24" y="20" fill="#8B93A0" font-size="10" font-family="IBM Plex Mono">−</text>
+            </g>
+            <!-- switch -->
+            <g class="switch-group" id="switchGroup" transform="translate(150,40)">
+              <circle cx="-30" cy="0" r="4" fill="#8B93A0"/>
+              <circle cx="30" cy="0" r="4" fill="#8B93A0"/>
+              <line id="switchLever" x1="-30" y1="0" x2="26" y2="-18" stroke="var(--copper)" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            <!-- bulb -->
+            <g transform="translate(260,95)">
+              <circle class="bulb-fill" id="bulbCircle" r="26" fill="#3a3a1a" stroke="#555" stroke-width="2"/>
+              <path d="M-10,-8 L10,8 M10,-8 L-10,8" stroke="#222" stroke-width="2"/>
+            </g>
+            <g id="electrons"></g>
+          </svg>
+        </div>
+        <div class="circuit-readout">
+          <div>SWITCH<b id="swState">OPEN</b></div>
+          <div>CURRENT<b id="curState">0 A</b></div>
+          <div>BULB<b id="bulbState">OFF</b></div>
+        </div>
+        <div class="circuit-hint">tap the switch on the wire to open / close the loop</div>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="eyebrow">Why electricity wins</div>
+        <p style="font-size:13.5px;color:var(--muted)">Clean, controllable, travels at the speed of light, converts easily into other energy forms, and is simple to transport over long distances.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">How this app works</div>
+        <p style="font-size:13.5px;color:var(--muted)">Six tabs, each one interactive-first: sort sources, browse plants, trigger current effects, size up meters, run the Ohm's Law simulator, and stage a short circuit safely.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Bonus clip</div>
+        <a class="yt-thumb" href="https://youtu.be/KAxeD3JxDFw?si=Bcjj_dCAxlA9eo-3" target="_blank" rel="noopener">
+          <img src="https://img.youtube.com/vi/KAxeD3JxDFw/hqdefault.jpg" alt="Advantages of electrical energy video thumbnail" loading="lazy">
+          <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          <span class="yt-label">Watch · Advantages of electrical energy</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="panel" id="sources">
+    <div class="eyebrow">Week 2 · Sources</div>
+    <h2 class="section-title">Sort the source</h2>
+    <p class="section-desc">Two classifications hide in the syllabus: Conventional vs Non-conventional, and Renewable vs Non-renewable. Tap a source, then tap where it belongs — the chip tells you instantly if you're right.</p>
+
+    <div class="feedback-toast" id="sortFeedback">Tap a source chip below to classify it as Renewable or Non-renewable ↓</div>
+
+    <div class="chip-row" id="sourceChips">
+      <div class="chip" data-answer="r">Water / Hydro power</div>
+      <div class="chip" data-answer="n">Coal (solid fuel)</div>
+      <div class="chip" data-answer="n">Diesel / Petrol</div>
+      <div class="chip" data-answer="n">Natural gas</div>
+      <div class="chip" data-answer="n">Nuclear power</div>
+      <div class="chip" data-answer="r">Solar power</div>
+      <div class="chip" data-answer="r">Wind power</div>
+      <div class="chip" data-answer="r">Geo-thermal power</div>
+      <div class="chip" data-answer="r">Tidal power</div>
+      <div class="chip" data-answer="r">Ocean thermal power</div>
+      <div class="chip" data-answer="r">Biogas / Biomass</div>
+    </div>
+
+    <div class="sorter-cols">
+      <button class="sorter-target" data-choice="r" style="cursor:pointer;text-align:left;">
+        <h4 style="color:var(--live)">🔁 Renewable</h4>
+        Inexhaustible, continuously replenished in nature.
+      </button>
+      <button class="sorter-target" data-choice="n" style="cursor:pointer;text-align:left;">
+        <h4 style="color:#ff9784">⛔ Non-renewable</h4>
+        Exhaustible — once used, can't be replenished.
+      </button>
+    </div>
+    <div class="score-line">Correct: <b id="sortScore">0</b> / <span id="sortTotal">11</span></div>
+
+    <div class="grid grid-2" style="margin-top:30px;">
+      <div class="card">
+        <div class="eyebrow">Conventional</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Traditional, mostly non-renewable</h3>
+        <p style="font-size:13px;color:var(--muted)">Hydro power · Solid fuel (coal) · Liquid fuel (diesel, petrol) · Gaseous fuel (natural gas) · Nuclear power.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Non-conventional</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Renewable, eco-friendly</h3>
+        <p style="font-size:13px;color:var(--muted)">Solar · Wind · Geo-thermal · Tidal · Ocean thermal · Biogas/Biomass · Piezo-electric · Thermo-electric · MHD.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POWER PLANTS ============ -->
+  <section class="panel" id="plants">
+    <div class="eyebrow">Week 2 · Generation</div>
+    <h2 class="section-title">Seven ways to spin a turbine</h2>
+    <p class="section-desc">Every plant below ultimately does the same job — turn a turbine connected to a generator. What differs is the energy that drives the spin. Tap any thumbnail to open the reference video on YouTube.</p>
+
+    <div class="grid grid-3" id="plantGrid">
+
+      <div class="card plant-card">
+        <img class="plant-img" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Chhabra%20Thermal%20Power%20Plant%20-%20October%202018.jpg?width=500" alt="Thermal power plant with cooling towers and chimney">
+        <div class="plant-body">
+          <div class="plant-tag">Conventional</div>
+          <h3>Thermal Power Plant</h3>
+          <p>Coal, oil or gas heats water into steam, which spins the turbine.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Raichur TPS &amp; Bellary TPS</div>
+          <a class="yt-thumb" href="https://youtu.be/OXTyjYgPTaM?si=kNi2MU_hI0Ubwt-N" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/OXTyjYgPTaM/hqdefault.jpg" alt="Thermal power plant video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card">
+        <img class="plant-img" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Kaligandaki%20A%20Hydroelectric%20Power%20Station%20Dam01.jpg?width=500" alt="Hydroelectric dam and power station">
+        <div class="plant-body">
+          <div class="plant-tag">Conventional</div>
+          <h3>Hydroelectric Plant</h3>
+          <p>Water stored in a dam falls through a penstock, spinning the turbine.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Sharavathi, Almatti, Jog Falls</div>
+          <a class="yt-thumb" href="https://youtu.be/q8HmRLCgDAI?si=Eo-vwW5SSgWg5TD-" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/q8HmRLCgDAI/hqdefault.jpg" alt="Hydroelectric power plant video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card">
+        <img class="plant-img" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Doel%20Nuclear%20power%20plant%20and%20cooling%20tower.jpg?width=500" alt="Nuclear power plant cooling tower">
+        <div class="plant-body">
+          <div class="plant-tag">Conventional</div>
+          <h3>Nuclear Power Plant</h3>
+          <p>Nuclear fission of uranium releases heat that raises steam for the turbine.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Kaiga NPP, Uttar Kannada</div>
+          <a class="yt-thumb" href="https://youtu.be/rcOFV4y5z8c?si=r3U8xZaR6eWFZk2b" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/rcOFV4y5z8c/hqdefault.jpg" alt="Nuclear power plant video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card">
+        <div class="plant-img" style="display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1a2129,#232c38);">🛢️</div>
+        <div class="plant-body">
+          <div class="plant-tag">Conventional</div>
+          <h3>Diesel &amp; Gas Plant</h3>
+          <p>Diesel engines or gas turbines drive the generator directly — fast to start, used as backup.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Yelahanka Diesel Plant, Bengaluru</div>
+          <a class="yt-thumb" href="https://youtu.be/r2sxZrmvO1o?si=Ax7ehP-MH67gDzsN" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/r2sxZrmvO1o/hqdefault.jpg" alt="Diesel and gas power plant video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card">
+        <img class="plant-img" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Topaz%20Solar%20Farm%2C%20California%20Valley.jpg?width=500" alt="Large solar photovoltaic farm">
+        <div class="plant-body">
+          <div class="plant-tag">Non-conventional</div>
+          <h3>Solar Energy</h3>
+          <p>Photovoltaic cells convert sunlight directly into electricity — no turbine needed.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Pavagada Solar Park — 2050 MW</div>
+          <a class="yt-thumb" href="https://youtu.be/X0OZ6tpZ3Mc?si=Stj2uztFJBeUKAi9" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/X0OZ6tpZ3Mc/hqdefault.jpg" alt="Solar energy video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card">
+        <img class="plant-img" loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Senj%20wind%20farm%2C%20near%20Senj%2C%20Croatia.jpg?width=500" alt="Wind turbine farm">
+        <div class="plant-body">
+          <div class="plant-tag">Non-conventional</div>
+          <h3>Wind Energy</h3>
+          <p>Wind spins turbine blades connected to a generator via a gearbox.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Chitradurga, Davangere, Hassan</div>
+          <a class="yt-thumb" href="https://youtu.be/y6fG-aIP_PU?si=oCovNYcTCqm2DV4l" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/y6fG-aIP_PU/hqdefault.jpg" alt="Wind energy video thumbnail" loading="lazy">
+            <span class="yt-play"><svg viewBox="0 0 68 48"><path d="M66.5,7.7c-0.8-2.9-2.5-5.2-5.4-6C55.8,0,33,0,33,0S10.2,0,4.9,1.7C2,2.5,0.3,4.8-0.5,7.7C-2,13.2-2,24-2,24s0,10.8,1.5,16.3c0.8,2.9,2.5,5.2,5.4,6C10.2,48,33,48,33,48s22.8,0,28.1-1.7c2.9-0.8,4.6-3.1,5.4-6C68,34.8,68,24,68,24S68,13.2,66.5,7.7z" fill="#FF0000" opacity="0.85"/><path d="M45,24L27,14v20L45,24z" fill="#fff"/></svg></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card plant-card" style="grid-column:span 1;">
+        <div class="plant-img" style="display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1a2129,#232c38);">🌾</div>
+        <div class="plant-body">
+          <div class="plant-tag">Non-conventional</div>
+          <h3>Biomass Energy</h3>
+          <p>Organic waste (wood, crop, animal waste) is digested or burned to generate power.</p>
+          <div class="plant-example">🇮🇳 Karnataka: Mandya Biomass Plant — sugarcane waste</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ EFFECTS ============ -->
+  <section class="panel" id="effects">
+    <div class="eyebrow">Week 2 · Effects of current</div>
+    <h2 class="section-title">Six effects, one current</h2>
+    <p class="section-desc">Every appliance around you runs on one of these six effects. Tap each to trigger its animation and see real examples.</p>
+
+    <div class="effects-grid" id="effectButtons">
+      <button class="effect-btn active" data-effect="light"><span class="icon">💡</span><span>Lighting</span></button>
+      <button class="effect-btn" data-effect="heat"><span class="icon">🔥</span><span>Heating</span></button>
+      <button class="effect-btn" data-effect="mech"><span class="icon">🌀</span><span>Mechanical</span></button>
+      <button class="effect-btn" data-effect="mag"><span class="icon">🧲</span><span>Magnetic</span></button>
+      <button class="effect-btn" data-effect="sound"><span class="icon">🔔</span><span>Sound</span></button>
+      <button class="effect-btn" data-effect="chem"><span class="icon">🧪</span><span>Chemical</span></button>
+    </div>
+
+    <div class="effect-stage" id="effectStage">
+      <!-- filled by JS -->
+    </div>
+  </section>
+
+  <!-- ============ QUANTITIES ============ -->
+  <section class="panel" id="quantities">
+    <div class="eyebrow">Week 2 · Definitions &amp; meters</div>
+    <h2 class="section-title">Current, voltage, resistance</h2>
+    <p class="section-desc">Five quantities, five symbols, five meters. The core relationship (Ohm's Law) has its own interactive lab in the next tab.</p>
+
+    <a href="ww2.html" class="deep-dive-btn">
+      <span class="dd-icon">⚡</span>
+      <span>
+        <span class="dd-title">Go deeper: I, V, R, PD &amp; EMF — working animations</span>
+        <span class="dd-sub">A dedicated page with a live demo + one keyword for each quantity</span>
+      </span>
+      <span class="dd-arrow">→</span>
+    </a>
+
+    <div class="qty-grid">
+      <div class="card qty-card">
+        <div class="qty-sym">I</div>
+        <h3>Electric Current</h3>
+        <p style="font-size:13px;color:var(--muted)">Flow of free electrons through a conductor. I = Q / t</p>
+        <div class="qty-meta">Unit: <b>Ampere (A)</b> · Meter: <b>Ammeter</b> · Live current: <b>Tong/Clamp tester</b></div>
+      </div>
+      <div class="card qty-card">
+        <div class="qty-sym">V</div>
+        <h3>Voltage / Potential</h3>
+        <p style="font-size:13px;color:var(--muted)">Electric pressure at a point relative to earth or the negative terminal.</p>
+        <div class="qty-meta">Unit: <b>Volt (V)</b> · Meter: <b>Voltmeter</b></div>
+      </div>
+      <div class="card qty-card">
+        <div class="qty-sym">PD</div>
+        <h3>Potential Difference</h3>
+        <p style="font-size:13px;color:var(--muted)">Difference in pressure between two points; current flows high → low potential.</p>
+        <div class="qty-meta">Unit: <b>Volt (V)</b> · Meter: <b>Voltmeter</b></div>
+      </div>
+      <div class="card qty-card">
+        <div class="qty-sym">EMF</div>
+        <h3>Electromotive Force</h3>
+        <p style="font-size:13px;color:var(--muted)">The force that drives current around a circuit — the source's push.</p>
+        <div class="qty-meta">Unit: <b>Volt (V)</b> · Sources: <b>Battery, DC/AC generator</b></div>
+      </div>
+      <div class="card qty-card">
+        <div class="qty-sym">R</div>
+        <h3>Resistance</h3>
+        <p style="font-size:13px;color:var(--muted)">Opposition offered by a material to the flow of electrons.</p>
+        <div class="qty-meta">Unit: <b>Ohm (Ω)</b> · Low/Med: <b>Ohmmeter, Multimeter</b> · High: <b>Megger</b></div>
+      </div>
+      <div class="card qty-card">
+        <div class="qty-sym">50Hz</div>
+        <h3>AC in India</h3>
+        <p style="font-size:13px;color:var(--muted)">Alternating current changes magnitude &amp; direction periodically — India runs mains AC at 50 Hz.</p>
+        <div class="qty-meta">DC examples: <b>Battery, Solar cell</b> · AC examples: <b>Mains supply, AC generator</b></div>
+      </div>
+    </div>
+
+    <details class="mref">
+      <summary>▸ Full meters reference table (tap to expand)</summary>
+      <table class="mtable">
+        <tr><th>Quantity</th><th>Meter / Instrument</th><th>SI Unit</th></tr>
+        <tr><td>Current (I)</td><td>Ammeter, Multimeter</td><td>Ampere (A)</td></tr>
+        <tr><td>Live current</td><td>Tong tester / Clamp-on meter</td><td>Ampere (A)</td></tr>
+        <tr><td>Voltage (V)</td><td>Voltmeter, Multimeter</td><td>Volts (V)</td></tr>
+        <tr><td>Electrical power (P)</td><td>Wattmeter</td><td>Watts (W)</td></tr>
+        <tr><td>Electrical energy (E)</td><td>Energy meter</td><td>kWh</td></tr>
+        <tr><td>Resistance (R)</td><td>Ohmmeter, Multimeter, Megger</td><td>Ohms (Ω)</td></tr>
+        <tr><td>Inductance (L)</td><td>LCR meter</td><td>Henry (H)</td></tr>
+        <tr><td>Capacitance (C)</td><td>LCR meter</td><td>Farads (F)</td></tr>
+        <tr><td>Speed</td><td>Tachometer</td><td>rpm</td></tr>
+      </table>
+    </details>
+  </section>
+
+  <!-- ============ OHM'S LAW LAB ============ -->
+  <section class="panel" id="lab">
+    <div class="eyebrow">Week 2 · Ohm's Law</div>
+    <h2 class="section-title">The Magic Triangle, live</h2>
+    <p class="section-desc">Ohm's Law: at constant temperature, I ∝ V. Pick the value you want to solve for, fill in the other two, and watch the mini circuit react to real V and R.</p>
+
+    <div class="lab-grid">
+      <div class="card">
+        <div class="triangle-wrap">
+          <div class="triangle">
+            <svg class="tri-bg" viewBox="0 0 220 190">
+              <polygon points="110,10 20,180 200,180" fill="none" stroke="#3a4453" stroke-width="2"/>
+              <line x1="20" y1="120" x2="200" y2="120" stroke="#3a4453" stroke-width="2"/>
+              <line x1="110" y1="10" x2="110" y2="180" stroke="#3a4453" stroke-width="2"/>
+            </svg>
+            <div class="tri-seg" id="segV" data-var="V">V</div>
+            <div class="tri-seg" id="segI" data-var="I">I</div>
+            <div class="tri-seg" id="segR" data-var="R">R</div>
+          </div>
+          <div class="lab-inputs" id="labInputs"></div>
+          <button class="btn primary" onclick="calcOhm()">Calculate</button>
+          <div class="lab-result" id="labResult">Tap a letter in the triangle to choose what you're solving for.</div>
+        </div>
+      </div>
+
+      <div class="card sim-panel">
+        <h3 style="font-size:15px;">Live circuit simulator</h3>
+        <div class="sim-sliders">
+          <label>Voltage (V) <span id="vSliderVal">10 V</span></label>
+          <input type="range" id="vSlider" min="1" max="24" value="10">
+          <label>Resistance (R) <span id="rSliderVal">10 Ω</span></label>
+          <input type="range" id="rSlider" min="1" max="100" value="10">
+        </div>
+        <div class="sim-circuit">
+          <svg viewBox="0 0 260 130" width="100%" style="max-width:280px;">
+            <path class="wire" d="M30,110 L30,20 L100,20" />
+            <path class="wire" d="M160,20 L230,20 L230,110" />
+            <path class="wire" d="M30,110 L230,110" />
+            <rect x="100" y="8" width="60" height="24" fill="none" stroke="var(--copper)" stroke-width="4"/>
+            <g id="simElectrons"></g>
+            <circle id="simBulb" cx="230" cy="65" r="20" fill="#3a3a1a" stroke="#555" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="meter-row">
+          <div class="meter"><div class="val" id="simI">1.00</div><div class="lbl">CURRENT (A)</div></div>
+          <div class="meter"><div class="val" id="simV">10</div><div class="lbl">VOLTAGE (V)</div></div>
+          <div class="meter"><div class="val" id="simR">10</div><div class="lbl">RESISTANCE (Ω)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:24px;">
+      <div class="card">
+        <div class="eyebrow">Applies to</div>
+        <p style="font-size:13px;color:var(--muted)">AC &amp; DC circuits · simple circuits · whole circuit or any part of it.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Doesn't apply to</div>
+        <p style="font-size:13px;color:var(--muted)">Non-constant temperature · electrolytes · insulators · semiconductors · vacuum tubes · discharge lamps · complicated circuits.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CIRCUIT STATES ============ -->
+  <section class="panel" id="states">
+    <div class="eyebrow">Week 2 · Circuit conditions</div>
+    <h2 class="section-title">Open, closed, or short</h2>
+    <p class="section-desc">Flip the switch to open/close the loop. Then try forcing a short circuit and watch what an unprotected fault path does.</p>
+
+    <div class="states-grid">
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:14px;">Interactive circuit</h3>
+        <svg viewBox="0 0 260 140" width="100%" style="max-width:320px;display:block;margin:0 auto;">
+          <path class="wire" d="M30,120 L30,25 L100,25" />
+          <path class="wire" d="M160,25 L230,25 L230,120" />
+          <path class="wire" id="stateBottom" d="M30,120 L230,120" />
+          <g class="switch-group" id="stateSwitchGroup" transform="translate(130,25)">
+            <circle cx="-30" cy="0" r="4" fill="#8B93A0"/>
+            <circle cx="30" cy="0" r="4" fill="#8B93A0"/>
+            <line id="stateSwitchLever" x1="-30" y1="0" x2="26" y2="-18" stroke="var(--copper)" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <circle id="stateBulb" cx="230" cy="72" r="20" fill="#3a3a1a" stroke="#555" stroke-width="2"/>
+          <g id="stateElectrons"></g>
+          <g id="shortSpark" class="spark" transform="translate(130,120)">
+            <path d="M0,-14 L-8,4 L0,4 L-6,16 L10,-4 L2,-4 Z" fill="var(--danger)"/>
+          </g>
+        </svg>
+        <div class="state-controls">
+          <button class="btn primary" onclick="toggleStateSwitch()">Toggle switch</button>
+          <button class="btn" onclick="triggerShort()">⚡ Simulate short circuit</button>
+        </div>
+        <div class="state-msg" id="stateMsg">Switch is OPEN — no current flows.</div>
+      </div>
+
+      <div class="grid" style="gap:12px;">
+        <div class="card">
+          <h4 style="font-size:14px;color:var(--live);">Open Circuit</h4>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">A break or gap (or switch OFF) stops current from flowing through the entire path.</p>
+        </div>
+        <div class="card">
+          <h4 style="font-size:14px;color:var(--live);">Closed Circuit</h4>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">A complete, unbroken path — switch ON — lets current flow normally from source to load and back.</p>
+        </div>
+        <div class="card">
+          <h4 style="font-size:14px;color:var(--danger);">Short Circuit</h4>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">Positive and negative terminals connect directly through near-zero resistance. Very high current flows and can damage the load.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-note">
+      This is a quick, interactive <b style="color:var(--text)">summary</b> for revision only — built to make the ideas click, not to replace the syllabus. Please refer to your college's official FEEE manual and class notes for complete, exam-accurate content.
+    </div>
+    <div class="footer-brand">
+      Developed by<br><b>Microintel</b>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ---------------- TAB NAV ---------------- */
+  function showTab(id){
+    document.querySelectorAll('section.panel').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.target===id));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.getElementById('tabNav').addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(btn) showTab(btn.dataset.target);
+  });
+
+  /* ---------------- HOME circuit demo ---------------- */
+  let homeClosed = false;
+  const bulbCircle = document.getElementById('bulbCircle');
+  const switchLever = document.getElementById('switchLever');
+  const swState = document.getElementById('swState');
+  const curState = document.getElementById('curState');
+  const bulbState = document.getElementById('bulbState');
+  document.getElementById('switchGroup').addEventListener('click', ()=>{
+    homeClosed = !homeClosed;
+    updateHomeCircuit();
+  });
+  function updateHomeCircuit(){
+    switchLever.setAttribute('x2', homeClosed ? '30':'26');
+    switchLever.setAttribute('y2', homeClosed ? '0':'-18');
+    bulbCircle.style.fill = homeClosed ? '#F2B33D' : '#3a3a1a';
+    bulbCircle.style.filter = homeClosed ? 'drop-shadow(0 0 14px #F2B33D)' : 'none';
+    swState.textContent = homeClosed ? 'CLOSED' : 'OPEN';
+    curState.textContent = homeClosed ? '0.8 A' : '0 A';
+    bulbState.textContent = homeClosed ? 'ON' : 'OFF';
+    toggleElectronFlow('electrons', homeClosed);
+  }
+
+  /* generic animated electron dots that travel a rectangular loop */
+  const flowIntervals = {};
+  function toggleElectronFlow(groupId, on){
+    const group = document.getElementById(groupId);
+    if(flowIntervals[groupId]){ clearInterval(flowIntervals[groupId]); flowIntervals[groupId]=null; }
+    group.innerHTML='';
+    if(!on) return;
+    const dots=[];
+    for(let i=0;i<4;i++){
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('r','3.5'); c.setAttribute('class','electron');
+      group.appendChild(c); dots.push({el:c, t:i*0.25});
+    }
+    const path = [[40,150],[40,40],[150,40],[260,40],[260,150],[40,150]];
+    function lenOf(a,b){ return Math.hypot(b[0]-a[0], b[1]-a[1]); }
+    const segLens = []; let total=0;
+    for(let i=0;i<path.length-1;i++){ const l=lenOf(path[i],path[i+1]); segLens.push(l); total+=l; }
+    function pointAt(t){
+      let d = (t%1)*total; if(d<0) d+=total;
+      for(let i=0;i<segLens.length;i++){
+        if(d<=segLens[i]){
+          const a=path[i], b=path[i+1], f=d/segLens[i];
+          return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f];
+        }
+        d-=segLens[i];
+      }
+      return path[0];
+    }
+    flowIntervals[groupId] = setInterval(()=>{
+      dots.forEach(d=>{ d.t += 0.006; const p=pointAt(d.t); d.el.setAttribute('cx',p[0]); d.el.setAttribute('cy',p[1]); });
+    }, 30);
+  }
+  updateHomeCircuit();
+
+  /* ---------------- SOURCES sorter ---------------- */
+  let selectedChip = null;
+  let sortScore = 0, sortAttempts = 0;
+  const totalChips = document.querySelectorAll('#sourceChips .chip').length;
+  document.getElementById('sortTotal').textContent = totalChips;
+  document.getElementById('sourceChips').addEventListener('click', e=>{
+    const chip = e.target.closest('.chip');
+    if(!chip || chip.classList.contains('picked-r') || chip.classList.contains('picked-n')) return;
+    document.querySelectorAll('#sourceChips .chip').forEach(c=>c.style.outline='none');
+    selectedChip = chip;
+    chip.style.outline = '2px solid var(--live)';
+    document.getElementById('sortFeedback').textContent = 'Now tap Renewable or Non-renewable for “'+chip.textContent+'”';
+  });
+  document.querySelectorAll('.sorter-target').forEach(target=>{
+    target.addEventListener('click', ()=>{
+      if(!selectedChip){ document.getElementById('sortFeedback').textContent='Pick a source chip first.'; return; }
+      const correct = selectedChip.dataset.answer === target.dataset.choice;
+      sortAttempts++;
+      if(correct){
+        sortScore++;
+        selectedChip.classList.add(target.dataset.choice==='r' ? 'picked-r':'picked-n');
+        document.getElementById('sortFeedback').textContent = '✓ Correct — ' + selectedChip.textContent + ' is ' + (target.dataset.choice==='r'?'renewable.':'non-renewable.');
+      } else {
+        document.getElementById('sortFeedback').textContent = '✗ Not quite — try again for ' + selectedChip.textContent + '.';
+      }
+      selectedChip.style.outline='none';
+      selectedChip=null;
+      document.getElementById('sortScore').textContent = sortScore;
+    });
+  });
+
+  /* ---------------- EFFECTS ---------------- */
+  const effectData = {
+    light:{icon:'💡', title:'Lighting Effect', anim:'<div class="lamp-glow"></div>',
+      text:'Fluorescent lamps, Incandescent lamps, Sodium vapour lamps, Mercury vapour lamps, Halogen lamps, Neon lamps.'},
+    heat:{icon:'🔥', title:'Heating Effect', anim:'<div class="coil"></div>',
+      text:'Electric stove, Boiler / Electric heater, Electric iron, Electric kettle, Micro oven, Toaster.'},
+    mech:{icon:'🌀', title:'Mechanical Effect', anim:'<span class="fanicon">🌀</span>',
+      text:'Fan, Refrigerator, Washing machine, Water pumps, Drilling machines, Elevators, Lifts, Electric trains, Mixer/Grinder.'},
+    mag:{icon:'🧲', title:'Magnetic Effect', anim:'<div class="magnetlines"><span></span><span></span><span></span></div>',
+      text:'Electromagnets, Generators, Dynamo — current-carrying conductors build magnetic fields.'},
+    sound:{icon:'🔔', title:'Sound Effect', anim:'<div class="soundbars"><i></i><i></i><i></i><i></i><i></i></div>',
+      text:'Buzzer, Electric bell, Siren, Radio, Telephone.'},
+    chem:{icon:'🧪', title:'Chemical Effect', anim:'<div class="bubbles"><i></i><i></i><i></i></div>',
+      text:'Electrolysis, Electroplating, Electro-refining, Electrotyping/forming, Cells &amp; batteries.'}
+  };
+  function renderEffect(key){
+    const d = effectData[key];
+    document.getElementById('effectStage').innerHTML =
+      '<div class="effect-anim">'+d.anim+'</div>'+
+      '<div class="effect-info"><h3>'+d.icon+' '+d.title+'</h3><p>'+d.text+'</p></div>';
+    document.querySelectorAll('.effect-btn').forEach(b=>b.classList.toggle('active', b.dataset.effect===key));
+  }
+  document.getElementById('effectButtons').addEventListener('click', e=>{
+    const b = e.target.closest('.effect-btn');
+    if(b) renderEffect(b.dataset.effect);
+  });
+  renderEffect('light');
+
+  /* ---------------- OHM'S LAW LAB ---------------- */
+  let solveFor = null;
+  const segs = {V:document.getElementById('segV'), I:document.getElementById('segI'), R:document.getElementById('segR')};
+  function selectSolve(v){
+    solveFor = v;
+    Object.values(segs).forEach(s=>s.classList.remove('solve'));
+    segs[v].classList.add('solve');
+    const others = ['V','I','R'].filter(x=>x!==v);
+    document.getElementById('labInputs').innerHTML = others.map(o=>
+      '<div><label>'+o+' ('+(o==='R'?'Ω':o==='I'?'A':'V')+')</label><input type="number" id="in_'+o+'" placeholder="0"></div>'
+    ).join('');
+    document.getElementById('labResult').textContent = 'Enter '+others.join(' and ')+', then hit Calculate.';
+  }
+  Object.entries(segs).forEach(([k,el])=>el.addEventListener('click', ()=>selectSolve(k)));
+  selectSolve('I');
+  function calcOhm(){
+    if(!solveFor){ document.getElementById('labResult').textContent='Pick V, I or R in the triangle first.'; return; }
+    const others = ['V','I','R'].filter(x=>x!==solveFor);
+    const a = parseFloat(document.getElementById('in_'+others[0]).value);
+    const b = parseFloat(document.getElementById('in_'+others[1]).value);
+    if(isNaN(a)||isNaN(b)){ document.getElementById('labResult').textContent='Fill both fields with numbers.'; return; }
+    let result, formula;
+    const vals = {}; vals[others[0]]=a; vals[others[1]]=b;
+    if(solveFor==='V'){ result = vals.I*vals.R; formula='V = I × R'; }
+    if(solveFor==='I'){ result = vals.V/vals.R; formula='I = V / R'; }
+    if(solveFor==='R'){ result = vals.V/vals.I; formula='R = V / I'; }
+    document.getElementById('labResult').innerHTML = formula+' → <b>'+ (Math.round(result*1000)/1000) +' '+(solveFor==='R'?'Ω':solveFor==='I'?'A':'V')+'</b>';
+  }
+
+  /* live simulator */
+  const vSlider = document.getElementById('vSlider'), rSlider = document.getElementById('rSlider');
+  const simBulb = document.getElementById('simBulb');
+  function updateSim(){
+    const V = parseFloat(vSlider.value), R = parseFloat(rSlider.value);
+    const I = V/R;
+    document.getElementById('vSliderVal').textContent = V+' V';
+    document.getElementById('rSliderVal').textContent = R+' Ω';
+    document.getElementById('simI').textContent = I.toFixed(2);
+    document.getElementById('simV').textContent = V;
+    document.getElementById('simR').textContent = R;
+    const brightness = Math.min(I/2, 1);
+    simBulb.style.fill = brightness>0.05 ? `rgba(242,179,61,${0.3+brightness*0.7})` : '#3a3a1a';
+    simBulb.style.filter = brightness>0.05 ? `drop-shadow(0 0 ${8+brightness*20}px rgba(242,179,61,${brightness}))` : 'none';
+    animateSimElectrons(I);
+  }
+  let simFlowTimer=null;
+  function animateSimElectrons(I){
+    const group = document.getElementById('simElectrons');
+    if(simFlowTimer){ clearInterval(simFlowTimer); simFlowTimer=null; }
+    group.innerHTML='';
+    const speed = Math.max(0.003, Math.min(I*0.01, 0.05));
+    const dots=[]; for(let i=0;i<3;i++){ const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','3'); c.setAttribute('class','electron'); group.appendChild(c); dots.push({el:c,t:i*0.33}); }
+    const path=[[30,110],[30,20],[230,20],[230,110],[30,110]];
+    const segLens=[]; let total=0;
+    for(let i=0;i<path.length-1;i++){ const l=Math.hypot(path[i+1][0]-path[i][0], path[i+1][1]-path[i][1]); segLens.push(l); total+=l; }
+    function pointAt(t){ let d=(t%1)*total; if(d<0)d+=total; for(let i=0;i<segLens.length;i++){ if(d<=segLens[i]){ const a=path[i],b=path[i+1],f=d/segLens[i]; return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f]; } d-=segLens[i]; } return path[0]; }
+    simFlowTimer = setInterval(()=>{ dots.forEach(d=>{ d.t+=speed; const p=pointAt(d.t); d.el.setAttribute('cx',p[0]); d.el.setAttribute('cy',p[1]); }); }, 30);
+  }
+  vSlider.addEventListener('input', updateSim);
+  rSlider.addEventListener('input', updateSim);
+  updateSim();
+
+  /* ---------------- CIRCUIT STATES ---------------- */
+  let stateClosed = false;
+  const stateBulb = document.getElementById('stateBulb');
+  const stateLever = document.getElementById('stateSwitchLever');
+  const stateMsg = document.getElementById('stateMsg');
+  function toggleStateSwitch(){
+    stateClosed = !stateClosed;
+    stateLever.setAttribute('x2', stateClosed?'30':'26');
+    stateLever.setAttribute('y2', stateClosed?'0':'-18');
+    stateBulb.style.fill = stateClosed ? '#F2B33D':'#3a3a1a';
+    stateBulb.style.filter = stateClosed ? 'drop-shadow(0 0 14px #F2B33D)':'none';
+    stateMsg.className='state-msg ' + (stateClosed?'ok':'');
+    stateMsg.textContent = stateClosed ? 'Switch is CLOSED — normal current flows to the load.' : 'Switch is OPEN — no current flows.';
+    toggleElectronFlow('stateElectrons', stateClosed);
+  }
+  document.getElementById('stateSwitchGroup').addEventListener('click', toggleStateSwitch);
+  function triggerShort(){
+    const spark = document.getElementById('shortSpark');
+    spark.classList.remove('show'); void spark.offsetWidth; spark.classList.add('show');
+    stateBulb.style.fill = '#3a3a1a'; stateBulb.style.filter='none';
+    toggleElectronFlow('stateElectrons', false);
+    stateMsg.className='state-msg warn';
+    stateMsg.textContent = '⚡ Short circuit! Current bypasses the load through near-zero resistance — very high current, load unlit / at risk of damage.';
+    setTimeout(()=>{ spark.classList.remove('show'); }, 1600);
+  }
+</script>
+</body>
+</html>

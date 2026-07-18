@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Quantities — I, V, R, PD, EMF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E12; --panel:#121820; --panel-alt:#171F29; --line:#232C38;
+    --copper:#C8793D; --copper-soft:#8a5228; --live:#57D9C7; --volt:#F2B33D;
+    --danger:#E4573D; --water:#4FA3D9; --text:#ECE7DD; --muted:#8B93A0; --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:
+      radial-gradient(circle at 12% 0%, rgba(87,217,199,0.07), transparent 40%),
+      radial-gradient(circle at 88% 8%, rgba(200,121,61,0.08), transparent 45%), var(--bg);
+    color:var(--text); font-family:'IBM Plex Sans',sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ font-family:'Space Grotesk',sans-serif; margin:0; letter-spacing:-0.01em; }
+  p{ line-height:1.55; }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  a{ color:inherit; }
+  ::selection{ background:var(--live); color:#062421; }
+
+  header{
+    position:sticky; top:0; z-index:40; background:rgba(10,14,18,0.88);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+  }
+  .header-inner{ max-width:980px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:9px; }
+  .brand .dot{ width:11px; height:11px; border-radius:50%; background:var(--live); box-shadow:0 0 0 3px rgba(87,217,199,.15),0 0 10px rgba(87,217,199,.6); animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  .brand-name{ font-family:'Space Grotesk'; font-weight:700; font-size:14.5px; }
+  .brand-sub{ font-size:10.5px; color:var(--muted); font-family:'IBM Plex Mono'; }
+  .jump{ display:flex; gap:6px; flex-wrap:wrap; }
+  .jump a{
+    font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--muted); text-decoration:none;
+    border:1px solid var(--line); border-radius:999px; padding:6px 11px; transition:all .15s ease;
+  }
+  .jump a:hover{ color:var(--text); border-color:var(--copper); }
+
+  main{ max-width:980px; margin:0 auto; padding:38px 20px 90px; }
+
+  .intro{ text-align:center; margin-bottom:44px; }
+  .intro h1{ font-size:clamp(28px,5vw,42px); }
+  .intro .accent{ color:var(--copper); }
+  .intro p{ color:var(--muted); max-width:560px; margin:12px auto 0; font-size:14.5px; }
+
+  .qsection{
+    border:1px solid var(--line); background:var(--panel); border-radius:var(--radius);
+    padding:26px; margin-bottom:26px; scroll-margin-top:90px;
+  }
+  .qhead{ display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; justify-content:space-between; margin-bottom:18px; }
+  .qtitle{ display:flex; align-items:center; gap:14px; }
+  .qsym{
+    font-family:'Space Grotesk'; font-weight:700; font-size:30px; width:58px; height:58px;
+    border-radius:14px; display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .qtitle h2{ font-size:21px; }
+  .qdef{ font-size:13.5px; color:var(--muted); margin-top:2px; max-width:420px; }
+  .keyword{
+    font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
+    border:1px dashed var(--line); border-radius:10px; padding:9px 13px; text-align:center; flex:none;
+  }
+  .keyword b{ display:block; font-family:'Space Grotesk'; font-size:15px; letter-spacing:0; text-transform:none; margin-top:3px; }
+
+  .qbody{ display:grid; grid-template-columns:1.15fr 1fr; gap:22px; align-items:center; }
+  @media(max-width:760px){ .qbody{ grid-template-columns:1fr; } }
+
+  .stage{ background:var(--panel-alt); border:1px solid var(--line); border-radius:12px; padding:18px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .ctrl{ width:100%; display:flex; flex-direction:column; gap:8px; }
+  .ctrl label{ font-family:'IBM Plex Mono'; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
+  .ctrl input[type=range]{ width:100%; accent-color:var(--copper); }
+  .readout{ font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted); text-align:center; }
+  .readout b{ color:var(--live); font-size:16px; display:block; }
+  .btnrow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    font-family:'IBM Plex Mono'; font-size:12px; border-radius:9px; padding:9px 15px;
+    border:1px solid var(--line); background:var(--panel); color:var(--text); cursor:pointer; transition:all .15s ease;
+  }
+  .btn.primary{ background:var(--live); color:#052322; border-color:transparent; font-weight:600; }
+  .btn:hover{ border-color:var(--copper); transform:translateY(-1px); }
+
+  .facts{ display:flex; flex-direction:column; gap:10px; }
+  .fact-chip{
+    font-size:12.5px; background:var(--panel-alt); border-left:2px solid var(--copper);
+    border-radius:8px; padding:9px 12px; color:var(--text);
+  }
+  .fact-chip b{ color:var(--copper); }
+
+  /* ---- current loop ---- */
+  .electron{ fill:var(--live); filter:drop-shadow(0 0 4px var(--live)); }
+  .wire{ stroke:#3a4453; stroke-width:4; fill:none; }
+  .gauge-arc{ transition:stroke-dashoffset .2s ease; }
+
+  /* ---- voltage tank ---- */
+  .tank-water{ transition:y .25s ease, height .25s ease; }
+  .spray-drop{ fill:var(--water); }
+
+  /* ---- resistance neck ---- */
+  .neck-top, .neck-bottom{ transition:d .25s ease; }
+  .rball{ fill:var(--volt); }
+
+  /* ---- PD tanks ---- */
+  .pd-water{ transition:y 1.4s ease, height 1.4s ease; }
+
+  /* ---- EMF pump ---- */
+  .pump-charge{ fill:var(--live); }
+
+  footer{ text-align:center; padding:20px; }
+  .footer-note{
+    font-size:12.5px; color:var(--muted); max-width:560px; margin:0 auto 14px; line-height:1.6;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px;
+  }
+  .footer-brand{ font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted); }
+  .footer-brand b{ color:var(--copper); font-family:'Space Grotesk'; font-size:14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="dot"></div>
+      <div><div class="brand-name">Five Quantities</div><div class="brand-sub">Current · Voltage · Resistance · PD · EMF</div></div>
+    </div>
+    <div class="jump">
+      <a href="#current">I</a><a href="#voltage">V</a><a href="#resistance">R</a><a href="#pd">PD</a><a href="#emf">EMF</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="intro">
+    <h1>Five words, <span class="accent">one circuit.</span></h1>
+    <p>Every electrical quantity below is doing something physical, not just sitting in a formula. Drag each slider or tap each button to watch it actually work — then lock in the one keyword.</p>
+  </div>
+
+  <!-- ===================== CURRENT ===================== -->
+  <div class="qsection" id="current">
+    <div class="qhead">
+      <div class="qtitle">
+        <div class="qsym" style="background:rgba(87,217,199,.12); color:var(--live);">I</div>
+        <div>
+          <h2>Electric Current</h2>
+          <p class="qdef">The continuous flow of free electrons through a conductor in one direction. I = Q / t</p>
+        </div>
+      </div>
+      <div class="keyword" style="border-color:var(--live);">remember<b style="color:var(--live);">FLOW</b></div>
+    </div>
+    <div class="qbody">
+      <div class="stage">
+        <svg viewBox="0 0 260 130" width="100%" style="max-width:280px;">
+          <path class="wire" d="M30,110 L30,20 L100,20" />
+          <path class="wire" d="M160,20 L230,20 L230,110" />
+          <path class="wire" d="M30,110 L230,110" />
+          <g transform="translate(30,110)">
+            <line x1="0" y1="-12" x2="0" y2="12" stroke="#3a4453" stroke-width="5"/>
+            <line x1="-7" y1="-5" x2="7" y2="-5" stroke="#3a4453" stroke-width="3"/>
+          </g>
+          <circle cx="230" cy="65" r="18" fill="#3a3a1a" stroke="#555" stroke-width="2" id="iBulb"/>
+          <g id="iElectrons"></g>
+          <!-- gauge -->
+          <g transform="translate(130,72)">
+            <circle r="26" fill="none" stroke="#232C38" stroke-width="6"/>
+            <circle id="iGaugeArc" class="gauge-arc" r="26" fill="none" stroke="var(--live)" stroke-width="6"
+              stroke-dasharray="163" stroke-dashoffset="163" transform="rotate(-90)"/>
+            <text id="iGaugeText" x="0" y="5" text-anchor="middle" fill="#ECE7DD" font-family="IBM Plex Mono" font-size="12">0.0 A</text>
+          </g>
+        </svg>
+        <div class="ctrl">
+          <label>Current strength <span id="iVal">0.0 A</span></label>
+          <input type="range" id="iSlider" min="0" max="30" value="0">
+        </div>
+        <div class="readout">More electrons per second past a point = more current.</div>
+      </div>
+      <div class="facts">
+        <div class="fact-chip"><b>Unit:</b> Ampere (A)</div>
+        <div class="fact-chip"><b>Meter:</b> Ammeter · live current → Tong/Clamp tester</div>
+        <div class="fact-chip"><b>Symbol:</b> I</div>
+        <div class="fact-chip"><b>Formula:</b> I = Q / t</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== VOLTAGE ===================== -->
+  <div class="qsection" id="voltage">
+    <div class="qhead">
+      <div class="qtitle">
+        <div class="qsym" style="background:rgba(242,179,61,.12); color:var(--volt);">V</div>
+        <div>
+          <h2>Voltage / Potential</h2>
+          <p class="qdef">Electric pressure at a point, measured with reference to earth or the source's negative terminal.</p>
+        </div>
+      </div>
+      <div class="keyword" style="border-color:var(--volt);">remember<b style="color:var(--volt);">PRESSURE</b></div>
+    </div>
+    <div class="qbody">
+      <div class="stage">
+        <svg viewBox="0 0 220 150" width="100%" style="max-width:230px;">
+          <rect x="60" y="10" width="60" height="120" fill="none" stroke="#3a4453" stroke-width="3" rx="4"/>
+          <rect id="vWater" class="tank-water" x="62" y="90" width="56" height="38" fill="var(--water)" opacity="0.85"/>
+          <rect x="110" y="112" width="14" height="10" fill="#3a4453"/>
+          <g id="vSpray"></g>
+          <text x="90" y="145" text-anchor="middle" fill="#8B93A0" font-family="IBM Plex Mono" font-size="10">tank height = voltage</text>
+        </svg>
+        <div class="ctrl">
+          <label>Voltage <span id="vVal">6 V</span></label>
+          <input type="range" id="vSlider2" min="1" max="24" value="6">
+        </div>
+        <div class="readout">Taller water column → higher pressure → water sprays farther, just like higher voltage pushes charge harder.</div>
+      </div>
+      <div class="facts">
+        <div class="fact-chip"><b>Unit:</b> Volt (V)</div>
+        <div class="fact-chip"><b>Meter:</b> Voltmeter</div>
+        <div class="fact-chip"><b>Symbol:</b> V</div>
+        <div class="fact-chip"><b>Analogy:</b> water pressure pushing current the way height pushes water</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== RESISTANCE ===================== -->
+  <div class="qsection" id="resistance">
+    <div class="qhead">
+      <div class="qtitle">
+        <div class="qsym" style="background:rgba(200,121,61,.14); color:var(--copper);">R</div>
+        <div>
+          <h2>Resistance</h2>
+          <p class="qdef">Opposition offered by a material to the flow of electrons through it.</p>
+        </div>
+      </div>
+      <div class="keyword" style="border-color:var(--copper);">remember<b style="color:var(--copper);">OPPOSITION</b></div>
+    </div>
+    <div class="qbody">
+      <div class="stage">
+        <svg viewBox="0 0 260 100" width="100%" style="max-width:280px;">
+          <path class="wire" d="M10,50 L90,50" />
+          <path class="wire" d="M170,50 L250,50" />
+          <path id="neckTop" class="neck-top" d="M90,50 Q130,20 170,50" fill="none" stroke="#3a4453" stroke-width="4"/>
+          <path id="neckBottom" class="neck-bottom" d="M90,50 Q130,80 170,50" fill="none" stroke="#3a4453" stroke-width="4"/>
+          <g id="rBalls"></g>
+        </svg>
+        <div class="ctrl">
+          <label>Resistance <span id="rVal">3 Ω</span></label>
+          <input type="range" id="rSlider2" min="1" max="10" value="3">
+        </div>
+        <div class="readout">A narrower neck (higher R) squeezes the path — fewer electrons get through per second.</div>
+      </div>
+      <div class="facts">
+        <div class="fact-chip"><b>Unit:</b> Ohm (Ω)</div>
+        <div class="fact-chip"><b>Meter:</b> Ohmmeter / Multimeter (low–med) · Megger (high R)</div>
+        <div class="fact-chip"><b>Symbol:</b> R</div>
+        <div class="fact-chip"><b>Analogy:</b> a pinch in a pipe slowing water down</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== POTENTIAL DIFFERENCE ===================== -->
+  <div class="qsection" id="pd">
+    <div class="qhead">
+      <div class="qtitle">
+        <div class="qsym" style="background:rgba(87,217,199,.12); color:var(--live);">PD</div>
+        <div>
+          <h2>Potential Difference</h2>
+          <p class="qdef">The difference in electrical pressure between any two points — current flows from higher to lower potential.</p>
+        </div>
+      </div>
+      <div class="keyword" style="border-color:var(--live);">remember<b style="color:var(--live);">TWO-POINT GAP</b></div>
+    </div>
+    <div class="qbody">
+      <div class="stage">
+        <svg viewBox="0 0 260 150" width="100%" style="max-width:280px;">
+          <rect x="30" y="10" width="60" height="120" fill="none" stroke="#3a4453" stroke-width="3" rx="4"/>
+          <rect id="pdWaterA" class="pd-water" x="32" y="30" width="56" height="98" fill="var(--live)" opacity="0.85"/>
+          <rect x="170" y="10" width="60" height="120" fill="none" stroke="#3a4453" stroke-width="3" rx="4"/>
+          <rect id="pdWaterB" class="pd-water" x="172" y="100" width="56" height="28" fill="var(--copper)" opacity="0.85"/>
+          <path id="pdPipe" class="wire" d="M90,120 L170,120" stroke="#3a4453" stroke-dasharray="4 4"/>
+          <text x="60" y="145" text-anchor="middle" fill="#8B93A0" font-family="IBM Plex Mono" font-size="10">A (high)</text>
+          <text x="200" y="145" text-anchor="middle" fill="#8B93A0" font-family="IBM Plex Mono" font-size="10">B (low)</text>
+        </svg>
+        <div class="btnrow">
+          <button class="btn primary" id="pdOpenBtn" onclick="openPD()">Open the valve</button>
+          <button class="btn" onclick="resetPD()">Reset levels</button>
+        </div>
+        <div class="readout" id="pdReadout">Tank A sits higher than Tank B — that height gap is the potential difference.</div>
+      </div>
+      <div class="facts">
+        <div class="fact-chip"><b>Unit:</b> Volt (V)</div>
+        <div class="fact-chip"><b>Meter:</b> Voltmeter</div>
+        <div class="fact-chip"><b>Rule:</b> current flows point of higher potential → point of lower potential</div>
+        <div class="fact-chip"><b>Note:</b> once levels equalise, PD = 0 and flow stops</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== EMF ===================== -->
+  <div class="qsection" id="emf">
+    <div class="qhead">
+      <div class="qtitle">
+        <div class="qsym" style="background:rgba(242,179,61,.12); color:var(--volt);">EMF</div>
+        <div>
+          <h2>Electromotive Force</h2>
+          <p class="qdef">The force that keeps circulating current in a circuit — the source's continuous push, not a one-time drain.</p>
+        </div>
+      </div>
+      <div class="keyword" style="border-color:var(--volt);">remember<b style="color:var(--volt);">THE PUMP</b></div>
+    </div>
+    <div class="qbody">
+      <div class="stage">
+        <svg viewBox="0 0 260 140" width="100%" style="max-width:280px;">
+          <path class="wire" d="M40,120 L40,25 L100,25" />
+          <path class="wire" d="M160,25 L220,25 L220,120" />
+          <path class="wire" d="M40,120 L220,120" />
+          <g transform="translate(130,120)">
+            <rect x="-30" y="-16" width="60" height="20" rx="4" fill="#232C38" stroke="#3a4453" stroke-width="2"/>
+            <text x="0" y="-2" text-anchor="middle" fill="#F2B33D" font-family="IBM Plex Mono" font-size="10">PUMP</text>
+          </g>
+          <circle cx="220" cy="72" r="18" fill="#3a3a1a" stroke="#555" stroke-width="2" id="emfBulb"/>
+          <g id="emfCharges"></g>
+        </svg>
+        <div class="btnrow">
+          <button class="btn primary" id="emfBtn" onclick="toggleEMF()">Start the pump</button>
+        </div>
+        <div class="readout">The pump lifts charge from − back to + internally, against the field — that continuous push is EMF. Stop the pump and the flow dies, unlike a one-off PD drain.</div>
+      </div>
+      <div class="facts">
+        <div class="fact-chip"><b>Unit:</b> Volt (V)</div>
+        <div class="fact-chip"><b>Meter:</b> Voltmeter</div>
+        <div class="fact-chip"><b>Sources:</b> Battery, RPS, DC generator, AC generator</div>
+        <div class="fact-chip"><b>EMF vs PD:</b> EMF is the source's push; PD is what you measure between two points because of it</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-note">This page is a quick memory-jog for I, V, R, PD and EMF — not a substitute for your college's FEEE manual. Use it to build intuition, then revise the exact definitions from your notes.</div>
+  <div class="footer-brand">Developed by <b>Microintel</b></div>
+</footer>
+
+<script>
+  /* ---------- helper: animate dots along a closed path ---------- */
+  function makeLoopAnimator(groupId, path, count){
+    const group = document.getElementById(groupId);
+    const segLens=[]; let total=0;
+    for(let i=0;i<path.length-1;i++){ const l=Math.hypot(path[i+1][0]-path[i][0], path[i+1][1]-path[i][1]); segLens.push(l); total+=l; }
+    function pointAt(t){ let d=(t%1)*total; if(d<0) d+=total; for(let i=0;i<segLens.length;i++){ if(d<=segLens[i]){ const a=path[i], b=path[i+1], f=d/segLens[i]; return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f]; } d-=segLens[i]; } return path[0]; }
+    const dots=[]; for(let i=0;i<count;i++){ const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','3.2'); c.setAttribute('class','electron'); group.appendChild(c); dots.push({el:c,t:i/count}); }
+    let timer=null;
+    return {
+      setSpeed(speed){
+        if(timer) clearInterval(timer);
+        if(speed<=0){ dots.forEach(d=>d.el.style.opacity=0); return; }
+        dots.forEach(d=>d.el.style.opacity=1);
+        timer = setInterval(()=>{ dots.forEach(d=>{ d.t+=speed; const p=pointAt(d.t); d.el.setAttribute('cx',p[0]); d.el.setAttribute('cy',p[1]); }); }, 30);
+      },
+      stop(){ if(timer) clearInterval(timer); dots.forEach(d=>d.el.style.opacity=0); }
+    };
+  }
+
+  /* ---------- CURRENT ---------- */
+  const iPath = [[30,110],[30,20],[100,20],[160,20],[230,20],[230,110],[30,110]];
+  const iAnim = makeLoopAnimator('iElectrons', iPath, 5);
+  const iSlider = document.getElementById('iSlider');
+  const iBulb = document.getElementById('iBulb');
+  const iGaugeArc = document.getElementById('iGaugeArc');
+  const iGaugeText = document.getElementById('iGaugeText');
+  function updateI(){
+    const val = parseFloat(iSlider.value)/10; // 0 - 3 A
+    document.getElementById('iVal').textContent = val.toFixed(1)+' A';
+    iAnim.setSpeed(val*0.006);
+    const bright = Math.min(val/3,1);
+    iBulb.style.fill = bright>0.03 ? `rgba(242,179,61,${0.3+bright*0.7})` : '#3a3a1a';
+    const circumference = 163;
+    const offset = circumference - (Math.min(val/3,1))*circumference;
+    iGaugeArc.setAttribute('stroke-dashoffset', offset);
+    iGaugeText.textContent = val.toFixed(1)+' A';
+  }
+  iSlider.addEventListener('input', updateI);
+  updateI();
+
+  /* ---------- VOLTAGE ---------- */
+  const vSlider2 = document.getElementById('vSlider2');
+  const vWater = document.getElementById('vWater');
+  function updateV(){
+    const val = parseFloat(vSlider2.value);
+    document.getElementById('vVal').textContent = val+' V';
+    const h = 20 + (val/24)*100; // water column height
+    vWater.setAttribute('y', 128-h);
+    vWater.setAttribute('height', h);
+    // spray drops
+    const spray = document.getElementById('vSpray');
+    spray.innerHTML='';
+    const dist = 10 + (val/24)*70;
+    for(let i=0;i<4;i++){
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','2.4'); dot.setAttribute('class','spray-drop');
+      dot.setAttribute('cx', 124); dot.setAttribute('cy', 118 - i*4);
+      dot.style.animation = `sprayfly${i} ${0.6+ (24-val)/24*0.5}s ease-out infinite`;
+      spray.appendChild(dot);
+    }
+    // inject keyframes dynamically once
+    if(!document.getElementById('sprayKeys')){
+      const style = document.createElement('style'); style.id='sprayKeys';
+      let css='';
+      for(let i=0;i<4;i++){
+        css += `@keyframes sprayfly${i}{ 0%{ transform:translate(0,0); opacity:1;} 100%{ transform:translate(${dist}px, ${20+i*6}px); opacity:0;} }`;
+      }
+      style.textContent = css; document.head.appendChild(style);
+    }
+  }
+  vSlider2.addEventListener('input', updateV);
+  updateV();
+
+  /* ---------- RESISTANCE ---------- */
+  const rSlider2 = document.getElementById('rSlider2');
+  const neckTop = document.getElementById('neckTop');
+  const neckBottom = document.getElementById('neckBottom');
+  let rBallTimer=null;
+  function updateR(){
+    const val = parseInt(rSlider2.value);
+    document.getElementById('rVal').textContent = val+' Ω';
+    const gap = Math.max(4, 40 - val*3.2); // higher R -> smaller gap
+    neckTop.setAttribute('d', `M90,50 Q130,${50-gap} 170,50`);
+    neckBottom.setAttribute('d', `M90,50 Q130,${50+gap} 170,50`);
+    if(rBallTimer) clearInterval(rBallTimer);
+    const group = document.getElementById('rBalls');
+    group.innerHTML='';
+    const speed = Math.max(0.6, (11-val)*0.35);
+    const balls=[]; for(let i=0;i<3;i++){ const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','4'); c.setAttribute('class','rball'); group.appendChild(c); balls.push({el:c, x:10 - i*70}); }
+    rBallTimer = setInterval(()=>{
+      balls.forEach(b=>{
+        b.x += speed;
+        if(b.x>250) b.x = -10;
+        const squeeze = (b.x>85 && b.x<175) ? (1 - Math.abs(b.x-130)/45)*(gap<15?0.5:0) : 0;
+        b.el.setAttribute('cx', b.x);
+        b.el.setAttribute('cy', 50);
+        b.el.setAttribute('r', gap<15 && b.x>85 && b.x<175 ? 2.4 : 4);
+      });
+    }, 30);
+  }
+  rSlider2.addEventListener('input', updateR);
+  updateR();
+
+  /* ---------- POTENTIAL DIFFERENCE ---------- */
+  const pdWaterA = document.getElementById('pdWaterA');
+  const pdWaterB = document.getElementById('pdWaterB');
+  function resetPD(){
+    pdWaterA.setAttribute('y',30); pdWaterA.setAttribute('height',98);
+    pdWaterB.setAttribute('y',100); pdWaterB.setAttribute('height',28);
+    document.getElementById('pdReadout').textContent = 'Tank A sits higher than Tank B — that height gap is the potential difference.';
+    document.getElementById('pdOpenBtn').disabled = false;
+  }
+  function openPD(){
+    pdWaterA.setAttribute('y',65); pdWaterA.setAttribute('height',63);
+    pdWaterB.setAttribute('y',65); pdWaterB.setAttribute('height',63);
+    document.getElementById('pdReadout').textContent = 'Valve opened — water (current) flowed from high A to low B until both levels matched. PD is now 0, so flow stops.';
+    document.getElementById('pdOpenBtn').disabled = true;
+  }
+  resetPD();
+
+  /* ---------- EMF ---------- */
+  let emfOn=false, emfTimer=null;
+  const emfBulb = document.getElementById('emfBulb');
+  function toggleEMF(){
+    emfOn = !emfOn;
+    document.getElementById('emfBtn').textContent = emfOn ? 'Stop the pump' : 'Start the pump';
+    emfBulb.style.fill = emfOn ? 'rgba(242,179,61,0.9)':'#3a3a1a';
+    emfBulb.style.filter = emfOn ? 'drop-shadow(0 0 12px #F2B33D)':'none';
+    const group = document.getElementById('emfCharges');
+    if(emfTimer){ clearInterval(emfTimer); emfTimer=null; }
+    group.innerHTML='';
+    if(!emfOn) return;
+    const path=[[40,120],[40,25],[100,25],[160,25],[220,25],[220,120],[40,120]];
+    const segLens=[]; let total=0;
+    for(let i=0;i<path.length-1;i++){ const l=Math.hypot(path[i+1][0]-path[i][0], path[i+1][1]-path[i][1]); segLens.push(l); total+=l; }
+    function pointAt(t){ let d=(t%1)*total; if(d<0)d+=total; for(let i=0;i<segLens.length;i++){ if(d<=segLens[i]){ const a=path[i],b=path[i+1],f=d/segLens[i]; return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f]; } d-=segLens[i]; } return path[0]; }
+    const dots=[]; for(let i=0;i<4;i++){ const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','3.2'); c.setAttribute('class','pump-charge'); group.appendChild(c); dots.push({el:c,t:i*0.25}); }
+    emfTimer = setInterval(()=>{ dots.forEach(d=>{ d.t+=0.007; const p=pointAt(d.t); d.el.setAttribute('cx',p[0]); d.el.setAttribute('cy',p[1]); }); }, 30);
+  }
+</script>
+</body>
+</html>
