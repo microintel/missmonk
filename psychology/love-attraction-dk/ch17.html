@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smile Please — The Bond of Humor</title>
+<style>
+  :root{
+    --bg-1:#0d0812;
+    --bg-2:#180f24;
+    --gold:#f4c542;
+    --gold-soft:#f4c54299;
+    --pink:#ff6fa5;
+    --text:#f1e9f5;
+    --text-dim:#b9aec4;
+    --card:#161020;
+    --card-border:#2a1f38;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background:radial-gradient(circle at 50% 0%, var(--bg-2), var(--bg-1) 70%);
+    color:var(--text);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0;
+    color:var(--pink);
+    filter:drop-shadow(0 0 6px rgba(255,111,165,0.5));
+    animation-name:fall, sway;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh) rotate(0deg); opacity:0; }
+    8%{ opacity:0.85; }
+    92%{ opacity:0.6; }
+    100%{ transform:translateY(110vh) rotate(25deg); opacity:0; }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:30px; }
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 22px 90px;
+  }
+
+  header.hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+  }
+  .hero-gif{
+    width:150px;
+    height:150px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid var(--gold);
+    box-shadow:0 0 30px rgba(244,197,66,0.35);
+    margin-bottom:18px;
+    animation:float 3s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-8px); }
+  }
+  header.hero h1{
+    font-size:clamp(2rem, 8vw, 3.4rem);
+    margin:0 0 6px;
+    letter-spacing:1px;
+    background:linear-gradient(120deg,var(--gold),var(--pink));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  header.hero .subtitle{
+    font-size:1.05rem;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:26px;
+  }
+  header.hero .lede{
+    font-size:1.15rem;
+    line-height:1.7;
+    color:var(--text);
+    max-width:520px;
+  }
+  header.hero .scroll-cue{
+    margin-top:50px;
+    font-size:0.9rem;
+    color:var(--gold-soft);
+    animation:bob 1.8s ease-in-out infinite;
+    letter-spacing:1px;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); opacity:0.5;}
+    50%{ transform:translateY(8px); opacity:1;}
+  }
+
+  section.intro-quote{
+    text-align:center;
+    padding:50px 10px 70px;
+  }
+  .quote-mark{
+    font-size:2.2rem;
+    color:var(--gold);
+    line-height:1.4;
+    font-style:italic;
+  }
+  .quote-src{
+    margin-top:10px;
+    color:var(--text-dim);
+    font-size:0.85rem;
+    letter-spacing:1px;
+  }
+
+  /* ---------- Idea cards ---------- */
+  .idea{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:26px 24px;
+    margin:26px 0;
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .idea.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .idea .num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;height:34px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--pink));
+    color:#1a0f22;
+    font-weight:bold;
+    font-family:Arial, sans-serif;
+    font-size:0.95rem;
+    margin-bottom:14px;
+  }
+  .idea .example{
+    color:var(--text-dim);
+    font-size:0.98rem;
+    line-height:1.65;
+    margin-bottom:12px;
+    padding-left:14px;
+    border-left:2px solid var(--pink);
+  }
+  .idea .point{
+    font-size:1.08rem;
+    line-height:1.6;
+    color:var(--text);
+  }
+  .idea .point .highlight{
+    color:var(--gold);
+    font-weight:bold;
+  }
+
+  /* ---------- Powerful quote callouts ---------- */
+  .callout{
+    margin:34px 0;
+    padding:22px 22px;
+    border-radius:14px;
+    background:linear-gradient(135deg, rgba(244,197,66,0.08), rgba(255,111,165,0.08));
+    border:1px solid var(--gold-soft);
+    text-align:center;
+    font-style:italic;
+    font-size:1.1rem;
+    line-height:1.6;
+    color:var(--gold);
+    opacity:0;
+    transform:scale(0.96);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .callout.show{ opacity:1; transform:scale(1); }
+
+  h2.section-title{
+    text-align:center;
+    font-size:1.5rem;
+    margin:60px 0 10px;
+    color:var(--text);
+    letter-spacing:0.5px;
+  }
+  .section-title .accent{ color:var(--pink); }
+
+  .grid-intro{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.95rem;
+    margin:0 0 30px;
+  }
+
+  /* ---------- Humor type grid (flip cards) ---------- */
+  .humor-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:16px;
+    margin-bottom:20px;
+  }
+  .humor-card{
+    background:transparent;
+    border-radius:14px;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+    perspective:1000px;
+    height:190px;
+    cursor:pointer;
+  }
+  .humor-card.show{ opacity:1; transform:translateY(0); }
+
+  .card-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    text-align:center;
+    transition:transform 0.6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .humor-card.flipped .card-inner{
+    transform:rotateY(180deg);
+  }
+
+  .card-face{
+    position:absolute;
+    inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    border-radius:14px;
+    border:1px solid var(--card-border);
+    background:var(--card);
+    padding:16px 12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .humor-card:hover .card-face, .humor-card:active .card-face{
+    border-color:var(--gold-soft);
+  }
+  .card-back{
+    transform:rotateY(180deg);
+    background:linear-gradient(160deg, rgba(255,111,165,0.10), rgba(244,197,66,0.06));
+  }
+
+  .hicon{
+    font-size:2.1rem;
+    margin-bottom:8px;
+    display:inline-block;
+  }
+  .htitle{
+    font-family:Arial, sans-serif;
+    font-size:0.95rem;
+    font-weight:bold;
+    color:var(--gold);
+    margin-bottom:6px;
+    letter-spacing:0.3px;
+  }
+  .hdesc{
+    font-size:0.82rem;
+    line-height:1.45;
+    color:var(--text-dim);
+  }
+  .hex{
+    font-family:Arial, sans-serif;
+    font-size:0.72rem;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--pink);
+    margin-bottom:8px;
+  }
+  .hexample{
+    font-size:0.88rem;
+    line-height:1.5;
+    color:var(--text);
+  }
+  .tap-hint{
+    font-family:Arial, sans-serif;
+    font-size:0.65rem;
+    letter-spacing:0.5px;
+    color:var(--text-dim);
+    opacity:0.6;
+    margin-top:10px;
+    text-transform:uppercase;
+  }
+
+  /* per-type signature motions */
+  .hicon-wisecrack{ animation:zap 1.8s ease-in-out infinite; }
+  @keyframes zap{ 0%,100%{transform:rotate(0deg) scale(1);} 50%{transform:rotate(-8deg) scale(1.15);} }
+
+  .hicon-deadpan{ animation:blink 3.2s steps(1) infinite; }
+  @keyframes blink{ 0%,92%,100%{opacity:1;} 94%,96%{opacity:0.2;} }
+
+  .hicon-offcolor{ animation:winkTilt 2.4s ease-in-out infinite; }
+  @keyframes winkTilt{ 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(10deg);} }
+
+  .hicon-clown{ animation:bounce 1.4s ease-in-out infinite; }
+  @keyframes bounce{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-10px) rotate(-10deg);} }
+
+  .hicon-raconteur{ animation:pulseGrow 2s ease-in-out infinite; }
+  @keyframes pulseGrow{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.18);} }
+
+  .hicon-selfdep{ animation:shy 2.2s ease-in-out infinite; }
+  @keyframes shy{ 0%,100%{transform:rotate(0deg) translateY(0);} 50%{transform:rotate(-6deg) translateY(3px);} }
+
+  .hicon-tease{ animation:wiggle 1.6s ease-in-out infinite; }
+  @keyframes wiggle{ 0%,100%{transform:rotate(0deg);} 25%{transform:rotate(-9deg);} 75%{transform:rotate(9deg);} }
+
+  .hicon-sarcasm{ animation:eyeroll 2.6s ease-in-out infinite; }
+  @keyframes eyeroll{ 0%,100%{transform:translateY(0) rotate(0deg);} 40%{transform:translateY(-3px) rotate(-12deg);} 60%{transform:translateY(-3px) rotate(12deg);} }
+
+  .hicon-ref{ animation:flicker 1.8s ease-in-out infinite; }
+  @keyframes flicker{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.6; transform:scale(1.1);} }
+
+  .hicon-parody{ animation:flip 2.8s ease-in-out infinite; }
+  @keyframes flip{ 0%,100%{transform:rotateY(0deg);} 50%{transform:rotateY(180deg);} }
+
+  .hicon-dark{ animation:hover_drift 3s ease-in-out infinite; }
+  @keyframes hover_drift{ 0%,100%{transform:translateY(0); opacity:0.85;} 50%{transform:translateY(-6px); opacity:1;} }
+
+  @media (min-width:520px){
+    .humor-grid{ grid-template-columns:repeat(3, 1fr); }
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    margin-top:70px;
+    text-align:center;
+    padding:40px 26px;
+    border-radius:20px;
+    background:linear-gradient(160deg, rgba(255,111,165,0.12), rgba(244,197,66,0.06));
+    border:1px solid var(--card-border);
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .lesson.show{ opacity:1; transform:translateY(0); }
+  .lesson h3{
+    color:var(--gold);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-size:0.9rem;
+    margin-bottom:14px;
+    font-family:Arial, sans-serif;
+  }
+  .lesson p{
+    font-size:1.25rem;
+    line-height:1.7;
+    color:var(--text);
+    margin:0;
+  }
+  .lesson .heart-emoji{
+    font-size:1.8rem;
+    display:block;
+    margin-top:18px;
+    animation:pulseHeart 1.6s ease-in-out infinite;
+  }
+  @keyframes pulseHeart{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.2); }
+  }
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    color:var(--text-dim);
+    font-size:0.8rem;
+    letter-spacing:1px;
+  }
+
+  @media (max-width:480px){
+    .idea{padding:20px 18px;}
+    .lesson p{font-size:1.1rem;}
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <img class="hero-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHZldGQ1M2MzczlhdmpmYTBpOW1yNTQ1ejh5Y3A1aWh0MGlqenVyOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/U9nioVklAG5Fw6ycbD/giphy.gif" alt="laughing together" loading="lazy">
+    <h1>Smile Please</h1>
+    <div class="subtitle">The Bond of Humor</div>
+    <p class="lede">Do you fall for people who make you laugh?<br>Your sense of humor says more about you than you think.</p>
+    <div class="scroll-cue">↓ scroll to find out ↓</div>
+  </header>
+
+  <section class="intro-quote">
+    <div class="quote-mark">"The person you laugh with now<br>may or may not be the person<br>you hope to rejoice with later."</div>
+    <div class="quote-src">— on humor and compatibility</div>
+  </section>
+
+  <h2 class="section-title">9 Simple <span class="accent">Ideas</span></h2>
+
+  <div class="idea">
+    <div class="num">1</div>
+    <div class="example">Someone cracks a joke the very first time they talk to you at a party.</div>
+    <div class="point">When someone jokes with you, they are usually <span class="highlight">trying to connect</span> with you — it's a friendly signal, not just noise.</div>
+  </div>
+
+  <div class="idea">
+    <div class="num">2</div>
+    <div class="example">Two friends laugh at the exact same silly meme, every single time.</div>
+    <div class="point">Laughing at the same things means you may <span class="highlight">share the same values</span> — you agree on what's funny, which means you agree on how you see the world.</div>
+  </div>
+
+  <div class="idea">
+    <div class="num">3</div>
+    <div class="example">You feel uneasy when a date makes a joke that feels mean or rude.</div>
+    <div class="point">If a joke makes you uncomfortable, it can be a warning sign — it may show a <span class="highlight">difference in beliefs</span>, not just a bad joke.</div>
+  </div>
+
+  <div class="idea">
+    <div class="num">4</div>
+    <div class="example">Someone isn't naturally funny, but you still love spending time with them.</div>
+    <div class="point">Being funny is not a must-have. What matters more is <span class="highlight">how someone reacts</span> to your humor, not whether they can perform jokes.</div>
+  </div>
+
+  <div class="callout show">
+    "Watch your date's reaction when telling jokes you love most — and shrug off the pressure to laugh at a joke you don't like."
+  </div>
+
+  <div class="idea">
+    <div class="num">5</div>
+    <div class="example">You laugh at your date's jokes, and find yourself liking them even more because of it.</div>
+    <div class="point">Studies show men's attraction jumps up more than women's does, when the other person has a good sense of humor. <span class="highlight">Humor pulls people closer.</span></div>
+  </div>
+
+  <div class="idea">
+    <div class="num">6</div>
+    <div class="example">Someone laughs at themselves after tripping on stage, instead of feeling embarrassed.</div>
+    <div class="point">Self-deprecating jokes (laughing at yourself) can make you seem <span class="highlight">friendlier and easier to approach</span> — not weak, but warm.</div>
+  </div>
+
+  <h2 class="section-title">What Your <span class="accent">Jokes</span> Reveal</h2>
+
+  <div class="idea">
+    <div class="num">7</div>
+    <div class="example">Someone always has a quick, clever comeback ready in every conversation.</div>
+    <div class="point">Fast wisecracks can show intelligence — but sometimes they're also used to <span class="highlight">dodge real feelings</span> underneath.</div>
+  </div>
+
+  <div class="idea">
+    <div class="num">8</div>
+    <div class="example">Someone teases their close friends, but never a person they just met.</div>
+    <div class="point">Affectionate teasing can be proof of a real bond. But if someone <span class="highlight">always</span> jokes at others' expense, it may hide a need to feel superior.</div>
+  </div>
+
+  <div class="idea">
+    <div class="num">9</div>
+    <div class="example">Notice what your friend group jokes about, and what they never joke about.</div>
+    <div class="point">Pay attention to what someone parodies or mocks — it quietly tells you <span class="highlight">what they consider foolish</span> or important.</div>
+  </div>
+
+  <h2 class="section-title">Types of <span class="accent">Humor</span> at a Glance</h2>
+  <p class="grid-intro">What you joke about — and how — says something about you. Tap a card to see a simple example.</p>
+
+  <div class="humor-grid">
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-wisecrack">⚡</div>
+          <div class="htitle">Wisecracks</div>
+          <div class="hdesc">Quickfire smart remarks — sharp, but sometimes a shield.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">You trip on the stairs. Someone says fast, "Nice, free entry ticket to the floor."</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-deadpan">😐</div>
+          <div class="htitle">Deadpan</div>
+          <div class="hdesc">Straight-faced delivery — funny because you know they're joking.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone says "I love Mondays" with a totally flat, serious face.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-offcolor">😏</div>
+          <div class="htitle">Off-color</div>
+          <div class="hdesc">Naughty, cheeky jokes — candid and unpretentious.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone cracks a cheeky bathroom joke, and the whole group bursts out laughing.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-clown">🤹</div>
+          <div class="htitle">Clowning</div>
+          <div class="hdesc">Physical fooling around — confident, likes attention.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone does a silly dance in the middle of the room just to make everyone laugh.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-raconteur">💬</div>
+          <div class="htitle">Raconteur</div>
+          <div class="hdesc">Holding the floor with stories — a confident performer.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone tells a long story about their trip, and everyone leans in to listen.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-selfdep">🙈</div>
+          <div class="htitle">Self-deprecating</div>
+          <div class="hdesc">Jokes at their own expense — secure, or seeking reassurance.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone messes up a presentation and jokes, "Well, that went about as planned."</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-tease">😜</div>
+          <div class="htitle">Teasing</div>
+          <div class="hdesc">Jokes at someone else's expense — can be a sign of closeness.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">A close friend gently makes fun of how slow you walk, and you both laugh.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-sarcasm">🙄</div>
+          <div class="htitle">Sarcasm</div>
+          <div class="hdesc">Biting and ironic — subtle when it doesn't sound bitter.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">It starts raining on your one day off, and someone says flatly, "Wow, great timing."</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-ref">💡</div>
+          <div class="htitle">References</div>
+          <div class="hdesc">Pop-culture quips — great for bonding if you share the taste.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone quotes a line from a favorite show, and you both laugh because you get it.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-parody">🎭</div>
+          <div class="htitle">Parody</div>
+          <div class="hdesc">Send-ups and impressions — shows what they find foolish.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">Someone copies exactly how a strict teacher talks, and the whole class laughs.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="humor-card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="hicon hicon-dark">💀</div>
+          <div class="htitle">Dark</div>
+          <div class="hdesc">Gallows humor — pushing boundaries, or coping with hardship.</div>
+          <div class="tap-hint">tap for example</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="hex">Example</div>
+          <div class="hexample">After a really bad week, someone jokes, "At least it can't get much worse." And laughs.</div>
+          <div class="tap-hint">tap to flip back</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout show">
+    "Shared humor reflects similar values and needs — when someone laughs at the same joke as you, you feel affirmed."
+  </div>
+
+  <div class="lesson">
+    <h3>Main Lesson</h3>
+    <p>Humor is not just about being funny — it's a quiet window into someone's heart, values, and how they truly see the world.</p>
+    <span class="heart-emoji">💛</span>
+  </div>
+
+  <footer>made with a little laughter</footer>
+
+</div>
+
+<script>
+  // ---------- Falling hearts ----------
+  const heartField = document.getElementById('heart-field');
+  const HEART_COUNT = 22;
+  const heartChars = ['❤','💛','💗'];
+
+  for(let i=0;i<HEART_COUNT;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    const size = 12 + Math.random()*22;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    const fallDuration = 9 + Math.random()*12;
+    const swayDuration = 3 + Math.random()*3;
+    const delay = Math.random()*14;
+    h.style.animationDuration = fallDuration + 's, ' + swayDuration + 's';
+    h.style.animationDelay = '-' + delay + 's, -' + (Math.random()*swayDuration) + 's';
+    h.style.opacity = 0.3 + Math.random()*0.5;
+    heartField.appendChild(h);
+  }
+
+  // ---------- Scroll-triggered reveal animation ----------
+  const revealEls = document.querySelectorAll('.idea, .callout, .lesson, .humor-card');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // ---------- Flip cards for humor types ----------
+  document.querySelectorAll('.humor-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      card.classList.toggle('flipped');
+    });
+    card.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        card.classList.toggle('flipped');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

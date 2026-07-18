@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.03 Seconds — How Faces Decide Everything</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --ink:#f3e9ee;
+    --ink-dim:#c9b7c2;
+    --bg:#0f0810;
+    --bg2:#160a15;
+    --rose:#ff5c8a;
+    --rose-deep:#c8386a;
+    --gold:#e8c468;
+    --lavender:#b79ee0;
+    --line: rgba(243,233,238,0.12);
+    --card: rgba(255,255,255,0.035);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(200,56,106,0.18), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(183,158,224,0.12), transparent 50%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3, .display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  ::selection{ background:var(--rose-deep); color:#fff; }
+
+  a{color:var(--rose);}
+
+  /* ---------- falling hearts background ---------- */
+  #hearts{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10vh;
+    opacity:0.55;
+    filter: drop-shadow(0 0 6px rgba(255,92,138,0.35));
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    will-change: transform;
+  }
+  .heart svg{ display:block; }
+  @keyframes fall{
+    from{ transform:translateY(-10vh); }
+    to{ transform:translateY(110vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  /* ---------- layout shells ---------- */
+  .wrap{
+    position:relative; z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding: 0 22px;
+  }
+
+  section{ padding: 74px 0; }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px; height:1px; background:var(--gold); opacity:0.6;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding-top:40px;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    line-height:1.02;
+    margin:18px 0 8px;
+  }
+  .hero h1 span{ color:var(--rose); font-style:italic; }
+  .hero p.sub{
+    color:var(--ink-dim);
+    max-width:480px;
+    font-size:1.05rem;
+    margin: 10px auto 40px;
+  }
+
+  /* signature eye */
+  .eye-rig{
+    width: min(230px, 55vw);
+    height: min(230px, 55vw);
+    position:relative;
+    margin-bottom: 6px;
+  }
+  .eye-outer{
+    width:100%; height:100%;
+    border-radius:50%;
+    background: radial-gradient(circle at 50% 45%, #2a1420, #180a12 70%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 0 1px var(--line), 0 30px 70px -20px rgba(255,92,138,0.35), inset 0 0 40px rgba(0,0,0,0.6);
+    overflow:hidden;
+  }
+  .iris{
+    width:56%; height:56%;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #d9a8b0, #8a4a63 45%, #3a1522 80%);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    transition: width 0.45s cubic-bezier(.2,.8,.2,1), height 0.45s cubic-bezier(.2,.8,.2,1);
+  }
+  .pupil{
+    width:42%; height:42%;
+    border-radius:50%;
+    background:#0b0409;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.9);
+    position:relative;
+    transition: width 0.5s cubic-bezier(.2,.8,.2,1), height 0.5s cubic-bezier(.2,.8,.2,1);
+  }
+  .pupil::after{
+    content:"";
+    position:absolute; top:18%; left:22%;
+    width:26%; height:26%;
+    border-radius:50%;
+    background:rgba(255,255,255,0.85);
+    filter: blur(0.5px);
+  }
+  .hero small.caption{
+    display:block; margin-top:14px;
+    color:var(--ink-dim); font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem; letter-spacing:0.05em;
+  }
+
+  .scroll-cue{
+    margin-top:46px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- quote blocks ---------- */
+  .quote{
+    border-left: 2px solid var(--rose);
+    padding: 4px 0 4px 22px;
+    margin: 40px 0;
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  .quote cite{
+    display:block;
+    margin-top:10px;
+    font-style:normal;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+
+  /* ---------- idea cards ---------- */
+  .idea{
+    display:grid;
+    grid-template-columns: 54px 1fr;
+    gap:18px;
+    padding: 26px 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.in{ opacity:1; transform:translateY(0); }
+  .idea:last-child{ border-bottom:none; }
+  .num{
+    font-family:'Fraunces', serif;
+    font-size:1.6rem;
+    color:var(--rose-deep);
+    line-height:1;
+  }
+  .idea .ex{
+    color:var(--ink-dim);
+    font-size:0.96rem;
+    margin:0 0 8px;
+  }
+  .idea .ex b{ color: var(--lavender); font-weight:600; font-style:normal;}
+  .idea .point{
+    margin:0;
+    font-size:1.06rem;
+  }
+  .idea .point b{ color:var(--gold); font-weight:600; }
+
+  /* ---------- stat callouts ---------- */
+  .stat-row{
+    display:flex; gap:16px; flex-wrap:wrap;
+    margin: 30px 0 10px;
+  }
+  .stat{
+    flex:1; min-width:140px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 16px;
+    text-align:center;
+  }
+  .stat .num-big{
+    font-family:'Fraunces', serif;
+    font-size:2.4rem;
+    color:var(--rose);
+    display:block;
+    line-height:1;
+  }
+  .stat .label{
+    font-size:0.78rem;
+    color:var(--ink-dim);
+    margin-top:6px;
+    display:block;
+  }
+
+  /* ---------- flip cards (emotion traits) ---------- */
+  .flip-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:14px;
+    margin: 26px 0;
+  }
+  .flip-card{
+    perspective: 900px;
+    height:118px;
+    cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%;
+    transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{ transform: rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    border-radius:12px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:10px;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .flip-front{
+    background:var(--card);
+  }
+  .flip-front .emo{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  .flip-front .tap{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem;
+    color:var(--ink-dim);
+    margin-top:6px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+  }
+  .flip-back{
+    background: linear-gradient(160deg, rgba(255,92,138,0.16), rgba(183,158,224,0.10));
+    transform: rotateY(180deg);
+    font-size:0.82rem;
+    color:var(--ink);
+  }
+
+  /* ---------- 0.03s interactive test (signature-adjacent) ---------- */
+  .test-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px 20px;
+    margin:34px 0;
+    text-align:center;
+  }
+  .flash-stage{
+    width:100%;
+    height:150px;
+    border-radius:14px;
+    background:#12070f;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .flash-face{
+    opacity:0;
+    transition: opacity 0.06s linear;
+  }
+  .flash-face.show{ opacity:1; }
+  .test-btn{
+    font-family:'JetBrains Mono', monospace;
+    background:var(--rose);
+    color:#1a0710;
+    border:none;
+    padding:12px 22px;
+    border-radius:30px;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    cursor:pointer;
+    font-weight:600;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+  .test-btn:hover{ transform:translateY(-2px); background:#ff7ea1; }
+  .test-btn:disabled{ opacity:0.5; cursor:default; transform:none; }
+  .test-result{
+    margin-top:16px;
+    font-size:0.9rem;
+    color:var(--ink-dim);
+    min-height:24px;
+  }
+  .test-result b{ color:var(--gold); }
+  .choices{
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px;
+  }
+  .choice-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:8px 14px;
+    border-radius:20px;
+    font-family:'Source Serif 4', serif;
+    font-size:0.85rem;
+    cursor:pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .choice-btn:hover{ border-color:var(--rose); background:rgba(255,92,138,0.08); }
+
+  /* ---------- pupil-o-meter interactive ---------- */
+  .pupil-demo{
+    display:flex; align-items:center; gap:20px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    margin: 30px 0;
+    flex-wrap:wrap;
+  }
+  .mini-eye{
+    width:70px; height:70px; border-radius:50%;
+    background:#180a12;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: inset 0 0 14px rgba(0,0,0,0.7);
+  }
+  .mini-iris{
+    width:60%; height:60%; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #d9a8b0, #8a4a63 45%, #3a1522 80%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .mini-pupil{
+    width:40%; height:40%; border-radius:50%; background:#0b0409;
+    transition: width 0.3s ease, height 0.3s ease;
+  }
+  .pupil-demo .txt{ flex:1; min-width:180px; font-size:0.9rem; color:var(--ink-dim); }
+  .slider-label{ font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--gold); }
+  input[type=range]{
+    width:100%; margin-top:8px;
+    accent-color: var(--rose);
+  }
+
+  /* ---------- lesson ---------- */
+  .lesson{
+    text-align:center;
+    padding: 80px 0 100px;
+  }
+  .lesson .eyebrow{ justify-content:center; }
+  .lesson .eyebrow::before{ display:none; }
+  .lesson h2{
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    max-width:520px;
+    margin: 6px auto 0;
+    line-height:1.2;
+  }
+  .lesson h2 em{ color:var(--rose); font-style:italic; }
+  .lesson p{
+    color:var(--ink-dim);
+    max-width:460px;
+    margin: 18px auto 0;
+  }
+
+  footer{
+    text-align:center;
+    padding: 30px 0 60px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    opacity:0.6;
+  }
+
+  @media (max-width:480px){
+    .idea{ grid-template-columns: 34px 1fr; gap:12px; }
+    .num{ font-size:1.3rem; }
+    section{ padding:54px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">the psychology of faces</div>
+    <div class="eye-rig" id="heroEye">
+      <div class="eye-outer">
+        <div class="iris" id="iris">
+          <div class="pupil" id="pupil"></div>
+        </div>
+      </div>
+    </div>
+    <small class="caption">touch the eye — watch what attraction does</small>
+    <h1>Your brain judges a face<br><span>before you even think.</span></h1>
+    <p class="sub">In three hundredths of a second — faster than an eyeblink — your mind decides if a stranger is safe, smart, or someone to fall for. Here's how, in plain words.</p>
+    <div class="scroll-cue">scroll ↓</div>
+  </section>
+
+  <section>
+    <div class="eyebrow">idea 01–04 · first impressions</div>
+
+    <div class="idea">
+      <div class="num">1</div>
+      <div>
+        <p class="ex">You meet someone and instantly feel <b>"I like them"</b> — before they even speak.</p>
+        <p class="point"><b>Your brain decides in 0.03 seconds</b> — much less time than a single blink — whether a face feels trustworthy.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">2</div>
+      <div>
+        <p class="ex">Two strangers deny doing something wrong in court. One has a round, boyish face. One looks stern and mature.</p>
+        <p class="point">The <b>mature-looking</b> face gets blamed far more often than the <b>baby-faced</b> one — even with the same story.</p>
+        <div class="stat-row">
+          <div class="stat"><span class="num-big">92%</span><span class="label">mature faces found at fault</span></div>
+          <div class="stat"><span class="num-big">45%</span><span class="label">baby faces found at fault</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">3</div>
+      <div>
+        <p class="ex">A puppy's big eyes make you say "aww" without trying.</p>
+        <p class="point">Human faces do the same. <b>Round cheeks, big eyes, small chin</b> = your brain reads "warm, honest, harmless" automatically.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">4</div>
+      <div>
+        <p class="ex">You keep dating people with the same kind of smile, or the same kind of eyes.</p>
+        <p class="point">You have a <b>"type"</b> because your brain links certain faces to good memories — often without you noticing why.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">idea 05–07 · the eyes give it away</div>
+
+    <div class="idea">
+      <div class="num">5</div>
+      <div>
+        <p class="ex">You're talking to someone you're drawn to, and their eyes seem darker, wider, more alive.</p>
+        <p class="point"><b>Pupils grow larger</b> when we look at someone we find attractive — it's a signal we can't fake or control.</p>
+      </div>
+    </div>
+
+    <div class="pupil-demo">
+      <div class="mini-eye"><div class="mini-iris"><div class="mini-pupil" id="miniPupil"></div></div></div>
+      <div class="txt">
+        <span class="slider-label">interest level</span>
+        <input type="range" min="0" max="100" value="20" id="interestSlider">
+        <div id="interestText" style="margin-top:6px; font-size:0.82rem;">Drag right — watch the pupil widen.</div>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">6</div>
+      <div>
+        <p class="ex">Someone with brown eyes just "feels" like the boss in the room — even in a photo.</p>
+        <p class="point">Brown-eyed faces are rated <b>more dominant</b> — and even when researchers digitally faked the eye color, the effect stayed the same.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">7</div>
+      <div>
+        <p class="ex">A total stranger's face reminds you of your cousin, and you instantly trust them a little more.</p>
+        <p class="point">Faces that look <b>familiar</b> (like family) feel safer — but also less exciting or "sexy."</p>
+      </div>
+    </div>
+
+    <div class="quote">
+      "Eyes may be windows of the soul, but they are also the window of desire."
+      <cite>— from the science of attraction</cite>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">idea 08–11 · what your face says</div>
+
+    <div class="idea">
+      <div class="num">8</div>
+      <div>
+        <p class="ex">An attractive candidate walks into a job interview and somehow gets extra chances, even after a small mistake.</p>
+        <p class="point">This is the <b>Halo Effect</b>: good-looking people get more benefit of the doubt — from teachers, bosses, even voters.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">9</div>
+      <div>
+        <p class="ex">A relaxed, resting face can look "angry" to strangers even when the person feels totally calm.</p>
+        <p class="point">Your <b>resting expression</b> quietly tells people what personality to expect from you — fair or not.</p>
+      </div>
+    </div>
+
+    <p style="color:var(--ink-dim); font-size:0.9rem; margin-bottom:6px;">Tap a face below to see what people silently assume:</p>
+    <div class="flip-grid" id="flipGrid">
+      <div class="flip-card"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="emo">😠 Angry</div><div class="tap">tap</div></div>
+        <div class="flip-face flip-back">Read as <b>forceful</b>, but low warmth.</div>
+      </div></div>
+      <div class="flip-card"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="emo">😊 Happy</div><div class="tap">tap</div></div>
+        <div class="flip-face flip-back">Read as <b>warm and confident</b> — the safest first impression.</div>
+      </div></div>
+      <div class="flip-card"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="emo">😨 Fearful / Sad</div><div class="tap">tap</div></div>
+        <div class="flip-face flip-back">Read as <b>warm but not forceful</b> — gentle, not a leader.</div>
+      </div></div>
+      <div class="flip-card"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="emo">🤢 Disgusted</div><div class="tap">tap</div></div>
+        <div class="flip-face flip-back">Read as <b>negative or judgmental</b> — even if untrue.</div>
+      </div></div>
+    </div>
+
+    <div class="idea">
+      <div class="num">10</div>
+      <div>
+        <p class="ex">A man dyes his hair blonde for a night out — people treat him differently before he says a word.</p>
+        <p class="point">Hair color triggers old <b>stereotypes</b>: blonde = needy, brunette = arrogant, redhead = fiery. None of it is really true.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">11</div>
+      <div>
+        <p class="ex">A stranger reaches out to touch a Black woman's natural afro at a party, uninvited.</p>
+        <p class="point">Hairstyle carries meaning too — <b>natural hair</b> can be unfairly read as less "professional," which is its own kind of face-judging.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">idea 12 · the 0.03 second test</div>
+    <p class="ex" style="margin-bottom:0;">Try it yourself. A face will flash for a fraction of a second — barely enough time to see it.</p>
+
+    <div class="test-box">
+      <div class="flash-stage">
+        <div class="flash-face" id="flashFace">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle cx="45" cy="45" r="40" fill="#e9c9a5"/>
+            <circle cx="30" cy="38" r="5" fill="#2a1420"/>
+            <circle cx="60" cy="38" r="5" fill="#2a1420"/>
+            <path id="mouthPath" d="M30 60 Q45 70 60 60" stroke="#2a1420" stroke-width="4" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span id="stageText" style="position:absolute; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; font-size:0.7rem;">press start</span>
+      </div>
+      <button class="test-btn" id="flashBtn">Start the flash</button>
+      <div class="choices" id="flashChoices" style="display:none;">
+        <button class="choice-btn" data-v="Trustworthy">Trustworthy</button>
+        <button class="choice-btn" data-v="Not sure">Not sure</button>
+        <button class="choice-btn" data-v="Unfriendly">Unfriendly</button>
+      </div>
+      <div class="test-result" id="flashResult"></div>
+    </div>
+
+    <div class="quote">
+      "Our brains take just three hundredths of a second — much less time than an eyeblink — to decide trustworthiness."
+      <cite>Melanie Greenberg, clinical psychologist</cite>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">idea 13–14 · love changes the rules</div>
+
+    <div class="idea">
+      <div class="num">13</div>
+      <div>
+        <p class="ex">You think your partner is gorgeous. Strangers rate their photo as "average."</p>
+        <p class="point">A study of 70 couples found that everyone rated their <b>own partner as more attractive</b> than the public did — love really does change what we see.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">14</div>
+      <div>
+        <p class="ex">Someone with an "ordinary" face becomes the most magnetic person at the party once they start talking.</p>
+        <p class="point">Confidence, warmth, and body language — <b>"dynamic attractiveness"</b> — can outshine a plain face completely.</p>
+      </div>
+    </div>
+
+    <div class="quote">
+      "Beauty is no quality in things themselves: it exists merely in the mind which contemplates them."
+      <cite>David Hume, philosopher, 1757</cite>
+    </div>
+
+    <div class="quote">
+      "If my eyes should ever turn brown, my career is shot to hell."
+      <cite>Paul Newman, blue-eyed actor</cite>
+    </div>
+  </section>
+
+  <section class="lesson">
+    <div class="eyebrow">main lesson</div>
+    <h2>Faces speak <em>fast</em> — but they don't tell the whole truth.</h2>
+    <p>Your brain reads a stranger's face in less time than a blink, and that snap judgment shapes how you treat them. Know your own patterns — then judge people slower, by what they actually do.</p>
+  </section>
+
+</div>
+
+<footer>made with plain words · scroll gently</footer>
+
+<script>
+// ---------- falling hearts background ----------
+(function(){
+  const container = document.getElementById('hearts');
+  const colors = ['#ff5c8a', '#c8386a', '#e8a3b8', '#b79ee0'];
+  const HEART_SVG = (color) => `<svg width="20" height="20" viewBox="0 0 32 29"><path fill="${color}" d="M23.6 0c-3.4 0-6.3 2-7.6 5C14.7 2 11.8 0 8.4 0 3.8 0 0 3.7 0 8.3c0 8 9.5 13.9 16 20.7 6.5-6.8 16-12.6 16-20.7C32 3.7 28.2 0 23.6 0z"/></svg>`;
+
+  const count = window.innerWidth < 600 ? 16 : 28;
+  for(let i=0;i<count;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    const size = 10 + Math.random()*18;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.width = size+'px';
+    h.style.opacity = (0.25 + Math.random()*0.4).toFixed(2);
+    const fallDur = 10 + Math.random()*14;
+    const swayDur = 3 + Math.random()*3;
+    const delay = -Math.random()*fallDur;
+    h.style.animationDuration = fallDur+'s, '+swayDur+'s';
+    h.style.animationDelay = delay+'s, '+(Math.random()*2)+'s';
+    h.innerHTML = HEART_SVG(color);
+    container.appendChild(h);
+  }
+})();
+
+// ---------- hero eye: hover / touch to dilate pupil ----------
+(function(){
+  const rig = document.getElementById('heroEye');
+  const pupil = document.getElementById('pupil');
+  let dilated = false;
+  function dilate(on){
+    pupil.style.width = on ? '58%' : '42%';
+    pupil.style.height = on ? '58%' : '42%';
+  }
+  rig.addEventListener('mouseenter', ()=>dilate(true));
+  rig.addEventListener('mouseleave', ()=>dilate(false));
+  rig.addEventListener('touchstart', (e)=>{ e.preventDefault(); dilated=!dilated; dilate(dilated); }, {passive:false});
+
+  // ambient subtle pulse so it feels alive even without interaction
+  let t=0;
+  setInterval(()=>{
+    if(document.activeElement===rig) return;
+    t++;
+  }, 4000);
+})();
+
+// ---------- pupil-o-meter slider ----------
+(function(){
+  const slider = document.getElementById('interestSlider');
+  const pupil = document.getElementById('miniPupil');
+  const text = document.getElementById('interestText');
+  const msgs = [
+    "Barely interested — pupil stays small.",
+    "Some curiosity building...",
+    "Getting interested — pupil widening.",
+    "Strong attraction — pupils grow noticeably.",
+    "Full attention — this is the 'window of desire.'"
+  ];
+  slider.addEventListener('input', ()=>{
+    const v = +slider.value;
+    const scale = 30 + (v/100)*35; // 30% to 65%
+    pupil.style.width = scale+'%';
+    pupil.style.height = scale+'%';
+    const idx = Math.min(4, Math.floor(v/21));
+    text.textContent = msgs[idx];
+  });
+})();
+
+// ---------- flip cards ----------
+document.querySelectorAll('.flip-card').forEach(card=>{
+  card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+});
+
+// ---------- 0.03s flash test ----------
+(function(){
+  const btn = document.getElementById('flashBtn');
+  const face = document.getElementById('flashFace');
+  const stageText = document.getElementById('stageText');
+  const choices = document.getElementById('flashChoices');
+  const result = document.getElementById('flashResult');
+  const mouth = document.getElementById('mouthPath');
+  const mouths = [
+    "M30 60 Q45 70 60 60",   // smile
+    "M30 64 Q45 54 60 64",   // frown
+    "M30 62 Q45 62 60 62"    // neutral
+  ];
+
+  btn.addEventListener('click', ()=>{
+    btn.disabled = true;
+    choices.style.display = 'none';
+    result.textContent = '';
+    stageText.style.opacity = 0;
+    mouth.setAttribute('d', mouths[Math.floor(Math.random()*mouths.length)]);
+
+    const startTime = performance.now();
+    setTimeout(()=>{
+      face.classList.add('show');
+      setTimeout(()=>{
+        face.classList.remove('show');
+        const elapsed = (performance.now()-startTime).toFixed(0);
+        stageText.style.opacity = 1;
+        stageText.textContent = 'gone.';
+        choices.style.display = 'flex';
+        btn.disabled = false;
+        choices.dataset.elapsed = elapsed;
+      }, 90); // face visible for ~90ms, close to the "eyeblink" reference
+    }, 250);
+  });
+
+  choices.addEventListener('click', (e)=>{
+    if(!e.target.classList.contains('choice-btn')) return;
+    const val = e.target.dataset.v;
+    result.innerHTML = `You picked <b>"${val}"</b> from a face you saw for less than <b>a tenth of a second</b>. That's basically how fast real first impressions happen — about 0.03s for the brain to start deciding.`;
+  });
+})();
+
+// ---------- scroll reveal for ideas ----------
+(function(){
+  const items = document.querySelectorAll('.idea');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(i=>io.observe(i));
+})();
+</script>
+</body>
+</html>

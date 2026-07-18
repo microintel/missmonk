@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Deserve The Best — a small guide to feeling good</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0d1220;
+    --bg-card: #151b2c;
+    --gold: #f2b134;
+    --gold-dim: #f2b13455;
+    --rose: #e8767a;
+    --text: #e9e6df;
+    --muted: #8b93a7;
+    --line: #262d42;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% -10%, #1a2138 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 10%, #1e1830 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Karla', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Jar of light (signature element) ---------- */
+  #jar-wrap{
+    position:fixed;
+    top:18px;
+    right:18px;
+    width:64px;
+    height:84px;
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+  }
+
+  #jar-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.05em;
+  }
+
+  .jar-svg{ width:52px; height:64px; overflow:visible; }
+
+  .jar-body{
+    fill:rgba(255,255,255,0.03);
+    stroke:var(--line);
+    stroke-width:1.5;
+  }
+
+  .jar-light{
+    opacity:0;
+    transform-origin:center;
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    filter: drop-shadow(0 0 4px var(--gold));
+  }
+  .jar-light.lit{
+    opacity:1;
+    animation: flicker 3.2s ease-in-out infinite;
+  }
+
+  @keyframes flicker{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.75; transform:scale(0.92); }
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #hearts-bg{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0;
+    will-change: transform, opacity;
+    animation-name: heart-fall, heart-sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+  }
+
+  .heart svg{
+    width:100%;
+    height:100%;
+    display:block;
+    filter: drop-shadow(0 0 5px var(--glow-shadow, rgba(242,177,52,0.3)));
+  }
+
+  @keyframes heart-fall{
+    0%{ transform: translateY(-10vh); opacity:0; }
+    6%{ opacity: var(--max-opacity, 0.5); }
+    88%{ opacity: var(--max-opacity, 0.5); }
+    100%{ transform: translateY(110vh); opacity:0; }
+  }
+
+  @keyframes heart-sway{
+    0%, 100%{ margin-left: 0px; }
+    50%{ margin-left: var(--sway, 24px); }
+  }
+
+  /* ---------- Reading progress bar ---------- */
+  #progress-bar{
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    width:0%;
+    background:linear-gradient(90deg, var(--rose), var(--gold));
+    z-index:60;
+    box-shadow: 0 0 8px var(--gold);
+    transition: width 0.1s linear;
+  }
+
+  /* ---------- Hero entrance ---------- */
+  h1 .word{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(0.5em);
+    filter: blur(4px);
+    animation: word-in 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+
+  @keyframes word-in{
+    to{ opacity:1; transform:translateY(0); filter:blur(0); }
+  }
+
+  .lede{
+    opacity:0;
+    animation: fade-up 0.8s ease forwards;
+    animation-delay: 1.1s;
+  }
+
+  @keyframes fade-up{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .scroll-cue{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:26px;
+    color:var(--gold);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    opacity:0;
+    animation: fade-up 0.8s ease forwards;
+    animation-delay: 1.6s;
+  }
+
+  .scroll-cue svg{
+    width:14px; height:14px;
+    animation: bob 1.6s ease-in-out infinite;
+  }
+
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(5px); }
+  }
+
+  .scroll-cue.hide{
+    animation: fade-out-cue 0.5s ease forwards;
+  }
+  @keyframes fade-out-cue{
+    to{ opacity:0; transform:translateY(-6px); }
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:640px;
+    margin:0 auto;
+    padding:64px 24px 120px;
+  }
+
+  header.hero{
+    padding-bottom:56px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:56px;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(2.1rem, 6vw, 3.2rem);
+    line-height:1.08;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+
+  h1 em{
+    font-style:italic;
+    font-weight:300;
+    color:var(--gold);
+  }
+
+  .lede{
+    color:var(--muted);
+    font-size:1.05rem;
+    line-height:1.6;
+    max-width:46ch;
+  }
+
+  /* ---------- Idea cards ---------- */
+  .idea{
+    padding:36px 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    transform:translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .idea-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--rose);
+    letter-spacing:0.08em;
+    margin-bottom:14px;
+    display:inline-block;
+  }
+
+  .idea.show .idea-num{
+    animation: num-pulse 0.6s ease;
+  }
+
+  @keyframes num-pulse{
+    0%{ transform:scale(1); }
+    35%{ transform:scale(1.18); color:var(--gold); }
+    100%{ transform:scale(1); color:var(--rose); }
+  }
+
+  .example{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold-dim);
+    border-radius:6px;
+    padding:16px 18px;
+    font-size:0.97rem;
+    line-height:1.55;
+    color:var(--text);
+    margin-bottom:16px;
+  }
+
+  .example b{ color:var(--gold); font-weight:500; }
+
+  .point{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:1.28rem;
+    line-height:1.4;
+    margin:0;
+    display:inline;
+    background-image: linear-gradient(var(--gold-dim), var(--gold-dim));
+    background-repeat:no-repeat;
+    background-position:left bottom;
+    background-size: 0% 0.55em;
+    transition: background-size 1.1s ease 0.15s;
+  }
+
+  .idea.show .point{
+    background-size: 100% 0.55em;
+  }
+
+  .point-sub{
+    color:var(--muted);
+    font-size:0.95rem;
+    margin-top:8px;
+    line-height:1.5;
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    margin-top:20px;
+    padding:44px 28px;
+    background:linear-gradient(160deg, #1a2033 0%, #12172a 100%);
+    border:1px solid var(--line);
+    border-radius:14px;
+    text-align:center;
+    position:relative;
+  }
+
+  .lesson-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:16px;
+  }
+
+  .lesson h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:1.5rem;
+    line-height:1.4;
+    margin:0 0 18px;
+  }
+
+  .metaphor{
+    font-style:italic;
+    color:var(--muted);
+    font-size:1.02rem;
+    line-height:1.6;
+    max-width:42ch;
+    margin:0 auto;
+  }
+
+  .metaphor b{ color:var(--rose); font-style:normal; font-weight:700; }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.8rem;
+    margin-top:48px;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.05em;
+  }
+
+  @media (max-width:480px){
+    .wrap{ padding:48px 18px 100px; }
+    #jar-wrap{ top:12px; right:12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+<!-- jar-wrap already has z-index:50, above hearts-bg (z-index:0) -->
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="hearts-bg"></div>
+
+<div id="jar-wrap">
+  <svg class="jar-svg" viewBox="0 0 52 64">
+    <path class="jar-body" d="M18 4 H34 V12 C34 12 42 16 42 28 V56 C42 60 38 62 34 62 H18 C14 62 10 60 10 56 V28 C10 16 18 12 18 12 Z"/>
+    <circle class="jar-light" data-idx="1" cx="20" cy="36" r="3.2" fill="#f2b134"/>
+    <circle class="jar-light" data-idx="2" cx="30" cy="34" r="3" fill="#f2b134"/>
+    <circle class="jar-light" data-idx="3" cx="25" cy="44" r="3.4" fill="#f2b134"/>
+    <circle class="jar-light" data-idx="4" cx="18" cy="50" r="2.8" fill="#f2b134"/>
+    <circle class="jar-light" data-idx="5" cx="33" cy="48" r="3" fill="#f2b134"/>
+    <circle class="jar-light" data-idx="6" cx="26" cy="54" r="3.2" fill="#f2b134"/>
+  </svg>
+  <div id="jar-count">0/6</div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Positive Psychology · Simple Guide</div>
+    <h1><span class="word">You</span> <span class="word">deserve</span> <em><span class="word">the</span> <span class="word">best</span></em>.<br><span class="word">Here's</span> <span class="word">how</span> <span class="word">to</span> <span class="word">feel</span> <span class="word">it.</span></h1>
+    <p class="lede">Six small, real ideas about noticing good things, being kind to yourself, and caring for others — each with a quick example first, then the point. Scroll down and watch the jar fill up.</p>
+    <div class="scroll-cue" id="scroll-cue">
+      <span>Keep reading</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+    </div>
+  </header>
+
+  <div class="ideas">
+
+    <div class="idea" data-idx="1">
+      <span class="idea-num">01 · Before you sleep</span>
+      <div class="example">Every night, <b>Vignesh</b> thinks of three good things from his day — even something small like "I had a nice lunch." Then he writes them down.</div>
+      <p class="point">Find three good things every day, and write them down.</p>
+      <p class="point-sub">They don't need to be big. Small good moments count too.</p>
+    </div>
+
+    <div class="idea" data-idx="2">
+      <span class="idea-num">02 · Ask "why"</span>
+      <div class="example"><b>Pranav</b> got a compliment at work. Instead of just moving on, he asks himself: "Why did that happen?" He realises he planned his week smartly.</div>
+      <p class="point">Ask yourself why the good thing happened.</p>
+      <p class="point-sub">This trains your brain to notice good cause and effect — not just good luck.</p>
+    </div>
+
+    <div class="idea" data-idx="3">
+      <span class="idea-num">03 · Karaoke night</span>
+      <div class="example"><b>Riya</b> sings badly at karaoke and feels embarrassed. Instead of only thinking about that, she reminds herself: "I can't sing, but I'm a great cook and a good friend."</div>
+      <p class="point">Remind yourself of your real good qualities, not just your flaws.</p>
+      <p class="point-sub">This is called self-affirmation — and it only works if the good thing is actually true.</p>
+    </div>
+
+    <div class="idea" data-idx="4">
+      <span class="idea-num">04 · A hard test</span>
+      <div class="example"><b>Pranav</b> does badly on a math test and feels discouraged. Before the next test, he spends a moment thinking about something he truly values — and does much better this time.</div>
+      <p class="point">Thinking about what you value helps you bounce back from failure.</p>
+      <p class="point-sub">A 2009 study found this simple habit made people perform better after a setback.</p>
+    </div>
+
+    <div class="idea" data-idx="5">
+      <span class="idea-num">05 · Helping a friend</span>
+      <div class="example"><b>Riya</b> spends her Saturday helping a friend move house instead of shopping for herself. She ends the day feeling happier than any purchase could make her feel.</div>
+      <p class="point">Being kind to others makes you happier than money does.</p>
+      <p class="point-sub">Gratitude, optimism, and kindness are three of the biggest predictors of happiness.</p>
+    </div>
+
+    <div class="idea" data-idx="6">
+      <span class="idea-num">06 · A bad moment</span>
+      <div class="example"><b>Vignesh</b> misses his bus and thinks, "I'm so stupid." Then he pauses, remembers a value he's proud of, sits with that thought for a moment — and feels calmer, even though the bus is still gone.</div>
+      <p class="point">When an upsetting thought hits, pause and recall something good about yourself.</p>
+      <p class="point-sub">The upset doesn't disappear — but it stops running the whole show.</p>
+    </div>
+
+  </div>
+
+  <div class="lesson" id="lesson">
+    <div class="lesson-label">Main Lesson</div>
+    <h2>Fixing what's wrong is not enough — you also need to notice what's good, and share it.</h2>
+    <p class="metaphor">A garden that only gets weeded, never gets sunlight, still won't grow. <b>Your mind is the same</b> — pulling out problems isn't enough. It also needs light: good things noticed, kindness given, and good qualities remembered.</p>
+  </div>
+
+  <footer>SIX GOOD THINGS · ONE JAR OF LIGHT</footer>
+
+</div>
+
+<script>
+  // Cascading word entrance for the headline
+  document.querySelectorAll('h1 .word').forEach((w, i)=>{
+    w.style.animationDelay = (0.15 + i * 0.07) + 's';
+  });
+
+  // Reading progress bar
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  // Hide "keep reading" cue once the user starts scrolling
+  const scrollCue = document.getElementById('scroll-cue');
+  let cueHidden = false;
+  window.addEventListener('scroll', ()=>{
+    if(!cueHidden && window.scrollY > 60){
+      scrollCue.classList.add('hide');
+      cueHidden = true;
+    }
+  }, { passive:true });
+</script>
+
+<script>
+  // Falling hearts background — colors matched to the page's gold / rose palette
+  (function(){
+    const container = document.getElementById('hearts-bg');
+    const colors = ['#f2b134', '#e8767a', '#f4c98a', '#d9646c', '#f7d38f'];
+    const HEART_COUNT = 28;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+
+    function makeHeart(){
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+
+      const size = 8 + Math.random() * 18;
+      const left = Math.random() * 100;
+      const duration = 10 + Math.random() * 12;
+      const swayDuration = 3 + Math.random() * 3;
+      const delay = Math.random() * 16;
+      const swayAmount = 12 + Math.random() * 28;
+      const maxOpacity = 0.25 + Math.random() * 0.3;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      heart.style.left = left + 'vw';
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+      heart.style.setProperty('--sway', swayAmount + 'px');
+      heart.style.setProperty('--max-opacity', maxOpacity);
+      heart.style.setProperty('--glow-shadow', color + '66');
+      heart.style.animationDuration = duration + 's, ' + swayDuration + 's';
+      heart.style.animationDelay = '-' + delay + 's, -' + (Math.random()*swayDuration) + 's';
+
+      heart.innerHTML = `
+        <svg viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg">
+          <path fill="${color}" d="M16 29 C16 29 0 18.5 0 8.8 C0 3.9 3.9 0 8.7 0 C11.9 0 14.6 1.8 16 4.4 C17.4 1.8 20.1 0 23.3 0 C28.1 0 32 3.9 32 8.8 C32 18.5 16 29 16 29 Z"/>
+        </svg>
+      `;
+      container.appendChild(heart);
+    }
+
+    for(let i=0; i<HEART_COUNT; i++){ makeHeart(); }
+  })();
+</script>
+
+<script>
+  const ideas = document.querySelectorAll('.idea');
+  const lights = document.querySelectorAll('.jar-light');
+  const counter = document.getElementById('jar-count');
+  const lesson = document.getElementById('lesson');
+  let litCount = 0;
+
+  function updateCounter(){
+    counter.textContent = litCount + '/6';
+  }
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      const idx = entry.target.dataset.idx;
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        const light = document.querySelector(`.jar-light[data-idx="${idx}"]`);
+        if(light && !light.classList.contains('lit')){
+          light.classList.add('lit');
+          litCount++;
+          updateCounter();
+        }
+      }
+    });
+  }, { threshold: 0.4 });
+
+  ideas.forEach(idea=> io.observe(idea));
+
+  const lessonIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        lesson.style.boxShadow = '0 0 40px 0 rgba(242,177,52,0.15)';
+      }
+    });
+  }, { threshold: 0.3 });
+  lessonIO.observe(lesson);
+
+  updateCounter();
+</script>
+
+</body>
+</html>

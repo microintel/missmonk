@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Do You Get Your Energy?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#120a22;
+    --bg-2:#1c1034;
+    --ink:#f3edfb;
+    --ink-dim:#b9aed1;
+    --rose:#ff7a95;
+    --gold:#f6c667;
+    --lav:#a98cf0;
+    --card:#1a1030cc;
+    --line:#3a2a5c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse at 20% -10%, #2a1a4d 0%, var(--bg-1) 45%, #0c0716 100%);
+    color:var(--ink);
+    font-family:'Karla', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #hearts{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10vh;
+    opacity:0.85;
+    will-change:transform;
+    filter:drop-shadow(0 0 6px rgba(255,122,149,0.35));
+  }
+  .heart svg{display:block;}
+
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) translateX(0) rotate(0deg); }
+    100%{ transform: translateY(115vh) translateX(var(--drift)) rotate(var(--spin)); }
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:760px;
+    margin:0 auto;
+    padding:0 22px 120px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:40px;
+  }
+  .eyebrow{
+    font-family:'Karla',sans-serif;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+    margin-bottom:18px;
+    opacity:0.9;
+  }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.1rem, 8vw, 3.6rem);
+    line-height:1.08;
+    margin:0 0 20px;
+    background:linear-gradient(100deg, var(--ink) 20%, var(--rose) 55%, var(--gold) 80%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.sub{
+    color:var(--ink-dim);
+    font-size:1.05rem;
+    max-width:480px;
+    line-height:1.6;
+    margin:0 auto 46px;
+  }
+
+  /* ---------- Signature animation: two energy orbs ---------- */
+  .orb-stage{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:70px;
+    margin-bottom:8px;
+  }
+  .orb-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+  .orb{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    position:relative;
+  }
+  .orb.intro{
+    background:radial-gradient(circle at 50% 40%, #d9c6ff 0%, var(--lav) 45%, #4b2e8c 100%);
+    animation: breathe 3.6s ease-in-out infinite;
+    box-shadow:0 0 30px 6px rgba(169,140,240,0.35);
+  }
+  .orb.extro{
+    background:radial-gradient(circle at 50% 40%, #ffe3b0 0%, var(--gold) 40%, var(--rose) 100%);
+    box-shadow:0 0 14px 3px rgba(246,198,103,0.25);
+  }
+  .orb.extro.pulse{
+    animation: burst 0.9s ease-out;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:scale(1); box-shadow:0 0 22px 4px rgba(169,140,240,0.3); }
+    50%{ transform:scale(1.16); box-shadow:0 0 42px 12px rgba(169,140,240,0.55); }
+  }
+  @keyframes burst{
+    0%{ transform:scale(1); box-shadow:0 0 14px 3px rgba(246,198,103,0.25); }
+    40%{ transform:scale(1.35); box-shadow:0 0 55px 18px rgba(246,198,103,0.8); }
+    100%{ transform:scale(1); box-shadow:0 0 14px 3px rgba(246,198,103,0.25); }
+  }
+  .orb-label{
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .orb-note{
+    font-size:12.5px;
+    color:var(--ink-dim);
+    opacity:0.75;
+    margin-top:2px;
+    max-width:150px;
+    text-align:center;
+    line-height:1.4;
+  }
+  .scroll-hint{
+    margin-top:52px;
+    font-size:12px;
+    color:var(--ink-dim);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    opacity:0.7;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(6px); }
+  }
+
+  /* ---------- Idea cards ---------- */
+  .idea{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px 24px 24px;
+    margin:0 0 22px;
+    backdrop-filter:blur(6px);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .idea .num{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:14px;
+    color:var(--gold);
+    letter-spacing:0.05em;
+    margin-bottom:10px;
+    display:block;
+  }
+  .idea .example{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink);
+    margin:0 0 12px;
+    padding:12px 14px;
+    background:#0f0a1e88;
+    border-left:3px solid var(--rose);
+    border-radius:8px;
+  }
+  .idea .example b{ color:var(--gold); font-weight:700; }
+  .idea .point{
+    font-size:15.5px;
+    line-height:1.6;
+    color:var(--ink-dim);
+    margin:0;
+  }
+  .idea .point strong{ color:var(--ink); }
+
+  section.chapter-title{
+    text-align:center;
+    margin:70px 0 30px;
+  }
+  section.chapter-title h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:1.5rem;
+    color:var(--ink);
+    margin:0;
+  }
+  section.chapter-title .rule{
+    width:60px;
+    height:2px;
+    background:linear-gradient(90deg, var(--rose), var(--gold));
+    margin:14px auto 0;
+    border-radius:2px;
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    margin-top:60px;
+    text-align:center;
+    padding:38px 26px;
+    border-radius:20px;
+    background:linear-gradient(160deg, #2a1a4d, #180d2c);
+    border:1px solid var(--line);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .lesson.show{ opacity:1; transform:translateY(0); }
+  .lesson .tag{
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--rose);
+    margin-bottom:14px;
+  }
+  .lesson h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.5rem;
+    line-height:1.4;
+    margin:0 0 18px;
+    color:var(--ink);
+  }
+  .lesson p{
+    font-size:15.5px;
+    line-height:1.7;
+    color:var(--ink-dim);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .lesson .metaphor{
+    margin-top:22px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--gold);
+  }
+
+  .battery-row{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin:26px 0 6px;
+  }
+  .battery{
+    width:34px;
+    height:60px;
+    border:2px solid var(--ink-dim);
+    border-radius:6px;
+    position:relative;
+    overflow:hidden;
+  }
+  .battery::before{
+    content:'';
+    position:absolute;
+    top:-6px; left:50%;
+    transform:translateX(-50%);
+    width:14px; height:6px;
+    background:var(--ink-dim);
+    border-radius:2px 2px 0 0;
+  }
+  .battery-fill{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    background:linear-gradient(180deg, var(--lav), #7d5cd6);
+  }
+  .battery.extro .battery-fill{ background:linear-gradient(180deg, var(--gold), var(--rose)); }
+  .battery.intro .battery-fill{ animation: fillslow 4s ease-in-out infinite alternate; }
+  .battery.extro .battery-fill{ animation: fillfast 1.4s ease-in-out infinite alternate; }
+  @keyframes fillslow{ 0%{height:30%;} 100%{height:95%;} }
+  @keyframes fillfast{ 0%{height:15%;} 100%{height:100%;} }
+
+  footer{
+    text-align:center;
+    color:var(--ink-dim);
+    font-size:12px;
+    opacity:0.5;
+    margin-top:60px;
+  }
+
+  @media (max-width:480px){
+    .orb-stage{ gap:40px; }
+    .idea{ padding:20px 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .heart, .orb.intro, .orb.extro, .battery-fill, .scroll-hint{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Introvert · Extrovert · Ambivert</div>
+    <h1>Where Do You Get Your Energy From?</h1>
+    <p class="sub">Some people charge up alone. Some people charge up with a crowd. Knowing which one you are — and which one your partner is — changes everything about love.</p>
+
+    <div class="orb-stage">
+      <div class="orb-unit">
+        <div class="orb intro" id="introOrb"></div>
+        <div class="orb-label">Introvert</div>
+        <div class="orb-note">Glows steady, on its own</div>
+      </div>
+      <div class="orb-unit">
+        <div class="orb extro" id="extroOrb"></div>
+        <div class="orb-label">Extrovert</div>
+        <div class="orb-note">Lights up when hearts pass near</div>
+      </div>
+    </div>
+    <div class="scroll-hint">scroll to read ↓</div>
+  </section>
+
+  <section class="chapter-title">
+    <h2>9 simple ideas</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="idea">
+    <span class="num">01</span>
+    <p class="example"><b>Vignesh</b> comes home from a party and just wants silence. <b>Pranav</b> comes home from a quiet day and calls three friends to go out.</p>
+    <p class="point"><strong>The point:</strong> Introverts get their energy from being alone. Extroverts get their energy from being with people.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">02</span>
+    <p class="example"><b>Riya</b> is quiet at parties, but she isn't sad — she's just thinking. <b>Pranav</b> talks a lot, but he isn't shallow — he's just friendly.</p>
+    <p class="point"><strong>The point:</strong> "Quiet" doesn't mean unhappy, and "loud" doesn't mean fake. These are old stereotypes, not the real meaning.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">03</span>
+    <p class="example"><b>Vignesh</b> is chatty and relaxed with his three close friends, but goes silent in a room full of strangers.</p>
+    <p class="point"><strong>The point:</strong> It's not always one or the other. Many people are a mix — called an <strong>ambivert</strong> — and it depends on who is around them.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">04</span>
+    <p class="example"><b>Riya</b> (introvert) and <b>Pranav</b> (extrovert) date each other. Pranav pulls Riya out of her shell. Riya helps Pranav slow down and think before he acts.</p>
+    <p class="point"><strong>The point:</strong> Opposite types can balance each other well — but two of the same type can also do great, since they simply enjoy the same things.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">05</span>
+    <p class="example"><b>Riya</b> won't fall in love in a loud, packed club. <b>Pranav</b> won't feel like himself on a silent, no-talking date.</p>
+    <p class="point"><strong>The point:</strong> Look for people — and places — that match your natural energy style. You show your best self there.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">06</span>
+    <p class="example"><b>Vignesh</b> feels ignored when <b>Riya</b> wants a quiet night alone. But Riya isn't pulling away — she just needs to recharge.</p>
+    <p class="point"><strong>The point:</strong> What looks like rejection is often just a need for rest. Understanding this stops a lot of unnecessary fights.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">07</span>
+    <p class="example"><b>Pranav</b> and <b>Riya</b> agree: Friday is a cosy night in, Saturday is a night out with friends.</p>
+    <p class="point"><strong>The point:</strong> Couples who talk openly and plan around both needs feel far less frustration — and far more satisfaction.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">08</span>
+    <p class="example"><b>Vignesh</b> likes clear logic and a planned schedule. <b>Riya</b> goes with her feelings and likes to stay flexible.</p>
+    <p class="point"><strong>The point:</strong> Myers-Briggs looks at more than just Introvert/Extrovert — it also checks how you take in information, decide things, and manage your life.</p>
+  </div>
+
+  <div class="idea">
+    <span class="num">09</span>
+    <p class="example">In a 1998 study, slightly more women leaned extroverted (52.5%), while slightly more men leaned introverted (54.1%).</p>
+    <p class="point"><strong>The point:</strong> There's a small gender pattern — but it's close to 50/50. No group is "naturally" one type.</p>
+  </div>
+
+  <div class="lesson" id="lessonBox">
+    <div class="tag">Main Lesson</div>
+    <h3>Loving someone well starts with understanding how they charge their energy.</h3>
+    <p>Don't force a person to charge the way you do. Give them their kind of plug, and watch them shine.</p>
+
+    <div class="battery-row">
+      <div class="battery intro"><div class="battery-fill"></div></div>
+      <div class="battery extro"><div class="battery-fill"></div></div>
+    </div>
+
+    <p class="metaphor">"People are like batteries — some charge best alone in a quiet corner, some charge best in the light of others. Neither charger is wrong. Just plug in the right way."</p>
+  </div>
+
+  <footer>made with quiet care · scroll back up to feel it again</footer>
+
+</div>
+
+<script>
+// ---------- Falling hearts ----------
+const heartsContainer = document.getElementById('hearts');
+const HEART_COUNT = 22;
+
+function makeHeart(){
+  const el = document.createElement('div');
+  el.className = 'heart';
+  const size = 10 + Math.random()*18;
+  const left = Math.random()*100;
+  const duration = 9 + Math.random()*10;
+  const delay = Math.random()*-20;
+  const drift = (Math.random()*140 - 70) + 'px';
+  const spin = (Math.random()*60 - 30) + 'deg';
+  const hue = Math.random() > 0.5 ? '#ff7a95' : '#f6c667';
+  const opacity = 0.35 + Math.random()*0.5;
+
+  el.style.left = left + 'vw';
+  el.style.setProperty('--drift', drift);
+  el.style.setProperty('--spin', spin);
+  el.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+  el.style.opacity = opacity;
+
+  el.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 32 29" fill="${hue}">
+    <path d="M23.6 0c-3 0-5.7 1.6-7.6 4.2C14.1 1.6 11.4 0 8.4 0 3.8 0 0 3.8 0 8.6 0 16 8.5 21.8 16 28c7.5-6.2 16-12 16-19.4C32 3.8 28.2 0 23.6 0z"/>
+  </svg>`;
+  return el;
+}
+
+for(let i=0;i<HEART_COUNT;i++){
+  heartsContainer.appendChild(makeHeart());
+}
+
+// ---------- Extrovert orb pulses when a heart passes near it ----------
+const extroOrb = document.getElementById('extroOrb');
+function checkHeartsNearOrb(){
+  const orbRect = extroOrb.getBoundingClientRect();
+  const orbCenterX = orbRect.left + orbRect.width/2;
+  const orbCenterY = orbRect.top + orbRect.height/2;
+  const heartEls = heartsContainer.querySelectorAll('.heart');
+  let near = false;
+  heartEls.forEach(h=>{
+    const r = h.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dist = Math.hypot(cx-orbCenterX, cy-orbCenterY);
+    if(dist < 90) near = true;
+  });
+  if(near){
+    extroOrb.classList.add('pulse');
+    setTimeout(()=>extroOrb.classList.remove('pulse'), 900);
+  }
+}
+setInterval(checkHeartsNearOrb, 700);
+
+// ---------- Scroll reveal for idea cards ----------
+const revealEls = document.querySelectorAll('.idea, .lesson');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

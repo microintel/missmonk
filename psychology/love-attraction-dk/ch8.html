@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giving Up Your Independence? — Not Quite.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0f1229;
+    --bg-panel: #161a3d;
+    --bg-panel-2: #1d224d;
+    --coral: #ff6f61;
+    --gold: #f4b740;
+    --thread: #8fd7c9;
+    --text: #f4f1e9;
+    --muted: #a7abcf;
+    --line: rgba(244,241,233,0.12);
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Karla', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .heart{
+    position: absolute;
+    top: -10%;
+    opacity: 0.55;
+    will-change: transform;
+    filter: drop-shadow(0 0 6px rgba(255,111,97,0.25));
+  }
+  @keyframes fall{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); }
+    50%  { transform: translateY(55vh) translateX(20px) rotate(15deg); }
+    100% { transform: translateY(115vh) translateX(-15px) rotate(-10deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .heart{ animation: none !important; opacity: 0.15; }
+    *{ scroll-behavior: auto !important; }
+  }
+
+  /* ---------- Layout shell ---------- */
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section{ padding: 88px 0; }
+
+  .eyebrow{
+    font-family: 'Karla', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    position: relative;
+  }
+
+  .bond-stage{
+    width: 260px;
+    height: 140px;
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .bond-heart{
+    position: absolute;
+    top: 50%;
+    width: 46px;
+    height: 46px;
+    transform: translateY(-50%);
+  }
+  .bond-heart svg{ width:100%; height:100%; }
+  .bond-heart.you{ left: 6%; animation: driftYou 4.5s ease-in-out infinite; }
+  .bond-heart.them{ right: 6%; animation: driftThem 4.5s ease-in-out infinite; }
+
+  @keyframes driftYou{
+    0%,100%{ transform: translateY(-50%) translateX(0); }
+    50%{ transform: translateY(-50%) translateX(-14px); }
+  }
+  @keyframes driftThem{
+    0%,100%{ transform: translateY(-50%) translateX(0); }
+    50%{ transform: translateY(-50%) translateX(14px); }
+  }
+
+  .bond-thread{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+    height: 100%;
+  }
+
+  h1.display{
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    line-height: 1.12;
+    font-style: italic;
+    max-width: 14ch;
+    margin-bottom: 20px;
+  }
+  h1.display em{
+    font-style: normal;
+    color: var(--coral);
+  }
+
+  .hero p.sub{
+    color: var(--muted);
+    font-size: 1.08rem;
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+
+  .scroll-cue{
+    margin-top: 48px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .scroll-cue span{
+    width: 1px; height: 26px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: pulseLine 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseLine{
+    0%,100%{ opacity: 0.3; }
+    50%{ opacity: 1; }
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- Copy blocks ---------- */
+  .lede{
+    font-size: 1.3rem;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--text);
+    max-width: 34ch;
+    margin-bottom: 8px;
+  }
+
+  p{ color: var(--muted); font-size: 1.02rem; margin-bottom: 16px; max-width: 62ch; }
+  p strong{ color: var(--text); font-weight: 600; }
+  p em.name{ color: var(--thread); font-style: normal; font-weight: 700; }
+
+  h2{ font-size: clamp(1.5rem, 4vw, 2rem); margin-bottom: 18px; }
+
+  /* ---------- Story card ---------- */
+  .story-card{
+    background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 26px;
+    margin: 26px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-card::before{
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(255,111,97,0.18), transparent 70%);
+  }
+  .story-card .tag{
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  /* ---------- Two-column attachment compare ---------- */
+  .compare{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 24px;
+  }
+  @media(min-width: 640px){
+    .compare{ grid-template-columns: 1fr 1fr; }
+  }
+  .compare-card{
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+    background: rgba(255,255,255,0.02);
+  }
+  .compare-card h3{
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0; }
+  .dot.anx{ background: var(--gold); }
+  .dot.avo{ background: var(--coral); }
+  .compare-card p{ font-size: 0.96rem; margin-bottom: 0; }
+
+  /* ---------- Highlight box (research) ---------- */
+  .research{
+    border-left: 3px solid var(--gold);
+    padding: 18px 22px;
+    background: rgba(244,183,64,0.06);
+    border-radius: 4px 14px 14px 4px;
+    margin: 26px 0;
+  }
+  .research .tag{ color: var(--gold); }
+  .research p{ font-size: 0.96rem; }
+
+  /* ---------- Text bubbles section ---------- */
+  .bubbles{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+    justify-content: center;
+  }
+  .bubble{
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: #14162e;
+    max-width: 210px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    transform: rotate(var(--r, 0deg));
+  }
+  .bubble:nth-child(1){ background:#ffcf7a; --r:-3deg; }
+  .bubble:nth-child(2){ background:#ff9d8f; --r:2deg; }
+  .bubble:nth-child(3){ background:#8fd7c9; --r:-1.5deg; }
+  .bubble:nth-child(4){ background:#c9b8ff; --r:3deg; }
+  .bubble:nth-child(5){ background:#ffe08a; --r:-2deg; }
+
+  /* ---------- Numbered step cards ---------- */
+  .step{
+    display: flex;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+  .step-num{
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,111,97,0.12);
+    border: 1px solid rgba(255,111,97,0.4);
+    color: var(--coral);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+  }
+  .step-body h3{
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .step-body .myth-real{
+    font-size: 0.94rem;
+    margin-bottom: 10px;
+  }
+  .step-body .myth-real .myth{ color: var(--coral); }
+  .step-body .myth-real .real{ color: var(--thread); }
+  .example-line{
+    font-size: 0.94rem;
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 0;
+  }
+  .example-line .tag-inline{
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Trees ---------- */
+  .trees{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px;
+    margin: 34px 0 10px;
+  }
+  .tree{ width: 90px; }
+  .tree svg{ width: 100%; height: auto; }
+
+  /* ---------- Checklist ---------- */
+  .checklist{
+    list-style: none;
+    margin-top: 20px;
+  }
+  .checklist li{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .checklist li::before{
+    content: "✓";
+    color: var(--thread);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Closing ---------- */
+  .closing{
+    text-align: center;
+    padding-bottom: 120px;
+  }
+  .closing .display{
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    font-style: italic;
+    max-width: 20ch;
+    margin: 0 auto 14px;
+  }
+  .closing p{ margin: 0 auto; }
+
+  footer{
+    text-align:center;
+    padding: 30px 0 50px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+
+  ::selection{ background: var(--coral); color: #14162e; }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="eyebrow">On love, freedom & everything between</span>
+    <div class="bond-stage">
+      <svg class="bond-thread" viewBox="0 0 260 140">
+        <path id="bondPath" d="M 40 70 Q 130 70 220 70" stroke="url(#bondGrad)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="4 6"/>
+        <defs>
+          <linearGradient id="bondGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ff6f61"/>
+            <stop offset="100%" stop-color="#8fd7c9"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="bond-heart you">
+        <svg viewBox="0 0 24 24" fill="#ff6f61"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.1 2.3 4.8 5.7 4.4c2-.2 3.6.8 4.9 2.7 1.3-1.9 2.9-2.9 4.9-2.7 3.4.4 5.3 3.7 3.7 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      </div>
+      <div class="bond-heart them">
+        <svg viewBox="0 0 24 24" fill="#8fd7c9"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.1 2.3 4.8 5.7 4.4c2-.2 3.6.8 4.9 2.7 1.3-1.9 2.9-2.9 4.9-2.7 3.4.4 5.3 3.7 3.7 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      </div>
+    </div>
+    <h1 class="display">Does love mean giving up your <em>independence?</em></h1>
+    <p class="sub">Most of us secretly fear that answer is yes. It isn't. Here's what really happens when two people stay close — without either one disappearing.</p>
+    <div class="scroll-cue"><span></span>keep going</div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="reveal">
+    <span class="eyebrow">The big idea</span>
+    <p class="lede">Real love is not about losing yourself. It's about feeling safe enough to be yourself.</p>
+    <p>Here are 7 simple ideas that explain this. Each one has an everyday example — read the example first, the idea will make sense right away.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Love does not mean losing your independence</h3>
+        <p class="myth-real"><span class="myth">Myth: "If I fall in love, I'll lose my freedom."</span><br><span class="real">Truth: Healthy love lets you keep your own life AND have a partner you can rely on.</span></p>
+        <p class="example-line"><span class="tag-inline">Example</span><em class="name">Riya</em> goes on a solo trip with her friends. Her partner doesn't stop her — he cheers her on. She has her own life. She's still close to him. Both, at once.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Safe haven</h3>
+        <p>A safe haven is the person you run to when life feels hard.</p>
+        <p class="example-line"><span class="tag-inline">Example</span>You fail an exam. You feel low. You call your best friend or your partner. Just talking to them makes you feel calmer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Secure base</h3>
+        <p>A secure base is someone whose support gives you the confidence to face challenges.</p>
+        <p class="example-line"><span class="tag-inline">Example</span>Before a job interview, <em class="name">Vignesh</em>'s partner tells him, "You've prepared well. You'll do great." He walks in feeling more confident — because someone believes in him.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Anxious attachment</h3>
+        <p>Some people often worry about being rejected or left behind.</p>
+        <p class="example-line"><span class="tag-inline">Example</span><em class="name">Pranav</em>'s partner doesn't reply for three hours. His mind jumps straight to, "Maybe he's angry with me."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>Avoidant attachment</h3>
+        <p>Some people find it hard to depend on others, even when they need help.</p>
+        <p class="example-line"><span class="tag-inline">Example</span><em class="name">Vignesh</em> is stressed all week. A friend asks, "Are you okay?" He says, "I'm fine" — even though he really isn't.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>Self-soothing</h3>
+        <p>It's healthy to calm yourself down, instead of needing someone else for every feeling.</p>
+        <p class="example-line"><span class="tag-inline">Example</span>Instead of sending ten worried texts, <em class="name">Riya</em> takes a walk, breathes slowly, and listens to music — then talks to her partner once she's calm.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 7 -->
+  <section class="reveal">
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h3>Small reassurance matters</h3>
+        <p>Sometimes one small message is enough to make someone feel safe again.</p>
+      </div>
+    </div>
+    <div class="bubbles">
+      <div class="bubble">Thinking of you.</div>
+      <div class="bubble">Hope your meeting goes well.</div>
+      <div class="bubble">I'll call you tonight.</div>
+      <div class="bubble">Miss you.</div>
+    </div>
+  </section>
+
+  <!-- MAIN LESSON -->
+  <section class="reveal">
+    <span class="eyebrow">The main lesson</span>
+    <h2>Healthy love is interdependence</h2>
+    <ul class="checklist">
+      <li>You support each other.</li>
+      <li>You trust each other.</li>
+      <li>You keep your own identity.</li>
+      <li>You can ask for help without becoming completely dependent.</li>
+    </ul>
+  </section>
+
+  <!-- TREES METAPHOR -->
+  <section class="reveal closing">
+    <div class="trees">
+      <div class="tree">
+        <svg viewBox="0 0 90 130">
+          <path d="M45 130 L45 70" stroke="#f4b740" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="45" cy="45" r="34" fill="#8fd7c9" opacity="0.85"/>
+        </svg>
+      </div>
+      <div class="tree">
+        <svg viewBox="0 0 90 130">
+          <path d="M45 130 L45 60" stroke="#f4b740" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="45" cy="38" r="40" fill="#ff9d8f" opacity="0.85"/>
+        </svg>
+      </div>
+    </div>
+    <h2 class="display">Two trees, growing side by side</h2>
+    <p>Their roots support each other underground. But each tree still stands on its own. That's what healthy love looks like.</p>
+  </section>
+
+</div>
+
+<footer>Interdependence, not dependence.</footer>
+
+<script>
+(function(){
+  // Respect reduced motion
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- Falling hearts background ----
+  var field = document.getElementById('heart-field');
+  var colors = ['#ff6f61', '#f4b740', '#8fd7c9', '#c9b8ff'];
+  var heartCount = window.innerWidth < 640 ? 12 : 22;
+
+  if(!reduceMotion){
+    for(var i = 0; i < heartCount; i++){
+      var h = document.createElement('div');
+      h.className = 'heart';
+      var size = 10 + Math.random() * 16;
+      var left = Math.random() * 100;
+      var duration = 9 + Math.random() * 10;
+      var delay = Math.random() * 14;
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      h.style.left = left + 'vw';
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      h.style.animation = 'fall ' + duration + 's linear ' + delay + 's infinite';
+      h.innerHTML = '<svg viewBox="0 0 24 24" fill="' + color + '"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.1 2.3 4.8 5.7 4.4c2-.2 3.6.8 4.9 2.7 1.3-1.9 2.9-2.9 4.9-2.7 3.4.4 5.3 3.7 3.7 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+      field.appendChild(h);
+    }
+  }
+
+  // ---- Scroll reveal ----
+  var reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // ---- Bond thread breathes with scroll (elastic tug) ----
+  var path = document.getElementById('bondPath');
+  if(path && !reduceMotion){
+    window.addEventListener('scroll', function(){
+      var t = Math.min(window.scrollY / 400, 1);
+      var sag = 70 - (t * 25);
+      path.setAttribute('d', 'M 40 70 Q 130 ' + sag + ' 220 70');
+    }, { passive: true });
+  }
+})();
+</script>
+
+</body>
+</html>

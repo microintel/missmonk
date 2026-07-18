@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Honest With Me</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap');
+
+  :root{
+    --bg-0:#150a17;
+    --bg-1:#1f0f24;
+    --rose:#ff7aa2;
+    --rose-dim:#c8577c;
+    --gold:#e3b873;
+    --cream:#f3e6de;
+    --cream-dim:#c9b8c2;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, var(--bg-1), var(--bg-0) 60%);
+    color:var(--cream);
+    font-family:'Outfit', sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  canvas#hearts{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:8vh 6vw 14vh;
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    text-align:center;
+    padding-bottom:6vh;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    margin-bottom:7vh;
+  }
+  .eyebrow{
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    font-size:.68rem;
+    color:var(--gold);
+    opacity:0;
+    animation:fadeUp .9s ease forwards .1s;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.4rem, 8vw, 4rem);
+    line-height:1.05;
+    margin:.4em 0 .3em;
+    background:linear-gradient(120deg, var(--cream) 30%, var(--rose) 70%, var(--gold));
+    background-size:200% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    opacity:0;
+    animation:fadeUp 1s ease forwards .25s, shine 6s linear infinite 1.2s;
+  }
+  .sub{
+    font-size:clamp(1rem,2.6vw,1.15rem);
+    color:var(--cream-dim);
+    font-weight:300;
+    max-width:46ch;
+    margin:0 auto;
+    opacity:0;
+    animation:fadeUp 1s ease forwards .45s;
+  }
+  .heartbeat-line{
+    width:120px;
+    height:24px;
+    margin:2.2rem auto 0;
+    opacity:0;
+    animation:fadeUp 1s ease forwards .6s;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(16px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes shine{
+    to{background-position:-200% 0;}
+  }
+
+  /* ---- intro line ---- */
+  .intro{
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:clamp(1.05rem,3vw,1.3rem);
+    color:var(--rose);
+    max-width:52ch;
+    margin:0 auto 8vh;
+    line-height:1.5;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .intro.show{opacity:1; transform:translateY(0);}
+
+  /* ---- Cards ---- */
+  .card{
+    position:relative;
+    margin-bottom:6.5vh;
+    padding:1.9rem 1.7rem 2rem;
+    border-radius:18px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.07);
+    backdrop-filter:blur(6px);
+    opacity:0;
+    transform:translateY(36px) scale(.98);
+    transition:opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1);
+  }
+  .card.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+  .card::before{
+    content:attr(data-num);
+    position:absolute;
+    top:-1.1rem;
+    left:1.6rem;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:.85rem;
+    letter-spacing:.1em;
+    color:var(--bg-0);
+    background:linear-gradient(120deg, var(--rose), var(--gold));
+    padding:.35rem .8rem;
+    border-radius:999px;
+    box-shadow:0 6px 18px rgba(255,122,162,.25);
+  }
+  .card h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.45rem;
+    margin:.6rem 0 1rem;
+    color:var(--cream);
+  }
+  .tag{
+    display:inline-block;
+    font-size:.68rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:.35rem;
+  }
+  .example, .point{
+    font-size:1rem;
+    line-height:1.6;
+    color:var(--cream-dim);
+    margin:0 0 1.1rem;
+  }
+  .point{color:var(--cream);}
+  .point b{color:var(--rose);font-weight:500;}
+  blockquote{
+    margin:1.3rem 0 0;
+    padding-left:1rem;
+    border-left:2px solid var(--rose-dim);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:.98rem;
+    color:var(--gold);
+    line-height:1.55;
+  }
+
+  /* ---- main lesson ---- */
+  .lesson{
+    margin-top:4vh;
+    text-align:center;
+    padding:3rem 1.5rem;
+    border-radius:22px;
+    background:radial-gradient(ellipse at 50% 0%, rgba(255,122,162,.12), transparent 70%);
+    border:1px solid rgba(255,255,255,0.09);
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .lesson.show{opacity:1; transform:translateY(0);}
+  .lesson .eyebrow{position:static; display:block; margin-bottom:1rem;}
+  .lesson p{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(1.25rem,4vw,1.7rem);
+    line-height:1.4;
+    color:var(--cream);
+    max-width:34ch;
+    margin:0 auto;
+  }
+  .lesson p em{color:var(--rose); font-style:normal;}
+
+  .scroll-hint{
+    text-align:center;
+    font-size:.75rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    opacity:.55;
+    margin-top:1.5rem;
+    animation:pulseHint 2s ease-in-out infinite;
+  }
+  @keyframes pulseHint{
+    0%,100%{opacity:.35;}
+    50%{opacity:.75;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+    .card, .intro, .lesson{opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Be Honest With Me</div>
+    <h1>Let someone<br>who loves you<br>tell you the truth</h1>
+    <p class="sub">A simple guide to seeing yourself clearly, with help from people who already care about you.</p>
+    <svg class="heartbeat-line" viewBox="0 0 120 24" fill="none">
+      <path d="M0 12 H35 L42 2 L50 22 L58 12 H120" stroke="#ff7aa2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <p class="intro" id="introLine">"If you've been looking for love for a while, it could be that by polishing your presentation, the right person will quickly spot you when they come along."</p>
+
+  <div class="card" data-num="01">
+    <span class="tag">Looking your best</span>
+    <h2>Small updates, not a new face</h2>
+    <p class="example"><b>Example:</b> Imagine you've worn the same haircut and same three shirts since college — and never once questioned them.</p>
+    <p class="point"><b>Point:</b> Ask a trusted friend if your clothes, grooming, or style could be improved. You can't change your face or height — but you can change your look.</p>
+    <blockquote>"You can't change your face, height, or build, so there's little to be gained from criticizing these."</blockquote>
+  </div>
+
+  <div class="card" data-num="02">
+    <span class="tag">Carrying yourself well</span>
+    <h2>Your body speaks first</h2>
+    <p class="example"><b>Example:</b> You laugh nervously and hunch your shoulders on dates, without even noticing you're doing it.</p>
+    <p class="point"><b>Point:</b> Small habits like fidgeting or crossed arms can quietly push people away. Ask a friend to check your posture and body language.</p>
+    <blockquote>"Getting too self-conscious might only make things worse."</blockquote>
+  </div>
+
+  <div class="card" data-num="03">
+    <span class="tag">Your attachment style</span>
+    <h2>How you love, patterned early</h2>
+    <p class="example"><b>Example:</b> A partner takes one day to reply, and you spiral, convinced they're losing interest.</p>
+    <p class="point"><b>Point:</b> This reaction has a name — your attachment style. Knowing it helps you understand your worries, and it can change over time.</p>
+    <blockquote>"An insecure style isn't a sentence to permanent singledom."</blockquote>
+  </div>
+
+  <div class="card" data-num="04">
+    <span class="tag">Your past</span>
+    <h2>Notice the pattern, not just the pain</h2>
+    <p class="example"><b>Example:</b> You keep falling for people who can't commit — the third time in a row, and it still surprises you.</p>
+    <p class="point"><b>Point:</b> Look back honestly. A repeated pattern is a lesson waiting to be learned, not just bad luck.</p>
+    <blockquote>"A difficult past need not mean a difficult future."</blockquote>
+  </div>
+
+  <div class="card" data-num="05">
+    <span class="tag">Your good qualities</span>
+    <h2>Don't forget what already works</h2>
+    <p class="example"><b>Example:</b> You're the friend everyone calls when they need to laugh — but on a date, you forget to let that side show.</p>
+    <p class="point"><b>Point:</b> Fixing flaws is only half the work. Ask what people already love about you, and let it shine brighter.</p>
+    <blockquote>"Your friends and family love you for a reason!"</blockquote>
+  </div>
+
+  <div class="card" data-num="06">
+    <span class="tag">Ask the right people</span>
+    <h2>Two honest voices, chosen with care</h2>
+    <p class="example"><b>Example:</b> Instead of guessing alone, you sit down with your closest friend and simply ask, "Be honest — what do you see?"</p>
+    <p class="point"><b>Point:</b> Pick two people your own age, one of each sex, who love you and know how to give real feedback. Meet them somewhere private, and just listen.</p>
+    <blockquote>"Sit down with a close friend, ask for their opinion, and do your best to take it calmly."</blockquote>
+  </div>
+
+  <div class="lesson" id="lessonBox">
+    <span class="eyebrow">Main Lesson</span>
+    <p>You don't need to become <em>someone new</em>. You need honest eyes that already love you — to help polish what's already there.</p>
+  </div>
+
+</div>
+
+<script>
+// ---------- Falling hearts background ----------
+const canvas = document.getElementById('hearts');
+const ctx = canvas.getContext('2d');
+let W, H, hearts = [];
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function heartPath(size){
+  const p = new Path2D();
+  p.moveTo(0, size*0.3);
+  p.bezierCurveTo(0, -size*0.2, -size, -size*0.2, -size, size*0.3);
+  p.bezierCurveTo(-size, size*0.75, -size*0.4, size*1.0, 0, size*1.4);
+  p.bezierCurveTo(size*0.4, size*1.0, size, size*0.75, size, size*0.3);
+  p.bezierCurveTo(size, -size*0.2, 0, -size*0.2, 0, size*0.3);
+  return p;
+}
+
+const palette = ['#ff7aa2', '#e3b873', '#c8577c', '#f3e6de'];
+
+function makeHeart(spawnTop){
+  return {
+    x: Math.random()*W,
+    y: spawnTop ? -20 - Math.random()*H*0.5 : Math.random()*H,
+    size: 5 + Math.random()*10,
+    speed: 0.35 + Math.random()*0.9,
+    drift: (Math.random()-0.5)*0.6,
+    sway: Math.random()*Math.PI*2,
+    swaySpeed: 0.005 + Math.random()*0.015,
+    rot: Math.random()*Math.PI*2,
+    rotSpeed: (Math.random()-0.5)*0.01,
+    color: palette[Math.floor(Math.random()*palette.length)],
+    alpha: 0.15 + Math.random()*0.4
+  };
+}
+
+const HEART_COUNT = Math.min(60, Math.floor(window.innerWidth/16));
+for(let i=0;i<HEART_COUNT;i++) hearts.push(makeHeart(false));
+
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  for(const h of hearts){
+    h.sway += h.swaySpeed;
+    h.y += h.speed;
+    h.x += h.drift + Math.sin(h.sway)*0.4;
+    h.rot += h.rotSpeed;
+
+    if(h.y - h.size*1.4 > H){
+      Object.assign(h, makeHeart(true));
+    }
+    if(h.x < -20) h.x = W+20;
+    if(h.x > W+20) h.x = -20;
+
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.rotate(h.rot);
+    ctx.globalAlpha = h.alpha;
+    ctx.fillStyle = h.color;
+    ctx.shadowColor = h.color;
+    ctx.shadowBlur = h.size*1.2;
+    ctx.fill(heartPath(h.size));
+    ctx.restore();
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ---------- Scroll reveal ----------
+const revealTargets = document.querySelectorAll('.card, .intro, .lesson');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+      io.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.18, rootMargin:'0px 0px -8% 0px'});
+revealTargets.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

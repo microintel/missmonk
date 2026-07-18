@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Straight — Untangle Your Mind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f4efe6;
+    --night:#191333;
+    --night-2:#241b4d;
+    --lavender:#b39ddb;
+    --coral:#ff8a65;
+    --teal:#5fd9c6;
+    --card:#2a2158;
+    --card-line:rgba(244,239,230,0.10);
+    --muted:#c7bfe0;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--night);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk',sans-serif;
+  }
+
+  /* ---------- Animated mesh background ---------- */
+  .bg{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background:
+      radial-gradient(circle at 20% 20%, var(--night-2), transparent 55%),
+      radial-gradient(circle at 80% 10%, #3a1f5d, transparent 50%),
+      radial-gradient(circle at 50% 90%, #1f2a4d, transparent 55%),
+      var(--night);
+  }
+
+  .blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(70px);
+    z-index:-2;
+    opacity:0.45;
+    animation:drift 22s ease-in-out infinite alternate;
+  }
+  .blob.one{
+    width:38vw;height:38vw;
+    background:var(--lavender);
+    top:-8%;left:-10%;
+    animation-duration:26s;
+  }
+  .blob.two{
+    width:30vw;height:30vw;
+    background:var(--coral);
+    bottom:-5%;right:-8%;
+    animation-duration:20s;
+    animation-delay:-6s;
+  }
+  .blob.three{
+    width:26vw;height:26vw;
+    background:var(--teal);
+    top:40%;right:15%;
+    opacity:0.25;
+    animation-duration:30s;
+  }
+  @keyframes drift{
+    0%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(4%,6%) scale(1.08); }
+    100%{ transform:translate(-3%,-4%) scale(0.96); }
+  }
+
+  /* ---------- Falling hearts ---------- */
+  #hearts{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-5vh;
+    color:var(--coral);
+    opacity:0.55;
+    will-change:transform;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    filter:drop-shadow(0 0 6px rgba(255,138,101,0.35));
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); }
+    50%{ transform:translateY(55vh) translateX(30px) rotate(15deg); }
+    100%{ transform:translateY(115vh) translateX(-10px) rotate(-10deg); }
+  }
+
+  /* ---------- Layout ---------- */
+  main{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  section{
+    padding:90px 0;
+  }
+
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:0.72rem;
+    color:var(--teal);
+    font-weight:600;
+    margin-bottom:14px;
+    display:inline-block;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:60px;
+    padding-bottom:40px;
+    text-align:left;
+  }
+
+  .hero-flex{
+    display:flex;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+  }
+
+  .hero-text{
+    flex:1 1 380px;
+  }
+
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    line-height:1.06;
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 span{
+    color:var(--coral);
+  }
+
+  .hero p{
+    margin-top:22px;
+    font-size:1.15rem;
+    line-height:1.65;
+    color:var(--muted);
+    max-width:52ch;
+  }
+
+  .scroll-cue{
+    margin-top:44px;
+    font-size:0.85rem;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    letter-spacing:0.05em;
+  }
+  .scroll-cue .arrow{
+    animation:bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(6px); }
+  }
+
+  /* Tangle SVG signature */
+  .tangle-wrap{
+    flex:0 0 260px;
+    width:260px;
+    height:260px;
+  }
+  #tangle-svg path{
+    fill:none;
+    stroke:var(--lavender);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 3.2s ease forwards;
+  }
+  #tangle-svg .head{
+    stroke:var(--ink);
+    opacity:0.8;
+    animation-delay:0s;
+  }
+  #tangle-svg .scribble{
+    stroke:var(--coral);
+    animation-delay:0.3s;
+  }
+  @keyframes draw{
+    to{ stroke-dashoffset:0; }
+  }
+
+  /* ---------- Intro ---------- */
+  .intro p{
+    font-size:1.1rem;
+    line-height:1.8;
+    color:var(--muted);
+    max-width:65ch;
+  }
+  .intro strong{
+    color:var(--ink);
+  }
+
+  /* ---------- Loop diagram ---------- */
+  .loop-title{
+    font-size:clamp(1.6rem, 4vw, 2.2rem);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .loop-sub{
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:48px;
+    line-height:1.7;
+  }
+
+  .loop{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:22px;
+    position:relative;
+  }
+
+  .loop-node{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:18px;
+    padding:26px;
+    position:relative;
+    transition:transform 0.3s ease, border-color 0.3s ease;
+  }
+  .loop-node:hover{
+    transform:translateY(-4px);
+    border-color:var(--coral);
+  }
+  .loop-node .tag{
+    font-size:0.7rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:600;
+  }
+  .loop-node h3{
+    margin-top:8px;
+    font-size:1.25rem;
+  }
+  .loop-node p{
+    margin-top:10px;
+    color:var(--muted);
+    font-size:0.95rem;
+    line-height:1.5;
+  }
+  .loop-node .example{
+    margin-top:12px;
+    font-style:italic;
+    color:var(--coral);
+    font-size:0.92rem;
+    opacity:0.9;
+  }
+
+  .loop-center{
+    grid-column:1 / -1;
+    text-align:center;
+    color:var(--muted);
+    font-size:0.9rem;
+    padding:6px 0;
+  }
+  .loop-center span{
+    color:var(--lavender);
+  }
+
+  /* ---------- Distortions grid ---------- */
+  .distortions-title{
+    font-size:clamp(1.6rem, 4vw, 2.2rem);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .distortions-sub{
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:44px;
+    line-height:1.7;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:18px;
+    padding:24px;
+    cursor:default;
+    transition:transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  }
+  .card:hover{
+    transform:translateY(-6px);
+    border-color:var(--lavender);
+    background:#312868;
+  }
+  .card .icon{
+    font-size:1.8rem;
+    display:inline-block;
+    margin-bottom:12px;
+  }
+  .card h3{
+    font-size:1.05rem;
+    margin-bottom:8px;
+    color:var(--ink);
+  }
+  .card p{
+    color:var(--muted);
+    font-size:0.9rem;
+    line-height:1.55;
+  }
+  .card .ex-btn{
+    margin-top:14px;
+    font-family:'Inter',sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    color:var(--night);
+    background:var(--teal);
+    border:none;
+    padding:8px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background 0.25s ease, transform 0.2s ease;
+  }
+  .card .ex-btn:hover{
+    background:var(--coral);
+    transform:translateY(-1px);
+  }
+  .card .ex-btn.open{
+    background:transparent;
+    border:1px solid var(--teal);
+    color:var(--teal);
+  }
+  .card .ex{
+    margin-top:12px;
+    font-size:0.85rem;
+    color:var(--teal);
+    line-height:1.5;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-height 0.35s ease, opacity 0.3s ease, margin-top 0.35s ease;
+  }
+  .card .ex.show{
+    max-height:200px;
+    opacity:1;
+  }
+
+  /* ---------- Fix steps ---------- */
+  .fix-title{
+    font-size:clamp(1.6rem, 4vw, 2.2rem);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .fix-sub{
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:40px;
+    line-height:1.7;
+  }
+  .steps{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .step{
+    display:flex;
+    gap:20px;
+    padding:22px 0;
+    border-bottom:1px solid var(--card-line);
+  }
+  .step:last-child{ border-bottom:none; }
+  .step .num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+    color:var(--coral);
+    min-width:36px;
+  }
+  .step p{
+    color:var(--muted);
+    line-height:1.6;
+    font-size:1rem;
+  }
+  .step strong{
+    color:var(--ink);
+  }
+
+  .note{
+    margin-top:40px;
+    padding:24px;
+    border-left:3px solid var(--teal);
+    background:rgba(95,217,198,0.06);
+    border-radius:0 12px 12px 0;
+    color:var(--muted);
+    line-height:1.7;
+    font-size:1rem;
+  }
+
+  /* ---------- Closing ---------- */
+  .closing{
+    text-align:center;
+    padding-bottom:120px;
+  }
+  .closing h2{
+    font-size:clamp(1.8rem, 5vw, 2.6rem);
+    max-width:20ch;
+    margin:0 auto 18px;
+    line-height:1.2;
+  }
+  .closing p{
+    color:var(--muted);
+    max-width:50ch;
+    margin:0 auto;
+    line-height:1.7;
+  }
+  .closing .coral{ color:var(--coral); }
+
+  footer{
+    text-align:center;
+    padding:30px 0 50px;
+    color:rgba(199,191,224,0.5);
+    font-size:0.8rem;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:720px){
+    section{ padding:64px 0; }
+    .hero{ min-height:auto; padding-top:70px; text-align:center; }
+    .hero-flex{ flex-direction:column-reverse; }
+    .hero p{ margin-left:auto; margin-right:auto; }
+    .tangle-wrap{ width:180px; height:180px; }
+    .loop{ grid-template-columns:1fr; }
+    .grid{ grid-template-columns:1fr; }
+    .scroll-cue{ justify-content:center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="blob one"></div>
+<div class="blob two"></div>
+<div class="blob three"></div>
+<div id="hearts"></div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-flex">
+      <div class="hero-text">
+        <span class="eyebrow">Cognitive Behavioral Therapy, simplified</span>
+        <h1>Your mind isn't <span>broken</span>.<br>It's just tangled.</h1>
+        <p>Sometimes one small thought spirals into a bad day. That's not weakness — it's a pattern. And patterns can be traced, questioned, and gently rewired.</p>
+        <div class="scroll-cue">
+          <span class="arrow">↓</span> keep going, it gets clearer
+        </div>
+      </div>
+      <div class="tangle-wrap">
+        <svg id="tangle-svg" viewBox="0 0 200 200" width="100%" height="100%">
+          <path class="head" d="M60,150 C40,130 35,90 60,60 C85,30 130,30 150,60 C165,82 160,110 145,125 L145,150 L60,150 Z"/>
+          <path class="scribble" d="M75,90 C85,75 95,100 105,80 C115,60 120,95 130,85 C138,77 128,105 118,100 C108,95 100,115 90,105 C82,97 88,80 75,90 Z"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <span class="eyebrow">The idea</span>
+    <p>A negative thought shows up. It makes you feel something painful. That feeling changes how you act. And how you act quietly confirms the original thought — so it comes back stronger. <strong>CBT calls this the negativity trap</strong>, and the whole trick is catching it at the very first step: the thought.</p>
+  </section>
+
+  <!-- LOOP -->
+  <section class="loop-section">
+    <span class="eyebrow">How it spirals</span>
+    <h2 class="loop-title">One thought pulls the rest along</h2>
+    <p class="loop-sub">Thoughts, feelings, actions, and physical sensations aren't separate — they're wired together in a loop. Break it anywhere, and the whole cycle loosens.</p>
+
+    <div class="loop">
+      <div class="loop-node">
+        <span class="tag">01 — Thought</span>
+        <h3>The spark</h3>
+        <p>A single sentence your mind decides to believe.</p>
+        <p class="example">"I'm so unattractive."</p>
+      </div>
+      <div class="loop-node">
+        <span class="tag">02 — Feeling</span>
+        <h3>The weight</h3>
+        <p>The thought lands in your body as an emotion.</p>
+        <p class="example">Inadequate. Sad. Ashamed.</p>
+      </div>
+      <div class="loop-node">
+        <span class="tag">03 — Sensation</span>
+        <h3>The static</h3>
+        <p>Emotion shows up physically before you even notice.</p>
+        <p class="example">Listless. Vulnerable. Heavy.</p>
+      </div>
+      <div class="loop-node">
+        <span class="tag">04 — Behavior</span>
+        <h3>The retreat</h3>
+        <p>You act in a way that matches the story — and proves it right.</p>
+        <p class="example">Staying in. Avoiding people. Hiding.</p>
+      </div>
+      <div class="loop-center">And the loop feeds itself — unless you interrupt it at <span>the thought</span>.</div>
+    </div>
+  </section>
+
+  <!-- DISTORTIONS -->
+  <section class="distortions-section">
+    <span class="eyebrow">Ten familiar traps</span>
+    <h2 class="distortions-title">Ways your brain bends the truth</h2>
+    <p class="distortions-sub">These aren't character flaws — they're mental shortcuts everyone's brain takes under stress. Spotting the pattern is most of the work.</p>
+
+    <div class="grid">
+
+      <div class="card">
+        <span class="icon">⚫⚪</span>
+        <h3>All-or-nothing thinking</h3>
+        <p>You see life in only two settings: perfect, or complete failure. No in-between exists.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"I missed one workout, so my whole fitness plan is ruined."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🔁</span>
+        <h3>Overgeneralizing</h3>
+        <p>One bad moment gets rebranded as "this always happens to me."</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"I failed one interview — I'll never get a job."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🔍</span>
+        <h3>Mental filter</h3>
+        <p>You zoom in on the single bad detail and let it blur out everything good.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">You score 95 out of 100, and can only think about the 5 marks you lost.</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🙈</span>
+        <h3>Disqualifying the positive</h3>
+        <p>Good things happen, but your mind finds a reason they don't really count.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"They only complimented me because they were being polite."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🔮</span>
+        <h3>Jumping to conclusions</h3>
+        <p>You guess what people think, or how things will turn out, with zero real evidence.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"My friend hasn't replied yet — they must be angry with me."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🔬</span>
+        <h3>Magnifying &amp; minimizing</h3>
+        <p>Problems balloon into disasters, while your wins shrink down to nothing.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"One typo in my presentation ruined everything" — even though it went well.</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">💭</span>
+        <h3>Emotional reasoning</h3>
+        <p>If it feels true, your mind treats it as fact — no questions asked.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"I feel anxious, so something bad must be about to happen."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">📏</span>
+        <h3>"Should" statements</h3>
+        <p>You hold yourself — and everyone else — to rules that were never realistic.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"I should never make mistakes."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🏷️</span>
+        <h3>Labeling</h3>
+        <p>One moment gets stretched into your entire identity.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"I forgot my keys again — I'm just so careless."</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">🎯</span>
+        <h3>Personalization</h3>
+        <p>You quietly take the blame for things that were never really yours to carry.</p>
+        <button class="ex-btn">See example</button>
+        <p class="ex">"My teammate seems quiet today — I must have offended them."</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- THE FIX -->
+  <section class="fix-section">
+    <span class="eyebrow">The way out</span>
+    <h2 class="fix-title">A five-question reset</h2>
+    <p class="fix-sub">Next time a thought pulls you under, try walking through these — slowly, honestly, in your own head or on paper.</p>
+
+    <div class="steps">
+      <div class="step">
+        <span class="num">01</span>
+        <p><strong>Name it.</strong> What's the exact thought or belief that's bothering you right now?</p>
+      </div>
+      <div class="step">
+        <span class="num">02</span>
+        <p><strong>Rate it.</strong> On a scale of 0–100%, how much do you actually believe it's true?</p>
+      </div>
+      <div class="step">
+        <span class="num">03</span>
+        <p><strong>Spot the trap.</strong> Does it match one of the ten patterns above?</p>
+      </div>
+      <div class="step">
+        <span class="num">04</span>
+        <p><strong>Reframe it.</strong> Is there a kinder, more balanced way to read the same situation?</p>
+      </div>
+      <div class="step">
+        <span class="num">05</span>
+        <p><strong>Rate it again.</strong> Even a small drop in belief is real progress.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      You don't need to force the number down to zero. A small dent, repeated often enough, is exactly how a mind quietly rewires itself into a calmer one.
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <h2>You're not thinking wrong.<br>You're just <span class="coral">thinking human</span>.</h2>
+    <p>Every mind takes shortcuts under pressure. Noticing the shortcut is the whole first step back to solid ground.</p>
+  </section>
+
+</main>
+
+<footer>made to help you think a little straighter</footer>
+
+<script>
+  // Falling hearts — gentle, ambient, non-distracting
+  const heartsContainer = document.getElementById('hearts');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function spawnHeart(){
+    if(reduceMotion) return;
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '❤';
+    const size = 10 + Math.random() * 16;
+    const left = Math.random() * 100;
+    const duration = 10 + Math.random() * 10;
+    heart.style.left = left + 'vw';
+    heart.style.fontSize = size + 'px';
+    heart.style.animationDuration = duration + 's';
+    heart.style.opacity = 0.25 + Math.random() * 0.35;
+    heartsContainer.appendChild(heart);
+
+    setTimeout(() => heart.remove(), duration * 1000 + 500);
+  }
+
+  if(!reduceMotion){
+    for(let i=0;i<6;i++){
+      setTimeout(spawnHeart, i * 900);
+    }
+    setInterval(spawnHeart, 1400);
+  }
+
+  // Reveal / hide example on button click
+  document.querySelectorAll('.ex-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const example = btn.nextElementSibling;
+      const isOpen = example.classList.toggle('show');
+      btn.classList.toggle('open', isOpen);
+      btn.textContent = isOpen ? 'Hide example' : 'See example';
+    });
+  });
+</script>
+
+</body>
+</html>

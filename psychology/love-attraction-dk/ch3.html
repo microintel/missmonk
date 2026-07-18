@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Has a Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b1b2e;
+    --cream:#fbf3ee;
+    --plum:#1f1330;
+    --plum-2:#2c1c40;
+    --anxious:#e8637a;
+    --anxious-soft:#f8d9de;
+    --avoidant:#3f8f95;
+    --avoidant-soft:#d7ecec;
+    --secure:#e3a857;
+    --secure-soft:#faeacd;
+    --line: rgba(251,243,238,0.14);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--plum);
+    color:var(--cream);
+    font-family:'Karla', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  ::selection{background:var(--anxious); color:var(--plum);}
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    opacity:0.65;
+  }
+
+  /* ---------- background canvas (falling + reacting hearts) ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:2;
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:120px 24px 80px;
+  }
+
+  .hero .eyebrow{margin-bottom:18px;}
+
+  .hero h1{
+    font-size:clamp(2.6rem, 8vw, 5.2rem);
+    line-height:1.02;
+    color:var(--cream);
+  }
+  .hero h1 em{
+    font-style:italic;
+    font-weight:500;
+    background:linear-gradient(90deg,var(--anxious),var(--secure),var(--avoidant));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .hero p{
+    margin-top:22px;
+    font-size:clamp(1rem,2.4vw,1.25rem);
+    max-width:560px;
+    color:rgba(251,243,238,0.78);
+    line-height:1.6;
+  }
+
+  .hero .hint{
+    margin-top:56px;
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    opacity:0.5;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+
+  /* ---------- generic section ---------- */
+  section{
+    position:relative;
+    z-index:2;
+    padding:90px 0;
+    border-top:1px solid var(--line);
+  }
+
+  .section-head{
+    max-width:640px;
+    margin-bottom:52px;
+  }
+  .section-head h2{
+    font-size:clamp(1.9rem,4.4vw,2.8rem);
+    margin-top:10px;
+    color:var(--cream);
+  }
+  .section-head p{
+    margin-top:16px;
+    color:rgba(251,243,238,0.7);
+    font-size:1.05rem;
+    line-height:1.65;
+  }
+
+  /* ---------- style cards ---------- */
+  .styles-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+
+  .style-card{
+    background:var(--cream);
+    color:var(--ink);
+    border-radius:22px;
+    padding:30px 26px 28px;
+    position:relative;
+    overflow:hidden;
+    transition:transform .35s ease, box-shadow .35s ease;
+    cursor:default;
+  }
+  .style-card:hover{
+    transform:translateY(-8px) rotate(-0.4deg);
+    box-shadow:0 24px 50px rgba(0,0,0,0.35);
+  }
+  .style-card .tag{
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:100px;
+    margin-bottom:16px;
+  }
+  .style-card.anxious .tag{background:var(--anxious-soft); color:#a92e46;}
+  .style-card.avoidant .tag{background:var(--avoidant-soft); color:#215a5f;}
+  .style-card.secure .tag{background:var(--secure-soft); color:#9a6a19;}
+
+  .style-card h3{font-size:1.5rem; margin-bottom:10px;}
+  .style-card .line{font-style:italic; opacity:0.75; margin-bottom:14px; font-family:'Fraunces',serif;}
+  .style-card p{line-height:1.55; font-size:0.96rem; color:#4a3a4d;}
+
+  .style-card .glyph{
+    position:absolute;
+    right:-10px;
+    top:-10px;
+    font-size:5.5rem;
+    opacity:0.08;
+    line-height:1;
+  }
+
+  /* ---------- myth strip ---------- */
+  .myth{
+    background:var(--plum-2);
+    border-radius:22px;
+    padding:38px 34px;
+    border:1px solid var(--line);
+  }
+  .myth h3{font-size:1.4rem; margin-bottom:14px; color:var(--secure);}
+  .myth p{color:rgba(251,243,238,0.78); line-height:1.7; font-size:1rem;}
+  .myth p + p{margin-top:12px;}
+
+  /* ---------- lens (comparison) ---------- */
+  .lens-toggle{
+    display:flex;
+    gap:10px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .lens-btn{
+    font-family:'Space Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--cream);
+    padding:10px 18px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:all .25s ease;
+  }
+  .lens-btn.active{
+    background:var(--cream);
+    color:var(--ink);
+    border-color:var(--cream);
+  }
+
+  .lens-pair{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .lens-col{
+    border-radius:18px;
+    padding:24px;
+  }
+  .lens-col.harsh{background:rgba(232,99,122,0.1); border:1px solid rgba(232,99,122,0.3);}
+  .lens-col.kind{background:rgba(227,168,87,0.12); border:1px solid rgba(227,168,87,0.35);}
+  .lens-col .who{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    opacity:0.6;
+    margin-bottom:14px;
+  }
+  .lens-col ul{list-style:none;}
+  .lens-col li{
+    padding:9px 0;
+    font-size:1rem;
+    border-bottom:1px dashed var(--line);
+  }
+  .lens-col li:last-child{border-bottom:none;}
+  .lens-col.harsh li::before{content:"✕  "; color:var(--anxious);}
+  .lens-col.kind li::before{content:"✓  "; color:var(--secure);}
+
+  /* ---------- combos ---------- */
+  .combo-list{display:flex; flex-direction:column; gap:14px;}
+  .combo{
+    background:var(--plum-2);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:24px 26px;
+    display:grid;
+    grid-template-columns:170px 1fr;
+    gap:22px;
+    align-items:start;
+  }
+  .combo .pairing{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.15rem;
+  }
+  .combo .pairing small{
+    display:block;
+    font-family:'Space Mono', monospace;
+    font-weight:400;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    opacity:0.55;
+    margin-top:6px;
+  }
+  .combo p{color:rgba(251,243,238,0.75); line-height:1.6; font-size:0.98rem;}
+  .combo.trap{border-color:rgba(232,99,122,0.5); background:linear-gradient(135deg, rgba(232,99,122,0.12), rgba(63,143,149,0.12));}
+
+  /* ---------- closing ---------- */
+  .closing{
+    text-align:center;
+    padding-bottom:140px;
+  }
+  .closing h2{
+    font-size:clamp(2rem,5.5vw,3.2rem);
+    max-width:680px;
+    margin:0 auto;
+    line-height:1.15;
+  }
+  .closing h2 em{
+    font-style:italic;
+    color:var(--secure);
+  }
+  .closing p{
+    margin:22px auto 0;
+    max-width:480px;
+    color:rgba(251,243,238,0.65);
+    line-height:1.6;
+  }
+  .closing .signature{
+    margin-top:40px;
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    opacity:0.4;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 24px;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    opacity:0.35;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 760px){
+    .styles-grid{grid-template-columns:1fr;}
+    .lens-pair{grid-template-columns:1fr;}
+    .combo{grid-template-columns:1fr; gap:10px;}
+    section{padding:64px 0;}
+    .hero{padding:100px 20px 60px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="heart-field"></canvas>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">A gentle guide to attachment styles</div>
+    <h1>Love has a <em>style</em>.<br>Do you know yours?</h1>
+    <p>Some of us chase closeness. Some of us guard our space. Some of us just… feel safe to love. Move your cursor through the hearts below — watch how differently each one responds.</p>
+    <div class="hint">↓ scroll to find your pattern</div>
+  </section>
+
+  <section id="styles">
+    <div class="section-head">
+      <div class="eyebrow">01 — The three patterns</div>
+      <h2>How people love, in three shapes</h2>
+      <p>Nobody chooses their attachment style on purpose. It forms early and quietly, then shows up in every relationship after — in how we text back, how we handle silence, how close we let someone get.</p>
+    </div>
+
+    <div class="styles-grid">
+      <div class="style-card anxious">
+        <span class="glyph">♥</span>
+        <span class="tag">Anxious</span>
+        <h3>"Are we okay?"</h3>
+        <div class="line">Loves hard, worries harder.</div>
+        <p>Craves closeness and reassurance. A slow reply can feel like a warning sign. Deep down, this style just wants to know the connection is safe — and often shows love by staying extra close.</p>
+      </div>
+
+      <div class="style-card avoidant">
+        <span class="glyph">♥</span>
+        <span class="tag">Avoidant</span>
+        <h3>"I need room to breathe."</h3>
+        <div class="line">Loves quietly, from a little distance.</div>
+        <p>Values independence above almost everything. When things get too close or too intense, the instinct is to pull back — not because the feelings aren't real, but because closeness can feel like pressure.</p>
+      </div>
+
+      <div class="style-card secure">
+        <span class="glyph">♥</span>
+        <span class="tag">Secure</span>
+        <h3>"I'm good, you're good."</h3>
+        <div class="line">Loves easily, without the drama.</div>
+        <p>Comfortable with closeness and comfortable alone. Says what's actually on their mind instead of hinting, testing, or withdrawing. This is the style that makes relationships feel calm.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="myth">
+    <div class="section-head">
+      <div class="eyebrow">02 — Common mix-up</div>
+      <h2>It's not a "men vs. women" thing</h2>
+    </div>
+    <div class="myth">
+      <h3>Your style isn't your gender</h3>
+      <p>A lot of relationship advice quietly assumes women are the anxious ones and men are the avoidant ones — pulling away like a stretched rubber band, drawing back in. It makes a tidy story, but real life doesn't sort so neatly.</p>
+      <p>Anxious men and avoidant women exist everywhere. Your pattern comes from your own attachment wiring, not from your gender — and the good news is that with a secure partner, any style can build a relationship that actually works.</p>
+    </div>
+  </section>
+
+  <section id="lens">
+    <div class="section-head">
+      <div class="eyebrow">03 — Same you, different label</div>
+      <h2>How your partner describes you says a lot about <em>them</em></h2>
+      <p>The exact same behavior gets read two totally different ways depending on who's watching. Pick a style below and see how it lands with each kind of partner.</p>
+    </div>
+
+    <div class="lens-toggle">
+      <button class="lens-btn active" data-lens="anxious">Anxious behavior</button>
+      <button class="lens-btn" data-lens="avoidant">Avoidant behavior</button>
+    </div>
+
+    <div class="lens-pair" id="lens-pair"></div>
+  </section>
+
+  <section id="combos">
+    <div class="section-head">
+      <div class="eyebrow">04 — When two styles meet</div>
+      <h2>What happens when styles collide</h2>
+      <p>Put two people together and their styles start writing the story of the relationship — before either of them says a word.</p>
+    </div>
+
+    <div class="combo-list">
+      <div class="combo">
+        <div class="pairing">Anxious + Anxious<small>intense</small></div>
+        <p>Passionate, but volatile. Both partners feel their worries instead of saying them out loud, so small things can spiral into big fights that neither person really understands.</p>
+      </div>
+      <div class="combo">
+        <div class="pairing">Avoidant + Avoidant<small>distant</small></div>
+        <p>Rare, and often quietly drifts apart. With neither person chasing closeness, the relationship can settle into routine — comfortable on the surface, but short on real connection.</p>
+      </div>
+      <div class="combo trap">
+        <div class="pairing">Anxious + Avoidant<small>the classic trap</small></div>
+        <p>The most common — and most painful — pairing. One partner reaches for closeness, the other pulls back to protect their space, and that push-and-pull becomes a loop. It's usually the anxious partner who ends up hurting most, since it's easier to withhold closeness than to force it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <h2>Whatever your style — <em>secure love</em> is still possible.</h2>
+    <p>You don't have to fix yourself before you're worthy of a calm relationship. The right partner, one who is secure, can turn anxious worry and avoidant distance into something steady.</p>
+    <div class="signature">made with ♥ patterns, not perfection</div>
+  </section>
+
+</main>
+
+<footer>a simple guide to attachment styles</footer>
+
+<script>
+/* ============================================================
+   Heart field — ambient falling hearts + attachment-style demo
+   Three heart "personalities":
+     anxious  -> drifts TOWARD the cursor (needs closeness)
+     avoidant -> drifts AWAY from the cursor (needs space)
+     secure   -> ignores the cursor, floats steadily
+   Everywhere else on the page they just fall gently.
+   ============================================================ */
+(function(){
+  const canvas = document.getElementById('heart-field');
+  const ctx = canvas.getContext('2d');
+  let W, H, DPR;
+  let pointer = { x: -9999, y: -9999, active:false };
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const COLORS = {
+    anxious: '#e8637a',
+    avoidant: '#4fa8ae',
+    secure: '#e3a857'
+  };
+  const TYPES = ['anxious','avoidant','secure'];
+
+  function heartPath(ctx, s){
+    ctx.beginPath();
+    ctx.moveTo(0, s*0.3);
+    ctx.bezierCurveTo(0,-s*0.2, -s,-s*0.2, -s, s*0.25);
+    ctx.bezierCurveTo(-s, s*0.7, -s*0.4, s*0.9, 0, s*1.2);
+    ctx.bezierCurveTo(s*0.4, s*0.9, s, s*0.7, s, s*0.25);
+    ctx.bezierCurveTo(s, -s*0.2, 0,-s*0.2, 0, s*0.3);
+    ctx.closePath();
+  }
+
+  const COUNT = window.innerWidth < 700 ? 26 : 42;
+  const hearts = [];
+  for(let i=0;i<COUNT;i++){
+    hearts.push(makeHeart(true));
+  }
+  function makeHeart(randomY){
+    const type = TYPES[Math.floor(Math.random()*TYPES.length)];
+    return {
+      type,
+      x: Math.random()*window.innerWidth,
+      y: randomY ? Math.random()*window.innerHeight : -30,
+      size: 6 + Math.random()*10,
+      speed: 0.25 + Math.random()*0.5,
+      drift: (Math.random()-0.5)*0.3,
+      wobble: Math.random()*Math.PI*2,
+      opacity: 0.16 + Math.random()*0.28
+    };
+  }
+
+  window.addEventListener('mousemove', (e)=>{
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.active = true;
+  });
+  window.addEventListener('mouseleave', ()=>{ pointer.active = false; });
+  window.addEventListener('touchmove', (e)=>{
+    if(e.touches && e.touches[0]){
+      pointer.x = e.touches[0].clientX;
+      pointer.y = e.touches[0].clientY;
+      pointer.active = true;
+    }
+  }, {passive:true});
+
+  function step(){
+    ctx.clearRect(0,0,W,H);
+
+    hearts.forEach(h=>{
+      h.wobble += 0.02;
+      h.x += Math.sin(h.wobble)*0.4 + h.drift;
+      h.y += h.speed;
+
+      // attachment-style reaction to the cursor, only within range
+      if(pointer.active){
+        const dx = pointer.x - h.x;
+        const dy = pointer.y - h.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const range = 220;
+        if(dist < range && dist > 0.1){
+          const force = (1 - dist/range) * 0.6;
+          if(h.type === 'anxious'){
+            h.x += (dx/dist) * force * 2.2;
+            h.y += (dy/dist) * force * 2.2;
+          } else if(h.type === 'avoidant'){
+            h.x -= (dx/dist) * force * 2.2;
+            h.y -= (dy/dist) * force * 2.2;
+          }
+          // secure: no reaction
+        }
+      }
+
+      if(h.y > H + 30){
+        Object.assign(h, makeHeart(false));
+        h.y = -20;
+      }
+      if(h.x < -30) h.x = W+30;
+      if(h.x > W+30) h.x = -30;
+
+      ctx.save();
+      ctx.translate(h.x, h.y);
+      ctx.globalAlpha = h.opacity;
+      ctx.fillStyle = COLORS[h.type];
+      heartPath(ctx, h.size);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    if(!reduceMotion){
+      requestAnimationFrame(step);
+    }
+  }
+  step();
+  if(reduceMotion){
+    // draw a single static frame, no loop
+    ctx.clearRect(0,0,W,H);
+    hearts.forEach(h=>{
+      ctx.save();
+      ctx.translate(h.x,h.y);
+      ctx.globalAlpha = h.opacity;
+      ctx.fillStyle = COLORS[h.type];
+      heartPath(ctx, h.size);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+})();
+
+/* ============================================================
+   Lens toggle — how the same behavior reads to different partners
+   ============================================================ */
+(function(){
+  const data = {
+    anxious: {
+      harsh: { who:"An avoidant partner calls it…", items:["Clingy","Needy","Dramatic","Too much","Suffocating"] },
+      kind:  { who:"A secure partner calls it…", items:["Affectionate","Caring","Expressive","Devoted","Loyal"] }
+    },
+    avoidant: {
+      harsh: { who:"An anxious partner calls it…", items:["Distant","Confusing","Cold","Selfish","Hard to reach"] },
+      kind:  { who:"A secure partner calls it…", items:["Independent","Calm","Self-assured","Private","Steady"] }
+    }
+  };
+
+  const pairEl = document.getElementById('lens-pair');
+  const buttons = document.querySelectorAll('.lens-btn');
+
+  function render(key){
+    const d = data[key];
+    pairEl.innerHTML = `
+      <div class="lens-col harsh">
+        <div class="who">${d.harsh.who}</div>
+        <ul>${d.harsh.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+      <div class="lens-col kind">
+        <div class="who">${d.kind.who}</div>
+        <ul>${d.kind.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+    `;
+  }
+
+  buttons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.lens);
+    });
+  });
+
+  render('anxious');
+})();
+</script>
+
+</body>
+</html>

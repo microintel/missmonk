@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Give Yourself a Break</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #100c15;
+    --bg2: #1a1420;
+    --panel: #1f1826;
+    --panel-line: rgba(232, 135, 159, 0.16);
+    --rose: #e8879f;
+    --rose-soft: #f0aabc;
+    --gold: #e3b04b;
+    --text: #f3ece4;
+    --muted: #a99bb3;
+    --muted2: #7c6e88;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at 50% -10%, #241a2c 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .falling-heart{
+    position: absolute;
+    top: -10%;
+    color: var(--rose);
+    opacity: 0.35;
+    will-change: transform;
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    filter: drop-shadow(0 0 6px rgba(232,135,159,0.25));
+  }
+  @keyframes fall{
+    from{ transform: translateY(-10vh); }
+    to{ transform: translateY(110vh); }
+  }
+  @keyframes sway{
+    0%, 100%{ margin-left: 0px; }
+    50%{ margin-left: 40px; }
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 0;
+  }
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .heart-hero{
+    width: clamp(120px, 30vw, 170px);
+    height: clamp(120px, 30vw, 170px);
+    margin-bottom: 28px;
+    cursor: pointer;
+    animation: beat 2.6s ease-in-out infinite;
+    transform-origin: center;
+    filter: drop-shadow(0 0 30px rgba(232,135,159,0.35));
+    transition: filter 0.3s ease;
+  }
+  .heart-hero:active{ transform: scale(0.94); }
+  @keyframes beat{
+    0%, 100%{ transform: scale(1); }
+    12%{ transform: scale(1.08); }
+    24%{ transform: scale(1); }
+    36%{ transform: scale(1.05); }
+    48%{ transform: scale(1); }
+  }
+  h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(38px, 8vw, 58px);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+  h1 em{
+    font-style: italic;
+    font-weight: 500;
+    color: var(--rose-soft);
+  }
+  .sub{
+    font-size: clamp(15px, 3.6vw, 18px);
+    color: var(--muted);
+    max-width: 440px;
+    line-height: 1.6;
+  }
+  .tap-hint{
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--muted2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .scroll-cue{
+    margin-top: 46px;
+    font-size: 22px;
+    color: var(--rose);
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%, 100%{ transform: translateY(0); opacity: 0.5;}
+    50%{ transform: translateY(8px); opacity: 1;}
+  }
+
+  /* ---------- intro ---------- */
+  .intro{
+    padding: 40px 0 60px;
+    border-top: 1px solid var(--panel-line);
+  }
+  .intro p{
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  .intro p + p{ margin-top: 14px; color: var(--muted); }
+
+  /* ---------- cards ---------- */
+  .card{
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    padding: 34px 0;
+    border-top: 1px solid var(--panel-line);
+  }
+  .card.visible{ opacity: 1; transform: translateY(0); }
+
+  .card-num{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .card h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(22px, 5vw, 27px);
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+  .example{
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    font-style: italic;
+    padding-left: 16px;
+    border-left: 2px solid var(--panel-line);
+    margin-bottom: 16px;
+  }
+  .example::before{
+    content: "e.g. ";
+    font-style: normal;
+    color: var(--muted2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .point{
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .point strong{ color: var(--rose-soft); font-weight: 600; }
+
+  /* ---------- quote blocks (book's own highlighted lines) ---------- */
+  .quote-block{
+    background: linear-gradient(135deg, rgba(232,135,159,0.08), rgba(227,176,75,0.05));
+    border: 1px solid var(--panel-line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-top: 18px;
+  }
+  .quote-block p{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 0 0 8px;
+    color: var(--rose-soft);
+  }
+  .quote-block cite{
+    font-style: normal;
+    font-size: 12px;
+    color: var(--muted2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ---------- interactive: mirror affirmation ---------- */
+  .interactive{
+    margin-top: 20px;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .mirror-btn{
+    background: linear-gradient(135deg, var(--rose), #c96b85);
+    color: #1a1015;
+    border: none;
+    padding: 13px 26px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .mirror-btn:active{ transform: scale(0.96); }
+  #mirror-output{
+    margin-top: 16px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold);
+    min-height: 28px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  #mirror-output.show{ opacity: 1; }
+
+  /* ---------- interactive: breathing ---------- */
+  .breathe-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 6px;
+  }
+  .breathe-circle{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(232,135,159,0.55), rgba(232,135,159,0.08));
+    border: 1px solid rgba(232,135,159,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    animation: breathe 8s ease-in-out infinite;
+    margin-bottom: 10px;
+  }
+  @keyframes breathe{
+    0%   { transform: scale(0.72); }
+    35%  { transform: scale(1.15); }
+    50%  { transform: scale(1.15); }
+    85%  { transform: scale(0.72); }
+    100% { transform: scale(0.72); }
+  }
+  .breathe-label{ font-size: 12px; color: var(--muted2); font-family: 'JetBrains Mono', monospace; }
+
+  /* ---------- kindness quote fetcher ---------- */
+  .kindness-box{
+    margin-top: 20px;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .kindness-box h4{
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    margin: 0 0 14px;
+    color: var(--rose-soft);
+  }
+  #quote-text{
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--text);
+    min-height: 50px;
+    margin-bottom: 14px;
+  }
+  .kindness-box button{
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(227,176,75,0.4);
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .kindness-box button:hover{ background: rgba(227,176,75,0.1); }
+
+  /* ---------- main lesson ---------- */
+  .lesson{
+    margin-top: 60px;
+    padding: 48px 28px;
+    text-align: center;
+    background: linear-gradient(160deg, rgba(232,135,159,0.1), rgba(227,176,75,0.06));
+    border: 1px solid var(--panel-line);
+    border-radius: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lesson .eyebrow{ margin-bottom: 14px; }
+  .lesson p{
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 5.4vw, 29px);
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--text);
+    margin: 0;
+  }
+  .lesson p em{ color: var(--rose-soft); font-style: normal; font-weight: 600; }
+
+  footer{
+    text-align: center;
+    padding: 40px 0 10px;
+    color: var(--muted2);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">a gentle guide</div>
+    <svg class="heart-hero" id="hero-heart" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 170 C 40 125, 10 90, 10 55 C 10 25, 32 8, 58 8 C 78 8, 92 20, 100 35 C 108 20, 122 8, 142 8 C 168 8, 190 25, 190 55 C 190 90, 160 125, 100 170 Z"
+        fill="url(#heartGrad)"/>
+      <defs>
+        <linearGradient id="heartGrad" x1="10" y1="8" x2="190" y2="170" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#f0aabc"/>
+          <stop offset="1" stop-color="#c96b85"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <h1>Give Yourself<br><em>a Break</em></h1>
+    <p class="sub">Coping with the lonely times — small, real ways to be kinder to yourself, one idea at a time.</p>
+    <div class="tap-hint">tap the heart ✦ then scroll down</div>
+    <div class="scroll-cue">↓</div>
+  </section>
+
+  <section class="intro">
+    <p>Sometimes we haven't found the right person yet — and that's okay. The skill worth building isn't waiting. It's learning to treat <strong>yourself</strong> with the same care you'd want from a partner.</p>
+    <p>Here are 11 simple ideas from the science of self-compassion. Each one starts with a real-life moment, then the lesson behind it.</p>
+  </section>
+
+  <!-- CARD 1 -->
+  <div class="card">
+    <span class="card-num">01 / 11</span>
+    <h3>Be kind to yourself first</h3>
+    <p class="example">A date never called back. You start thinking, "I should call and tell him what I think of him."</p>
+    <p class="point">Before reacting, stop. <strong>Ask yourself how you actually feel</strong> — instead of jumping straight to anger. This is called self-compassion: caring for yourself the way you'd care for someone you love.</p>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card">
+    <span class="card-num">02 / 11</span>
+    <h3>Feel it before you react</h3>
+    <p class="example">You're angry at your partner, and "You're an idiot!" almost slips out.</p>
+    <p class="point">Try saying <strong>"I feel angry with you right now"</strong> instead of attacking. Naming the feeling calms the reaction.</p>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card">
+    <span class="card-num">03 / 11</span>
+    <h3>Notice thoughts, don't believe them</h3>
+    <p class="example">After a long dry spell of dating, you think, "I must be ugly. All the good ones are taken."</p>
+    <p class="point">This is mindfulness: <strong>just observe the thought</strong> — "I feel insecure, I feel lonely" — without deciding it's true. Thoughts become easier to calm once you stop arguing with them.</p>
+    <div class="breathe-wrap">
+      <div class="breathe-circle" id="breathe-circle">breathe</div>
+      <div class="breathe-label">in… hold… out — watch it for one full cycle</div>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card">
+    <span class="card-num">04 / 11</span>
+    <h3>Let yourself be real</h3>
+    <p class="example">Hiding your worries from a partner so you look "perfect."</p>
+    <p class="point">Real confidence comes from an <strong>honest, realistic picture of yourself</strong> — flaws included. Denying weaknesses causes more conflict than accepting them ever could.</p>
+    <div class="quote-block">
+      <p>"Bringing people's awareness to their true self matters — it increases their sense of meaning in life."</p>
+      <cite>— paraphrased from Schlegel, Hicks, Arndt & King, University of Missouri</cite>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card">
+    <span class="card-num">05 / 11</span>
+    <h3>Soften, allow, soothe</h3>
+    <p class="example">Your chest feels tight right after an argument.</p>
+    <p class="point">Four small steps: <strong>relax → soften the tight spot → allow the feeling to stay → soothe yourself</strong> like you would a friend. Pain doesn't need to be fixed instantly — just held gently.</p>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card">
+    <span class="card-num">06 / 11</span>
+    <h3>Build a kinder inner voice</h3>
+    <p class="example">Your inner critic snaps, "You really made a fool of yourself, didn't you?"</p>
+    <p class="point">Swap it for a compassionate voice: <strong>"I love you and I don't want you to suffer."</strong> That critic was never your friend — you get to choose a kinder one.</p>
+    <div class="quote-block">
+      <p>"I love you and I don't want you to suffer."</p>
+      <cite>— the compassionate voice, in place of the inner critic</cite>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="card">
+    <span class="card-num">07 / 11</span>
+    <h3>Keep in touch with yourself</h3>
+    <p class="example">Writing three pages by hand every morning — chores, fears, nonsense, anything.</p>
+    <p class="point">This is called <strong>morning pages</strong>. The point isn't good writing — it's clearing your head before the day starts.</p>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="card">
+    <span class="card-num">08 / 11</span>
+    <h3>Breathe through it</h3>
+    <p class="example">Nerves creep in before meeting someone new.</p>
+    <p class="point">Sit comfortably, and <strong>follow the feeling of air moving in and out.</strong> Thoughts will drift — that's fine. Just keep coming back to the breath.</p>
+  </div>
+
+  <!-- CARD 9 -->
+  <div class="card">
+    <span class="card-num">09 / 11</span>
+    <h3>Send kindness outward</h3>
+    <p class="example">Wishing a close friend well, then a stranger on the street, then even someone you find hard to like.</p>
+    <p class="point">This is loving-kindness meditation: <strong>"May I be well, may I be safe, may I be happy"</strong> — said first for yourself, then for others. It builds real ease in the world.</p>
+    <div class="quote-block">
+      <p>"May I be well. May I be safe. May I be happy."</p>
+      <cite>— loving-kindness meditation</cite>
+    </div>
+  </div>
+
+  <!-- CARD 10 -->
+  <div class="card">
+    <span class="card-num">10 / 11</span>
+    <h3>Practice kindness in the mirror</h3>
+    <p class="example">Before you shower or get made up — at your most natural self — looking into your own eyes.</p>
+    <p class="point">Say your own name, ten times: <strong>"[Your name], I love you exactly the way you are."</strong> Your brain needs to hear that voice too.</p>
+    <div class="interactive">
+      <button class="mirror-btn" id="mirror-btn">Try it now</button>
+      <div id="mirror-output"></div>
+    </div>
+  </div>
+
+  <!-- CARD 11 -->
+  <div class="card">
+    <span class="card-num">11 / 11</span>
+    <h3>Let yourself laugh</h3>
+    <p class="example">Watching something funny after a hard day.</p>
+    <p class="point">Laughter really does raise your pain threshold. <strong>A good laugh isn't just a distraction</strong> — it gives your whole nervous system a boost.</p>
+
+    <div class="kindness-box">
+      <h4>Need a little kindness right now?</h4>
+      <div id="quote-text">Tap below for a small dose of encouragement.</div>
+      <button id="quote-btn">Give me some kindness →</button>
+    </div>
+  </div>
+
+  <section class="lesson">
+    <div class="eyebrow">main lesson</div>
+    <p>You are the <em>one person</em> who has been with you since the beginning, and will be there till the end.<br>So be your own best friend.</p>
+  </section>
+
+  <footer>made with care, for whoever needs it today ♡</footer>
+
+</div>
+
+<script>
+  // ---------- falling hearts background ----------
+  const field = document.getElementById('heart-field');
+  const HEART_COUNT = window.innerWidth < 600 ? 16 : 26;
+  const heartChar = '❤';
+
+  for(let i=0; i<HEART_COUNT; i++){
+    const h = document.createElement('div');
+    h.className = 'falling-heart';
+    h.textContent = heartChar;
+    const size = 10 + Math.random()*18;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.opacity = (0.15 + Math.random()*0.3).toFixed(2);
+    const fallDur = 12 + Math.random()*14;
+    const swayDur = 3 + Math.random()*4;
+    h.style.animationDuration = fallDur + 's, ' + swayDur + 's';
+    h.style.animationDelay = (-Math.random()*fallDur) + 's, ' + (-Math.random()*swayDur) + 's';
+    field.appendChild(h);
+  }
+
+  function burstHearts(x, y, count){
+    for(let i=0; i<count; i++){
+      const h = document.createElement('div');
+      h.textContent = '❤';
+      h.style.position = 'fixed';
+      h.style.left = x + 'px';
+      h.style.top = y + 'px';
+      h.style.fontSize = (14 + Math.random()*16) + 'px';
+      h.style.color = '#e8879f';
+      h.style.pointerEvents = 'none';
+      h.style.zIndex = 50;
+      h.style.opacity = '1';
+      h.style.transition = 'transform 1.4s cubic-bezier(.2,.7,.3,1), opacity 1.4s ease';
+      document.body.appendChild(h);
+      requestAnimationFrame(()=>{
+        const dx = (Math.random()-0.5) * 220;
+        const dy = -140 - Math.random()*160;
+        h.style.transform = `translate(${dx}px, ${dy}px) rotate(${(Math.random()-0.5)*90}deg)`;
+        h.style.opacity = '0';
+      });
+      setTimeout(()=> h.remove(), 1500);
+    }
+  }
+
+  document.getElementById('hero-heart').addEventListener('click', (e)=>{
+    const rect = e.target.getBoundingClientRect();
+    burstHearts(rect.left + rect.width/2, rect.top + rect.height/2, 14);
+  });
+
+  // ---------- scroll reveal ----------
+  const cards = document.querySelectorAll('.card');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  cards.forEach(c=> io.observe(c));
+
+  // ---------- mirror affirmation ----------
+  const mirrorBtn = document.getElementById('mirror-btn');
+  const mirrorOutput = document.getElementById('mirror-output');
+  const lines = [
+    "I love you exactly the way you are.",
+    "You'll be okay.",
+    "I forgive you.",
+    "You can do this."
+  ];
+  let lineIndex = 0;
+  mirrorBtn.addEventListener('click', (e)=>{
+    mirrorOutput.classList.remove('show');
+    setTimeout(()=>{
+      mirrorOutput.textContent = "“" + lines[lineIndex % lines.length] + "”";
+      mirrorOutput.classList.add('show');
+      lineIndex++;
+    }, 150);
+    const rect = e.target.getBoundingClientRect();
+    burstHearts(rect.left + rect.width/2, rect.top, 8);
+  });
+
+  // ---------- kindness quote fetcher (free API + fallback) ----------
+  const quoteBtn = document.getElementById('quote-btn');
+  const quoteText = document.getElementById('quote-text');
+  const fallbackQuotes = [
+    "Be gentle with yourself. You're doing the best you can with what you know right now.",
+    "You don't have to earn kindness from yourself. Give it freely.",
+    "A quiet season alone is not proof that something is wrong with you.",
+    "Speak to yourself like someone worth loving — because you are.",
+    "Healing isn't a straight line, and that's completely normal."
+  ];
+  quoteBtn.addEventListener('click', async ()=>{
+    quoteText.textContent = "Finding some kindness for you…";
+    try{
+      const res = await fetch('https://api.quotable.io/random?tags=inspirational|wisdom');
+      if(!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      quoteText.textContent = '"' + data.content + '" — ' + data.author;
+    }catch(err){
+      const q = fallbackQuotes[Math.floor(Math.random()*fallbackQuotes.length)];
+      quoteText.textContent = q;
+    }
+  });
+</script>
+
+</body>
+</html>

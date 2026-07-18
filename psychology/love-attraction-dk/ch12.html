@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Help From Your Friends</title>
+<style>
+  :root{
+    --bg-1:#0d0a1c;
+    --bg-2:#1a1030;
+    --gold:#f4c95d;
+    --rose:#ff6b81;
+    --rose-soft:#ff9aa8;
+    --cream:#f3ecdf;
+    --dim:#b9aecb;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:radial-gradient(ellipse at 50% 0%, var(--bg-2), var(--bg-1) 60%);
+    color:var(--cream);
+    font-family:'Work Sans', 'Segoe UI', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  @font-face{
+    font-family:'FraunceLocal';
+    src:local('Fraunces');
+  }
+
+  canvas#hearts{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .veil{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg, rgba(13,10,28,0.15) 0%, rgba(13,10,28,0.55) 45%, rgba(13,10,28,0.9) 100%);
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .content{
+    position:relative;
+    z-index:2;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 24px 120px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding-top:60px;
+  }
+
+  .eyebrow{
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--rose-soft);
+    margin-bottom:18px;
+    opacity:0;
+    animation:fadeUp 1s ease forwards 0.2s;
+  }
+
+  .hero h1{
+    font-family:Georgia, 'Times New Roman', serif;
+    font-weight:700;
+    font-size:clamp(2.4rem, 8vw, 4.2rem);
+    line-height:1.05;
+    background:linear-gradient(180deg, #fff, var(--rose-soft));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    opacity:0;
+    animation:fadeUp 1s ease forwards 0.4s;
+  }
+
+  .hero .sub{
+    font-size:1.05rem;
+    color:var(--dim);
+    margin-top:16px;
+    max-width:480px;
+    opacity:0;
+    animation:fadeUp 1s ease forwards 0.6s;
+  }
+
+  .scroll-cue{
+    margin-top:60px;
+    font-size:0.75rem;
+    color:var(--dim);
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    opacity:0;
+    animation:fadeUp 1s ease forwards 1s, bob 2.2s ease-in-out infinite 1.6s;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(18px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+
+  /* ---------- QUOTE BAND ---------- */
+  .quote-band{
+    text-align:center;
+    padding:70px 0 90px;
+    font-family:Georgia, serif;
+    font-style:italic;
+    font-size:clamp(1.2rem,4vw,1.6rem);
+    color:var(--gold);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .quote-band.show{opacity:1; transform:translateY(0);}
+  .quote-band span{
+    display:block;
+    font-family:'Work Sans', sans-serif;
+    font-style:normal;
+    font-size:0.8rem;
+    color:var(--dim);
+    margin-top:10px;
+    letter-spacing:0.1em;
+  }
+
+  /* ---------- IDEA CARDS ---------- */
+  .idea{
+    padding:44px 0;
+    border-top:1px solid rgba(244,201,93,0.15);
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .idea.show{opacity:1; transform:translateY(0);}
+
+  .idea-num{
+    font-family:Georgia, serif;
+    font-size:0.85rem;
+    color:var(--rose-soft);
+    letter-spacing:0.15em;
+    margin-bottom:10px;
+  }
+
+  .idea h2{
+    font-family:Georgia, serif;
+    font-weight:600;
+    font-size:clamp(1.3rem,4.5vw,1.7rem);
+    color:var(--cream);
+    margin-bottom:16px;
+    line-height:1.25;
+  }
+
+  .example{
+    background:rgba(244,201,93,0.06);
+    border-left:3px solid var(--gold);
+    padding:14px 18px;
+    border-radius:0 10px 10px 0;
+    font-size:0.98rem;
+    color:var(--dim);
+    font-style:italic;
+    margin-bottom:16px;
+  }
+
+  .point{
+    font-size:1.05rem;
+    line-height:1.6;
+    color:var(--cream);
+  }
+
+  .point strong{
+    color:var(--rose-soft);
+    font-weight:600;
+  }
+
+  /* ---------- MAIN LESSON ---------- */
+  .lesson{
+    margin-top:60px;
+    padding:44px 28px;
+    border-radius:20px;
+    background:linear-gradient(155deg, rgba(255,107,129,0.12), rgba(244,201,93,0.06));
+    border:1px solid rgba(255,107,129,0.25);
+    text-align:center;
+    opacity:0;
+    transform:translateY(30px) scale(0.98);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .lesson.show{opacity:1; transform:translateY(0) scale(1);}
+
+  .lesson .tag{
+    text-transform:uppercase;
+    letter-spacing:0.3em;
+    font-size:0.7rem;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+
+  .lesson h3{
+    font-family:Georgia, serif;
+    font-size:clamp(1.3rem,5vw,1.8rem);
+    margin-bottom:18px;
+    color:#fff;
+  }
+
+  .lesson p{
+    font-size:1rem;
+    color:var(--dim);
+    line-height:1.7;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  .lesson .metaphor{
+    margin-top:22px;
+    font-family:Georgia, serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--rose-soft);
+  }
+
+  .hearts-divider{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:14px 0 34px;
+    font-size:1.1rem;
+    opacity:0.6;
+  }
+
+  footer{
+    text-align:center;
+    padding:50px 0 10px;
+    font-size:0.75rem;
+    color:var(--dim);
+    letter-spacing:0.1em;
+  }
+
+  @media (max-width:480px){
+    .content{padding:0 18px 100px;}
+    .idea{padding:34px 0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+<div class="veil"></div>
+
+<div class="content">
+
+  <section class="hero">
+    <div class="eyebrow">Platonic Lessons in Love</div>
+    <h1>A Little Help<br>From Your Friends</h1>
+    <p class="sub">Love isn't only found in romance. Here's what friendship quietly does for your heart and mind.</p>
+    <div class="scroll-cue">↓ scroll to read ↓</div>
+  </section>
+
+  <div class="quote-band" id="q1">
+    "Share a smile in the street and your brain gets a small hit of love."
+  </div>
+
+  <div class="idea" data-i="1">
+    <div class="idea-num">01</div>
+    <h2>Even tiny moments count as love</h2>
+    <div class="example">Vignesh smiles at a stranger while walking to college. It's a two-second moment — but he feels a small spark of happiness the rest of the walk.</div>
+    <div class="point">You don't need a partner to feel loved. <strong>Small, everyday connections — a smile, a kind word — give your brain a real hit of love too.</strong></div>
+  </div>
+
+  <div class="idea" data-i="2">
+    <div class="idea-num">02</div>
+    <h2>Friends can break a bad mood spiral</h2>
+    <div class="example">Pranav fails a test and starts spiraling into bad thoughts. He calls Riya. After twenty minutes of talking, he feels lighter, almost like a switch flipped.</div>
+    <div class="point">This is called the <strong>"platonic circuit breaker."</strong> When there's no partner around, a good friend can stop the cycle of misery before it gets worse.</div>
+  </div>
+
+  <div class="idea" data-i="3">
+    <div class="idea-num">03</div>
+    <h2>The ache for closeness is built into you</h2>
+    <div class="example">After a breakup, Riya keeps feeling a pull to reconnect with someone — anyone — who feels safe.</div>
+    <div class="point">That pull is your <strong>attachment system</strong>, wired in since childhood. It once made you seek your caregiver; now it makes you seek closeness with anyone you trust.</div>
+  </div>
+
+  <div class="idea" data-i="4">
+    <div class="idea-num">04</div>
+    <h2>No partner? Friends and family step in</h2>
+    <div class="example">Vignesh is single right now. When he feels low, he doesn't wait for a partner — he goes and hangs out with Pranav instead.</div>
+    <div class="point">Friends and family can't replace a partner completely, but <strong>their care can still calm your mind down</strong> in the same way.</div>
+  </div>
+
+  <div class="idea" data-i="5">
+    <div class="idea-num">05</div>
+    <h2>Friendships quietly shape future love</h2>
+    <div class="example">The late-night talks Riya has with her best friend feel like "just friendship" — but they're teaching her, without her noticing, how to trust someone.</div>
+    <div class="point">Strong friendships, especially when young, <strong>can shape how a person loves later</strong> — sometimes as much as family does.</div>
+  </div>
+
+  <div class="idea" data-i="6">
+    <div class="idea-num">06</div>
+    <h2>Friendship is a safe place to practice trust</h2>
+    <div class="example">Pranav finds it hard to trust people. Calm, low-pressure hangouts with Vignesh — no pressure, no expectations — slowly help him feel safe again.</div>
+    <div class="point">Friendship has lower stakes than romance. <strong>It's a safe training ground for feeling secure</strong>, before trying that same trust in a relationship.</div>
+  </div>
+
+  <div class="idea" data-i="7">
+    <div class="idea-num">07</div>
+    <h2>Good friends are good for your actual heart</h2>
+    <div class="example">A three-year Swedish study followed over 13,600 people. Researchers just tracked one thing: did they have good friends?</div>
+    <div class="point">People with good friends had <strong>about 50% lower risk of a heart attack.</strong> Friendship isn't just emotional — it's medical.</div>
+  </div>
+
+  <div class="lesson" id="lesson">
+    <div class="hearts-divider">🤍 💛 🤍</div>
+    <div class="tag">Main Lesson</div>
+    <h3>Love has more than one source.</h3>
+    <p>Romance is powerful, but it's not the only place love comes from. Small kindness, friendship, and family all feed the exact same part of you that needs connection — and that need doesn't disappear just because you're single.</p>
+    <div class="metaphor">Think of love as sunlight. A partner is like the sun — bright and direct. But friends are like windows scattered around a room, letting the same warmth in from every angle. You don't need just one source to feel warm.</div>
+  </div>
+
+  <footer>made with care · scroll back up any time</footer>
+
+</div>
+
+<script>
+// ---------- Falling hearts signature animation ----------
+const canvas = document.getElementById('hearts');
+const ctx = canvas.getContext('2d');
+let w, h;
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function heartPath(ctx, x, y, size){
+  ctx.beginPath();
+  const topCurveHeight = size * 0.3;
+  ctx.moveTo(x, y + topCurveHeight);
+  ctx.bezierCurveTo(x, y, x - size/2, y, x - size/2, y + topCurveHeight);
+  ctx.bezierCurveTo(x - size/2, y + (size+topCurveHeight)/2, x, y + (size+topCurveHeight)/2, x, y + size);
+  ctx.bezierCurveTo(x, y + (size+topCurveHeight)/2, x + size/2, y + (size+topCurveHeight)/2, x + size/2, y + topCurveHeight);
+  ctx.bezierCurveTo(x + size/2, y, x, y, x, y + topCurveHeight);
+  ctx.closePath();
+}
+
+const colors = ['#ff6b81', '#ff9aa8', '#f4c95d', '#ffd8dc'];
+
+function makeHeart(){
+  return {
+    x: Math.random() * w,
+    y: -20 - Math.random() * h,
+    size: 8 + Math.random() * 16,
+    speed: 0.4 + Math.random() * 0.9,
+    drift: (Math.random() - 0.5) * 0.6,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: 0.005 + Math.random() * 0.01,
+    opacity: 0.25 + Math.random() * 0.5,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    spin: (Math.random() - 0.5) * 0.01
+  };
+}
+
+const HEART_COUNT = window.innerWidth < 600 ? 26 : 46;
+let hearts = Array.from({length: HEART_COUNT}, makeHeart);
+
+// connection lines between nearby hearts, symbolising bonds forming
+function drawConnections(){
+  ctx.lineWidth = 0.6;
+  for(let i = 0; i < hearts.length; i++){
+    for(let j = i+1; j < hearts.length; j++){
+      const a = hearts[i], b = hearts[j];
+      const dx = a.x - b.x, dy = a.y - b.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 90){
+        ctx.strokeStyle = `rgba(255, 154, 168, ${0.12 * (1 - dist/90)})`;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate(){
+  ctx.clearRect(0, 0, w, h);
+  drawConnections();
+
+  hearts.forEach(hpt => {
+    hpt.y += hpt.speed;
+    hpt.sway += hpt.swaySpeed;
+    hpt.x += Math.sin(hpt.sway) * 0.5 + hpt.drift * 0.2;
+
+    ctx.save();
+    ctx.globalAlpha = hpt.opacity;
+    ctx.fillStyle = hpt.color;
+    heartPath(ctx, hpt.x, hpt.y, hpt.size);
+    ctx.fill();
+    ctx.restore();
+
+    if(hpt.y > h + 30){
+      Object.assign(hpt, makeHeart(), {y: -20});
+    }
+    if(hpt.x < -30) hpt.x = w + 30;
+    if(hpt.x > w + 30) hpt.x = -30;
+  });
+
+  if(!reduceMotion) requestAnimationFrame(animate);
+}
+animate();
+
+// ---------- Scroll reveal ----------
+const revealEls = document.querySelectorAll('.idea, .lesson, .quote-band');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+    }
+  });
+}, {threshold: 0.2});
+revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

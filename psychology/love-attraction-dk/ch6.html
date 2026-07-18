@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why We Fall in Love (Or Don't)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --midnight:#241023;
+    --midnight2:#3a1a3b;
+    --rose:#ff6f91;
+    --rose-deep:#d94f74;
+    --gold:#ffc75f;
+    --blush:#fff6f4;
+    --ink:#2c1220;
+    --muted:#7d5a6e;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Quicksand',sans-serif;
+    background:var(--midnight);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    margin:0;
+  }
+  a{color:inherit;}
+
+  /* ---------- Falling hearts ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    font-size:20px;
+    opacity:0.8;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    filter:drop-shadow(0 0 6px rgba(255,111,145,0.4));
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.9; }
+    90%{ opacity:0.7; }
+    100%{ transform:translateY(115vh) translateX(var(--drift)) rotate(360deg); opacity:0; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8vh 6vw;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,111,145,0.25), transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(255,199,95,0.18), transparent 50%),
+      linear-gradient(160deg, var(--midnight) 0%, var(--midnight2) 100%);
+  }
+  .eyebrow{
+    color:var(--gold);
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    font-weight:700;
+    margin-bottom:1.4rem;
+  }
+  .hero h1{
+    color:var(--blush);
+    font-size:clamp(2.2rem, 6vw, 4.2rem);
+    line-height:1.08;
+    font-weight:700;
+    max-width:16ch;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--rose);
+  }
+  .hero p{
+    color:#e8c9d6;
+    max-width:46ch;
+    margin-top:1.6rem;
+    font-size:1.1rem;
+    line-height:1.6;
+  }
+  .scroll-hint{
+    margin-top:3rem;
+    color:var(--gold);
+    font-size:0.85rem;
+    letter-spacing:0.1em;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+
+  /* ---------- Sections ---------- */
+  section{
+    position:relative;
+    z-index:2;
+    padding:5rem 6vw;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .intro-text{
+    background:var(--blush);
+    border-radius:28px;
+    padding:2.6rem clamp(1.5rem,4vw,3.2rem);
+    box-shadow:0 30px 60px rgba(0,0,0,0.25);
+  }
+  .intro-text h2{
+    font-size:clamp(1.5rem,3.2vw,2.1rem);
+    color:var(--rose-deep);
+    margin-bottom:1rem;
+  }
+  .intro-text p{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:var(--ink);
+    margin:0.8rem 0;
+  }
+  .intro-text p strong{color:var(--rose-deep);}
+
+  /* Style cards */
+  .style-block{
+    margin-top:4rem;
+  }
+  .style-card{
+    background:linear-gradient(155deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(6px);
+    border-radius:26px;
+    padding:2.4rem clamp(1.4rem,4vw,3rem);
+    box-shadow:0 25px 50px rgba(0,0,0,0.4);
+    position:relative;
+    overflow:hidden;
+    border-left:6px solid var(--rose);
+    margin-bottom:2.4rem;
+  }
+  .style-card.avoidant{border-left-color:#7fb3d5;}
+  .style-card.secure{border-left-color:#8fce9e;}
+
+  .tag{
+    display:inline-block;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:0.35rem 0.9rem;
+    border-radius:999px;
+    background:rgba(255,111,145,0.15);
+    color:var(--rose-deep);
+    margin-bottom:1rem;
+  }
+  .style-card.avoidant .tag{background:rgba(127,179,213,0.18);color:#3f7ba3;}
+  .style-card.secure .tag{background:rgba(143,206,158,0.2);color:#3c8c50;}
+
+  .style-card h3{
+    font-size:clamp(1.4rem,3vw,1.9rem);
+    margin-bottom:0.8rem;
+    color:var(--blush);
+  }
+  .style-card p{
+    line-height:1.75;
+    font-size:1.02rem;
+    color:#d8b7c4;
+    margin:0.7rem 0;
+  }
+  .style-card p strong{color:var(--rose);}
+  .story{
+    margin-top:1.4rem;
+    padding:1.2rem 1.4rem;
+    background:rgba(255,111,145,0.1);
+    border-radius:16px;
+    font-style:italic;
+    color:#e8c9d6;
+    border-left:3px dashed var(--rose);
+  }
+  .style-card.avoidant .story{background:rgba(127,179,213,0.12);border-left-color:#7fb3d5;}
+  .style-card.secure .story{background:rgba(143,206,158,0.14);border-left-color:#8fce9e;}
+  .story strong{color:var(--rose-deep);}
+  .style-card.avoidant .story strong{color:#3f7ba3;}
+
+  /* Triangle section */
+  .triangle-section{
+    text-align:center;
+  }
+  .triangle-section h2{
+    color:var(--blush);
+    font-size:clamp(1.6rem,3.5vw,2.3rem);
+    margin-bottom:0.6rem;
+  }
+  .triangle-section > p{
+    color:#e8c9d6;
+    max-width:56ch;
+    margin:0 auto 3rem;
+    line-height:1.7;
+  }
+  .triangle-wrap{
+    position:relative;
+    width:min(420px,90vw);
+    height:min(420px,90vw);
+    margin:0 auto;
+  }
+  .tri-shape{
+    position:absolute;
+    top:14%;
+    left:8%;
+    width:84%;
+    height:72%;
+    background:linear-gradient(160deg, var(--gold), var(--rose));
+    clip-path:polygon(50% 0%, 0% 100%, 100% 100%);
+    box-shadow:0 20px 45px rgba(255,111,145,0.35);
+    animation:pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.03);}
+  }
+  .corner{
+    position:absolute;
+    width:110px;
+    background:var(--card);
+    border-radius:16px;
+    padding:0.7rem 0.6rem;
+    font-size:0.78rem;
+    line-height:1.35;
+    box-shadow:0 12px 26px rgba(0,0,0,0.35);
+    color:var(--ink);
+  }
+  .corner b{display:block;font-family:'Fraunces',serif;font-size:0.95rem;color:var(--rose-deep);}
+  .corner.top{top:-6%;left:50%;transform:translateX(-50%);}
+  .corner.left{bottom:-4%;left:-8%;}
+  .corner.right{bottom:-4%;right:-8%;}
+  .center-label{
+    position:absolute;
+    top:48%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(36,16,35,0.85);
+    color:var(--blush);
+    padding:0.7rem 0.9rem;
+    border-radius:14px;
+    font-size:0.75rem;
+    text-align:center;
+    max-width:130px;
+    line-height:1.3;
+  }
+  .center-label b{display:block;color:var(--gold);font-family:'Fraunces',serif;font-size:0.9rem;}
+
+  /* ---------- Combinations grid ---------- */
+  .combo-section{
+    text-align:center;
+  }
+  .combo-section h2{
+    color:var(--blush);
+    font-size:clamp(1.6rem,3.5vw,2.3rem);
+    margin-bottom:0.6rem;
+  }
+  .combo-section > p{
+    color:#e8c9d6;
+    max-width:56ch;
+    margin:0 auto 3rem;
+    line-height:1.7;
+  }
+  .combo-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:1.2rem;
+    text-align:left;
+  }
+  .combo-card{
+    background:linear-gradient(155deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px;
+    padding:1.5rem 1.4rem;
+    backdrop-filter:blur(6px);
+    box-shadow:0 18px 34px rgba(0,0,0,0.35);
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .combo-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 26px 44px rgba(0,0,0,0.45);
+  }
+  .combo-card .combo-icon{
+    font-size:1.6rem;
+    display:block;
+    margin-bottom:0.6rem;
+  }
+  .combo-card .combo-mix{
+    display:inline-block;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--gold);
+    margin-bottom:0.5rem;
+  }
+  .combo-card h4{
+    font-family:'Fraunces',serif;
+    color:var(--blush);
+    font-size:1.2rem;
+    margin:0 0 0.5rem;
+  }
+  .combo-card p{
+    color:#d8b7c4;
+    font-size:0.94rem;
+    line-height:1.55;
+    margin:0;
+  }
+  .combo-card.full{
+    grid-column:1/-1;
+    background:linear-gradient(155deg, rgba(255,199,95,0.16), rgba(255,111,145,0.08));
+    border-color:rgba(255,199,95,0.35);
+  }
+  .combo-card.full h4{color:var(--gold);}
+
+  /* ---------- Wisdom / takeaway pillars ---------- */
+  .wisdom-section{
+    text-align:center;
+  }
+  .wisdom-section .lead{
+    color:var(--blush);
+    font-size:clamp(1.3rem,3vw,1.7rem);
+    font-family:'Fraunces',serif;
+    max-width:34ch;
+    margin:0 auto 0.6rem;
+    line-height:1.4;
+  }
+  .wisdom-section > p.sub{
+    color:#e8c9d6;
+    max-width:50ch;
+    margin:0 auto 2.6rem;
+    line-height:1.7;
+  }
+  .pillars{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1.2rem;
+  }
+  .pillar{
+    background:radial-gradient(circle at 30% 20%, rgba(255,111,145,0.16), rgba(58,26,59,0.5));
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:22px;
+    padding:2rem 1.3rem;
+    position:relative;
+  }
+  .pillar .num{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--rose);
+    font-size:0.9rem;
+    display:block;
+    margin-bottom:0.6rem;
+  }
+  .pillar h4{
+    font-family:'Fraunces',serif;
+    color:var(--blush);
+    font-size:1.25rem;
+    margin:0 0 0.6rem;
+  }
+  .pillar p{
+    color:#d8b7c4;
+    font-size:0.95rem;
+    line-height:1.6;
+    margin:0;
+  }
+
+  @media (max-width:600px){
+    .combo-card, .pillar{padding:1.3rem 1.1rem;}
+  }
+
+  /* Closing */
+  .closing{
+    text-align:center;
+    padding-bottom:8rem;
+  }
+  .closing .intro-text{
+    background:linear-gradient(160deg,#fff6f4,#ffe9ec);
+  }
+  .closing h2{color:var(--rose-deep);}
+  .signature{
+    margin-top:2rem;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:1.05rem;
+  }
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:#a97b8c;
+    font-size:0.8rem;
+    padding:2rem 1rem 3rem;
+  }
+
+  @media (max-width:600px){
+    section{padding:3.4rem 5vw;}
+    .corner{width:92px;font-size:0.68rem;padding:0.5rem;}
+    .corner b{font-size:0.82rem;}
+    .center-label{font-size:0.66rem;max-width:100px;padding:0.5rem 0.6rem;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .heart, .tri-shape, .scroll-hint{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<section class="hero">
+  <div class="eyebrow">a short guide to falling (or not falling) in love</div>
+  <h1>Why do some people fall in love <em>fast</em> — and some never quite feel it at all?</h1>
+  <p>It's rarely about meeting "the right person." Most of the time, it's about the story we already carry inside us — long before that person ever showed up.</p>
+  <div class="scroll-hint">↓ keep scrolling ↓</div>
+</section>
+
+<section>
+  <div class="intro-text">
+    <h2>It's not them. It's the lens you're looking through.</h2>
+    <p>Some people fall in love within a week of meeting someone. Others date person after person — each one lovely, each one wrong — and never quite feel that spark settle into something real.</p>
+    <p>The difference usually isn't luck, and it isn't the partner. <strong>It's the attachment style we bring into the room</strong> — the quiet set of expectations we've built from every relationship that came before this one.</p>
+    <p>Let's meet two people who show this perfectly.</p>
+  </div>
+</section>
+
+<section class="style-block">
+
+  <div class="style-card anxious">
+    <span class="tag">Anxious attachment</span>
+    <h3>Pranav falls fast — maybe too fast</h3>
+    <p>Pranav matched with someone on a Friday. By Sunday, he was already picturing weekends together. He replies within seconds, worries when texts slow down, and reads every short reply as a sign that things are falling apart.</p>
+    <p>This isn't weakness — it's a pattern. When we feel a little unsure of our own worth, we tend to grab onto love quickly, before we've really checked if it's a good fit. <strong>Excitement gets mistaken for connection.</strong></p>
+    <div class="story">"If someone likes me, I don't want to lose them" — <strong>Pranav</strong>, three dates in, already planning the future.</div>
+    <p>It's not always wrong — sometimes the person really is right. But moving fast without checking for real trust and closeness first is how heartbreak sneaks in later.</p>
+  </div>
+
+  <div class="style-card avoidant">
+    <span class="tag">Avoidant attachment</span>
+    <h3>Vignesh is still "waiting for the one"</h3>
+    <p>Vignesh has dated plenty of great people. Somehow, none of them were ever quite right. He still thinks about his ex sometimes — funny how he only remembers the good parts now.</p>
+    <p>Deep down, staying single feels safer than getting close. Holding out for a flawless "perfect person" — or staying attached to someone who's already gone — means Vignesh never has to risk being hurt by someone real, flaws and all.</p>
+    <div class="story">"She was great, but something just felt missing" — <strong>Vignesh</strong>, about the fourth person this year.</div>
+    <p>He genuinely wants love. But real love means loving an imperfect person up close — and that's exactly what feels unsafe.</p>
+  </div>
+
+  <div class="style-card secure">
+    <span class="tag">Secure attachment</span>
+    <h3>The quiet third option</h3>
+    <p>Not everyone swings between rushing in and running away. Some people can sit with uncertainty, give a relationship time to grow, and still walk away calmly if it isn't right — without spiralling or clinging.</p>
+    <p>This is what real, lasting love is usually built on: patience, trust, and the ability to see a partner clearly — not too idealised, not too feared.</p>
+  </div>
+
+</section>
+
+<section class="triangle-section">
+  <h2>So what actually makes "love," love?</h2>
+  <p>Psychologist Robert Sternberg says every kind of love is really just a mix of three ingredients. Depending on how much of each you have, you get a completely different kind of relationship.</p>
+
+  <div class="triangle-wrap">
+    <div class="tri-shape"></div>
+    <div class="corner top"><b>Intimacy</b>closeness &amp; warmth alone → simple <em>liking</em></div>
+    <div class="corner left"><b>Passion</b>on its own → hot, quick <em>infatuation</em></div>
+    <div class="corner right"><b>Commitment</b>on its own → cold, distant <em>empty love</em></div>
+    <div class="center-label"><b>All three together</b>= complete, lasting love</div>
+  </div>
+</section>
+
+<section class="combo-section">
+  <h2>Mix the ingredients differently, get a different love</h2>
+  <p>Sternberg's triangle isn't just theory — it plays out in real relationships all the time. Here's what each combination actually looks and feels like.</p>
+
+  <div class="combo-grid">
+    <div class="combo-card">
+      <span class="combo-icon">🤝</span>
+      <span class="combo-mix">Intimacy only</span>
+      <h4>Liking</h4>
+      <p>Closeness and warmth without the spark or the promise. This is your closest friendship — the kind you'd trust with anything, minus the romance.</p>
+    </div>
+
+    <div class="combo-card">
+      <span class="combo-icon">⚡</span>
+      <span class="combo-mix">Passion only</span>
+      <h4>Infatuation</h4>
+      <p>"Love at first sight" — all heat, no history. Thrilling in the moment, but there's no closeness or promise underneath it yet to hold it up.</p>
+    </div>
+
+    <div class="combo-card">
+      <span class="combo-icon">🕯️</span>
+      <span class="combo-mix">Commitment only</span>
+      <h4>Empty love</h4>
+      <p>Staying together out of habit or duty — with the closeness and the spark both long gone. Two people sharing a life, not really sharing each other.</p>
+    </div>
+
+    <div class="combo-card">
+      <span class="combo-icon">💞</span>
+      <span class="combo-mix">Intimacy + Passion</span>
+      <h4>Romantic love</h4>
+      <p>Closeness and chemistry together — the whirlwind, butterflies-and-late-night-talks stage. What's still missing is the promise to stick around.</p>
+    </div>
+
+    <div class="combo-card">
+      <span class="combo-icon">🏡</span>
+      <span class="combo-mix">Intimacy + Commitment</span>
+      <h4>Companionate love</h4>
+      <p>A deep friendship built to last a lifetime. Often what long marriages settle into once the early spark softens into something steadier.</p>
+    </div>
+
+    <div class="combo-card">
+      <span class="combo-icon">💍</span>
+      <span class="combo-mix">Passion + Commitment</span>
+      <h4>Fatuous love</h4>
+      <p>A whirlwind romance and a quick commitment — think a courthouse wedding after a three-week fling — without ever really getting to know each other.</p>
+    </div>
+
+    <div class="combo-card full">
+      <span class="combo-icon">✨</span>
+      <span class="combo-mix">Intimacy + Passion + Commitment</span>
+      <h4>Consummate love</h4>
+      <p>All three at once: closeness, attraction, and commitment working together. Sternberg calls this "complete" love — the kind most people are quietly hoping to find, and the kind that takes the most work to keep.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wisdom-section">
+  <p class="lead">So what's love that actually lasts really built on?</p>
+  <p class="sub">Not excitement alone. The research keeps pointing to the same three quiet habits — none of them flashy, all of them essential.</p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <span class="num">01</span>
+      <h4>Patience</h4>
+      <p>Real closeness takes time to build. Letting it grow — instead of rushing to lock it down or fleeing the moment it gets uncertain — is what gives it room to become real.</p>
+    </div>
+    <div class="pillar">
+      <span class="num">02</span>
+      <h4>Trust</h4>
+      <p>Trust is what lets two people stay open with each other instead of guarding themselves. Without it, even the most passionate connection stays fragile.</p>
+    </div>
+    <div class="pillar">
+      <span class="num">03</span>
+      <h4>Seeing each other clearly</h4>
+      <p>Not as flawless, and not as a threat — just as a real person, with real strengths and real flaws. Love that survives is love that was never based on an illusion in the first place.</p>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="intro-text">
+    <h2>The real takeaway</h2>
+    <p>Whether you fall in love in a week like Pranav, or you're still "waiting for the one" like Vignesh — neither means you're broken, and neither means the other person is wrong for you.</p>
+    <p>It just means it's worth pausing to ask: <strong>am I feeling this because of them — or because of an old fear I'm still carrying?</strong> That one honest question is usually where real love finally has room to grow.</p>
+    <div class="signature">— here's to loving a little more clearly, and a little less anxiously 💛</div>
+  </div>
+</section>
+
+<footer>made with a little heart, for anyone figuring love out</footer>
+
+<script>
+  const field = document.getElementById('heart-field');
+  const colors = ['#ff6f91','#ffc75f','#ff9ab3','#ffe0a3'];
+  const count = window.innerWidth < 600 ? 16 : 28;
+
+  for(let i=0;i<count;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = Math.random() > 0.5 ? '♥' : '❤';
+    const left = Math.random()*100;
+    const size = 12 + Math.random()*22;
+    const duration = 8 + Math.random()*10;
+    const delay = Math.random()*-20;
+    const drift = (Math.random()*140 - 70) + 'px';
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    h.style.left = left + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.color = color;
+    h.style.setProperty('--drift', drift);
+    h.style.animationDuration = duration + 's';
+    h.style.animationDelay = delay + 's';
+
+    field.appendChild(h);
+  }
+</script>
+
+</body>
+</html>

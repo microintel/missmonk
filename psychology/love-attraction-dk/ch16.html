@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishing on a Star — When You Need to Listen to Yourself</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --night: #0c0a1a;
+    --night2: #150f28;
+    --plum: #1e1533;
+    --gold: #f4c56d;
+    --gold-soft: #f4c56d99;
+    --rose: #ff6f9c;
+    --rose-soft: #ff6f9c55;
+    --ink: #f4eefc;
+    --ink-dim: #c9bfe0;
+    --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  @font-face{
+    font-family:'Fraunces';
+    src: local('Georgia');
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at top, var(--night2), var(--night) 65%);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- ambient background layers ---------- */
+  #stars, #hearts{
+    position:fixed; inset:0; width:100%; height:100%;
+    pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .star{
+    position:absolute; border-radius:50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px 1px var(--gold-soft);
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15; transform:scale(.8);}
+    50%{opacity:1; transform:scale(1.3);}
+  }
+  .heart{
+    position:absolute; top:-8vh;
+    font-size:1.1rem;
+    color: var(--rose);
+    opacity:.55;
+    filter: drop-shadow(0 0 5px var(--rose-soft));
+    animation: fall linear infinite, sway ease-in-out infinite;
+    will-change: transform;
+    user-select:none;
+  }
+  @keyframes fall{
+    to{ transform: translateY(115vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  /* ---------- layout ---------- */
+  section{
+    position:relative; z-index:1;
+    max-width:720px; margin:0 auto;
+    padding: 8vh 6vw;
+  }
+
+  /* hero */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; max-width:820px;
+  }
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.22em; text-transform:uppercase;
+    color: var(--gold); opacity:.85; margin-bottom:1.1rem;
+    font-weight:600;
+  }
+  h1.title{
+    font-family: var(--serif);
+    font-style:italic;
+    font-weight:700;
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    line-height:1.05;
+    margin:0 0 .6rem 0;
+    background: linear-gradient(180deg, #fff, var(--gold) 130%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .subtitle{
+    font-size: clamp(1rem, 2.6vw, 1.25rem);
+    color: var(--ink-dim);
+    max-width:34ch;
+    margin: 0 auto;
+  }
+  .scroll-cue{
+    margin-top:4rem;
+    font-size:.8rem;
+    color: var(--ink-dim);
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    animation: bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0); opacity:.6;}
+    50%{transform:translateY(8px); opacity:1;}
+  }
+
+  .intro{
+    text-align:center;
+    color: var(--ink-dim);
+    font-size:1.05rem;
+    line-height:1.7;
+    padding-top:2vh;
+  }
+
+  /* idea cards */
+  .idea{
+    opacity:0; transform: translateY(28px);
+    transition: opacity .8s ease, transform .8s ease;
+    padding: 5vh 6vw;
+    border-top: 1px solid #ffffff14;
+  }
+  .idea.show{ opacity:1; transform:translateY(0); }
+
+  .idea-num{
+    font-family: var(--serif);
+    font-style:italic;
+    font-size:.95rem;
+    color: var(--gold);
+    letter-spacing:.05em;
+    margin-bottom:.5rem;
+    display:block;
+  }
+  .idea h2{
+    font-family: var(--serif);
+    font-weight:600;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    margin:.1rem 0 1rem 0;
+    color:#fff;
+  }
+  .example{
+    background: linear-gradient(135deg, #1c1533, #241a3d);
+    border-left: 3px solid var(--rose);
+    padding: 1rem 1.2rem;
+    border-radius: 0 10px 10px 0;
+    font-size: .98rem;
+    line-height:1.65;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .example b{ color: var(--gold); font-weight:600; }
+  .point{
+    font-size: 1.05rem;
+    line-height:1.7;
+    color: var(--ink-dim);
+  }
+  .point strong{ color:var(--ink); }
+
+  blockquote{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.15rem, 3.4vw, 1.5rem);
+    color: var(--gold);
+    text-align:center;
+    margin: 3vh auto;
+    max-width: 26ch;
+    line-height:1.5;
+    position:relative;
+  }
+  blockquote::before, blockquote::after{
+    content:"✦";
+    color: var(--rose);
+    display:block;
+    font-size:.9rem;
+    margin: .4rem 0;
+    opacity:.8;
+  }
+
+  /* stat section */
+  .stat-wrap{
+    text-align:center;
+  }
+  .stat-wrap h2{
+    font-family:var(--serif); font-style:italic; font-weight:600;
+    font-size:1.6rem; margin-bottom:1.5rem;
+  }
+  .chart-box{
+    max-width:280px; margin:0 auto 1.2rem auto;
+    position:relative;
+  }
+  .chart-center{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-family:var(--serif); font-weight:700; font-size:2.1rem; color:var(--gold);
+  }
+  .stat-caption{
+    color: var(--ink-dim); font-size:.95rem; max-width:36ch; margin:0 auto;
+  }
+
+  /* interactive generator */
+  .lab{
+    text-align:center;
+    background: linear-gradient(160deg, #1a1330, #221936);
+    border-radius: 18px;
+    border: 1px solid #ffffff14;
+    padding: 5vh 6vw;
+    margin: 4vh 6vw;
+  }
+  .lab h2{
+    font-family:var(--serif); font-style:italic; font-weight:600;
+    font-size:1.5rem; margin-bottom:.6rem;
+  }
+  .lab p{ color:var(--ink-dim); font-size:.95rem; margin-bottom:1.6rem; }
+  #fortune-card{
+    min-height:90px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-style:italic; font-size:1.15rem;
+    color:#fff; padding:1.2rem; line-height:1.5;
+    border: 1px dashed var(--gold-soft); border-radius:12px;
+    margin-bottom:1.4rem;
+    transition: opacity .4s ease;
+  }
+  #fortune-btn{
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    border:none; color:#1a1030; font-weight:700;
+    padding: .85rem 1.8rem; border-radius:999px;
+    font-size:.95rem; cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    letter-spacing:.02em;
+  }
+  #fortune-btn:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px #ff6f9c44; }
+  #fortune-note{
+    margin-top:1rem; font-size:.82rem; color: var(--ink-dim); opacity:0;
+    transition: opacity .5s ease;
+  }
+  #fortune-note.show{ opacity:1; }
+
+  /* main lesson */
+  .lesson{
+    text-align:center;
+    padding: 10vh 8vw 14vh 8vw;
+  }
+  .lesson .eyebrow{ color: var(--rose); }
+  .lesson p{
+    font-family: var(--serif);
+    font-style:italic;
+    font-size: clamp(1.3rem, 4.4vw, 1.9rem);
+    line-height:1.5;
+    color:#fff;
+    max-width: 22ch;
+    margin: 0 auto;
+  }
+  footer{
+    text-align:center; color:var(--ink-dim); font-size:.8rem;
+    padding-bottom:6vh; opacity:.6;
+  }
+
+  @media (max-width:480px){
+    section{ padding: 7vh 6vw; }
+    .idea{ padding: 4.5vh 5vw; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="hearts"></div>
+
+<section class="hero">
+  <div class="eyebrow">Wishing on a Star</div>
+  <h1 class="title">When You Need to<br>Listen to Yourself</h1>
+  <p class="subtitle">Horoscopes don't read the future. They read something closer — you.</p>
+  <div class="scroll-cue">scroll ↓</div>
+</section>
+
+<section class="intro">
+  It's easy to laugh at people who check horoscopes about love. But even a small superstition can show us something real — if we look at it the right way.
+</section>
+
+<!-- Idea 1 -->
+<section class="idea">
+  <span class="idea-num">01</span>
+  <h2>The Secret Peek</h2>
+  <div class="example">Riya says she doesn't believe in horoscopes. But at night, she still opens her love horoscope for "just a peek." When it promises something good, she smiles a little without meaning to.</div>
+  <p class="point">Even people who don't believe still feel a small hope when a horoscope promises something nice. <strong>That little hope is real, even when the star reading isn't.</strong></p>
+</section>
+
+<!-- Idea 2 -->
+<section class="idea">
+  <span class="idea-num">02</span>
+  <h2>The Barnum Trick</h2>
+  <div class="example">A quiz tells Vignesh: <b>"You need people to like you, but sometimes you doubt yourself."</b> He nods — "that's so me." A hundred other people read the exact same line and nodded too.</div>
+  <p class="point">Vague, general sentences feel personal because <strong>almost anyone can find themselves in them.</strong> This is called the Barnum Effect — "we've got something for everyone."</p>
+</section>
+
+<blockquote>"We've got something for everyone."</blockquote>
+
+<!-- Idea 3 -->
+<section class="idea">
+  <span class="idea-num">03</span>
+  <h2>Forer's Class Trick</h2>
+  <div class="example">In 1948, a scientist named Forer gave his <b>whole class the exact same "personal" report</b>. Every student still rated it about 85% accurate — for themselves alone.</div>
+  <p class="point">When words are open enough, we fill in the gaps with our own life. <strong>We believe it's about us because we want it to be.</strong></p>
+</section>
+
+<!-- Idea 4 -->
+<section class="idea">
+  <span class="idea-num">04</span>
+  <h2>The Star Sign Trap</h2>
+  <div class="example">Pranav is told his star sign, then reads yesterday's horoscope. "Yes — this matches my day perfectly!" But without knowing the sign first, he wouldn't have picked that horoscope at all.</div>
+  <p class="point">Just knowing a label — like a star sign — can trick the mind into <strong>seeing a match that was never really there.</strong></p>
+</section>
+
+<!-- Idea 5 -->
+<section class="idea">
+  <span class="idea-num">05</span>
+  <h2>You Remember What You Feel</h2>
+  <div class="example">On a happy day, Riya remembers her horoscope saying "love is near." On a sad day, she remembers the same kind of horoscope warning "watch out for heartbreak."</div>
+  <p class="point">We remember the parts that match our mood. <strong>Good days keep the good lines. Bad days keep the bad ones.</strong></p>
+</section>
+
+<!-- Idea 6 -->
+<section class="idea">
+  <span class="idea-num">06</span>
+  <h2>The Mirror, Not the Future</h2>
+  <div class="example">Vignesh always notices the lines that say "you deserve better." It isn't fate speaking to him — it's a hint about how he already feels about himself.</div>
+  <p class="point">A horoscope doesn't show your future. <strong>It shows what you already believe about yourself.</strong></p>
+</section>
+
+<blockquote>"What we might see is our own self-image looking back at us."</blockquote>
+
+<!-- Idea 7 -->
+<section class="idea">
+  <span class="idea-num">07</span>
+  <h2>Finding Your People</h2>
+  <div class="example">Pranav believes he's "unlucky in love," so he keeps friends nearby who agree — "yeah, love isn't really for you." Their words feel like proof, but he was the one who chose them.</div>
+  <p class="point">We quietly search for people who confirm what we already believe about ourselves — <strong>whether it's good or bad.</strong></p>
+</section>
+
+<!-- Idea 8 -->
+<section class="idea">
+  <span class="idea-num">08</span>
+  <h2>The Week-Long Test</h2>
+  <div class="example">Riya saves her horoscope every day for a week without rereading it. On day seven, she writes down what she remembers — then checks it against what was actually written.</div>
+  <p class="point">Comparing memory to the real text shows <strong>your true hopes and fears in love</strong> — more honestly than any horoscope can.</p>
+</section>
+
+<!-- Stat section -->
+<section class="stat-wrap">
+  <h2>A Real Number</h2>
+  <div class="chart-box">
+    <canvas id="statChart" width="280" height="280"></canvas>
+    <div class="chart-center">33%</div>
+  </div>
+  <p class="stat-caption">An estimated 33% of US residents believe in astrology — and 75% of them are women.</p>
+</section>
+
+<!-- Interactive lab -->
+<section class="lab">
+  <h2>Try the Trick Yourself</h2>
+  <p>Tap below for a "personal" reading. Notice how much of it feels true for you.</p>
+  <div id="fortune-card">Tap the star to begin ✦</div>
+  <button id="fortune-btn">Read My Fortune</button>
+  <div id="fortune-note">This is the exact trick Forer used in 1948. Every line is written to fit almost anyone.</div>
+</section>
+
+<!-- Main lesson -->
+<section class="lesson">
+  <div class="eyebrow">Main Lesson</div>
+  <p>The stars don't decide your love life. Your own mind does — and what you notice says more about you than any horoscope ever could.</p>
+</section>
+
+<footer>Wishing on a Star — read gently, think freely.</footer>
+
+<script>
+/* ---------- starfield ---------- */
+(function(){
+  const wrap = document.getElementById('stars');
+  const n = window.innerWidth < 600 ? 45 : 80;
+  for(let i=0;i<n;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2 + 1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'vw';
+    s.style.top = Math.random()*100+'vh';
+    s.style.animationDuration = (2 + Math.random()*3)+'s';
+    s.style.animationDelay = (Math.random()*4)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+/* ---------- falling hearts ---------- */
+(function(){
+  const wrap = document.getElementById('hearts');
+  const glyphs = ['♥','❤','♡'];
+  const n = window.innerWidth < 600 ? 14 : 24;
+  for(let i=0;i<n;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    h.style.left = Math.random()*100+'vw';
+    h.style.fontSize = (0.7 + Math.random()*1.3)+'rem';
+    h.style.opacity = 0.25 + Math.random()*0.45;
+    const dur = 9 + Math.random()*10;
+    h.style.animationDuration = dur+'s, ' + (dur*0.5)+'s';
+    h.style.animationDelay = (-Math.random()*dur)+'s, ' + (-Math.random()*dur)+'s';
+    wrap.appendChild(h);
+  }
+})();
+
+/* ---------- scroll reveal ---------- */
+(function(){
+  const items = document.querySelectorAll('.idea');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('show'); }
+    });
+  }, {threshold:.18});
+  items.forEach(i=>io.observe(i));
+})();
+
+/* ---------- stat donut chart ---------- */
+(function(){
+  const ctx = document.getElementById('statChart');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Believe in astrology','Do not'],
+      datasets: [{
+        data: [33, 67],
+        backgroundColor: ['#ff6f9c', '#241a3d'],
+        borderWidth: 0,
+        cutout: '78%'
+      }]
+    },
+    options: {
+      plugins: { legend: { display:false }, tooltip: { enabled:false } },
+      animation: { animateRotate:true, duration: 1400 }
+    }
+  });
+})();
+
+/* ---------- Forer effect generator ---------- */
+(function(){
+  const statements = [
+    "You have a great need for other people to like and admire you.",
+    "You have a tendency to be critical of yourself.",
+    "You have a great deal of unused capacity that you have not turned to your advantage.",
+    "While you have some personality weaknesses, you are generally able to compensate for them.",
+    "At times you have serious doubts as to whether you have made the right decision or done the right thing.",
+    "At times you are extroverted, affable, sociable, while at other times you are introverted, wary, reserved."
+  ];
+  const card = document.getElementById('fortune-card');
+  const note = document.getElementById('fortune-note');
+  const btn = document.getElementById('fortune-btn');
+  btn.addEventListener('click', ()=>{
+    card.style.opacity = 0;
+    setTimeout(()=>{
+      const pick = statements[Math.floor(Math.random()*statements.length)];
+      card.textContent = '"' + pick + '"';
+      card.style.opacity = 1;
+      note.classList.add('show');
+    }, 250);
+  });
+})();
+</script>
+
+</body>
+</html>

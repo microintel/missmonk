@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Do You Love the Way You Love?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a0f22;
+    --bg-mid:#2c1938;
+    --bg-soft:#3a2148;
+    --cream:#f6ecdf;
+    --muted:#c6b3cf;
+    --secure:#ffb199;
+    --secure-soft:#3a2a2c;
+    --anxious:#9ecbff;
+    --anxious-soft:#20293a;
+    --avoidant:#9bc9a3;
+    --avoidant-soft:#1f2e26;
+    --line: rgba(246,236,223,0.14);
+    --shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg-mid) 0%, var(--bg-deep) 55%, #0f0815 100%);
+    color:var(--cream);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  ::selection{ background: var(--secure); color:#1a0f22; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0;
+    font-size:20px;
+    color: var(--rose, #f2a6b0);
+    filter: drop-shadow(0 0 6px rgba(242,166,176,0.35));
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
+    8%{ opacity: var(--op, 0.5); }
+    92%{ opacity: var(--op, 0.5); }
+    100%{ transform: translateY(110vh) rotate(360deg); opacity:0; }
+  }
+  @keyframes sway{
+    0%, 100%{ margin-left:0px; }
+    50%{ margin-left: 30px; }
+  }
+
+  .wrap{ max-width:920px; margin:0 auto; padding: 0 24px; position:relative; z-index:1; }
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    min-height: 92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding: 80px 24px 40px;
+    position:relative;
+    z-index:1;
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--secure);
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.05;
+    max-width:14ch;
+    background: linear-gradient(180deg, #fff, var(--cream) 60%, var(--secure));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.sub{
+    margin-top:26px;
+    max-width:46ch;
+    font-size:1.08rem;
+    line-height:1.65;
+    color: var(--muted);
+  }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue .line{
+    width:1px; height:40px;
+    background:linear-gradient(var(--secure), transparent);
+    animation: pulseLine 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseLine{ 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+  /* ---------- Sections general ---------- */
+  section{
+    position:relative;
+    z-index:1;
+    padding: 90px 0;
+  }
+  section.tight{ padding: 60px 0; }
+  .kicker{
+    font-size:0.75rem;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--secure);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h2.section-title{
+    font-size: clamp(1.7rem, 4.4vw, 2.6rem);
+    margin-bottom:22px;
+    max-width:16ch;
+  }
+  p.lead{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:16px;
+  }
+  .reveal{
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:none;
+  }
+
+  /* ---------- Origin story mini reactions ---------- */
+  .mini-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-top:34px;
+  }
+  .mini{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 16px;
+    background: rgba(255,255,255,0.02);
+  }
+  .mini b{ display:block; font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:6px; }
+  .mini.secure b{ color:var(--secure); }
+  .mini.anxious b{ color:var(--anxious); }
+  .mini.avoidant b{ color:var(--avoidant); }
+  .mini span{ font-size:0.92rem; color:var(--muted); line-height:1.5; }
+
+  /* ---------- Cards ---------- */
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:40px;
+  }
+  .card-slot{ perspective: 1400px; height:400px; }
+  .card{
+    position:relative;
+    width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .card-slot.flipped .card{ transform: rotateY(180deg); }
+  .face{
+    position:absolute; inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    border-radius:20px;
+    padding:26px 22px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .face.front{
+    justify-content:space-between;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+  }
+  .face.back{
+    transform: rotateY(180deg);
+    overflow-y:auto;
+  }
+  .card-slot.secure .face.front{ border-top:4px solid var(--secure); }
+  .card-slot.anxious .face.front{ border-top:4px solid var(--anxious); }
+  .card-slot.avoidant .face.front{ border-top:4px solid var(--avoidant); }
+  .card-slot.secure .face.back{ background: var(--secure-soft); }
+  .card-slot.anxious .face.back{ background: var(--anxious-soft); }
+  .card-slot.avoidant .face.back{ background: var(--avoidant-soft); }
+
+  .pct{ font-family:'Fraunces',serif; font-size:3.4rem; font-weight:700; line-height:1; }
+  .card-slot.secure .pct{ color:var(--secure); }
+  .card-slot.anxious .pct{ color:var(--anxious); }
+  .card-slot.avoidant .pct{ color:var(--avoidant); }
+  .style-name{ font-family:'Fraunces', serif; font-size:1.5rem; margin:10px 0 6px; }
+  .style-tag{ font-size:0.85rem; color:var(--muted); font-style:italic; }
+  .flip-hint{ font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:auto; padding-top:14px; opacity:0.8; }
+
+  .back h4{ font-family:'Fraunces',serif; font-size:1.15rem; margin-bottom:12px; }
+  .back .belief{ font-style:italic; color:var(--cream); font-size:0.98rem; margin-bottom:16px; line-height:1.5; }
+  .back ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .back li{ font-size:0.88rem; color:var(--muted); line-height:1.45; padding-left:16px; position:relative; }
+  .back li::before{ content:"·"; position:absolute; left:0; font-size:1.3rem; line-height:0.8; top:2px; }
+  .card-slot.secure .back li::before{ color:var(--secure); }
+  .card-slot.anxious .back li::before{ color:var(--anxious); }
+  .card-slot.avoidant .back li::before{ color:var(--avoidant); }
+
+  /* ---------- Stats ---------- */
+  .stat-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:44px;
+  }
+  .stat{
+    text-align:center;
+  }
+  .ring-wrap{
+    width:150px; height:150px;
+    margin:0 auto 14px;
+    position:relative;
+  }
+  .ring-wrap svg{ transform: rotate(-90deg); width:100%; height:100%; }
+  .ring-bg{ fill:none; stroke: rgba(255,255,255,0.08); stroke-width:8; }
+  .ring-fg{ fill:none; stroke-width:8; stroke-linecap:round; stroke-dasharray:326.7; stroke-dashoffset:326.7; transition: stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1); }
+  .ring-num{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+  }
+  .stat-label{ font-size:0.92rem; color:var(--muted); }
+  .stat-label b{ display:block; color:var(--cream); font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:2px;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-list{ display:flex; flex-direction:column; gap:14px; margin-top:30px; }
+  .quiz-item{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    background: rgba(255,255,255,0.02);
+    cursor:pointer;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .quiz-item:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+  .quiz-item p{ font-size:0.98rem; line-height:1.55; color:var(--cream); }
+  .quiz-item .result{
+    display:none;
+    margin-top:12px;
+    font-size:0.85rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .quiz-item.picked .result{ display:block; }
+  .quiz-item[data-style="secure"].picked{ border-color:var(--secure); }
+  .quiz-item[data-style="anxious"].picked{ border-color:var(--anxious); }
+  .quiz-item[data-style="avoidant"].picked{ border-color:var(--avoidant); }
+  .quiz-item[data-style="secure"] .result{ color:var(--secure); }
+  .quiz-item[data-style="anxious"] .result{ color:var(--anxious); }
+  .quiz-item[data-style="avoidant"] .result{ color:var(--avoidant); }
+
+  /* ---------- Combos ---------- */
+  .combo-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+    margin-top:34px;
+  }
+  .combo{
+    border-radius:16px;
+    padding:20px 20px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+  }
+  .combo .who{ font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:8px; }
+  .combo p{ font-size:0.9rem; color:var(--muted); line-height:1.5; }
+  .combo.good{ border-left:3px solid var(--secure); }
+  .combo.hard{ border-left:3px solid #e0857a; grid-column: 1 / -1; }
+  .combo.hard .who{ color:#e0857a; }
+
+  /* ---------- Footer note ---------- */
+  .note-box{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:30px 28px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    margin-top:20px;
+  }
+  .note-box h3{ font-size:1.2rem; margin-bottom:10px; }
+  .note-box p{ font-size:0.95rem; line-height:1.65; color:var(--muted); }
+
+  footer{
+    text-align:center;
+    padding: 50px 24px 70px;
+    font-size:0.8rem;
+    color: var(--muted);
+    position:relative; z-index:1;
+  }
+  footer .heart-mark{ color:var(--secure); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 780px){
+    .cards{ grid-template-columns:1fr; }
+    .card-slot{ height:auto; min-height:340px; }
+    .mini-row{ grid-template-columns:1fr; }
+    .stat-row{ grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .ring-wrap{ width:100px; height:100px; }
+    .ring-num{ font-size:1.15rem; }
+    .combo-grid{ grid-template-columns:1fr; }
+    .combo.hard{ grid-column:auto; }
+    section{ padding:64px 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .heart{ animation:none !important; display:none; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<header class="hero">
+  <div class="eyebrow">The Science of Love</div>
+  <h1>Why do you love<br>the way you love?</h1>
+  <p class="sub">The way you were held as a baby is quietly steering your love life today. Psychologists call it your <em>attachment style</em> — and once you know yours, love makes a lot more sense.</p>
+  <div class="scroll-cue"><span class="line"></span>Scroll to find yours</div>
+</header>
+
+<div class="wrap">
+
+  <section class="tight reveal">
+    <div class="kicker">Where it started</div>
+    <h2 class="section-title">One quiet experiment changed everything</h2>
+    <p class="lead">After World War II, a psychiatrist named John Bowlby noticed something simple: kids who felt safe with their parents grew into adults who felt safe in love. He named it <strong>attachment theory</strong>.</p>
+    <p class="lead">Years later, his student Mary Ainsworth tested it. She placed a toddler and mom in a playroom, then had mom step out for a few minutes. What the child did next — cry, ignore it, or calmly cope — told her everything about how that child expected the world to treat them.</p>
+    <div class="mini-row">
+      <div class="mini secure"><b>Secure kids</b><span>Played happily, missed mom, calmed down fast when she returned.</span></div>
+      <div class="mini anxious"><b>Anxious kids</b><span>Barely explored, cried hard, took ages to settle again.</span></div>
+      <div class="mini avoidant"><b>Avoidant kids</b><span>Looked totally fine outside — but their heart was racing.</span></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">Discover your style</div>
+    <h2 class="section-title">Three ways of loving. Tap a card to see what's underneath.</h2>
+    <p class="lead">Nobody fits a box perfectly — think of these as leanings, not labels. Flip each card to see the hidden side.</p>
+
+    <div class="cards">
+      <div class="card-slot secure" tabindex="0" role="button" aria-label="Flip secure attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">50%</div>
+              <div class="style-name">The Steady One</div>
+              <div class="style-tag">Secure</div>
+            </div>
+            <div class="flip-hint">Tap to see the inside ↻</div>
+          </div>
+          <div class="face back">
+            <h4>Secure</h4>
+            <p class="belief">"My needs will be met."</p>
+            <ul>
+              <li>Grew up with parents who were warm and quick to respond</li>
+              <li>Feels happy, curious, and confident by default</li>
+              <li>When stressed, talks it through instead of shutting down</li>
+              <li>After a breakup: grieves fully, then opens up to love again</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot anxious" tabindex="0" role="button" aria-label="Flip anxious attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">20%</div>
+              <div class="style-name">The Worrier</div>
+              <div class="style-tag">Anxious</div>
+            </div>
+            <div class="flip-hint">Tap to see the inside ↻</div>
+          </div>
+          <div class="face back">
+            <h4>Anxious</h4>
+            <p class="belief">"If I do it right, maybe I'll earn their love."</p>
+            <ul>
+              <li>Grew up with love that came and went unpredictably</li>
+              <li>Craves closeness and fears being left behind</li>
+              <li>When stressed, needs constant reassurance</li>
+              <li>After a breakup: finds it hard to fully let go</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot avoidant" tabindex="0" role="button" aria-label="Flip avoidant attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">25%</div>
+              <div class="style-name">The Guarded One</div>
+              <div class="style-tag">Avoidant</div>
+            </div>
+            <div class="flip-hint">Tap to see the inside ↻</div>
+          </div>
+          <div class="face back">
+            <h4>Avoidant</h4>
+            <p class="belief">"I can't lean on anyone but myself."</p>
+            <ul>
+              <li>Grew up with parents who felt distant or overly critical</li>
+              <li>Looks completely calm — but their pulse says otherwise</li>
+              <li>When stressed, pulls away and shuts the door quietly</li>
+              <li>After a breakup: seems unbothered... but rarely is</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">By the numbers</div>
+    <h2 class="section-title">Who's in the room with you</h2>
+    <p class="lead">Exact numbers shift study to study, but the pattern holds: about half of us feel secure in love, and the rest are learning to.</p>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--secure)" data-pct="50"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>Secure</b>feel safe by default</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--anxious)" data-pct="20"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>Anxious</b>crave closeness</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--avoidant)" data-pct="25"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>Avoidant</b>keep their guard up</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">Quick check</div>
+    <h2 class="section-title">Which one sounds like you?</h2>
+    <p class="lead">This is a simplified version of the famous 1985 "love quiz." Tap the line that feels most true.</p>
+    <div class="quiz-list">
+      <div class="quiz-item" data-style="secure">
+        <p>"Getting close to people comes naturally to me. I don't spend much time worrying that someone will leave."</p>
+        <div class="result">→ That's a Secure leaning</div>
+      </div>
+      <div class="quiz-item" data-style="anxious">
+        <p>"I want to be closer to my partner than they seem to want. I often worry they don't love me as much as I love them."</p>
+        <div class="result">→ That's an Anxious leaning</div>
+      </div>
+      <div class="quiz-item" data-style="avoidant">
+        <p>"I get uneasy when people try to get too close. Leaning on someone else doesn't come naturally to me."</p>
+        <div class="result">→ That's an Avoidant leaning</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">Putting two together</div>
+    <h2 class="section-title">When two hearts meet</h2>
+    <div class="combo-grid">
+      <div class="combo good">
+        <div class="who">Secure + Anxious</div>
+        <p>The secure partner's steadiness lets the anxious one finally relax.</p>
+      </div>
+      <div class="combo good">
+        <div class="who">Secure + Avoidant</div>
+        <p>Given space without judgment, the avoidant partner slowly stops running.</p>
+      </div>
+      <div class="combo hard">
+        <div class="who">Anxious + Avoidant</div>
+        <p>One chases closeness, the other retreats from it — and the chase only makes the retreat worse. It's the most common, and most exhausting, pairing of all.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="note-box">
+      <h3>A gentle note 💛</h3>
+      <p>Some people carry both anxious and avoidant traits at once, often from a genuinely difficult past. If that's you, be kind to yourself — it's a hard combination to carry alone, and a good therapist can make a real difference.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Made to help you understand love a little better <span class="heart-mark">♥</span>
+</footer>
+
+<script>
+  // ---------- Falling hearts background ----------
+  (function(){
+    const field = document.getElementById('heart-field');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+    const colors = ['#f2a6b0', '#ffb199', '#9ecbff', '#c9a6f2'];
+    const count = window.innerWidth < 700 ? 14 : 24;
+    for(let i=0;i<count;i++){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = '♥';
+      const left = Math.random()*100;
+      const size = 10 + Math.random()*20;
+      const duration = 10 + Math.random()*14;
+      const delay = Math.random()*-20;
+      const swayDur = 3 + Math.random()*3;
+      const op = 0.15 + Math.random()*0.35;
+      h.style.left = left + 'vw';
+      h.style.fontSize = size + 'px';
+      h.style.color = colors[Math.floor(Math.random()*colors.length)];
+      h.style.setProperty('--op', op);
+      h.style.animationDuration = duration + 's, ' + swayDur + 's';
+      h.style.animationDelay = delay + 's, 0s';
+      field.appendChild(h);
+    }
+  })();
+
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---------- Card flip ----------
+  document.querySelectorAll('.card-slot').forEach(slot=>{
+    slot.addEventListener('click', ()=> slot.classList.toggle('flipped'));
+    slot.addEventListener('keypress', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        slot.classList.toggle('flipped');
+      }
+    });
+  });
+
+  // ---------- Stat rings count up ----------
+  const ringObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const stat = entry.target;
+        const circle = stat.querySelector('.ring-fg');
+        const numEl = stat.querySelector('.ring-num');
+        const pct = parseInt(circle.getAttribute('data-pct'), 10);
+        const circumference = 326.7;
+        const offset = circumference - (pct/100)*circumference;
+        circle.style.strokeDashoffset = offset;
+        let current = 0;
+        const step = ()=>{
+          current += 1;
+          if(current <= pct){
+            numEl.textContent = current + '%';
+            requestAnimationFrame(()=> setTimeout(step, 16));
+          } else {
+            numEl.textContent = pct + '%';
+          }
+        };
+        step();
+        ringObserver.unobserve(stat);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.stat').forEach(s=>ringObserver.observe(s));
+
+  // ---------- Quiz picks ----------
+  document.querySelectorAll('.quiz-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.quiz-item').forEach(i=>i.classList.remove('picked'));
+      item.classList.add('picked');
+      const style = item.getAttribute('data-style');
+      const cardSlot = document.querySelector('.card-slot.' + style);
+      if(cardSlot){
+        cardSlot.scrollIntoView({ behavior:'smooth', block:'center' });
+        cardSlot.classList.add('flipped');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

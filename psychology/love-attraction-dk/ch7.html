@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Do I Keep Making the Same Mistake?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg-deep:#160f26;
+    --bg-mid:#241635;
+    --bg-panel:#2c1c40;
+    --rose:#e6a4ac;
+    --rose-soft:#f0c4c9;
+    --gold:#e3b67f;
+    --text:#f3ecf3;
+    --text-dim:#bda9c9;
+    --line: rgba(230,164,172,0.25);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg-deep);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    line-height:1.65;
+  }
+
+  #heart-canvas{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .content{
+    position:relative;
+    z-index:1;
+  }
+
+  section{
+    max-width:720px;
+    margin:0 auto;
+    padding:100px 28px;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .eyebrow::before{
+    content:"";
+    width:24px;height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(34px,7vw,58px);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+  }
+
+  h1 em, h2 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--rose-soft);
+  }
+
+  h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(26px,4.5vw,36px);
+    line-height:1.15;
+    margin-bottom:22px;
+  }
+
+  p{
+    font-size:17px;
+    color:var(--text-dim);
+    margin-bottom:18px;
+  }
+
+  p strong{
+    color:var(--text);
+    font-weight:600;
+  }
+
+  .lede{
+    font-size:19px;
+    color:var(--text);
+    margin-top:26px;
+  }
+
+  /* HERO */
+  #hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:60px;
+    padding-bottom:60px;
+    text-align:left;
+  }
+
+  #hero .sub{
+    margin-top:26px;
+    font-size:18px;
+    color:var(--text-dim);
+    max-width:520px;
+  }
+
+  .scroll-hint{
+    margin-top:56px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:0.1em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    opacity:0.7;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(6px);}
+  }
+
+  .divider{
+    width:100%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+    margin:0 auto;
+  }
+
+  /* STORY CARD */
+  .story{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:30px 28px;
+    margin:30px 0;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .story::before{
+    content:"";
+    position:absolute;
+    top:-40px; right:-40px;
+    width:140px;height:140px;
+    background:radial-gradient(circle, rgba(230,164,172,0.18), transparent 70%);
+  }
+
+  .story .name{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    color:var(--gold);
+    font-size:19px;
+    margin-bottom:10px;
+  }
+
+  .story p{
+    color:var(--text);
+    font-size:16.5px;
+    margin-bottom:0;
+  }
+
+  .story p + p{margin-top:12px;}
+
+  blockquote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(20px,3.2vw,26px);
+    line-height:1.4;
+    color:var(--rose-soft);
+    border-left:2px solid var(--gold);
+    padding-left:24px;
+    margin:32px 0;
+  }
+
+  blockquote cite{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-style:normal;
+    font-size:13px;
+    color:var(--text-dim);
+    margin-top:12px;
+    letter-spacing:0.02em;
+  }
+
+  /* KEYS */
+  .key-block{
+    margin:56px 0;
+  }
+
+  .key-number{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:0.1em;
+    margin-bottom:10px;
+  }
+
+  .key-block h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:24px;
+    margin-bottom:10px;
+  }
+
+  .key-block p{
+    margin-bottom:22px;
+  }
+
+  .exchange{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .bubble{
+    max-width:82%;
+    padding:14px 18px;
+    border-radius:16px;
+    font-size:15px;
+    position:relative;
+    animation:rise 0.7s cubic-bezier(.2,.8,.2,1) both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+
+  @keyframes rise{
+    from{opacity:0; transform:translateY(16px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .bubble.left{
+    align-self:flex-start;
+    background:rgba(230,164,172,0.14);
+    border:1px solid rgba(230,164,172,0.3);
+    border-bottom-left-radius:4px;
+    color:var(--text);
+  }
+
+  .bubble.right{
+    align-self:flex-end;
+    background:rgba(227,182,127,0.16);
+    border:1px solid rgba(227,182,127,0.35);
+    border-bottom-right-radius:4px;
+    color:var(--text);
+  }
+
+  .bubble .who{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--text-dim);
+    margin-bottom:6px;
+    display:block;
+  }
+
+  /* CLOSING */
+  #closing{
+    text-align:center;
+    padding-bottom:140px;
+  }
+
+  #closing .heart-mark{
+    font-size:26px;
+    color:var(--rose);
+    margin-bottom:26px;
+    display:inline-block;
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse{
+    0%,100%{transform:scale(1); opacity:0.85;}
+    50%{transform:scale(1.15); opacity:1;}
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 28px 60px;
+    font-size:13px;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width:600px){
+    section{padding:70px 22px;}
+    .story{padding:24px 20px;}
+    .bubble{max-width:92%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="heart-canvas"></canvas>
+
+<div class="content">
+
+  <section id="hero">
+    <div class="eyebrow">a pattern worth noticing</div>
+    <h1>Why do I keep <em>falling</em><br>for the same mistake?</h1>
+    <p class="sub">You swore it would be different this time. But somehow, the new relationship feels a lot like the old one. Here's why that keeps happening — and what you can do about it.</p>
+    <div class="scroll-hint">↓ scroll down</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="pattern">
+    <div class="eyebrow">the pattern</div>
+    <h2>It's not bad luck.<br><em>It's a pattern.</em></h2>
+    <div class="story">
+      <div class="name">Vignesh</div>
+      <p>Every person Vignesh has ever loved has felt a little far away — busy, distracted, hard to reach.</p>
+      <p>His father was exactly the same. Always present in the house, never quite <em>there</em>.</p>
+    </div>
+    <p>In the 1980s, a therapist named Harville Hendrix noticed something strange about who we fall for. We don't pick partners randomly. Something in us reaches for people who <strong>feel like</strong> the people who raised us — good parts and difficult parts included.</p>
+    <p class="lede">No childhood is perfect. So somewhere inside, most of us are still quietly hoping: <em>"This time, someone like that will finally choose me properly."</em></p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="wound">
+    <div class="eyebrow">the old wound</div>
+    <h2>Your partner isn't<br>the problem. <em>The wound is.</em></h2>
+    <div class="story">
+      <div class="name">Pranav</div>
+      <p>The moment his partner leaves for the evening, Pranav's stomach tightens. His mind starts running through worst cases.</p>
+      <p>It looks like jealousy. It isn't. It's an old fear, still wide awake.</p>
+    </div>
+    <p>Therapist Bruce Crapuchettes explains it simply: we're drawn to people who accidentally poke our unfinished business — because some part of us is hoping this is finally our chance to heal it.</p>
+    <p>Here's where it goes wrong: trying to fix the fear by controlling your partner. <em>"Don't go out without me."</em></p>
+    <p>Here's where it goes right: saying the fear out loud instead. <em>"I feel anxious when you leave — could you reassure me before you go?"</em></p>
+    <p class="lede">That one sentence is the whole difference between repeating your pain and finally closing it.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="safety">
+    <div class="eyebrow">finding new safety</div>
+    <h2>Notice the thread,<br>not the blame.</h2>
+    <p>If your relationships keep hitting the same wall, gently ask yourself: what did those people have in common? Not to punish yourself — just to see it clearly.</p>
+    <p>And remember — a relationship isn't the only place healing happens. Feeling safe within yourself first makes the search for love a lot less desperate, and a lot more honest.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="keys">
+    <div class="eyebrow">three keys</div>
+    <h2>How to actually<br><em>talk</em> it through</h2>
+    <p>When an old wound gets triggered, most people either explode or shut down. Neither one heals anything. These three moves do.</p>
+
+    <div class="key-block">
+      <div class="key-number">01 — Mirroring</div>
+      <h3>Repeat it back to them.</h3>
+      <p>Say what you heard, in your own words. It proves you were actually listening — not just waiting for your turn to speak.</p>
+      <div class="exchange">
+        <div class="bubble left"><span class="who">Meera</span>It bothers me when you don't call — it makes me feel forgotten.</div>
+        <div class="bubble right"><span class="who">Vignesh</span>So when I don't call, you feel like I've forgotten you?</div>
+      </div>
+    </div>
+
+    <div class="key-block">
+      <div class="key-number">02 — Validation</div>
+      <h3>Let their feeling be real.</h3>
+      <p>You don't have to agree with the opinion. But the feeling behind it is real to them — and pretending otherwise never helps.</p>
+      <div class="exchange">
+        <div class="bubble left"><span class="who">Aditi</span>Stop leaving your cups everywhere — it drives me crazy, I feel surrounded by chaos.</div>
+        <div class="bubble right"><span class="who">Pranav</span>I get it — clutter makes you feel like everything's out of control. I don't want that for you.</div>
+      </div>
+    </div>
+
+    <div class="key-block">
+      <div class="key-number">03 — Empathy</div>
+      <h3>Step into their side, briefly.</h3>
+      <p>You don't have to see it their way forever. Just for one moment — long enough to understand why it hurt.</p>
+      <div class="exchange">
+        <div class="bubble left"><span class="who">Meera</span>Seeing you talk to your ex made me feel so insecure — and I couldn't even say anything without ruining the party.</div>
+        <div class="bubble right"><span class="who">Vignesh</span>That must have been really hard — feeling that way and not being able to say a word about it.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="closing">
+    <div class="heart-mark">♥</div>
+    <blockquote>
+      "We're born into relationship — and it's in relationship that we find healing, growth, and potential."
+      <cite>Bruce Crapuchettes, Imago therapist</cite>
+    </blockquote>
+    <p>The next time you feel history repeating itself — pause. That's not a flaw in you. That's an old wound, finally asking to be seen.</p>
+  </section>
+
+  <footer>made to be understood, not memorized</footer>
+
+</div>
+
+<script>
+  // Falling hearts ambient background — soft, slow, low density
+  const canvas = document.getElementById('heart-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function drawHeart(x, y, size, alpha, color){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = size * 1.6;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    const s = size;
+    ctx.moveTo(0, s * 0.3);
+    ctx.bezierCurveTo(0, -s * 0.2, -s, -s * 0.2, -s, s * 0.3);
+    ctx.bezierCurveTo(-s, s * 0.75, -s * 0.4, s * 1.0, 0, s * 1.35);
+    ctx.bezierCurveTo(s * 0.4, s * 1.0, s, s * 0.75, s, s * 0.3);
+    ctx.bezierCurveTo(s, -s * 0.2, 0, -s * 0.2, 0, s * 0.3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const colors = ['#e6a4ac', '#e3b67f', '#f0c4c9'];
+  const count = window.innerWidth < 640 ? 12 : 20;
+
+  const hearts = Array.from({length: count}, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    size: 6 + Math.random() * 10,
+    speed: 0.25 + Math.random() * 0.5,
+    drift: (Math.random() - 0.5) * 0.4,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: 0.005 + Math.random() * 0.01,
+    alpha: 0.25 + Math.random() * 0.35,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  function tick(){
+    ctx.clearRect(0, 0, w, h);
+    hearts.forEach(hrt => {
+      hrt.y += hrt.speed;
+      hrt.sway += hrt.swaySpeed;
+      hrt.x += Math.sin(hrt.sway) * 0.3 + hrt.drift * 0.1;
+      if (hrt.y > h + 20){
+        hrt.y = -20;
+        hrt.x = Math.random() * w;
+      }
+      if (hrt.x > w + 20) hrt.x = -20;
+      if (hrt.x < -20) hrt.x = w + 20;
+      drawHeart(hrt.x, hrt.y, hrt.size, hrt.alpha, hrt.color);
+    });
+    if (!prefersReduced) requestAnimationFrame(tick);
+  }
+
+  if (prefersReduced){
+    hearts.forEach(hrt => drawHeart(hrt.x, hrt.y, hrt.size, hrt.alpha * 0.5, hrt.color));
+  } else {
+    tick();
+  }
+</script>
+
+</body>
+</html>
