@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MissMonk — The subjects school forgot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,340..900;1,340..900&family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-900:#1B1836;
+    --ink-800:#262151;
+    --ink-700:#332B6B;
+    --paper:#F3E9D2;
+    --paper-dim:#E9DCBC;
+    --marigold:#F2A93B;
+    --jade:#2FA98C;
+    --rose:#E8613C;
+    --ink-on-paper:#241F42;
+    --max:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink-900);
+    color:var(--paper);
+    font-family:'Work Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  [lang="kn"]{ font-family:'Noto Sans Kannada','Work Sans',sans-serif; }
+  [lang="ta"]{ font-family:'Noto Sans Tamil','Work Sans',sans-serif; }
+  [lang="hi"]{ font-family:'Noto Sans Devanagari','Work Sans',sans-serif; }
+
+  a{ color:inherit; }
+  :focus-visible{ outline:3px solid var(--marigold); outline-offset:3px; }
+
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 24px; }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:40;
+    background:rgba(27,24,54,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(243,233,210,.12);
+  }
+  .nav .wrap{ display:flex; align-items:center; justify-content:space-between; padding-top:16px; padding-bottom:16px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:20px; font-weight:600; letter-spacing:.2px; }
+  .brand .dot{ width:9px; height:9px; border-radius:50%; background:var(--marigold); }
+  .brand small{ display:block; font-family:'Work Sans',sans-serif; font-weight:500; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--jade); }
+  .nav-cta{
+    font-size:13px; font-weight:600; padding:10px 18px; border-radius:999px;
+    background:var(--marigold); color:var(--ink-900); text-decoration:none;
+    white-space:nowrap;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:72px 0 56px; position:relative; overflow:hidden; }
+  .hero .wrap{ display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--jade); font-weight:600; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--jade); }
+  h1{
+    font-family:'Fraunces',serif; font-weight:560; font-style:italic;
+    font-size:clamp(34px,5vw,58px); line-height:1.06; letter-spacing:-.01em;
+    margin:0 0 22px;
+  }
+  h1 em{ font-style:normal; color:var(--marigold); }
+  .hero p.lead{ font-size:17px; line-height:1.7; color:#D9D1E8; max-width:46ch; margin:0 0 28px; }
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .btn-primary{
+    background:var(--paper); color:var(--ink-900); text-decoration:none;
+    font-weight:700; font-size:15px; padding:14px 26px; border-radius:999px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-ghost{
+    color:var(--paper); text-decoration:none; font-weight:600; font-size:15px;
+    border-bottom:1px solid rgba(243,233,210,.4); padding-bottom:2px;
+  }
+
+  /* signature: fanned reel-card stack */
+  .stack{ position:relative; height:340px; }
+  .card{
+    position:absolute; width:210px; height:270px; border-radius:18px;
+    background:var(--paper); color:var(--ink-on-paper);
+    box-shadow:0 24px 50px rgba(0,0,0,.35);
+    padding:20px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .card .tag{
+    align-self:flex-start; font-size:10px; font-weight:700; letter-spacing:.08em;
+    padding:4px 9px; border-radius:999px; text-transform:uppercase;
+  }
+  .card p{ font-family:'Fraunces',serif; font-size:15px; line-height:1.45; margin:0; }
+  .card .foot{ font-size:11px; color:#6b6188; font-weight:600; }
+  .card.c1{ left:0; top:36px; transform:rotate(-9deg); background:var(--paper-dim); z-index:1; }
+  .card.c2{ left:78px; top:0; transform:rotate(3deg); z-index:3; }
+  .card.c3{ right:0; top:44px; transform:rotate(11deg); background:#EEE0BC; z-index:2; }
+  .card.c1 .tag{ background:var(--jade); color:#08281f; }
+  .card.c2 .tag{ background:var(--marigold); color:#402700; }
+  .card.c3 .tag{ background:var(--rose); color:#3a0f02; }
+
+  @media (prefers-reduced-motion:no-preference){
+    .card.c1{ animation:sway1 7s ease-in-out infinite; }
+    .card.c2{ animation:sway2 7s ease-in-out infinite; }
+    .card.c3{ animation:sway3 7s ease-in-out infinite; }
+  }
+  @keyframes sway1{ 50%{ transform:rotate(-13deg) translateY(-6px); } }
+  @keyframes sway2{ 50%{ transform:rotate(6deg) translateY(-10px); } }
+  @keyframes sway3{ 50%{ transform:rotate(7deg) translateY(-6px); } }
+
+  /* ---------- LEDGER (problem/solution) ---------- */
+  .ledger{ padding:70px 0; }
+  .ledger .head{ text-align:center; max-width:640px; margin:0 auto 46px; }
+  .ledger .head span{ color:var(--jade); font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+  .ledger .head h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,3.4vw,36px); margin:12px 0 0; line-height:1.2; }
+  .panels{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .panel{
+    background:var(--paper); color:var(--ink-on-paper); border-radius:22px;
+    padding:32px 30px; position:relative;
+  }
+  .panel .num{
+    font-family:'Fraunces',serif; font-style:italic; font-size:14px;
+    color:#7a7095; margin-bottom:14px; display:block;
+  }
+  .panel h3{ font-family:'Fraunces',serif; font-size:23px; margin:0 0 14px; font-weight:600; }
+  .panel p{ font-size:15px; line-height:1.75; color:#3c355c; margin:0 0 12px; }
+  .panel p:last-child{ margin-bottom:0; }
+  .panel.problem{ border-top:4px solid var(--rose); }
+  .panel.solution{ border-top:4px solid var(--jade); }
+  .panel strong{ color:var(--ink-on-paper); }
+
+  /* ---------- CHAPTERS (language switcher) ---------- */
+  .chapters{ padding:20px 0 90px; }
+  .chapters .head{ text-align:center; max-width:640px; margin:0 auto 34px; }
+  .chapters .head span{ color:var(--marigold); font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+  .chapters .head h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,3.4vw,36px); margin:12px 0 0; }
+
+  .tabs{
+    display:flex; gap:8px; overflow-x:auto; padding:6px 4px 20px;
+    scrollbar-width:none; justify-content:center;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{
+    flex:0 0 auto; background:transparent; color:var(--paper);
+    border:1px solid rgba(243,233,210,.3); border-radius:999px;
+    padding:10px 20px; font-size:14px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+  }
+  .tab .chip{ width:8px; height:8px; border-radius:50%; background:currentColor; opacity:.5; }
+  .tab[aria-selected="true"]{ background:var(--paper); color:var(--ink-900); border-color:var(--paper); }
+
+  .page{
+    background:var(--paper); color:var(--ink-on-paper); border-radius:26px;
+    padding:44px clamp(22px,5vw,64px); position:relative;
+    border-left:5px solid var(--marigold);
+  }
+  .page[hidden]{ display:none; }
+  .page .title{ font-family:'Fraunces',serif; font-size:clamp(24px,3vw,32px); font-weight:600; margin:0 0 6px; }
+  .page .sub{ font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7a7095; font-weight:700; margin-bottom:22px; display:block; }
+  .page p{ font-size:16px; line-height:1.85; color:#352E56; margin:0 0 16px; max-width:70ch; }
+  .page p:last-child{ margin-bottom:0; }
+  .page strong{ color:var(--ink-on-paper); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ border-top:1px solid rgba(243,233,210,.12); padding:36px 0; }
+  footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; }
+  footer .fbrand{ font-family:'Fraunces',serif; font-style:italic; font-size:15px; }
+  footer .fine{ font-size:12px; color:#9186ac; }
+  .disclaimer{
+    border-top:1px solid rgba(243,233,210,.12);
+    padding:28px 0;
+  }
+  .disclaimer .wrap{ max-width:760px; }
+  .disclaimer p{ font-size:12.5px; line-height:1.8; color:#9186ac; margin:0; }
+  .disclaimer strong{ color:#c9c0e0; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:880px){
+    .hero .wrap{ grid-template-columns:1fr; gap:44px; }
+    .stack{ height:290px; max-width:340px; margin:0 auto; }
+    .panels{ grid-template-columns:1fr; }
+  }
+  @media (max-width:520px){
+    .wrap{ padding:0 18px; }
+    .hero{ padding:44px 0 40px; }
+    .brand small{ font-size:9.5px; }
+    .card{ width:170px; height:230px; padding:16px; }
+    .card.c2{ left:60px; }
+    .page{ padding:30px 20px; border-radius:20px; }
+    .panel{ padding:26px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><div>MissMonk<small>by Microintel</small></div></div>
+    <a class="nav-cta" href="#chapters">Read the vision</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">A knowledge platform</span>
+      <h1>The subjects school<br>forgot to <em>teach</em>.</h1>
+      <p class="lead">Science and math get a curriculum. Money, emotions, and trust don't. MissMonk turns the world's best books into short, scrollable lessons — so the next generation learns what most of us had to learn the hard way.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#chapters">Explore MissMonk →</a>
+        <a class="btn-ghost" href="#ledger">Why it exists</a>
+      </div>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="card c1"><span class="tag">EN</span><p>Money isn't math. It's a habit you're taught — or never are.</p><span class="foot">Financial literacy · 45s</span></div>
+      <div class="card c2"><span class="tag">ಕ</span><p lang="kn">ನಂಬಿಕೆ ಎಂದರೆ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುವ ಒಂದು ಆಯ್ಕೆ.</p><span class="foot">Relationships · 38s</span></div>
+      <div class="card c3"><span class="tag">हि</span><p lang="hi">भावनाओं को समझना, उन्हें दबाना नहीं।</p><span class="foot">Emotional IQ · 52s</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ledger" id="ledger">
+  <div class="wrap">
+    <div class="head">
+      <span>The gap</span>
+      <h2>We're taught how to pass exams.<br>Rarely how to live well.</h2>
+    </div>
+    <div class="panels">
+      <div class="panel problem">
+        <span class="num">The problem</span>
+        <h3>Nobody assigns homework on trust</h3>
+        <p>School covers <strong>science, maths, biology, chemistry, computer science</strong> in depth. But <strong>financial literacy, psychology, emotional intelligence, self-awareness and relationships</strong> usually show up only in adulthood — if at all.</p>
+        <p>So children absorb their beliefs about money and people from wherever is loudest: social media, hearsay, and misinformation. Left uncorrected, that gap shows up later as poor decisions, unhealthy relationships, and sometimes worse.</p>
+      </div>
+      <div class="panel solution">
+        <span class="num">The response</span>
+        <h3>Start the lesson earlier</h3>
+        <p><strong>Microintel</strong> built <strong>MissMonk</strong> to close that gap while it's still cheap to close — in childhood, not after the damage is done.</p>
+        <p>It compresses the best books on money, mind, and relationships into <strong>short summaries and reel-style lessons</strong> — built to be scrolled, not assigned. Not a book-summary app. A step toward a wiser generation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapters" id="chapters">
+  <div class="wrap">
+    <div class="head">
+      <span>In your language</span>
+      <h2>The same page,<br>four ways to read it.</h2>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Choose a language">
+      <button class="tab" id="tab-en" role="tab" aria-selected="true" aria-controls="panel-en"><span class="chip"></span>English</button>
+      <button class="tab" id="tab-kn" role="tab" aria-selected="false" aria-controls="panel-kn"><span class="chip"></span>ಕನ್ನಡ</button>
+      <button class="tab" id="tab-ta" role="tab" aria-selected="false" aria-controls="panel-ta"><span class="chip"></span>தமிழ்</button>
+      <button class="tab" id="tab-hi" role="tab" aria-selected="false" aria-controls="panel-hi"><span class="chip"></span>हिन्दी</button>
+    </div>
+
+    <div class="page" id="panel-en" role="tabpanel" aria-labelledby="tab-en">
+      <span class="sub">English</span>
+      <p class="title">MissMonk</p>
+      <p>School teaches <strong>science, maths, biology, chemistry, computer science</strong> — and rightly so. But life skills like <strong>financial literacy, psychology, emotional intelligence, self-awareness, relationships, trust and love</strong> are usually left for higher education, or never taught at all.</p>
+      <p>Without them, children fill the gap with whatever social media and misinformation offer — and that can lead to poor decisions, unhealthy relationships, and in some cases, crime, violence or abuse.</p>
+      <p><strong>Microintel</strong> built MissMonk to turn the world's best books into simple summaries, interactive lessons, and short scrollable content — so learning about money, emotions, relationships and personal growth feels as easy as scrolling a reel. Not a book-summary app. A step toward a wiser generation.</p>
+    </div>
+
+    <div class="page" id="panel-kn" role="tabpanel" aria-labelledby="tab-kn" hidden lang="kn">
+      <span class="sub">ಕನ್ನಡ</span>
+      <p class="title" lang="en">MissMonk</p>
+      <p>ನಮ್ಮ ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆ ವಿಜ್ಞಾನ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ವಿಜ್ಞಾನವನ್ನು ಕಲಿಸುತ್ತದೆ. ಆದರೆ ಹಣದ ಅರಿವು, ಮಾನವ ಮನೋವಿಜ್ಞಾನ, ಭಾವನೆಗಳ ನಿಯಂತ್ರಣ, ಆತ್ಮಜ್ಞಾನ, ಸಂಬಂಧಗಳು, ನಂಬಿಕೆ ಮತ್ತು ಪ್ರೀತಿಯಂತಹ ಜೀವನ ಕೌಶಲ್ಯಗಳನ್ನು ಬಾಲ್ಯದಲ್ಲಿ ಕಲಿಸಲಾಗುವುದಿಲ್ಲ.</p>
+      <p>ಇದರ ಪರಿಣಾಮವಾಗಿ ಮಕ್ಕಳು ಸಮಾಜ ಮತ್ತು ಇಂಟರ್ನೆಟ್‌ನ ತಪ್ಪು ಮಾಹಿತಿಯಿಂದ ತಪ್ಪು ನಂಬಿಕೆಗಳನ್ನು ಬೆಳೆಸಿಕೊಳ್ಳುತ್ತಾರೆ — ಇದು ಮುಂದೆ ತಪ್ಪು ನಿರ್ಧಾರಗಳು ಮತ್ತು ದುರ್ಬಲ ಸಂಬಂಧಗಳಿಗೆ ಕಾರಣವಾಗಬಹುದು.</p>
+      <p><strong>ಮೈಕ್ರೋಇಂಟೆಲ್</strong> ಅಭಿವೃದ್ಧಿಪಡಿಸಿದ <strong>MissMonk</strong>, ಉತ್ತಮ ಪುಸ್ತಕಗಳ ಜ್ಞಾನವನ್ನು ಸರಳ ಸಾರಾಂಶಗಳು, ಸಂವಾದಾತ್ಮಕ ಪಾಠಗಳು ಮತ್ತು ರೀಲ್ಸ್‌ನಂತೆ ಸ್ಕ್ರೋಲ್ ಮಾಡಬಹುದಾದ ರೂಪದಲ್ಲಿ ನೀಡುತ್ತದೆ — ಮಕ್ಕಳಿಗೆ ಚಿಕ್ಕ ವಯಸ್ಸಿನಿಂದಲೇ ಸರಿಯಾದ ಜೀವನ ಜ್ಞಾನ ನೀಡುವ ಗುರಿಯೊಂದಿಗೆ.</p>
+    </div>
+
+    <div class="page" id="panel-ta" role="tabpanel" aria-labelledby="tab-ta" hidden lang="ta">
+      <span class="sub">தமிழ்</span>
+      <p class="title" lang="en">MissMonk</p>
+      <p>பள்ளிகளில் அறிவியல், கணிதம், உயிரியல், வேதியியல், கணினி அறிவியல் கற்பிக்கப்படுகின்றன. ஆனால் பண மேலாண்மை, மனித உளவியல், உணர்ச்சி கட்டுப்பாடு, தன்னறிவு, உறவுகள், நம்பிக்கை மற்றும் அன்பு போன்ற வாழ்க்கைத் திறன்கள் சிறு வயதிலேயே கற்பிக்கப்படுவதில்லை.</p>
+      <p>இதனால் பல குழந்தைகள் சமூகத்திலும் இணையத்திலும் கிடைக்கும் தவறான தகவல்களை நம்பி வளர்கிறார்கள் — இது தவறான முடிவுகள் மற்றும் பலவீனமான உறவுகளுக்கு வழிவகுக்கலாம்.</p>
+      <p><strong>Microintel</strong> உருவாக்கிய <strong>MissMonk</strong>, உலகின் சிறந்த புத்தகங்களின் அறிவை எளிய சுருக்கங்கள், தொடர்பாடும் பாடங்கள் மற்றும் Reels போல ஸ்க்ரோல் செய்யக்கூடிய வடிவில் தருகிறது — சிறு வயதிலிருந்தே சரியான சிந்தனையை வளர்ப்பதற்காக.</p>
+    </div>
+
+    <div class="page" id="panel-hi" role="tabpanel" aria-labelledby="tab-hi" hidden lang="hi">
+      <span class="sub">हिन्दी</span>
+      <p class="title" lang="en">MissMonk</p>
+      <p>हमारी शिक्षा प्रणाली विज्ञान, गणित, जीवविज्ञान, रसायन विज्ञान और कंप्यूटर विज्ञान पढ़ाती है। लेकिन वित्तीय ज्ञान, मानव मनोविज्ञान, भावनात्मक नियंत्रण, आत्म-जागरूकता, रिश्ते, विश्वास और प्रेम जैसी जीवन की महत्वपूर्ण बातें बच्चों को शुरू से नहीं सिखाई जातीं।</p>
+      <p>इसके कारण कई बच्चे समाज और इंटरनेट पर मिलने वाली गलत जानकारी से गलत सोच विकसित कर लेते हैं — जो आगे चलकर गलत निर्णयों और कमज़ोर रिश्तों का कारण बन सकता है।</p>
+      <p><strong>Microintel</strong> द्वारा विकसित <strong>MissMonk</strong>, दुनिया की श्रेष्ठ पुस्तकों का ज्ञान सरल सारांश, इंटरैक्टिव पाठों और Reels जैसी स्क्रॉलिंग शैली में देता है — ताकि बच्चों को कम उम्र से ही सही ज्ञान और सही सोच मिल सके।</p>
+    </div>
+  </div>
+</section>
+
+<section class="disclaimer">
+  <div class="wrap">
+    <p><strong>A note on intent:</strong> MissMonk is not positioned against the education system, schools, teachers, or any government or curriculum body. Subjects like science, maths, and the sciences remain essential, and MissMonk does not seek to replace them. MissMonk is simply an additional, supportive resource — covering life skills like financial literacy, emotional intelligence, and relationships that sit outside the standard curriculum — built to complement formal education, not compete with or criticize it.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="fbrand">MissMonk · a step toward a wiser generation</span>
+    <span class="fine">Built by Microintel</span>
+  </div>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected','false'));
+      tab.setAttribute('aria-selected','true');
+      document.querySelectorAll('.page').forEach(p => p.hidden = true);
+      document.getElementById(tab.getAttribute('aria-controls')).hidden = false;
+    });
+  });
+</script>
+
+</body>
+</html>
