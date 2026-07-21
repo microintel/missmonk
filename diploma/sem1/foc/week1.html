@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Representation — Number Systems &amp; Computer Codes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #f2f3ee;
+    --surface: #fffffe;
+    --surface-2: #e9ebe3;
+    --line: #d8dbd0;
+    --ink: #1e2a2e;
+    --ink-soft: #5b6a67;
+    --ink-faint: #8b978f;
+
+    --binary: #1f7a6c;
+    --binary-soft: #e2f0ec;
+    --octal: #4a5fbf;
+    --octal-soft: #e6e8f7;
+    --decimal: #b8781f;
+    --decimal-soft: #f6ead7;
+    --hex: #8a3f6b;
+    --hex-soft: #f3e3ee;
+
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(30,42,46,.06), 0 6px 20px rgba(30,42,46,.05);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family: 'Space Grotesk', sans-serif;
+    margin: 0 0 .4em 0;
+    letter-spacing: -0.01em;
+  }
+  code, .mono, table, input, select, .bitval{ font-family: 'JetBrains Mono', monospace; }
+  p{ margin: 0 0 1em 0; color: var(--ink-soft); }
+  a{ color: inherit; }
+  ::selection{ background: var(--binary-soft); }
+
+  /* ---------- Layout shell ---------- */
+  .shell{
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px){
+    .shell{ grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Sidebar / top nav ---------- */
+  .sidenav{
+    position: sticky;
+    top:0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px;
+    border-right: 1px solid var(--line);
+  }
+  @media (max-width: 900px){
+    .sidenav{
+      position: sticky;
+      height: auto;
+      display:flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 12px 14px;
+      border-right:none;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
+      z-index: 50;
+    }
+    .sidenav .brand{ display:none; }
+  }
+  .brand{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+  .brand small{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-weight: 500;
+    color: var(--ink-faint);
+    font-size: .72rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-top:2px;
+  }
+  .navlist{ list-style:none; padding:0; margin: 18px 0 0 0; display:flex; flex-direction:column; gap:2px; }
+  @media (max-width: 900px){ .navlist{ flex-direction:row; margin:0; } }
+  .navlist a{
+    display:block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-decoration:none;
+    color: var(--ink-soft);
+    font-size: .88rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .navlist a:hover{ background: var(--surface-2); color: var(--ink); }
+  .navlist a.active{ background: var(--ink); color: var(--surface); }
+
+  /* ---------- Main content ---------- */
+  main{ padding: 0 24px 90px; }
+  @media (max-width: 900px){ main{ padding: 0 16px 70px; } }
+  section{ padding-top: 56px; max-width: 880px; }
+  .eyebrow{
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding-top: 40px; }
+  .hero h1{ font-size: clamp(1.8rem, 4vw, 2.7rem); }
+  .hero p.lead{ font-size: 1.05rem; max-width: 60ch; }
+
+  .byte-demo{
+    margin-top: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px;
+  }
+  .byte-demo .caption{ font-size: .82rem; color: var(--ink-faint); margin-bottom: 14px; }
+  .switch-row{ display:flex; gap: 8px; flex-wrap: wrap; }
+  .bit-switch{
+    width: 52px; height: 78px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    cursor:pointer;
+    position: relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    padding: 8px 0;
+    transition: background .18s, border-color .18s;
+    user-select: none;
+  }
+  .bit-switch .weight{ font-size: .62rem; color: var(--ink-faint); }
+  .bit-switch .knob{
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size: .85rem; color: var(--ink-faint);
+    transition: all .18s;
+  }
+  .bit-switch.on{ background: var(--binary-soft); border-color: var(--binary); }
+  .bit-switch.on .knob{ background: var(--binary); color: #fff; border-color: var(--binary); }
+  .bit-switch.on .weight{ color: var(--binary); font-weight:600; }
+
+  .byte-result{
+    margin-top: 18px;
+    display:flex; align-items:baseline; gap: 14px; flex-wrap:wrap;
+  }
+  .byte-result .big{
+    font-size: 2.6rem; font-weight:700; color: var(--binary);
+    font-family:'JetBrains Mono', monospace;
+  }
+  .byte-result .sub{ color: var(--ink-faint); font-size: .88rem; }
+
+  /* ---------- Cards / generic surfaces ---------- */
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-4{ display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  @media (max-width: 700px){ .grid-2, .grid-4{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px){ .grid-2, .grid-4{ grid-template-columns: 1fr; } }
+
+  .sys-card{ border-top: 4px solid var(--ink); }
+  .sys-card.b2{ border-color: var(--binary); }
+  .sys-card.b8{ border-color: var(--octal); }
+  .sys-card.b10{ border-color: var(--decimal); }
+  .sys-card.b16{ border-color: var(--hex); }
+  .sys-card h3{ display:flex; align-items:center; gap:8px; font-size: 1.05rem; }
+  .sys-card .base-pill{
+    font-size: .68rem; font-weight:700; padding: 2px 8px; border-radius: 999px;
+    color: #fff;
+  }
+  .b2 .base-pill{ background: var(--binary); }
+  .b8 .base-pill{ background: var(--octal); }
+  .b10 .base-pill{ background: var(--decimal); }
+  .b16 .base-pill{ background: var(--hex); }
+  .sys-card ul{ margin: 10px 0; padding-left: 18px; color: var(--ink-soft); font-size: .9rem; }
+  .sys-card ul li{ margin-bottom: 4px; }
+  .digit-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top: 10px; }
+  .digit-btn{
+    min-width: 30px; padding: 5px 8px;
+    border-radius: 7px; border: 1px solid var(--line);
+    background: var(--surface-2); color: var(--ink-soft);
+    font-size: .8rem; cursor:pointer; text-align:center;
+    transition: all .12s;
+  }
+  .b2 .digit-btn.active{ background: var(--binary); border-color:var(--binary); color:#fff; }
+  .b8 .digit-btn.active{ background: var(--octal); border-color:var(--octal); color:#fff; }
+  .b10 .digit-btn.active{ background: var(--decimal); border-color:var(--decimal); color:#fff; }
+  .b16 .digit-btn.active{ background: var(--hex); border-color:var(--hex); color:#fff; }
+  .digit-hint{ font-size: .76rem; color: var(--ink-faint); margin-top:8px; }
+
+  /* ---------- Diagram ---------- */
+  .place-diagram{ display:flex; gap:0; overflow-x:auto; padding: 6px 0; }
+  .place-cell{ text-align:center; min-width: 64px; padding: 10px 4px; border-right: 1px dashed var(--line); }
+  .place-cell:last-child{ border-right:none; }
+  .place-cell .digit{ font-size:1.3rem; font-weight:700; }
+  .place-cell .pos{ font-size:.7rem; color: var(--ink-faint); margin-top:2px; }
+  .place-cell .w{ font-size:.72rem; color: var(--ink-soft); margin-top:6px; }
+
+  /* ---------- Converter Lab ---------- */
+  .lab{ padding: 22px; }
+  .lab-controls{ display:flex; gap: 12px; flex-wrap: wrap; align-items:flex-end; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size: .74rem; font-weight:600; color: var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; }
+  input[type="text"], select{
+    padding: 10px 12px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: .95rem;
+    min-width: 140px;
+  }
+  select{ min-width: 110px; }
+  .btn{
+    padding: 10px 18px;
+    border-radius: 9px;
+    border: none;
+    background: var(--ink);
+    color: var(--surface);
+    font-weight:600;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: transform .12s, opacity .12s;
+  }
+  .btn:hover{ opacity:.88; }
+  .btn:active{ transform: scale(.97); }
+  .btn.ghost{ background: transparent; border:1px solid var(--line); color: var(--ink-soft); }
+  .swap-btn{
+    width:38px; height:38px; border-radius:50%; border:1px solid var(--line);
+    background: var(--surface-2); cursor:pointer; font-size:1rem; color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .error-msg{ color:#a4372a; font-size:.85rem; margin-top:10px; display:none; }
+  .lab-output{ margin-top: 22px; display:none; }
+  .result-banner{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    background: var(--surface-2); border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
+  }
+  .result-banner .eq{ font-size: 1.3rem; font-weight:700; }
+  .result-banner .base-tag{ font-size:.7rem; color: var(--ink-faint); }
+
+  .step-block{ margin-bottom: 22px; }
+  .step-title{ font-size: .82rem; font-weight:700; color: var(--ink); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .step-title .num{
+    width:20px;height:20px;border-radius:50%; background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:.68rem;
+  }
+  table.steptbl{ width:100%; border-collapse: collapse; font-size: .84rem; }
+  table.steptbl th, table.steptbl td{ padding: 7px 10px; border-bottom: 1px solid var(--line); text-align:center; }
+  table.steptbl th{ color: var(--ink-faint); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; }
+
+  .chart-wrap{ overflow-x:auto; padding: 10px 0 0; }
+  svg.weightchart{ display:block; }
+
+  /* ---------- Tables (general) ---------- */
+  table.data{ width:100%; border-collapse: collapse; font-size: .85rem; }
+  table.data th, table.data td{ padding: 9px 12px; border-bottom: 1px solid var(--line); text-align:left; }
+  table.data th{ background: var(--surface-2); font-weight:600; font-size:.74rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); }
+  .table-scroll{ overflow-x:auto; }
+
+  /* ---------- Lookup tools ---------- */
+  .lookup-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+  .lookup-out{ display:flex; gap:10px; flex-wrap:wrap; }
+  .chip{
+    background: var(--surface-2); border-radius:9px; padding:10px 14px;
+    font-size:.85rem; min-width:110px;
+  }
+  .chip .k{ font-size:.68rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; }
+  .chip .v{ font-weight:700; font-size:1.05rem; margin-top:2px; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-item{ padding: 16px 18px; margin-bottom: 12px; }
+  .quiz-q{ font-weight:600; margin-bottom:10px; font-size: .95rem; }
+  .quiz-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .quiz-feedback{ font-size:.85rem; margin-top:8px; min-height: 1.2em; font-weight:600; }
+  .quiz-feedback.correct{ color: var(--binary); }
+  .quiz-feedback.wrong{ color:#a4372a; }
+
+  /* ---------- Cheat sheet ---------- */
+  .cheat-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:14px; }
+  @media (max-width:600px){ .cheat-grid{ grid-template-columns:1fr; } }
+  .cheat-card{ padding:16px 18px; }
+  .cheat-card h4{ font-size:.92rem; }
+  .cheat-card ul{ padding-left:18px; margin:0; font-size:.86rem; color:var(--ink-soft); }
+  .cheat-card ul li{ margin-bottom:5px; }
+
+  details.faq{ padding: 14px 18px; margin-bottom: 10px; cursor:pointer; }
+  details.faq summary{ font-weight:600; font-size:.92rem; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+  details.faq summary::-webkit-details-marker{ display:none; }
+  details.faq summary::after{ content:'+'; font-size:1.2rem; color:var(--ink-faint); }
+  details.faq[open] summary::after{ content:'–'; }
+  details.faq p{ margin-top:10px; font-size:.88rem; }
+
+  footer{ text-align:center; padding: 40px 16px; color: var(--ink-faint); font-size:.8rem; }
+
+  .stack{ display:flex; flex-direction:column; gap:16px; }
+  .note{
+    font-size: .82rem; color: var(--ink-faint); background: var(--surface-2);
+    border-radius: 8px; padding: 10px 12px; margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDE / TOP NAV -->
+  <nav class="sidenav" id="sidenav">
+    <div class="brand">Data Representation<small>Week 1 · Interactive Guide</small></div>
+    <ul class="navlist">
+      <li><a href="#intro">Intro</a></li>
+      <li><a href="#systems">Number Systems</a></li>
+      <li><a href="#positional">Positional Values</a></li>
+      <li><a href="#converter">Converter Lab</a></li>
+      <li><a href="#codes">Computer Codes</a></li>
+      <li><a href="#comparison">Comparison</a></li>
+      <li><a href="#practice">Practice</a></li>
+      <li><a href="#cheatsheet">Cheat Sheet</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HERO / INTRO -->
+    <section id="intro" class="hero">
+      <div class="eyebrow">Base concepts</div>
+      <h1>How computers count</h1>
+      <p class="lead">A computer only understands two states: on and off. Everything else — the numbers you type, the letters on this screen, every photo and song — gets built from switches like the ones below. Flip a few and watch how a plain row of 0s and 1s turns into a number.</p>
+
+      <div class="byte-demo">
+        <div class="caption">Flip the switches — this is one byte (8 bits). Each switch is worth double the one to its right.</div>
+        <div class="switch-row" id="byteSwitches"></div>
+        <div class="byte-result">
+          <div class="big" id="byteDecimal">0</div>
+          <div class="sub">in decimal, from binary <span class="mono" id="byteBinary">00000000</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NUMBER SYSTEMS -->
+    <section id="systems">
+      <div class="eyebrow">The four systems</div>
+      <h2>One idea, four alphabets</h2>
+      <p>Every number system works the same way: a digit's value depends on <em>which digit it is</em> and <em>where it sits</em>. The only thing that changes is how many symbols are available before you have to carry over — that count is called the <strong>base</strong>. Tap the digits below to see each system's own alphabet.</p>
+
+      <div class="grid-2" style="margin-top:18px;">
+        <div class="card sys-card b2">
+          <h3>Binary <span class="base-pill">BASE 2</span></h3>
+          <ul>
+            <li>Only two digits exist: 0 and 1</li>
+            <li>Matches a switch: off / on</li>
+            <li>Every digital computer stores data this way</li>
+            <li>One digit = one <strong>bit</strong>; 4 bits = a <strong>nibble</strong>; 8 bits = a <strong>byte</strong></li>
+          </ul>
+          <div class="digit-row" data-base="2"></div>
+          <div class="digit-hint">Example number: 1101₂</div>
+        </div>
+
+        <div class="card sys-card b8">
+          <h3>Octal <span class="base-pill">BASE 8</span></h3>
+          <ul>
+            <li>Eight digits: 0 to 7</li>
+            <li>Each digit needs exactly 3 bits</li>
+            <li>Used as shorthand for long binary strings</li>
+            <li>Rarely typed by hand today, but common in older systems</li>
+          </ul>
+          <div class="digit-row" data-base="8"></div>
+          <div class="digit-hint">Example number: 257₈</div>
+        </div>
+
+        <div class="card sys-card b10">
+          <h3>Decimal <span class="base-pill">BASE 10</span></h3>
+          <ul>
+            <li>Ten digits: 0 to 9 — the one you already use</li>
+            <li>Also called the Hindu-Arabic system</li>
+            <li>Grew from counting on ten fingers</li>
+            <li>Easiest for humans to read; hardest for circuits to store</li>
+          </ul>
+          <div class="digit-row" data-base="10"></div>
+          <div class="digit-hint">Example number: 205₁₀</div>
+        </div>
+
+        <div class="card sys-card b16">
+          <h3>Hexadecimal <span class="base-pill">BASE 16</span></h3>
+          <ul>
+            <li>Sixteen digits: 0–9, then A–F for 10–15</li>
+            <li>Each digit needs exactly 4 bits (one nibble)</li>
+            <li>Written with a <code>0x</code> prefix or <code>h</code> suffix</li>
+            <li>Used to write long binary numbers compactly — colours, memory addresses</li>
+          </ul>
+          <div class="digit-row" data-base="16"></div>
+          <div class="digit-hint">Example number: 1AF₁₆</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POSITIONAL VALUES -->
+    <section id="positional">
+      <div class="eyebrow">Why position matters</div>
+      <h2>The same digit, different weights</h2>
+      <p>In every base, moving one place to the left multiplies a digit's value by the base. The chart updates live as you type — try the default number below, or edit it (use digits 0–1 for binary, 0–7 for octal, 0–9 for decimal, 0–9A–F for hex).</p>
+
+      <div class="card lab">
+        <div class="lab-controls">
+          <div class="field">
+            <label for="posInput">Number</label>
+            <input type="text" id="posInput" value="1011" class="mono">
+          </div>
+          <div class="field">
+            <label for="posBase">Base</label>
+            <select id="posBase">
+              <option value="2" selected>Binary (2)</option>
+              <option value="8">Octal (8)</option>
+              <option value="10">Decimal (10)</option>
+              <option value="16">Hexadecimal (16)</option>
+            </select>
+          </div>
+          <button class="btn" id="posGo">Visualise</button>
+        </div>
+        <div class="error-msg" id="posError"></div>
+        <div id="posOutput" style="margin-top:20px;"></div>
+      </div>
+    </section>
+
+    <!-- CONVERTER LAB -->
+    <section id="converter">
+      <div class="eyebrow">Try it yourself</div>
+      <h2>Converter Lab</h2>
+      <p>Pick where your number starts and where it should end up. You'll see every step — first converted to decimal, then rebuilt in the target base — the same long-division and multiply-carry method used on paper.</p>
+
+      <div class="card lab">
+        <div class="lab-controls">
+          <div class="field">
+            <label for="convInput">Number</label>
+            <input type="text" id="convInput" value="25.35" class="mono">
+          </div>
+          <div class="field">
+            <label for="convFrom">From base</label>
+            <select id="convFrom">
+              <option value="2">Binary (2)</option>
+              <option value="8">Octal (8)</option>
+              <option value="10" selected>Decimal (10)</option>
+              <option value="16">Hexadecimal (16)</option>
+            </select>
+          </div>
+          <button class="swap-btn" id="convSwap" title="Swap from/to">⇄</button>
+          <div class="field">
+            <label for="convTo">To base</label>
+            <select id="convTo">
+              <option value="2" selected>Binary (2)</option>
+              <option value="8">Octal (8)</option>
+              <option value="10">Decimal (10)</option>
+              <option value="16">Hexadecimal (16)</option>
+            </select>
+          </div>
+          <button class="btn" id="convGo">Convert</button>
+        </div>
+        <div class="error-msg" id="convError"></div>
+
+        <div class="lab-output" id="convOutput"></div>
+      </div>
+    </section>
+
+    <!-- COMPUTER CODES -->
+    <section id="codes">
+      <div class="eyebrow">Turning digits into letters</div>
+      <h2>Computer codes</h2>
+      <p>Number systems represent quantities. But your keyboard needs to send letters, punctuation and symbols too — so computers assign each character its own binary pattern. Here are the codes you'll meet most often.</p>
+
+      <div class="stack">
+        <div class="card">
+          <h3>BCD — Binary Coded Decimal <span style="font-weight:400;color:var(--ink-faint);font-size:.8rem;">(the 8421 code)</span></h3>
+          <p>Each decimal digit (0–9) gets its own 4-bit binary pattern. Four bits can technically make 16 patterns, but BCD only uses the first ten — 1010 through 1111 are invalid.</p>
+          <div class="lookup-row">
+            <div class="field">
+              <label for="bcdInput">Decimal digit (0–9)</label>
+              <input type="text" id="bcdInput" value="7" class="mono" style="width:90px;">
+            </div>
+            <button class="btn" id="bcdGo">Show BCD</button>
+          </div>
+          <div class="lookup-out" id="bcdOut"></div>
+        </div>
+
+        <div class="card">
+          <h3>ASCII — American Standard Code for Information Interchange</h3>
+          <p>ASCII gives every keyboard character a number. Basic ASCII (7 bits) covers 128 characters; Extended ASCII (8 bits) covers 256. Type a single character to see its code.</p>
+          <div class="lookup-row">
+            <div class="field">
+              <label for="asciiInput">Character</label>
+              <input type="text" id="asciiInput" value="A" maxlength="1" class="mono" style="width:90px;">
+            </div>
+            <button class="btn" id="asciiGo">Show ASCII</button>
+          </div>
+          <div class="lookup-out" id="asciiOut"></div>
+          <div class="note">Only works for standard keyboard characters (basic ASCII range 0–127).</div>
+        </div>
+
+        <div class="card">
+          <h3>Unicode — one code for every language</h3>
+          <p>ASCII only covers English. Unicode assigns a code point to characters from every written language, plus symbols and emoji, and can be stored as UTF-8, UTF-16 or UTF-32. Try a character — including non-English ones.</p>
+          <div class="lookup-row">
+            <div class="field">
+              <label for="uniInput">Character</label>
+              <input type="text" id="uniInput" value="あ" maxlength="2" class="mono" style="width:90px;">
+            </div>
+            <button class="btn" id="uniGo">Show Unicode</button>
+          </div>
+          <div class="lookup-out" id="uniOut"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON -->
+    <section id="comparison">
+      <div class="eyebrow">At a glance</div>
+      <h2>EBCDIC vs ASCII vs Unicode</h2>
+      <div class="card table-scroll">
+        <table class="data">
+          <thead><tr><th>EBCDIC</th><th>ASCII</th><th>Unicode</th></tr></thead>
+          <tbody>
+            <tr><td>Extended Binary Coded Decimal Interchange Code</td><td>American Standard Code for Information Interchange</td><td>Universal Character Encoding Standard</td></tr>
+            <tr><td>8 bits</td><td>7 bits (basic) / 8 bits (extended)</td><td>2 or more bytes — needs more space</td></tr>
+            <tr><td>Represents 2⁸ = 256 characters</td><td>2⁷ = 128 (basic) or 2⁸ = 256 (extended)</td><td>Up to 2¹⁶ = 65,536+ characters</td></tr>
+            <tr><td>Used on IBM mainframes &amp; high-end servers</td><td>Widely used in PCs</td><td>Standard in Windows, Mac OS, Linux</td></tr>
+            <tr><td>Not compatible with Unicode</td><td>Supports English letters, numbers, symbols; compatible with Unicode</td><td>Supports Greek, Arabic, Chinese and other world languages</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:28px;">Decimal · Binary · Octal · Hexadecimal — side by side</h3>
+      <div class="card table-scroll">
+        <table class="data mono" id="quadTable"></table>
+      </div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section id="practice">
+      <div class="eyebrow">Test yourself</div>
+      <h2>Practice</h2>
+      <p>Work these out by hand first, then check. Each one matches a real style of question you'll be asked in this topic.</p>
+      <div id="quizList"></div>
+    </section>
+
+    <!-- CHEAT SHEET -->
+    <section id="cheatsheet">
+      <div class="eyebrow">Keep this handy</div>
+      <h2>What to remember</h2>
+      <div class="cheat-grid">
+        <div class="card cheat-card">
+          <h4>Core vocabulary</h4>
+          <ul>
+            <li><strong>Bit</strong> — one binary digit (0 or 1)</li>
+            <li><strong>Nibble</strong> — 4 bits</li>
+            <li><strong>Byte</strong> — 8 bits</li>
+            <li><strong>MSB / LSB</strong> — Most / Least Significant Bit (leftmost / rightmost)</li>
+            <li><strong>Base</strong> — how many digits a system has before carrying</li>
+          </ul>
+        </div>
+        <div class="card cheat-card">
+          <h4>Converting <em>to</em> another base</h4>
+          <ul>
+            <li>Integer part: divide by the new base repeatedly, read remainders bottom-to-top</li>
+            <li>Fraction part: multiply by the new base repeatedly, read carries top-to-bottom</li>
+            <li>Stop dividing once the quotient is 0; stop multiplying once you reach the accuracy you need</li>
+          </ul>
+        </div>
+        <div class="card cheat-card">
+          <h4>Converting <em>from</em> another base to decimal</h4>
+          <ul>
+            <li>Multiply each digit by (base ^ position)</li>
+            <li>Positions count from 0 at the point, increasing left, decreasing (negative) right</li>
+            <li>Add every product together</li>
+          </ul>
+        </div>
+        <div class="card cheat-card">
+          <h4>Codes in one line each</h4>
+          <ul>
+            <li><strong>BCD</strong> — each decimal digit → its own 4 bits</li>
+            <li><strong>ASCII</strong> — each keyboard character → 7 or 8 bits</li>
+            <li><strong>EBCDIC</strong> — IBM's 8-bit character code</li>
+            <li><strong>Unicode</strong> — one standard for every language on earth</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:28px;">Frequently asked</h3>
+      <details class="faq card">
+        <summary>Why do computers use binary instead of decimal?</summary>
+        <p>Because a transistor is easiest to build with two reliable states — current flowing or not. Two states map perfectly onto 0 and 1, which is why binary became the natural language of digital circuits.</p>
+      </details>
+      <details class="faq card">
+        <summary>What's the difference between octal/hex and binary?</summary>
+        <p>They're not really different data — they're different-sized "chunks" of the same binary. Octal groups bits in 3s, hex groups bits in 4s, purely so long binary strings are shorter and easier for humans to read and type.</p>
+      </details>
+      <details class="faq card">
+        <summary>Why does BCD "waste" six combinations?</summary>
+        <p>Four bits can make 16 patterns (0000–1111), but decimal only has ten digits (0–9). The six leftover patterns (1010–1111) simply aren't assigned a meaning in BCD, so they're considered invalid.</p>
+      </details>
+      <details class="faq card">
+        <summary>Is Unicode replacing ASCII?</summary>
+        <p>Not exactly — Unicode's UTF-8 encoding was designed so that plain English text is stored identically to ASCII. So ASCII text is already valid UTF-8; Unicode simply extends the range to cover every other language too.</p>
+      </details>
+    </section>
+
+    <footer>Built as a study companion for Week 1 — Data Representation. Flip switches, type numbers, get it wrong, try again.</footer>
+  </main>
+</div>
+
+<script>
+/* ============ Shared utilities ============ */
+const DIGITS = "0123456789ABCDEF";
+const BASE_META = {
+  2:  {name:"Binary",      color:"#1f7a6c"},
+  8:  {name:"Octal",       color:"#4a5fbf"},
+  10: {name:"Decimal",     color:"#b8781f"},
+  16: {name:"Hexadecimal", color:"#8a3f6b"}
+};
+
+function digitVal(c){ return DIGITS.indexOf(c.toUpperCase()); }
+function validForBase(str, base){
+  str = str.trim().toUpperCase();
+  if(str === "") return false;
+  const allowed = DIGITS.slice(0, base).split('');
+  let seenDot = false;
+  for(const ch of str){
+    if(ch === '.'){ if(seenDot) return false; seenDot = true; continue; }
+    if(!allowed.includes(ch)) return false;
+  }
+  return true;
+}
+
+/* Convert a string in `base` to a decimal number, with step breakdown */
+function baseToDecimalSteps(str, base){
+  str = str.trim().toUpperCase();
+  let [intPart, fracPart] = str.split('.');
+  intPart = intPart || "0";
+  fracPart = fracPart || "";
+  const steps = [];
+  let total = 0;
+  const n = intPart.length;
+  for(let i=0;i<n;i++){
+    const d = digitVal(intPart[i]);
+    const pos = n-1-i;
+    const weight = Math.pow(base,pos);
+    const product = d*weight;
+    total += product;
+    steps.push({digit:intPart[i], pos, weight, product});
+  }
+  for(let i=0;i<fracPart.length;i++){
+    const d = digitVal(fracPart[i]);
+    const pos = -(i+1);
+    const weight = Math.pow(base,pos);
+    const product = d*weight;
+    total += product;
+    steps.push({digit:fracPart[i], pos, weight, product});
+  }
+  return {steps, total};
+}
+
+/* Convert a decimal number (can be fractional) into `base`, with step breakdown */
+function decimalToBaseSteps(value, base, precision=8){
+  let intN = Math.floor(Math.abs(value));
+  let fracN = Math.abs(value) - intN;
+
+  const intSteps = [];
+  if(intN === 0){
+    intSteps.push({dividend:0, divisor:base, quotient:0, remainder:0});
+  }
+  let n = intN;
+  while(n > 0){
+    const q = Math.floor(n/base);
+    const r = n % base;
+    intSteps.push({dividend:n, divisor:base, quotient:q, remainder:r});
+    n = q;
+  }
+  const intDigits = intSteps.map(s=>DIGITS[s.remainder]).reverse().join('') || "0";
+
+  const fracSteps = [];
+  let f = fracN;
+  let fracDigits = "";
+  let iter = 0;
+  while(f > 0 && iter < precision){
+    f = f*base;
+    const carry = Math.floor(f + 1e-9);
+    fracSteps.push({multiplied:f, carry});
+    fracDigits += DIGITS[Math.min(carry, base-1)];
+    f = f - carry;
+    iter++;
+  }
+  return {intSteps, intDigits, fracSteps, fracDigits};
+}
+
+function fmtNum(n, dp=4){
+  if(Number.isInteger(n)) return n.toString();
+  return parseFloat(n.toFixed(dp)).toString();
+}
+
+/* ============ Hero byte switches ============ */
+(function(){
+  const row = document.getElementById('byteSwitches');
+  const bits = [7,6,5,4,3,2,1,0];
+  const state = new Array(8).fill(0);
+  // default: show 00101101-ish playful start value -> decimal 45
+  const initial = [0,0,1,0,1,1,0,1];
+
+  bits.forEach((pos, idx)=>{
+    const el = document.createElement('div');
+    el.className = 'bit-switch';
+    el.innerHTML = `<div class="weight">2^${pos}</div><div class="knob">0</div><div class="weight">${Math.pow(2,pos)}</div>`;
+    el.addEventListener('click', ()=>{
+      state[idx] = state[idx] ? 0 : 1;
+      render();
+    });
+    row.appendChild(el);
+    state[idx] = initial[idx];
+  });
+
+  function render(){
+    let dec = 0;
+    const switches = row.querySelectorAll('.bit-switch');
+    switches.forEach((el, idx)=>{
+      const on = state[idx] === 1;
+      el.classList.toggle('on', on);
+      el.querySelector('.knob').textContent = on ? '1' : '0';
+      dec += on ? Math.pow(2, bits[idx]) : 0;
+    });
+    document.getElementById('byteDecimal').textContent = dec;
+    document.getElementById('byteBinary').textContent = state.join('');
+  }
+  render();
+})();
+
+/* ============ Digit alphabet buttons in system cards ============ */
+document.querySelectorAll('.digit-row').forEach(row=>{
+  const base = parseInt(row.dataset.base, 10);
+  for(let i=0;i<base;i++){
+    const btn = document.createElement('div');
+    btn.className = 'digit-btn';
+    btn.textContent = DIGITS[i];
+    btn.addEventListener('click', ()=>{
+      const already = btn.classList.contains('active');
+      row.querySelectorAll('.digit-btn').forEach(b=>b.classList.remove('active'));
+      if(!already) btn.classList.add('active');
+    });
+    row.appendChild(btn);
+  }
+});
+
+/* ============ Positional value visualiser ============ */
+function renderWeightChart(container, steps, base){
+  container.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'chart-wrap';
+  const w = Math.max(steps.length * 74, 300);
+  const h = 190;
+  const maxW = Math.max(...steps.map(s=>s.weight), 1);
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("width", w);
+  svg.setAttribute("height", h);
+  svg.setAttribute("class", "weightchart");
+
+  const color = BASE_META[base] ? BASE_META[base].color : '#1e2a2e';
+  const barMaxH = 110;
+
+  steps.forEach((s, i)=>{
+    const x = i*74 + 12;
+    const barH = Math.max(6, (s.weight/maxW) * barMaxH);
+    const y = 130 - barH;
+
+    const rect = document.createElementNS(svgNS,"rect");
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", 50);
+    rect.setAttribute("height", barH);
+    rect.setAttribute("rx", 6);
+    rect.setAttribute("fill", color);
+    rect.setAttribute("opacity", s.digit === '0' ? 0.25 : 0.9);
+    svg.appendChild(rect);
+
+    const digitTxt = document.createElementNS(svgNS,"text");
+    digitTxt.setAttribute("x", x+25);
+    digitTxt.setAttribute("y", 145);
+    digitTxt.setAttribute("text-anchor","middle");
+    digitTxt.setAttribute("font-size","14");
+    digitTxt.setAttribute("font-weight","700");
+    digitTxt.setAttribute("fill","#1e2a2e");
+    digitTxt.textContent = s.digit;
+    svg.appendChild(digitTxt);
+
+    const posTxt = document.createElementNS(svgNS,"text");
+    posTxt.setAttribute("x", x+25);
+    posTxt.setAttribute("y", 162);
+    posTxt.setAttribute("text-anchor","middle");
+    posTxt.setAttribute("font-size","10");
+    posTxt.setAttribute("fill","#8b978f");
+    posTxt.textContent = `${base}^${s.pos}`;
+    svg.appendChild(posTxt);
+
+    const weightTxt = document.createElementNS(svgNS,"text");
+    weightTxt.setAttribute("x", x+25);
+    weightTxt.setAttribute("y", 177);
+    weightTxt.setAttribute("text-anchor","middle");
+    weightTxt.setAttribute("font-size","10");
+    weightTxt.setAttribute("fill","#5b6a67");
+    weightTxt.textContent = `= ${fmtNum(s.weight)}`;
+    svg.appendChild(weightTxt);
+  });
+
+  wrap.appendChild(svg);
+  container.appendChild(wrap);
+}
+
+function buildStepTable(steps, base){
+  const table = document.createElement('table');
+  table.className = 'steptbl';
+  table.innerHTML = `<thead><tr><th>Digit</th><th>Position</th><th>Weight (${base}^pos)</th><th>Product</th></tr></thead>`;
+  const tbody = document.createElement('tbody');
+  steps.forEach(s=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s.digit}</td><td>${s.pos}</td><td>${fmtNum(s.weight)}</td><td>${fmtNum(s.product)}</td>`;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  return table;
+}
+
+function runPositional(){
+  const raw = document.getElementById('posInput').value;
+  const base = parseInt(document.getElementById('posBase').value, 10);
+  const errEl = document.getElementById('posError');
+  const outEl = document.getElementById('posOutput');
+  errEl.style.display = 'none';
+  outEl.innerHTML = '';
+
+  if(!validForBase(raw, base)){
+    errEl.textContent = `"${raw}" isn't valid for base ${base}. Allowed digits: ${DIGITS.slice(0,base)}.`;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const {steps, total} = baseToDecimalSteps(raw, base);
+  const meta = BASE_META[base];
+
+  const banner = document.createElement('div');
+  banner.className = 'result-banner';
+  banner.innerHTML = `<div class="eq mono">${raw.toUpperCase()}<sub>${base}</sub> = ${fmtNum(total)}<sub>10</sub></div><div class="base-tag">${meta.name} → Decimal</div>`;
+  outEl.appendChild(banner);
+
+  const chartHolder = document.createElement('div');
+  renderWeightChart(chartHolder, steps, base);
+  outEl.appendChild(chartHolder);
+
+  const tblWrap = document.createElement('div');
+  tblWrap.style.marginTop = '14px';
+  tblWrap.appendChild(buildStepTable(steps, base));
+  outEl.appendChild(tblWrap);
+}
+document.getElementById('posGo').addEventListener('click', runPositional);
+document.getElementById('posInput').addEventListener('keydown', e=>{ if(e.key==='Enter') runPositional(); });
+runPositional();
+
+/* ============ Converter Lab ============ */
+function runConverter(){
+  const raw = document.getElementById('convInput').value;
+  const fromBase = parseInt(document.getElementById('convFrom').value, 10);
+  const toBase = parseInt(document.getElementById('convTo').value, 10);
+  const errEl = document.getElementById('convError');
+  const outEl = document.getElementById('convOutput');
+  errEl.style.display = 'none';
+  outEl.style.display = 'none';
+  outEl.innerHTML = '';
+
+  if(!validForBase(raw, fromBase)){
+    errEl.textContent = `"${raw}" isn't valid for base ${fromBase}. Allowed digits: ${DIGITS.slice(0,fromBase)}.`;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const fromMeta = BASE_META[fromBase];
+  const toMeta = BASE_META[toBase];
+
+  // Step 1: source -> decimal
+  const {steps: srcSteps, total: decimalValue} = baseToDecimalSteps(raw, fromBase);
+
+  // Step 2: decimal -> target
+  let targetSteps = null;
+  if(toBase !== 10){
+    targetSteps = decimalToBaseSteps(decimalValue, toBase);
+  }
+
+  let finalAnswer;
+  if(toBase === 10){
+    finalAnswer = fmtNum(decimalValue);
+  } else {
+    finalAnswer = targetSteps.fracDigits.length
+      ? `${targetSteps.intDigits}.${targetSteps.fracDigits}`
+      : targetSteps.intDigits;
+  }
+
+  outEl.style.display = 'block';
+
+  const banner = document.createElement('div');
+  banner.className = 'result-banner';
+  banner.innerHTML = `<div class="eq mono">${raw.toUpperCase()}<sub>${fromBase}</sub> = ${finalAnswer}<sub>${toBase}</sub></div><div class="base-tag">${fromMeta.name} → ${toMeta.name}</div>`;
+  outEl.appendChild(banner);
+
+  // Step block 1
+  const block1 = document.createElement('div');
+  block1.className = 'step-block';
+  block1.innerHTML = `<div class="step-title"><span class="num">1</span> Convert ${fromMeta.name.toLowerCase()} to decimal — multiply each digit by its weight, then add</div>`;
+  if(fromBase === 10){
+    const p = document.createElement('p');
+    p.textContent = `Already decimal: ${fmtNum(decimalValue)}`;
+    block1.appendChild(p);
+  } else {
+    const chartHolder1 = document.createElement('div');
+    renderWeightChart(chartHolder1, srcSteps, fromBase);
+    block1.appendChild(chartHolder1);
+    block1.appendChild(buildStepTable(srcSteps, fromBase));
+    const sumP = document.createElement('p');
+    sumP.style.marginTop = '10px';
+    sumP.innerHTML = `<strong>Sum of products = ${fmtNum(decimalValue)}₁₀</strong>`;
+    block1.appendChild(sumP);
+  }
+  outEl.appendChild(block1);
+
+  // Step block 2
+  if(toBase !== 10){
+    const block2 = document.createElement('div');
+    block2.className = 'step-block';
+    block2.innerHTML = `<div class="step-title"><span class="num">2</span> Convert decimal to ${toMeta.name.toLowerCase()}</div>`;
+
+    if(targetSteps.intSteps.length){
+      const introInt = document.createElement('div');
+      introInt.className = 'digit-hint';
+      introInt.textContent = `Integer part — divide repeatedly by ${toBase}, read remainders bottom-to-top:`;
+      block2.appendChild(introInt);
+
+      const table = document.createElement('table');
+      table.className = 'steptbl';
+      table.innerHTML = `<thead><tr><th>Dividend</th><th>÷ ${toBase}</th><th>Quotient</th><th>Remainder</th></tr></thead>`;
+      const tbody = document.createElement('tbody');
+      targetSteps.intSteps.forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${s.dividend}</td><td>${toBase}</td><td>${s.quotient}</td><td><strong>${DIGITS[s.remainder]}</strong></td>`;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      block2.appendChild(table);
+      const readUp = document.createElement('p');
+      readUp.style.marginTop = '8px';
+      readUp.innerHTML = `Read remainders bottom to top → <strong>${targetSteps.intDigits}</strong>`;
+      block2.appendChild(readUp);
+    }
+
+    if(targetSteps.fracSteps.length){
+      const introFrac = document.createElement('div');
+      introFrac.className = 'digit-hint';
+      introFrac.style.marginTop = '16px';
+      introFrac.textContent = `Fractional part — multiply repeatedly by ${toBase}, read carries top-to-bottom:`;
+      block2.appendChild(introFrac);
+
+      const table2 = document.createElement('table');
+      table2.className = 'steptbl';
+      table2.innerHTML = `<thead><tr><th>Step</th><th>× ${toBase}</th><th>Result</th><th>Carry</th></tr></thead>`;
+      const tbody2 = document.createElement('tbody');
+      targetSteps.fracSteps.forEach((s, i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${toBase}</td><td>${fmtNum(s.multiplied)}</td><td><strong>${DIGITS[s.carry]}</strong></td>`;
+        tbody2.appendChild(tr);
+      });
+      table2.appendChild(tbody2);
+      block2.appendChild(table2);
+      const readDown = document.createElement('p');
+      readDown.style.marginTop = '8px';
+      readDown.innerHTML = `Read carries top to bottom → <strong>0.${targetSteps.fracDigits}</strong>`;
+      block2.appendChild(readDown);
+    }
+
+    outEl.appendChild(block2);
+  }
+}
+document.getElementById('convGo').addEventListener('click', runConverter);
+document.getElementById('convSwap').addEventListener('click', ()=>{
+  const fromSel = document.getElementById('convFrom');
+  const toSel = document.getElementById('convTo');
+  const tmp = fromSel.value;
+  fromSel.value = toSel.value;
+  toSel.value = tmp;
+});
+runConverter();
+
+/* ============ BCD lookup ============ */
+function runBCD(){
+  const raw = document.getElementById('bcdInput').value.trim();
+  const out = document.getElementById('bcdOut');
+  out.innerHTML = '';
+  const n = parseInt(raw, 10);
+  if(isNaN(n) || n < 0 || n > 9 || raw.length !== 1){
+    out.innerHTML = `<div class="chip"><div class="k">Note</div><div class="v" style="font-size:.85rem;">Enter a single digit 0–9</div></div>`;
+    return;
+  }
+  const bin = n.toString(2).padStart(4,'0');
+  out.innerHTML = `
+    <div class="chip"><div class="k">Decimal digit</div><div class="v">${n}</div></div>
+    <div class="chip"><div class="k">BCD (8421)</div><div class="v">${bin}</div></div>
+  `;
+}
+document.getElementById('bcdGo').addEventListener('click', runBCD);
+runBCD();
+
+/* ============ ASCII lookup ============ */
+function runASCII(){
+  const ch = document.getElementById('asciiInput').value;
+  const out = document.getElementById('asciiOut');
+  out.innerHTML = '';
+  if(!ch){ return; }
+  const code = ch.charCodeAt(0);
+  if(code > 127){
+    out.innerHTML = `<div class="chip"><div class="k">Note</div><div class="v" style="font-size:.85rem;">Outside basic ASCII range — try Unicode below</div></div>`;
+    return;
+  }
+  const bin7 = code.toString(2).padStart(7,'0');
+  const bin8 = code.toString(2).padStart(8,'0');
+  out.innerHTML = `
+    <div class="chip"><div class="k">Character</div><div class="v">'${ch}'</div></div>
+    <div class="chip"><div class="k">Decimal</div><div class="v">${code}</div></div>
+    <div class="chip"><div class="k">ASCII-7</div><div class="v">${bin7}</div></div>
+    <div class="chip"><div class="k">ASCII-8</div><div class="v">${bin8}</div></div>
+  `;
+}
+document.getElementById('asciiGo').addEventListener('click', runASCII);
+runASCII();
+
+/* ============ Unicode lookup ============ */
+function runUnicode(){
+  const ch = document.getElementById('uniInput').value;
+  const out = document.getElementById('uniOut');
+  out.innerHTML = '';
+  if(!ch){ return; }
+  const codePoint = ch.codePointAt(0);
+  const hex = codePoint.toString(16).toUpperCase().padStart(4,'0');
+  const utf16 = codePoint <= 0xFFFF
+    ? codePoint.toString(2).padStart(16,'0')
+    : '(surrogate pair — beyond basic plane)';
+  out.innerHTML = `
+    <div class="chip"><div class="k">Character</div><div class="v">'${ch}'</div></div>
+    <div class="chip"><div class="k">Code point</div><div class="v">U+${hex}</div></div>
+    <div class="chip"><div class="k">Decimal</div><div class="v">${codePoint}</div></div>
+    <div class="chip"><div class="k">UTF-16 (binary)</div><div class="v" style="font-size:.78rem;">${utf16}</div></div>
+  `;
+}
+document.getElementById('uniGo').addEventListener('click', runUnicode);
+runUnicode();
+
+/* ============ Quad table (decimal/binary/octal/hex 0-15) ============ */
+(function(){
+  const table = document.getElementById('quadTable');
+  let head = '<thead><tr><th>Decimal</th><th>Binary</th><th>Octal</th><th>Hex</th></tr></thead><tbody>';
+  let rows = '';
+  for(let i=0;i<16;i++){
+    rows += `<tr><td>${i}</td><td>${i.toString(2).padStart(4,'0')}</td><td>${i.toString(8)}</td><td>${i.toString(16).toUpperCase()}</td></tr>`;
+  }
+  table.innerHTML = head + rows + '</tbody>';
+})();
+
+/* ============ Practice quiz ============ */
+const quizData = [
+  {q:'Convert 186₁₀ to binary', answerBase:2, compute:()=> decimalToBaseSteps(186,2).intDigits},
+  {q:'Convert 73₁₀ to binary', answerBase:2, compute:()=> decimalToBaseSteps(73,2).intDigits},
+  {q:'Convert binary 101010₂ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('101010',2).total},
+  {q:'Convert binary 11000₂ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('11000',2).total},
+  {q:'Convert 359₁₀ to octal', answerBase:8, compute:()=> decimalToBaseSteps(359,8).intDigits},
+  {q:'Convert 125₁₀ to octal', answerBase:8, compute:()=> decimalToBaseSteps(125,8).intDigits},
+  {q:'Convert octal 540₈ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('540',8).total},
+  {q:'Convert octal 425₈ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('425',8).total},
+  {q:'Convert 284₁₀ to hexadecimal', answerBase:16, compute:()=> decimalToBaseSteps(284,16).intDigits},
+  {q:'Convert hexadecimal 5C2₁₆ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('5C2',16).total},
+  {q:'Convert hexadecimal F3₁₆ to decimal', answerBase:10, compute:()=> baseToDecimalSteps('F3',16).total},
+];
+
+const quizList = document.getElementById('quizList');
+quizData.forEach((item, idx)=>{
+  const card = document.createElement('div');
+  card.className = 'card quiz-item';
+  card.innerHTML = `
+    <div class="quiz-q">${idx+1}. ${item.q}</div>
+    <div class="quiz-row">
+      <input type="text" class="mono" id="qz-input-${idx}" placeholder="Your answer" style="width:160px;">
+      <button class="btn ghost" id="qz-check-${idx}">Check</button>
+      <button class="btn ghost" id="qz-reveal-${idx}">Show answer</button>
+    </div>
+    <div class="quiz-feedback" id="qz-fb-${idx}"></div>
+  `;
+  quizList.appendChild(card);
+
+  const correctVal = item.compute();
+  const correctStr = correctVal.toString().toUpperCase();
+
+  document.getElementById(`qz-check-${idx}`).addEventListener('click', ()=>{
+    const val = document.getElementById(`qz-input-${idx}`).value.trim().toUpperCase();
+    const fb = document.getElementById(`qz-fb-${idx}`);
+    if(val === correctStr){
+      fb.textContent = '✓ Correct!';
+      fb.className = 'quiz-feedback correct';
+    } else {
+      fb.textContent = '✗ Not quite — try again, or reveal the answer.';
+      fb.className = 'quiz-feedback wrong';
+    }
+  });
+  document.getElementById(`qz-reveal-${idx}`).addEventListener('click', ()=>{
+    const fb = document.getElementById(`qz-fb-${idx}`);
+    fb.textContent = `Answer: ${correctStr}`;
+    fb.className = 'quiz-feedback';
+    fb.style.color = 'var(--ink-soft)';
+  });
+});
+
+/* ============ Nav active state on scroll ============ */
+const navLinks = document.querySelectorAll('.navlist a');
+const sections = Array.from(navLinks).map(a=>document.querySelector(a.getAttribute('href')));
+function updateActiveNav(){
+  let current = sections[0];
+  const scrollPos = window.scrollY + 120;
+  sections.forEach(sec=>{
+    if(sec && sec.offsetTop <= scrollPos) current = sec;
+  });
+  navLinks.forEach(a=>{
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current.id);
+  });
+}
+window.addEventListener('scroll', updateActiveNav);
+updateActiveNav();
+</script>
+</body>
+</html>
