@@ -42,6 +42,9 @@
     "Love The Psychology of Attraction": {
       "author": "Leslie Becker-Phelps",
       "cover": "https://dk.com/cdn/shop/files/getfile_7ca16892-cdcf-4da2-8caa-05ad162e3f3d.jpg"
+    },
+    "Emotional intelligence": {
+      "author": "Daniel Goleman"
     }
   },
   "diploma": {
@@ -466,10 +469,54 @@
         "Wishing on a star: When you need to listen to yourself": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch16.html",
         "Give yourself a break: Coping with the lonely times": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch18.html"
       },
-      "2] The Search : Finding the Right Person for You": {},
+      "2] The Search : Finding the Right Person for You": {
+        "On the lookout: Getting out there": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch19.html",
+        "Hey world, I'm available!: Sending out the right signals": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch20.html",
+        "We met on the bus: The chance encounter": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch21.html",
+        "I like you, but…: Is friendship all that's available?": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch22.html",
+        "Across a crowded office: The pros and cons of dating at work": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch23.html",
+        "Would like to meet…: Navigating the personal ads": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch24.html",
+        "The five-minute mile: Speed dating": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch25.html",
+        "Dating on the Internet: The strange world of infinite choice": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch26.html",
+        "Signing up online: Creating a profile": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch27.html",
+        "Just a click away: Starting a conversation": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch28.html",
+        "From profile to person: Turning a chat into a date": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch29.html",
+        "Keeping it safe: Meeting up in comfort": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch30.html",
+        "Hiding in plain sight: Meeting through friends": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch31.html",
+        "Hey, have you met…?: When friends play matchmaker": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch32.html",
+        "Next time lucky?: Dating after divorce": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch33.html"
+      },
       "3] Dating : Making It Work": {},
       "4] Establishing the Relationship : Making It Work": {},
       "5] Together : On The Road To Lasting Love": {}
+    },
+    "Emotional intelligence": {
+      "PART ONE: THE EMOTIONAL BRAIN": {
+        "What Are Emotions For?": "https://microintel.github.io/missmonk/psychology/ei/c1.html",
+        "Anatomy of an Emotional Hijacking": "https://microintel.github.io/missmonk/psychology/ei/c2.html"
+      },
+      "PART TWO: THE NATURE OF EMOTIONAL INTELLIGENCE": {
+        "When Smart Is Dumb": "https://microintel.github.io/missmonk/psychology/ei/c3.html",
+        "Know Thyself": "https://microintel.github.io/missmonk/psychology/ei/c4.html",
+        "Passion's Slaves": "https://microintel.github.io/missmonk/psychology/ei/c5.html",
+        "The Master Aptitude": "",
+        "The Roots of Empathy": "",
+        "The Social Arts": ""
+      },
+      "PART THREE: EMOTIONAL INTELLIGENCE APPLIED": {
+        "Intimate Enemies": "",
+        "Managing with Heart": "",
+        "Mind and Medicine": ""
+      },
+      "PART FOUR: WINDOWS OF OPPORTUNITY": {
+        "The Family Crucible": "",
+        "Trauma and Emotional Relearning": "",
+        "Temperament Is Not Destiny": ""
+      },
+      "PART FIVE: EMOTIONAL LITERACY": {
+        "The Cost of Emotional Illiteracy": "",
+        "Schooling the Emotions": ""
+      }
     }
   },
   "Ancient Literature": {
@@ -502,7 +549,15 @@
           "A PROBABILITY AND INTEGRAL TRANSFORMS": {},
           "DESIGN OF ANALOG AND DIGITAL CIRCUITS": {},
           "DATA STRUCTURES USING C": {},
-          "COMPUTER ORGANIZATION AND MICROPROCESSORS": {},
+          "COMPUTER ORGANIZATION AND MICROPROCESSORS": {
+            "Unit 1": {
+              "Basic Structure of Computers: Computer Types, Functional Units, Basic Operational Concepts, Bus Structures, \rPerformance – Processor Clock, Basic Performance Equation, Pipelining and Superscalar Operation, Clock Rate, \rInstruction set: CISC and RISC, Compiler, Performance Measurement, multiprocessors and multi computers, \rHistorical Perspective. Machine Instructions and Programs: Basic Input/output Operation, Input/output \rOrganization: Accessing I/O Devices, Interrupts – Interrupt Hardware, Enabling and Disabling Interrupts, Handling \rMultiple Devices, Controlling Device Requests, Exceptions": ""
+            },
+            "Unit 2": {},
+            "Unit 3": {},
+            "Unit 4": {},
+            "Unit 5": {}
+          },
           "DATA STRUCTURES LAB USING C": {},
           "OOP WITH JAVA": {},
           "SOCIAL CONNECT AND RESPONSIBILITY": {},

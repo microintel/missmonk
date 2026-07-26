@@ -373,5 +373,40 @@
   "link": "https://microintel.github.io/missmonk/psychology/love-attraction-dk/ch18.html"
   }
   ]
+  },
+  "Emotional intelligence": {
+  "author": "Daniel Goleman",
+  "chapters": [
+  {
+  "title": "We are not just a thinking species. We are a feeling species first",
+  "meaning": "Emotions came before logic. We felt things long before we could reason. That's why feelings often lead. Thinking comes second.",
+  "link": "https://microintel.github.io/missmonk/psychology/ei/c1.html"
+  },
+  {
+  "title": "Your feelings can move faster than your thoughts",
+  "meaning": "You react before you think sometimes. Fear or anger can take over fast. Your brain protects you first, explains later. It happens in a split second.",
+  "link": "https://microintel.github.io/missmonk/psychology/ei/c2.html"
+  },
+  {
+  "title": "Being brilliant on paper doesn't make you brilliant at life",
+  "meaning": "Good grades don't equal good life skills. Smart people can still struggle emotionally. Life needs more than book knowledge. Real intelligence includes handling emotions well.",
+  "link": "https://microintel.github.io/missmonk/psychology/ei/c3.html"
+  },
+  {
+  "title": "You can't manage a feeling you refuse to notice",
+  "meaning": "Ignored feelings don't just vanish. They grow stronger when denied. Naming an emotion weakens its power. Awareness comes before control.",
+  "link": "https://microintel.github.io/missmonk/psychology/ei/c4.html"
+  },
+  {
+  "title": "Anger doesn't arrive once. It stacks.",
+  "meaning": "Anger builds up slowly over time. Small things pile up unnoticed. Then one small thing sets it off. It's rarely just about that one moment.",
+  "link": ""
+  },
+  {
+  "title": "Managing your mood is a full-time job you never clocked into",
+  "meaning": "Your mind works nonstop to manage moods. No one ever trained you for it. It shapes how you treat people daily. It's a hidden, unpaid skill.",
+  "link": "https://microintel.github.io/missmonk/psychology/ei/c5.html"
+  }
+  ]
   }
 }
