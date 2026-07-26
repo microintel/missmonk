@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passion's Slaves — How Anger Builds, and Cools</title>
+<style>
+  :root{
+    --bg:#0b0908;
+    --surface:#16110d;
+    --surface-2:#1e1712;
+    --ember:#d9502e;
+    --amber:#f0a24a;
+    --calm:#5b9bc4;
+    --text:#ede6dc;
+    --muted:#8a7f74;
+    --line:#2c241d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  @font-face{ /* system fallback stack handles rendering; no external fetch needed */ }
+
+  canvas#bgCanvas{
+    position:fixed; inset:0; width:100%; height:100%;
+    z-index:0; pointer-events:none;
+  }
+
+  .wrap{ position:relative; z-index:1; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:8vh 6vw 6vh;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    font-size:.68rem;
+    color:var(--amber);
+    margin-bottom:1.4rem;
+  }
+  h1.title{
+    font-family:'Fraunces', Georgia, 'Times New Roman', serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:clamp(2.6rem, 9vw, 5.4rem);
+    line-height:1.02;
+    letter-spacing:-.01em;
+    background:linear-gradient(180deg, #fff6ea 0%, var(--amber) 55%, var(--ember) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:1.6rem;
+  }
+  .sub{
+    max-width:34rem;
+    color:var(--muted);
+    font-size:1rem;
+    line-height:1.6;
+    margin-bottom:3rem;
+  }
+  .epigraph{
+    max-width:26rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.85rem;
+    line-height:1.9;
+    color:#c9beb0;
+    border-left:2px solid var(--ember);
+    padding-left:1.2rem;
+    text-align:left;
+    margin-bottom:3.6rem;
+  }
+  .epigraph cite{
+    display:block;
+    margin-top:.6rem;
+    font-style:normal;
+    color:var(--muted);
+    font-size:.72rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- Surge meter (signature element) ---------- */
+  .meter-wrap{
+    width:min(92vw, 560px);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:1.6rem 1.4rem 1.4rem;
+    box-shadow:0 30px 80px -30px rgba(217,80,46,.25);
+  }
+  .meter-label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:.7rem;
+  }
+  .meter-label span.state{
+    color:var(--amber);
+    transition:color .4s ease;
+  }
+  canvas#surgeCanvas{
+    width:100%; height:150px;
+    display:block;
+    border-radius:10px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.15));
+  }
+  .meter-controls{
+    display:flex; gap:.7rem; margin-top:1.1rem;
+    flex-wrap:wrap;
+  }
+  .btn{
+    flex:1 1 auto;
+    min-width:9.5rem;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:.82rem;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding:.75rem 1rem;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface-2);
+    color:var(--text);
+    cursor:pointer;
+    transition:transform .15s ease, border-color .2s ease, background .2s ease;
+  }
+  .btn:hover{ border-color:var(--amber); transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0); }
+  .btn.hot{ border-color:rgba(217,80,46,.5); }
+  .btn.hot:hover{ border-color:var(--ember); }
+  .btn.cool{ border-color:rgba(91,155,196,.5); }
+  .btn.cool:hover{ border-color:var(--calm); }
+  .meter-caption{
+    font-size:.78rem;
+    color:var(--muted);
+    margin-top:.9rem;
+    line-height:1.5;
+  }
+
+  .scroll-cue{
+    margin-top:3.4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  }
+  .scroll-cue .stick{
+    width:1px; height:34px;
+    background:linear-gradient(180deg, var(--amber), transparent);
+    animation:pulseDown 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseDown{
+    0%,100%{ opacity:.15; transform:scaleY(.6); }
+    50%{ opacity:1; transform:scaleY(1); }
+  }
+
+  /* ---------- Section shell ---------- */
+  section{
+    position:relative;
+    padding:5vh 6vw;
+  }
+  .section-head{
+    max-width:38rem;
+    margin:0 auto 4rem;
+    text-align:center;
+  }
+  .section-head h2{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:500;
+    font-style:italic;
+    font-size:clamp(1.5rem, 4vw, 2.1rem);
+    color:var(--text);
+    margin-bottom:.8rem;
+  }
+  .section-head p{
+    color:var(--muted);
+    font-size:.92rem;
+    line-height:1.6;
+  }
+
+  /* ---------- Provocation tape (idea list) ---------- */
+  .tape{
+    max-width:44rem;
+    margin:0 auto;
+    position:relative;
+    padding-left:2.6rem;
+  }
+  .tape::before{
+    content:"";
+    position:absolute;
+    left:.85rem; top:0; bottom:0;
+    width:1px;
+    background:linear-gradient(180deg, transparent, var(--line) 6%, var(--line) 94%, transparent);
+  }
+  .node{
+    position:relative;
+    padding:2.4rem 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .node:last-child{ border-bottom:none; }
+  .node.visible{ opacity:1; transform:translateY(0); }
+
+  .node-index{
+    position:absolute;
+    left:-2.6rem; top:2.5rem;
+    width:1.7rem; height:1.7rem;
+    border-radius:50%;
+    background:var(--surface);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.62rem;
+    color:var(--muted);
+    z-index:2;
+  }
+  .node.visible .node-index{
+    border-color:var(--ember);
+    color:var(--amber);
+  }
+
+  .spike{
+    width:100%; height:36px;
+    margin-bottom:1rem;
+  }
+  .spike svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .spike path{
+    fill:none;
+    stroke:var(--ember);
+    stroke-width:1.6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+    opacity:.8;
+  }
+  .node.visible .spike path{
+    animation:draw 1.1s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .node h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:clamp(1.15rem, 2.6vw, 1.5rem);
+    line-height:1.3;
+    margin-bottom:.5rem;
+    cursor:pointer;
+  }
+  .node .detail{
+    max-height:0;
+    overflow:hidden;
+    color:var(--muted);
+    font-size:.9rem;
+    line-height:1.6;
+    transition:max-height .5s ease, opacity .4s ease, margin-top .4s ease;
+    opacity:0;
+  }
+  .node.open .detail{
+    max-height:8rem;
+    opacity:1;
+    margin-top:.4rem;
+  }
+  .tap-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.62rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    opacity:.55;
+  }
+
+  /* ---------- Quote breaks ---------- */
+  .quote-break{
+    max-width:38rem;
+    margin:0 auto;
+    padding:4.5vh 4vw;
+    text-align:center;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .quote-break.visible{ opacity:1; transform:translateY(0); }
+  .quote-break blockquote{
+    font-family:'Fraunces', Georgia, serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.3rem, 3.6vw, 1.9rem);
+    line-height:1.4;
+    color:#f4ead9;
+  }
+  .quote-break blockquote::before{ content:"“"; color:var(--ember); }
+  .quote-break blockquote::after{ content:"”"; color:var(--ember); }
+  .quote-break cite{
+    display:block;
+    margin-top:1.1rem;
+    font-style:normal;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---------- Lesson / footer ---------- */
+  .lesson{
+    min-height:70vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:8vh 6vw;
+  }
+  .lesson .eyebrow{ margin-bottom:1.6rem; }
+  .lesson h2{
+    max-width:38rem;
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:clamp(1.9rem, 5.6vw, 3rem);
+    line-height:1.25;
+    background:linear-gradient(180deg, #fff6ea, var(--calm));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  footer{
+    text-align:center;
+    padding:3rem 6vw 4rem;
+    color:var(--muted);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.08em;
+  }
+
+  @media (max-width: 560px){
+    .tape{ padding-left:2.1rem; }
+    .node-index{ left:-2.1rem; width:1.5rem; height:1.5rem; }
+    .meter-controls{ flex-direction:column; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .scroll-cue .stick{ animation:none; opacity:.5; }
+    .node, .quote-break{ transition:opacity .3s ease; transform:none !important; }
+    .node.visible .spike path{ animation:none; stroke-dashoffset:0; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="eyebrow">Emotional Intelligence · Chapter 3</div>
+    <h1 class="title">Passion's<br>Slaves</h1>
+    <p class="sub">Anger doesn't hit you once. It stacks, wave on wave, until reason can't keep up. Here's how it builds — and the two real ways to bring it down.</p>
+
+    <div class="epigraph">
+      Give me that man<br>
+      That is not passion's slave, and I will wear him<br>
+      In my heart's core, aye, in my heart of hearts.
+      <cite>Hamlet to Horatio</cite>
+    </div>
+
+    <div class="meter-wrap">
+      <div class="meter-label">
+        <span>Surge level</span>
+        <span class="state" id="stateLabel">calm</span>
+      </div>
+      <canvas id="surgeCanvas"></canvas>
+      <div class="meter-controls">
+        <button class="btn hot" id="provokeBtn">Add a provocation</button>
+        <button class="btn cool" id="walkBtn">Walk it off</button>
+      </div>
+      <p class="meter-caption" id="meterCaption">Tap "Add a provocation" a few times, fast. Watch each wave ride the last one's tail — that's how a small thing turns into rage.</p>
+    </div>
+
+    <div class="scroll-cue">
+      <span>scroll</span>
+      <span class="stick"></span>
+    </div>
+  </header>
+
+  <!-- ================= IDEAS ================= -->
+  <section>
+    <div class="section-head">
+      <h2>What's actually happening in your body</h2>
+      <p>Eight ideas from the chapter. Tap any headline to open it up.</p>
+    </div>
+
+    <div class="tape" id="tape">
+
+      <div class="node" data-n="1">
+        <div class="node-index">01</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,18 L120,18 L140,4 L160,32 L180,10 L200,18 L400,18"/></svg></div>
+        <h3>Self-control is an old idea, not a new one.</h3>
+        <div class="detail">The Greeks called it <em>sophrosyne</em> — care and wisdom in how you run your life. Not shutting feelings off. Balance.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="node" data-n="2">
+        <div class="node-index">02</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,18 L100,18 L130,2 L150,34 L170,2 L190,30 L210,18 L400,18"/></svg></div>
+        <h3>The goal is balance, not silence.</h3>
+        <div class="detail">Too little feeling and life goes dull and flat. Too much, for too long, and it turns into sickness — anxiety, rage, depression that won't lift.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="node" data-n="3">
+        <div class="node-index">03</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,20 L90,20 L110,6 L130,20 L200,20 L220,6 L240,20 L400,20"/></svg></div>
+        <h3>Well-being is a ratio, not a rulebook.</h3>
+        <div class="detail">You don't need to dodge every bad mood. You just need enough good ones stacked against them. That balance is what people actually feel as "doing well."</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="quote-break">
+        <blockquote>Anger is never without a reason, but seldom a good one.</blockquote>
+        <cite>Benjamin Franklin</cite>
+      </div>
+
+      <div class="node" data-n="4">
+        <div class="node-index">04</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,18 L80,18 L95,10 L110,26 L125,10 L140,26 L155,18 L400,18"/></svg></div>
+        <h3>Managing your mood is a full-time job you never clocked into.</h3>
+        <div class="detail">A show, a walk, a friend, a snack — most of what you reach for in free time is really an attempt to feel a little better.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="node" data-n="5">
+        <div class="node-index">05</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,20 L150,20 L165,4 L180,20 L400,20"/></svg></div>
+        <h3>You can't always stop a feeling. You can control how long it stays.</h3>
+        <div class="detail">A mood only becomes a problem when it lingers past its welcome. Ordinary sadness or worry usually passes on its own — with time and a little patience.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="node" data-n="6">
+        <div class="node-index">06</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,18 L100,18 L120,2 L140,18 L260,18 L280,32 L300,18 L400,18"/></svg></div>
+        <h3>The story you tell yourself decides the size of your anger.</h3>
+        <div class="detail">A car cuts you off. "He could've killed me!" builds rage. "Maybe he had an emergency" cools it before it even starts.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="quote-break">
+        <blockquote>A sequence of provocations, each triggering an excitatory reaction that dissipates slowly.</blockquote>
+        <cite>Dolf Zillmann, on how rage builds</cite>
+      </div>
+
+      <div class="node" data-n="7">
+        <div class="node-index">07</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,26 L60,26 L75,12 L90,26 L140,26 L155,4 L170,26 L220,26 L235,0 L250,26 L400,26"/></svg></div>
+        <h3>Anger doesn't arrive once. It stacks.</h3>
+        <div class="detail">Each angry thought is a new wave riding the last one's tail. A second wave hits before the first fades — and the body's arousal climbs fast.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+      <div class="node" data-n="8">
+        <div class="node-index">08</div>
+        <div class="spike"><svg viewBox="0 0 400 36" preserveAspectRatio="none"><path d="M0,18 L120,18 L140,6 L160,18 L260,18 L280,30 L300,18 L400,18"/></svg></div>
+        <h3>There are only two real ways out.</h3>
+        <div class="detail">Catch the angry thought early and question it, before rage takes over — or step away and let the body's chemistry run its course.</div>
+        <div class="tap-hint">tap to expand</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="quote-break">
+    <blockquote>It's hard to stay angry when we're having a pleasant time.</blockquote>
+    <cite>Dolf Zillmann, on cooling down</cite>
+  </div>
+
+  <div class="quote-break">
+    <blockquote>The stillness and beauty calmed and soothed me, and after some hours I returned repentant and almost melted.</blockquote>
+    <cite>A subject in the first scientific study of anger, 1899</cite>
+  </div>
+
+  <!-- ================= LESSON ================= -->
+  <section class="lesson">
+    <div class="eyebrow">the main lesson</div>
+    <h2>You don't have to kill your anger. You just have to outlast its first wave.</h2>
+  </section>
+
+  <footer>Passion's Slaves — after Daniel Goleman, Emotional Intelligence</footer>
+
+</div>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- Ambient background: embers rising, ash cooling down ---------------- */
+  const bg = document.getElementById('bgCanvas');
+  const bctx = bg.getContext('2d');
+  let W, H, particles = [];
+
+  function resizeBg(){
+    W = bg.width = window.innerWidth;
+    H = bg.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeBg);
+  resizeBg();
+
+  function makeParticle(hot){
+    return {
+      hot,
+      x: Math.random()*W,
+      y: hot ? H + Math.random()*100 : -Math.random()*100,
+      r: hot ? 0.6 + Math.random()*1.6 : 1 + Math.random()*2.2,
+      speed: hot ? 0.25 + Math.random()*0.55 : 0.12 + Math.random()*0.3,
+      drift: (Math.random()-0.5)*0.4,
+      life: Math.random()*1,
+      flicker: Math.random()*Math.PI*2
+    };
+  }
+  const COUNT = 46;
+  for(let i=0;i<COUNT;i++){
+    particles.push(makeParticle(Math.random() < 0.62));
+  }
+
+  function drawBg(){
+    bctx.clearRect(0,0,W,H);
+    bctx.fillStyle = 'rgba(11,9,8,1)';
+    bctx.fillRect(0,0,W,H);
+
+    for(const p of particles){
+      p.flicker += 0.05;
+      const flick = 0.6 + 0.4*Math.sin(p.flicker);
+      let color, alpha;
+      if(p.hot){
+        p.y -= p.speed;
+        p.x += p.drift;
+        alpha = 0.55 * flick * (1 - Math.max(0, (H*0.15 - p.y)/(H*0.15)));
+        color = `rgba(240,${Math.floor(120+60*flick)},${Math.floor(50+30*flick)},${Math.max(0,alpha)})`;
+      } else {
+        p.y += p.speed;
+        p.x += p.drift*0.5;
+        alpha = 0.28 * flick;
+        color = `rgba(120,150,170,${alpha})`;
+      }
+      bctx.beginPath();
+      bctx.fillStyle = color;
+      bctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      bctx.fill();
+
+      if(p.hot && p.y < -20){ Object.assign(p, makeParticle(true), {y: H + 20}); }
+      if(p.hot && Math.random() < 0.002){ Object.assign(p, makeParticle(false)); }
+      if(!p.hot && p.y > H + 20){ Object.assign(p, makeParticle(Math.random() < 0.6)); }
+    }
+    if(!reduceMotion) requestAnimationFrame(drawBg);
+  }
+  if(reduceMotion){
+    drawBg(); // draw once, static
+  } else {
+    drawBg();
+  }
+
+  /* ---------------- Surge meter (signature element) ---------------- */
+  const sc = document.getElementById('surgeCanvas');
+  const sctx = sc.getContext('2d');
+  const stateLabel = document.getElementById('stateLabel');
+  const caption = document.getElementById('meterCaption');
+  let sw, sh;
+
+  function resizeSurge(){
+    const rect = sc.getBoundingClientRect();
+    sw = sc.width = rect.width * devicePixelRatio;
+    sh = sc.height = rect.height * devicePixelRatio;
+    sctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  window.addEventListener('resize', resizeSurge);
+
+  let surges = []; // {start, amp, decay}
+  let cooling = false;
+
+  function addSurge(){
+    surges.push({ start: performance.now(), amp: 34, decay: 0.00045 });
+    if(surges.length > 12) surges.shift();
+  }
+
+  function totalLevel(now){
+    let sum = 0;
+    for(const s of surges){
+      const dt = now - s.start;
+      if(dt < 0) continue;
+      sum += s.amp * Math.exp(-s.decay*dt);
+    }
+    return sum;
+  }
+
+  function updateLabel(level){
+    let word, color;
+    if(level < 8){ word='calm'; color='#8a7f74'; }
+    else if(level < 22){ word='irritated'; color='#f0a24a'; }
+    else if(level < 40){ word='angry'; color='#e07a3c'; }
+    else { word='raging'; color='#d9502e'; }
+    stateLabel.textContent = word;
+    stateLabel.style.color = color;
+  }
+
+  function drawSurge(){
+    const rect = sc.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    sctx.clearRect(0,0,w,h);
+
+    const now = performance.now();
+    const baseline = h - 14;
+
+    // faint gridlines
+    sctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    sctx.lineWidth = 1;
+    for(let gy=10; gy<h; gy+=h/4){
+      sctx.beginPath(); sctx.moveTo(0,gy); sctx.lineTo(w,gy); sctx.stroke();
+    }
+
+    // individual decaying wave arcs stacking
+    let cumulative = new Array(Math.ceil(w)).fill(0);
+    for(const s of surges){
+      const dt = now - s.start;
+      if(dt < 0) continue;
+      const amp = s.amp * Math.exp(-s.decay*dt);
+      if(amp < 0.4) continue;
+      sctx.beginPath();
+      for(let x=0; x<=w; x+=4){
+        const idx = Math.min(cumulative.length-1, Math.floor(x));
+        const localT = (now/280) + x*0.045;
+        const wave = Math.sin(localT) * amp * Math.exp(-((x)/(w*0.9)));
+        const y = baseline - Math.max(0, wave) - cumulative[idx]*0.0;
+        if(x===0) sctx.moveTo(x,y); else sctx.lineTo(x,y);
+      }
+      sctx.strokeStyle = 'rgba(217,80,46,0.35)';
+      sctx.lineWidth = 1.4;
+      sctx.stroke();
+    }
+
+    // total level bar (right side gauge)
+    const level = totalLevel(now);
+    const gaugeMax = 70;
+    const gaugeH = Math.min(1, level/gaugeMax) * (h-24);
+    const gaugeX = w - 14;
+    sctx.fillStyle = 'rgba(255,255,255,0.05)';
+    sctx.fillRect(gaugeX, 10, 6, h-24);
+    const grad = sctx.createLinearGradient(0, h-10, 0, 10);
+    grad.addColorStop(0, '#5b9bc4');
+    grad.addColorStop(0.55, '#f0a24a');
+    grad.addColorStop(1, '#d9502e');
+    sctx.fillStyle = grad;
+    sctx.fillRect(gaugeX, h-10-gaugeH, 6, gaugeH);
+
+    // baseline
+    sctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    sctx.beginPath(); sctx.moveTo(0, baseline); sctx.lineTo(w-24, baseline); sctx.stroke();
+
+    updateLabel(level);
+
+    if(cooling && level < 1.2){ cooling = false; }
+
+    if(!reduceMotion){
+      requestAnimationFrame(drawSurge);
+    }
+  }
+
+  document.getElementById('provokeBtn').addEventListener('click', () => {
+    addSurge();
+    caption.textContent = "Notice: each new wave starts before the last one fades. That's why the third provocation feels ten times worse than the first.";
+    if(reduceMotion) drawSurge();
+  });
+
+  document.getElementById('walkBtn').addEventListener('click', () => {
+    cooling = true;
+    const factor = 6; // speeds up decay to simulate time + distraction
+    surges = surges.map(s => {
+      const now = performance.now();
+      const dt = now - s.start;
+      return { start: now - dt*factor, amp: s.amp, decay: s.decay };
+    });
+    caption.textContent = "Walking away doesn't erase the surge instantly — it just gives the body room to run its course without new fuel.";
+    if(reduceMotion) drawSurge();
+  });
+
+  resizeSurge();
+  drawSurge();
+
+  /* ---------------- Scroll reveal ---------------- */
+  const revealTargets = document.querySelectorAll('.node, .quote-break');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.25 });
+  revealTargets.forEach(t => io.observe(t));
+
+  /* ---------------- Tap to expand ideas ---------------- */
+  document.querySelectorAll('.node h3').forEach(h => {
+    h.addEventListener('click', () => {
+      h.closest('.node').classList.toggle('open');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

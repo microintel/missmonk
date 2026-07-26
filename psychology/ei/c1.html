@@ -1,1 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Are Emotions For?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0c14;
+    --bg-soft: #0f1220;
+    --ink: #e9e6df;
+    --ink-dim: #9a97a8;
+    --ember: #ff6b4a;
+    --ember-soft: rgba(255,107,74,0.15);
+    --mind: #5aa2ff;
+    --mind-soft: rgba(90,162,255,0.15);
+    --gold: #f4c95d;
+    --line: rgba(233,230,223,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    line-height:1.6;
+  }
 
+  /* ---------- falling sparks background ---------- */
+  #sparks{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .content{ position:relative; z-index:2; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 6vh 6vw;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 1.6rem;
+  }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(2.4rem, 8vw, 5.2rem);
+    line-height:1.05;
+    max-width:16ch;
+    background: linear-gradient(120deg, var(--ink) 40%, var(--ember) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero .sub{
+    margin-top:1.6rem;
+    max-width:44ch;
+    color: var(--ink-dim);
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-style: italic;
+    font-family:'Fraunces', serif;
+  }
+
+  /* two minds signature widget */
+  .duel{
+    margin-top: 4rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: clamp(2rem, 10vw, 8rem);
+    width:100%;
+    max-width:560px;
+    position:relative;
+  }
+  .mind-node{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.6rem;
+  }
+  .orb{
+    width: clamp(64px, 14vw, 92px);
+    height: clamp(64px, 14vw, 92px);
+    border-radius:50%;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+  }
+  .orb.feel{
+    background: radial-gradient(circle at 35% 30%, #ff9c7a, var(--ember) 60%, #a13a20 100%);
+    box-shadow: 0 0 40px var(--ember-soft), 0 0 80px var(--ember-soft);
+    animation: pulse-feel 1.1s ease-in-out infinite;
+  }
+  .orb.think{
+    background: radial-gradient(circle at 35% 30%, #a9cfff, var(--mind) 60%, #1b4c8f 100%);
+    box-shadow: 0 0 40px var(--mind-soft), 0 0 80px var(--mind-soft);
+    animation: pulse-think 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse-feel{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.12); }
+  }
+  @keyframes pulse-think{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.06); }
+  }
+  .mind-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color: var(--ink-dim);
+  }
+  .track{
+    position:absolute;
+    top: calc(clamp(64px,14vw,92px)/2);
+    left: calc(clamp(64px,14vw,92px)/2 + 12px);
+    right: calc(clamp(64px,14vw,92px)/2 + 12px);
+    height:2px;
+    background: var(--line);
+  }
+  .spark-run{
+    position:absolute;
+    top:-4px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px var(--gold), 0 0 24px var(--gold);
+    animation: run 1.4s linear infinite;
+  }
+  @keyframes run{
+    0%{ left:0%; opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ left:100%; opacity:0; }
+  }
+  .duel-caption{
+    margin-top:1.4rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    color: var(--ink-dim);
+    text-align:center;
+    letter-spacing:0.02em;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom: 3rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.2em;
+    color: var(--ink-dim);
+    text-transform:uppercase;
+    opacity:0.7;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(8px); }
+  }
+
+  /* ---------- quote breaks ---------- */
+  .quote-break{
+    max-width:760px;
+    margin: 10vh auto;
+    padding: 0 6vw;
+    text-align:center;
+  }
+  .quote-break blockquote{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size: clamp(1.3rem, 3.6vw, 2.1rem);
+    line-height:1.4;
+    color: var(--ink);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 2rem 0;
+  }
+  .quote-break cite{
+    display:block;
+    margin-top:1rem;
+    font-family:'JetBrains Mono', monospace;
+    font-style:normal;
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color: var(--ember);
+  }
+
+  /* ---------- signal console ---------- */
+  .signals{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 4vh 6vw 12vh;
+    display:flex;
+    flex-direction:column;
+    gap: 1rem;
+  }
+  .section-title{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 5vh;
+  }
+  .signal{
+    opacity:0;
+    transform: translateX(-18px);
+    transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s ease;
+    display:grid;
+    grid-template-columns: minmax(84px, auto) minmax(90px, 1fr) auto;
+    align-items:center;
+    column-gap: 1.2rem;
+    row-gap: 0.6rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.025), transparent 60%);
+    cursor:pointer;
+  }
+  .signal.visible{ opacity:1; transform:none; }
+  .signal:hover, .signal:focus-visible{ border-color: var(--sig-color, var(--ember)); }
+  .signal .code{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem;
+    letter-spacing:0.14em;
+    color: var(--ink-dim);
+    display:block;
+  }
+  .signal .keyword{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    color: var(--sig-color, var(--ember));
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .signal-wave{ height:40px; min-width:80px; }
+  .signal-wave svg{ width:100%; height:100%; overflow:visible; }
+  .signal-wave path{
+    fill:none;
+    stroke: var(--sig-color, var(--mind));
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray: 5 5;
+    animation: dash 2.4s linear infinite;
+    opacity:0.85;
+  }
+  .signal-wave path.static{
+    stroke: var(--line);
+    stroke-width:1.2;
+    stroke-dasharray:none;
+    animation:none;
+    opacity:0.6;
+  }
+  @keyframes dash{ to{ stroke-dashoffset: -40; } }
+  .signal-toggle{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:1rem;
+    color: var(--ink-dim);
+    transition: transform 0.35s ease, border-color 0.3s ease, color 0.3s ease;
+    flex-shrink:0;
+  }
+  .signal.open .signal-toggle{
+    transform: rotate(45deg);
+    border-color: var(--sig-color, var(--ember));
+    color: var(--sig-color, var(--ember));
+  }
+  .signal-headline{
+    grid-column: 1 / -1;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(1.15rem, 3vw, 1.5rem);
+    line-height:1.35;
+    color: var(--ink);
+  }
+  .signal-detail{
+    grid-column: 1 / -1;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition: max-height 0.45s ease, opacity 0.4s ease, margin-top 0.45s ease;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    line-height:1.6;
+    border-top: 1px dashed var(--line);
+    margin-top:0;
+  }
+  .signal.open .signal-detail{
+    max-height: 200px;
+    opacity:1;
+    margin-top:0.4rem;
+    padding-top:0.8rem;
+  }
+
+  /* ---------- lesson ---------- */
+  .lesson{
+    max-width:680px;
+    margin: 0 auto 14vh;
+    padding: 0 6vw;
+    text-align:center;
+  }
+  .lesson .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--gold);
+    margin-bottom:1.4rem;
+  }
+  .lesson p{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(1.5rem, 4.2vw, 2.3rem);
+    line-height:1.35;
+  }
+  .lesson .accent{ color: var(--ember); }
+
+  footer{
+    text-align:center;
+    padding: 4vh 6vw 8vh;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    color: var(--ink-dim);
+    letter-spacing:0.05em;
+  }
+
+  @media (max-width: 560px){
+    .signal{
+      grid-template-columns: 1fr auto;
+    }
+    .signal-wave{ grid-column: 1 / -1; order:3; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="sparks"></canvas>
+
+<div class="content">
+
+  <section class="hero">
+    <div class="eyebrow">Emotional Intelligence · Chapter 1</div>
+    <h1>What Are Emotions For?</h1>
+    <p class="sub">"It is with the heart that one sees rightly; what is essential is invisible to the eye."</p>
+
+    <div class="duel">
+      <div class="mind-node">
+        <div class="orb feel">❤️</div>
+        <div class="mind-label">Feels</div>
+      </div>
+      <div class="track">
+        <div class="spark-run" style="animation-delay:0s;"></div>
+        <div class="spark-run" style="animation-delay:0.7s;"></div>
+      </div>
+      <div class="mind-node">
+        <div class="orb think">🧠</div>
+        <div class="mind-label">Thinks</div>
+      </div>
+    </div>
+    <div class="duel-caption">watch closely — the heart fires far more often than the head</div>
+
+    <div class="scroll-cue">scroll to begin ↓</div>
+  </section>
+
+  <div class="quote-break">
+    <blockquote>"All emotions are, in essence, impulses to act."
+      <cite>— the root word for emotion means "to move"</cite>
+    </blockquote>
+  </div>
+
+  <section class="signals">
+    <div class="section-title">7 signals from the chapter — tap to read each one</div>
+
+    <div class="signal" data-num="01" style="--sig-color:#ff6b4a;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 01</span>
+      <span class="keyword">Impulse</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,20 L60,20 L70,4 L80,36 L90,20 L200,20"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Emotion moves before thought does.</div>
+      <div class="signal-detail">The word "emotion" comes from a root meaning "to move." Every feeling is the body already preparing to act — often before the mind finishes thinking it through.</div>
+    </div>
+
+    <div class="signal" data-num="02" style="--sig-color:#f4c95d;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 02</span>
+      <span class="keyword">Misfire</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,20 L30,20 L38,8 L46,32 L54,14 L62,26 L70,20 L200,20"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Speed without a pause becomes a mistake.</div>
+      <div class="signal-detail">Fear is built to respond first and check facts later — useful against real danger, risky when there is no danger at all.</div>
+    </div>
+
+    <div class="signal" data-num="03" style="--sig-color:#5aa2ff;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 03</span>
+      <span class="keyword">Wiring</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,20 L20,20 L26,10 L32,20 L60,20 L66,30 L72,20 L110,20 L116,6 L122,20 L200,20"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Anger arms the hands. Fear arms the legs.</div>
+      <div class="signal-detail">Every emotion sends a different set of instructions to the body — even happiness, which quiets the mind and rebuilds energy.</div>
+    </div>
+
+    <div class="signal" data-num="04" style="--sig-color:#ff6b4a;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 04</span>
+      <span class="keyword">Dual&nbsp;Core</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,14 Q25,2 50,14 T100,14 T150,14 T200,14"/><path d="M0,28 Q25,38 50,28 T100,28 T150,28 T200,28"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">One mind speaks in words. One speaks in tears.</div>
+      <div class="signal-detail">The rational mind is slow and logical. The emotional mind is faster, less logical — and often more honest.</div>
+    </div>
+
+    <div class="signal" data-num="05" style="--sig-color:#f4c95d;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 05</span>
+      <span class="keyword">Legacy&nbsp;Code</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,20 L40,20 L44,16 L48,20 L90,20 L94,24 L98,20 L150,20 L154,17 L158,20 L200,20"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Built for tigers. Running in traffic.</div>
+      <div class="signal-detail">Our fear and anger were shaped over hundreds of thousands of years — civilization is far too young to have rewritten them.</div>
+    </div>
+
+    <div class="signal" data-num="06" style="--sig-color:#5aa2ff;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 06</span>
+      <span class="keyword">Stack</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path class="static" d="M0,32 L200,32 M0,20 L200,20 M0,8 L200,8"/><path d="M0,32 L60,32 L60,20 L130,20 L130,8 L200,8"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Feeling was the foundation. Thinking was built on top.</div>
+      <div class="signal-detail">The brainstem came first, then the emotional centers, and only much later the thinking brain — which is why feeling can still take the lead.</div>
+    </div>
+
+    <div class="signal" data-num="07" style="--sig-color:#ff6b4a;" tabindex="0" role="button" aria-expanded="false">
+      <span class="code">SIGNAL 07</span>
+      <span class="keyword">Guardrails</span>
+      <div class="signal-wave"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path class="static" d="M10,4 L10,36 M40,4 L40,36 M70,4 L70,36 M100,4 L100,36 M130,4 L130,36 M160,4 L160,36 M190,4 L190,36"/><path d="M0,20 L200,20"/></svg></div>
+      <div class="signal-toggle">+</div>
+      <div class="signal-headline">Laws exist to fence in what instinct can't control.</div>
+      <div class="signal-detail">Early moral codes tried to hold back powerful, ancient impulses — yet emotion still overrides reason more often than we'd like.</div>
+    </div>
+
+  </section>
+
+  <div class="quote-break">
+    <blockquote>"Intelligence can come to nothing when the emotions hold sway."</blockquote>
+  </div>
+
+  <section class="lesson">
+    <div class="label">Main lesson</div>
+    <p>We are not just a <span class="accent">thinking</span> species.<br>We are a <span class="accent">feeling</span> species first — and our oldest, fastest mind often decides <em>before</em> our newest, slowest mind gets a vote.</p>
+  </section>
+
+  <footer>from "Emotional Intelligence" — Daniel Goleman, Chapter 1</footer>
+
+</div>
+
+<script>
+// ---------- falling sparks background ----------
+const canvas = document.getElementById('sparks');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COLORS = ['#ff6b4a', '#f4c95d', '#5aa2ff'];
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function makeParticle(randomY){
+  return {
+    x: Math.random() * W,
+    y: randomY ? Math.random() * H : -10,
+    r: Math.random() * 2 + 1,
+    speed: Math.random() * 0.6 + 0.25,
+    drift: (Math.random() - 0.5) * 0.4,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: Math.random() * 0.5 + 0.3,
+    trail: Math.random() * 14 + 6
+  };
+}
+
+const COUNT = window.innerWidth < 640 ? 45 : 90;
+for(let i = 0; i < COUNT; i++){ particles.push(makeParticle(true)); }
+
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    ctx.beginPath();
+    const grad = ctx.createLinearGradient(p.x, p.y - p.trail, p.x, p.y);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, p.color);
+    ctx.strokeStyle = grad;
+    ctx.globalAlpha = p.alpha;
+    ctx.lineWidth = p.r;
+    ctx.moveTo(p.x, p.y - p.trail);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = p.color;
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    p.y += p.speed;
+    p.x += p.drift;
+    if(p.y - p.trail > H){
+      Object.assign(p, makeParticle(false));
+    }
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ---------- reveal signals on scroll + click to expand ----------
+const signals = document.querySelectorAll('.signal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.2 });
+signals.forEach(sig => observer.observe(sig));
+
+function toggleSignal(sig){
+  const isOpen = sig.classList.toggle('open');
+  sig.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+signals.forEach(sig => {
+  sig.addEventListener('click', () => toggleSignal(sig));
+  sig.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      toggleSignal(sig);
+    }
+  });
+});
+</script>
+
+</body>
+</html>

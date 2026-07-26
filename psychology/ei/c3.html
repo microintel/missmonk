@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Smart Is Dumb — The Other Kind of Intelligence</title>
+<style>
+
+  @font-face {
+    font-family: 'system-mono';
+    src: local('Menlo'), local('Consolas'), local('monospace');
+  }
+
+  :root{
+    --bg: #0b0d10;
+    --bg2: #12151a;
+    --ink: #e9e7df;
+    --muted: #8a92a0;
+    --iq: #5eb8ff;       /* cold, logical, "test" blue */
+    --eq: #ff8a5b;       /* warm, feeling, "pen" coral */
+    --red-pen: #c94b3f;
+    --line: rgba(233,231,223,0.12);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Iowan Old Style','Georgia', serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+  body{ font-family: 'Source Sans 3', sans-serif; }
+  .display{ font-family: 'Fraunces', serif; }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  #bgcanvas{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 24px 40px;
+    position: relative;
+  }
+
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--eq);
+    margin-bottom: 18px;
+  }
+
+  h1.title{
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2.3rem, 8vw, 4.4rem);
+    line-height: 1.02;
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  h1.title em{
+    font-style: italic;
+    color: var(--eq);
+  }
+
+  .subtitle{
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.55;
+    margin: 0 auto 46px;
+  }
+
+  /* ---------- SIGNATURE ELEMENT: correlation console ---------- */
+  .console{
+    width: 100%;
+    max-width: 620px;
+    background: linear-gradient(180deg, #14171d, #0e1013);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 18px 10px;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7);
+  }
+
+  .console-head{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .console-head .live{
+    color: var(--eq);
+  }
+
+  .console-head .live::before{
+    content:'●';
+    color: var(--eq);
+    margin-right: 5px;
+    animation: pulse 1.6s infinite ease-in-out;
+  }
+
+  @keyframes pulse{
+    0%,100%{ opacity: 1; }
+    50%{ opacity: 0.25; }
+  }
+
+  #scatter{
+    width: 100%;
+    height: 260px;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .console-foot{
+    display:flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    padding: 6px 2px 10px;
+    letter-spacing: 0.03em;
+  }
+
+  .scroll-cue{
+    margin-top: 42px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 6px;
+  }
+
+  .scroll-cue .arrow{
+    animation: bob 1.8s infinite ease-in-out;
+    font-size: 1rem;
+  }
+
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); opacity: 0.5;}
+    50%{ transform: translateY(6px); opacity: 1;}
+  }
+
+  /* ---------- INTRO STRIP ---------- */
+  .intro{
+    padding: 30px 24px 70px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .intro strong{ color: var(--ink); font-weight: 600; }
+
+  /* ---------- QUOTE BREAK ---------- */
+  .quote-break{
+    padding: 90px 24px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .quote-break.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .quote-break .mark{
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    color: var(--eq);
+    line-height: 0;
+    display:block;
+    margin-bottom: 6px;
+  }
+
+  .quote-break blockquote{
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .quote-break cite{
+    display:block;
+    margin-top: 20px;
+    font-style: normal;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- IDEAS: graded transcript items ---------- */
+  .transcript{
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  .section-label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--iq);
+    margin-bottom: 34px;
+    text-align: center;
+  }
+
+  .item{
+    display: flex;
+    gap: 18px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transform: translateX(-16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .item:last-child{ border-bottom: none; }
+
+  .item.in-view{
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .item .mark-box{
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--bg);
+    background: var(--iq);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .item:nth-child(even) .mark-box{ background: var(--eq); }
+
+  .item .body h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.28rem;
+    line-height: 1.32;
+    margin: 0 0 8px;
+  }
+
+  .item .body p{
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.96rem;
+    line-height: 1.55;
+  }
+
+  .item .tag{
+    display:inline-block;
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    color: var(--red-pen);
+    border: 1px solid rgba(201,75,63,0.4);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- FINALE ---------- */
+  .finale{
+    min-height: 80svh;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 100px 24px 140px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .finale.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .finale .tiny{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--eq);
+    margin-bottom: 24px;
+  }
+
+  .finale h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 6vw, 2.6rem);
+    line-height: 1.25;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .finale h2 .iq-word{ color: var(--iq); }
+  .finale h2 .eq-word{ color: var(--eq); }
+
+  footer{
+    text-align:center;
+    padding: 30px 24px 60px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 520px){
+    .item{ gap: 14px; }
+    .item .mark-box{ width: 34px; height: 34px; font-size: 0.75rem; }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .quote-break, .item, .finale{
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="bgcanvas"></canvas>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Emotional Intelligence · Chapter One</div>
+    <h1 class="title">When Smart Is <em>Dumb</em></h1>
+    <p class="subtitle">A straight-A student stabbed his teacher over a B. This is the chapter that explains why book-smarts and life-smarts are not the same thing — and why the gap between them can be dangerous.</p>
+
+    <div class="console">
+      <div class="console-head">
+        <span>Correlation console</span>
+        <span class="live">plotting live</span>
+      </div>
+      <canvas id="scatter"></canvas>
+      <div class="console-foot">
+        <span>← IQ SCORE</span>
+        <span>LIFE OUTCOME ↑</span>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span>scroll to find the pattern</span>
+      <span class="arrow">↓</span>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <p class="intro">Jason was headed for Harvard Medical School — until an 80 on a physics quiz felt like the end of the world. A judge called it temporary insanity. The real story is simpler: <strong>his mind was never taught to handle a bad feeling.</strong></p>
+
+  <!-- QUOTE 1 -->
+  <div class="quote-break" data-reveal>
+    <span class="mark">“</span>
+    <blockquote>The vast majority of one's ultimate niche in society is determined by non-IQ factors, ranging from social class to luck.</blockquote>
+    <cite>— an observer on the limits of IQ</cite>
+  </div>
+
+  <!-- IDEAS -->
+  <section class="transcript">
+    <div class="section-label">8 things the chapter is really saying</div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">01</div>
+      <div class="body">
+        <h3>Being brilliant on paper doesn't make you brilliant at life.</h3>
+        <p>A top student can still be ruled by anger, fear, or a bad impulse — smarts don't switch that off.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">02</div>
+      <div class="body">
+        <h3>IQ barely predicts who actually succeeds.</h3>
+        <p>Test scores explain only about a fifth of what shapes a life. The other four-fifths come from somewhere else.</p>
+        <span class="tag mono">IQ ≈ 20% of the outcome</span>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">03</div>
+      <div class="body">
+        <h3>A test score is not your whole story.</h3>
+        <p>Even a middling score can't stop someone who wants to lead, build a business, or run for office.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">04</div>
+      <div class="body">
+        <h3>Emotional intelligence is its own skill — and it's learnable.</h3>
+        <p>Calming yourself down, staying motivated, reading other people, pushing through frustration: all trainable.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">05</div>
+      <div class="body">
+        <h3>The highest scorers in class don't always win at life.</h3>
+        <p>Harvard men with the top test scores in the 1940s weren't the happiest or most successful decades later.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">06</div>
+      <div class="body">
+        <h3>Handling frustration beats raw brainpower.</h3>
+        <p>Among boys who grew up poor, the ability to manage emotions predicted their future better than IQ did.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">07</div>
+      <div class="body">
+        <h3>"Best in school" isn't "best in life."</h3>
+        <p>High school valedictorians kept getting good grades in college — but only 1 in 4 reached the top of their field by their late twenties.</p>
+      </div>
+    </div>
+
+    <div class="item" data-reveal>
+      <div class="mark-box">08</div>
+      <div class="body">
+        <h3>Intelligence isn't one number — it's many kinds.</h3>
+        <p>Words, logic, movement, music, understanding yourself, understanding others: each is its own kind of smart.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE 2 -->
+  <div class="quote-break" data-reveal>
+    <span class="mark">“</span>
+    <blockquote>The link between test scores and those achievements is dwarfed by the totality of other characteristics that he brings to life.</blockquote>
+    <cite>— Herrnstein &amp; Murray, on the limits of the SAT</cite>
+  </div>
+
+  <!-- QUOTE 3 -->
+  <div class="quote-break" data-reveal>
+    <span class="mark">“</span>
+    <blockquote>To know that a person is a valedictorian is to know only that he or she is exceedingly good at achievement as measured by grades. It tells you nothing about how they react to the vicissitudes of life.</blockquote>
+    <cite>— Karen Arnold, Boston University</cite>
+  </div>
+
+  <!-- FINALE -->
+  <section class="finale" data-reveal>
+    <div class="tiny">Main lesson</div>
+    <h2>Grades measure how well you take a <span class="iq-word">test</span>. Life measures how well you handle your <span class="eq-word">feelings</span>.</h2>
+  </section>
+
+  <footer>from "Emotional Intelligence" — Ch. 1, "When Smart Is Dumb"</footer>
+
+</div>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Scroll reveal ---------- */
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if(!reduceMotion && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    revealEls.forEach(el=> io.observe(el));
+  } else {
+    revealEls.forEach(el=> el.classList.add('in-view'));
+  }
+
+  /* ---------- Background: falling grade marks ---------- */
+  const bg = document.getElementById('bgcanvas');
+  const bgctx = bg.getContext('2d');
+  let bgW, bgH;
+  const symbols = ['A+','B','80','C+','F','A','92','B-','65','A-'];
+  let flakes = [];
+
+  function sizeBg(){
+    bgW = bg.width = window.innerWidth;
+    bgH = bg.height = window.innerHeight;
+  }
+  sizeBg();
+  window.addEventListener('resize', sizeBg);
+
+  function makeFlake(){
+    return {
+      x: Math.random()*bgW,
+      y: -20 - Math.random()*bgH,
+      speed: 0.25 + Math.random()*0.5,
+      size: 12 + Math.random()*14,
+      drift: (Math.random()-0.5)*0.3,
+      sym: symbols[Math.floor(Math.random()*symbols.length)],
+      alpha: 0.06 + Math.random()*0.13
+    };
+  }
+
+  const flakeCount = window.innerWidth < 600 ? 16 : 26;
+  for(let i=0;i<flakeCount;i++){
+    const f = makeFlake();
+    f.y = Math.random()*bgH;
+    flakes.push(f);
+  }
+
+  function drawBg(){
+    bgctx.clearRect(0,0,bgW,bgH);
+    bgctx.font = '600 16px "IBM Plex Mono", monospace';
+    bgctx.textAlign = 'center';
+    flakes.forEach(f=>{
+      bgctx.font = `600 ${f.size}px "IBM Plex Mono", monospace`;
+      bgctx.fillStyle = `rgba(201,75,63,${f.alpha})`;
+      bgctx.fillText(f.sym, f.x, f.y);
+      if(!reduceMotion){
+        f.y += f.speed;
+        f.x += f.drift;
+        if(f.y > bgH + 30){
+          Object.assign(f, makeFlake());
+          f.y = -20;
+        }
+      }
+    });
+    requestAnimationFrame(drawBg);
+  }
+  drawBg();
+
+  /* ---------- Signature element: correlation scatter ---------- */
+  const sc = document.getElementById('scatter');
+  const sctx = sc.getContext('2d');
+  let scW, scH;
+
+  function sizeScatter(){
+    const rect = sc.getBoundingClientRect();
+    scW = sc.width = rect.width * devicePixelRatio;
+    scH = sc.height = 260 * devicePixelRatio;
+    sc.style.height = '260px';
+    sctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  sizeScatter();
+  window.addEventListener('resize', sizeScatter);
+
+  const labeled = [
+    { label:'Jason H. (this chapter)' },
+    { label:"Harvard, class of '40s" },
+    { label:'Somerville boys' },
+    { label:'IL valedictorians' }
+  ];
+
+  let dots = [];
+  const maxDots = 70;
+  let tick = 0;
+
+  function addDot(){
+    const w = sc.getBoundingClientRect().width;
+    const h = 260;
+    const pad = 30;
+    const dot = {
+      x: pad + Math.random()*(w - pad*2),
+      y: pad + Math.random()*(h - pad*2),
+      r: 0,
+      targetR: 2.5 + Math.random()*3,
+      hue: Math.random() > 0.5 ? 'iq' : 'eq',
+      label: (Math.random() < 0.06 && labeled.length) ? labeled[Math.floor(Math.random()*labeled.length)].label : null,
+      born: tick
+    };
+    dots.push(dot);
+    if(dots.length > maxDots) dots.shift();
+  }
+
+  for(let i=0;i<28;i++) addDot();
+
+  function drawScatter(){
+    const w = sc.getBoundingClientRect().width;
+    const h = 260;
+    sctx.clearRect(0,0,w,h);
+
+    // axes
+    sctx.strokeStyle = 'rgba(233,231,223,0.14)';
+    sctx.lineWidth = 1;
+    sctx.beginPath();
+    sctx.moveTo(28, 10); sctx.lineTo(28, h-24);
+    sctx.lineTo(w-10, h-24);
+    sctx.stroke();
+
+    // flat "no correlation" trend line
+    sctx.strokeStyle = 'rgba(94,184,255,0.35)';
+    sctx.setLineDash([4,5]);
+    const midY = (h-24+10)/2 + Math.sin(tick*0.01)*6;
+    sctx.beginPath();
+    sctx.moveTo(28, midY);
+    sctx.lineTo(w-10, midY - 4 + Math.sin(tick*0.008)*8);
+    sctx.stroke();
+    sctx.setLineDash([]);
+
+    dots.forEach(d=>{
+      if(d.r < d.targetR) d.r += 0.15;
+      const color = d.hue === 'iq' ? '94,184,255' : '255,138,91';
+      sctx.beginPath();
+      sctx.fillStyle = `rgba(${color},0.75)`;
+      sctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      sctx.fill();
+
+      if(d.label){
+        const age = tick - d.born;
+        const op = Math.max(0, 1 - age/240);
+        if(op > 0){
+          sctx.fillStyle = `rgba(233,231,223,${0.55*op})`;
+          sctx.font = '500 9px "IBM Plex Mono", monospace';
+          sctx.textAlign = 'left';
+          sctx.fillText(d.label, Math.min(d.x + 8, w - 120), d.y + 3);
+        }
+      }
+    });
+
+    tick++;
+    if(!reduceMotion){
+      if(tick % 55 === 0) addDot();
+      requestAnimationFrame(drawScatter);
+    }
+  }
+
+  if(reduceMotion){
+    // static render, one frame
+    drawScatter();
+  } else {
+    drawScatter();
+  }
+
+})();
+</script>
+
+</body>
+</html>
