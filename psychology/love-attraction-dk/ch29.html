@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Profile to Person</title>
+<style>
+  :root{
+    --bg-0:#150c1e;
+    --bg-1:#1e1230;
+    --bg-2:#281a3d;
+    --rose:#ff6f91;
+    --rose-soft:#ff9ab0;
+    --gold:#ffd166;
+    --ink:#f2ecf7;
+    --ink-dim:#b7abcf;
+    --line: rgba(255,255,255,0.08);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg-2), var(--bg-0) 70%);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  .body-font{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+  /* ---------- falling hearts background ---------- */
+  #hearts{
+    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    color: var(--rose);
+    opacity:0.35;
+    font-size: 18px;
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    filter: drop-shadow(0 0 6px rgba(255,111,145,0.4));
+  }
+  @keyframes fall{
+    from{ transform: translateY(-10vh); }
+    to{ transform: translateY(110vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  main{ position:relative; z-index:1; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height: 92vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding: 40px 20px;
+  }
+  .eyebrow{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  h1{
+    font-size: clamp(2.2rem, 7vw, 4.2rem);
+    line-height: 1.05;
+    font-weight: 400;
+    background: linear-gradient(120deg, var(--ink), var(--rose-soft));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    max-width: 900px;
+  }
+  .subtitle{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink-dim);
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+    margin-top: 18px;
+    max-width: 520px;
+  }
+
+  /* ---------- signature animation: chat -> heart -> two people meeting ---------- */
+  .signature{
+    margin-top: 56px;
+    display:flex; align-items:center; justify-content:center; gap: 22px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .bubble-stack{
+    display:flex; flex-direction:column; gap:6px; align-items:flex-start;
+    animation: fadeOutStep 8s infinite;
+  }
+  .bubble{
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 14px 14px 14px 4px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink-dim);
+    opacity:0;
+    animation: typeIn 8s infinite;
+  }
+  .bubble:nth-child(1){ animation-delay: 0s; }
+  .bubble:nth-child(2){ animation-delay: 0.6s; }
+  .bubble:nth-child(3){ animation-delay: 1.2s; }
+  @keyframes typeIn{
+    0%{ opacity:0; transform: translateY(6px); }
+    8%{ opacity:1; transform: translateY(0); }
+    55%{ opacity:1; }
+    68%{ opacity:0; }
+    100%{ opacity:0; }
+  }
+  .arrow-track{
+    position:relative;
+    width: 90px; height: 40px;
+  }
+  .heart-pulse{
+    position:absolute; left:50%; top:50%;
+    transform: translate(-50%,-50%) scale(0.6);
+    font-size: 26px;
+    color: var(--rose);
+    animation: pulseHeart 8s infinite;
+  }
+  @keyframes pulseHeart{
+    0%,55%{ opacity:0; transform: translate(-50%,-50%) scale(0.4); }
+    62%{ opacity:1; transform: translate(-50%,-50%) scale(1.15); }
+    75%{ opacity:1; transform: translate(-50%,-50%) scale(1); }
+    90%,100%{ opacity:0; transform: translate(-50%,-50%) scale(0.8); }
+  }
+  .people{
+    display:flex; align-items:flex-end; gap: 4px;
+    font-size: 30px;
+  }
+  .person{
+    opacity:0;
+    animation: meetUp 8s infinite;
+  }
+  .person.left{ animation-delay:0s; transform: translateX(-14px); }
+  .person.right{ animation-delay:0s; transform: translateX(14px); }
+  @keyframes meetUp{
+    0%,72%{ opacity:0; }
+    80%{ opacity:1; transform: translateX(0px); }
+    100%{ opacity:1; transform: translateX(0px); }
+  }
+  .caption{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 14px;
+    opacity: 0.7;
+  }
+  .scroll-hint{
+    margin-top: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    color: var(--ink-dim);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(6px); }
+  }
+
+  /* ---------- sections ---------- */
+  section.idea{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 70px 24px;
+    opacity:0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  section.idea.visible{
+    opacity:1;
+    transform: translateY(0);
+  }
+  .idea-num{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+  .idea .example{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    color: var(--ink-dim);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .idea .example b{ color: var(--rose-soft); font-style:normal; }
+  .idea h2{
+    font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+
+  blockquote{
+    max-width: 640px;
+    margin: 10px auto 70px;
+    padding: 22px 26px;
+    border-left: 3px solid var(--rose);
+    background: linear-gradient(90deg, rgba(255,111,145,0.08), transparent);
+    font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.5;
+    opacity:0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  blockquote.visible{ opacity:1; transform: translateY(0); }
+
+  /* ---------- safety checklist ---------- */
+  .checklist-wrap{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 30px 24px 90px;
+  }
+  .checklist-wrap h2{
+    font-weight:400;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 8px;
+    text-align:center;
+  }
+  .checklist-wrap p.lead{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-align:center;
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+  }
+  .check-item{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display:flex; gap:14px; align-items:flex-start;
+    background: var(--bg-1);
+    border:1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    cursor:pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .check-item:hover{ border-color: rgba(255,111,145,0.4); }
+  .check-item.checked{
+    background: linear-gradient(90deg, rgba(255,111,145,0.12), var(--bg-1));
+    border-color: var(--rose);
+  }
+  .box{
+    flex: 0 0 20px;
+    height:20px; width:20px;
+    border-radius: 5px;
+    border: 2px solid var(--ink-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 13px;
+    color: var(--bg-0);
+    transition: all 0.25s;
+    margin-top:2px;
+  }
+  .check-item.checked .box{
+    background: var(--rose);
+    border-color: var(--rose);
+  }
+  .check-item.checked .box::after{ content:'✓'; color:#150c1e; font-weight:bold; }
+  .check-text b{ color: var(--ink); }
+  .check-text{ color: var(--ink-dim); font-size: 0.92rem; line-height:1.4; }
+  .check-item.checked .check-text{ color: var(--ink); }
+
+  /* ---------- lesson ---------- */
+  .lesson{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 60px 24px 110px;
+    text-align:center;
+  }
+  .lesson .tag{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .lesson h2{
+    font-weight: 400;
+    font-size: clamp(1.5rem, 4.5vw, 2.1rem);
+    line-height: 1.4;
+  }
+  .lesson h2 span{ color: var(--rose-soft); }
+
+  footer{
+    text-align:center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink-dim);
+    font-size: 0.8rem;
+    padding: 30px 20px 50px;
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow body-font">From Profile to Person</div>
+    <h1>Turning a Chat<br>into a Date</h1>
+    <p class="subtitle">You've been talking for days. Their words feel right.<br>
+    So — when do you finally meet the person behind the profile?</p>
+
+    <div class="signature">
+      <div class="bubble-stack">
+        <div class="bubble">hey :)</div>
+        <div class="bubble">haha same</div>
+        <div class="bubble">coffee sometime?</div>
+      </div>
+      <div class="arrow-track">
+        <div class="heart-pulse">♥</div>
+      </div>
+      <div class="people">
+        <span class="person left">🚶</span><span class="person right">🚶‍♀️</span>
+      </div>
+    </div>
+    <div class="caption body-font">chat &nbsp;→&nbsp; spark &nbsp;→&nbsp; real meeting</div>
+
+    <div class="scroll-hint">
+      <span>scroll to read</span>
+      <span>↓</span>
+    </div>
+  </section>
+
+  <section class="idea" data-n="1">
+    <div class="idea-num">IDEA 01</div>
+    <div class="example"><b>Example —</b> Someone texts you clever, funny lines for weeks. On the phone call, they go quiet and awkward.</div>
+    <h2>Good chat does not mean good in person.</h2>
+  </section>
+
+  <blockquote>"Someone's writing persona is not necessarily a guide to their real-life one."</blockquote>
+
+  <section class="idea" data-n="2">
+    <div class="idea-num">IDEA 02</div>
+    <div class="example"><b>Example —</b> You message back and forth for about a week — then you suggest coffee.</div>
+    <h2>Don't rush, and don't wait too long. About six messages is a good time to meet.</h2>
+  </section>
+
+  <section class="idea" data-n="3">
+    <div class="idea-num">IDEA 03</div>
+    <div class="example"><b>Example —</b> A person asks to meet after just one or two messages.</div>
+    <h2>Moving too fast can be a warning sign — they may love the idea of dating, not you.</h2>
+  </section>
+
+  <section class="idea" data-n="4">
+    <div class="idea-num">IDEA 04</div>
+    <div class="example"><b>Example —</b> On the date, you notice how they talk to the waiter, and if they really look like their photo.</div>
+    <h2>A first date is really an audition. Only meeting shows you who someone truly is.</h2>
+  </section>
+
+  <blockquote class="visible-immediate">"The person we think we want to date and the person we'll happily date may be two different things."</blockquote>
+
+  <section class="idea" data-n="5">
+    <div class="idea-num">IDEA 05</div>
+    <div class="example"><b>Example —</b> Online, you scroll through fifty profiles, comparing job, height, income like a shopping list. In person, you just ask one thing — does this feel right?</div>
+    <h2>Browsing and dating use two different minds. The in-person question is the one that matters.</h2>
+  </section>
+
+  <section class="idea" data-n="6">
+    <div class="idea-num">IDEA 06</div>
+    <div class="example"><b>Example —</b> Date one feels nervous and flat. Date two, you both relax — and you click.</div>
+    <h2>Give it more than one try. One so-so date is not the final answer.</h2>
+  </section>
+
+  <section class="idea" data-n="7">
+    <div class="idea-num">IDEA 07</div>
+    <div class="example"><b>Example —</b> A confident, outgoing person feels sure they can handle anyone — so they skip telling a friend where they're going.</div>
+    <h2>Even confident people need a safety plan. Feeling brave is not the same as being safe.</h2>
+  </section>
+
+  <div class="checklist-wrap">
+    <h2>A short safety checklist</h2>
+    <p class="lead">Tap each one you'll remember to do</p>
+
+    <div class="check-item" data-check="1">
+      <div class="box"></div>
+      <div class="check-text"><b>Research the site.</b> Use a dating site that actually feels right for you.</div>
+    </div>
+    <div class="check-item" data-check="2">
+      <div class="box"></div>
+      <div class="check-text"><b>Reverse-search their photo.</b> See where else that picture appears online.</div>
+    </div>
+    <div class="check-item" data-check="3">
+      <div class="box"></div>
+      <div class="check-text"><b>Check big claims.</b> If they mention a fancy job or school, ask a small detail to be sure.</div>
+    </div>
+    <div class="check-item" data-check="4">
+      <div class="box"></div>
+      <div class="check-text"><b>Notice too much agreement.</b> Polite disagreement is healthy. Agreeing with everything is not.</div>
+    </div>
+    <div class="check-item" data-check="5">
+      <div class="box"></div>
+      <div class="check-text"><b>Watch for pressure.</b> If they push to leave the safe chat app fast, say no.</div>
+    </div>
+    <div class="check-item" data-check="6">
+      <div class="box"></div>
+      <div class="check-text"><b>Trust your gut.</b> If something feels wrong, it probably is.</div>
+    </div>
+  </div>
+
+  <blockquote>"If something feels wrong, it very probably is: remember, you're not stupid."</blockquote>
+
+  <section class="lesson idea">
+    <div class="tag body-font">Main Lesson</div>
+    <h2>Chatting shows you a person's <span>words</span>.<br>Meeting shows you the <span>real them</span>.<br>Take it step by step, and stay safe.</h2>
+  </section>
+
+  <footer>Based on "From Profile to Person: Turning a Chat into a Date"</footer>
+</main>
+
+<script>
+  // falling hearts background
+  const heartsContainer = document.getElementById('hearts');
+  const HEART_COUNT = 26;
+  for(let i=0;i<HEART_COUNT;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = '♥';
+    const left = Math.random()*100;
+    const size = 10 + Math.random()*20;
+    const fallDur = 9 + Math.random()*10;
+    const swayDur = 3 + Math.random()*3;
+    const delay = Math.random()*10;
+    h.style.left = left+'vw';
+    h.style.fontSize = size+'px';
+    h.style.animationDuration = fallDur+'s, '+swayDur+'s';
+    h.style.animationDelay = '-'+delay+'s, -'+(Math.random()*swayDur)+'s';
+    h.style.opacity = (0.15 + Math.random()*0.3).toFixed(2);
+    heartsContainer.appendChild(h);
+  }
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('section.idea, blockquote');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {threshold: 0.2});
+  revealEls.forEach(el=> io.observe(el));
+
+  // checklist interactivity
+  document.querySelectorAll('.check-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      item.classList.toggle('checked');
+    });
+  });
+</script>
+
+</body>
+</html>

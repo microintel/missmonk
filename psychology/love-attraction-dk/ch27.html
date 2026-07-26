@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signing Up Online — Creating a Profile</title>
+<style>
+  :root{
+    --bg:#0a0a12;
+    --bg2:#12121e;
+    --gold:#e8b64c;
+    --gold-soft:#f3d089;
+    --pink:#ff6b8b;
+    --text:#eae6f2;
+    --muted:#9a94ad;
+    --card:#161623;
+    --border:#2a2a3d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Georgia', 'Times New Roman', serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+  #hearts{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+  .wrap{
+    position:relative;
+    z-index:2;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 22px 80px;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 22px;
+    position:relative;
+  }
+  .aperture{
+    width:120px; height:120px;
+    margin-bottom:28px;
+    position:relative;
+  }
+  .aperture svg{ width:100%; height:100%; animation:spin 18s linear infinite; }
+  .aperture-glow{
+    position:absolute;
+    top:50%; left:50%;
+    width:160px; height:160px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(232,182,76,0.35) 0%, rgba(232,182,76,0) 70%);
+    animation:pulse 3s ease-in-out infinite;
+  }
+  @keyframes spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  @keyframes pulse{ 0%,100%{opacity:0.5; transform:translate(-50%,-50%) scale(0.9);} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.15);} }
+
+  .eyebrow{
+    letter-spacing:3px;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+    font-family:Arial, sans-serif;
+    margin-bottom:14px;
+  }
+  h1{
+    font-size:2.4rem;
+    line-height:1.15;
+    color:var(--gold-soft);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .type-line{
+    min-height:1.6em;
+    font-size:1.05rem;
+    color:var(--muted);
+    font-family:Arial, sans-serif;
+    border-right:2px solid var(--gold);
+    display:inline-block;
+    padding-right:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  .scroll-hint{
+    margin-top:40px;
+    font-size:13px;
+    color:var(--muted);
+    font-family:Arial, sans-serif;
+    animation:bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* SECTIONS */
+  section{
+    padding:50px 0;
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  section.visible{ opacity:1; transform:translateY(0); }
+
+  .quote{
+    font-style:italic;
+    font-size:1.2rem;
+    color:var(--gold-soft);
+    border-left:3px solid var(--gold);
+    padding:12px 20px;
+    margin:20px 0 40px;
+    line-height:1.5;
+  }
+  .quote cite{
+    display:block;
+    font-style:normal;
+    font-family:Arial, sans-serif;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  .idea{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:26px 24px;
+    margin-bottom:22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .idea::before{
+    content:'';
+    position:absolute;
+    top:0; left:0;
+    width:4px; height:100%;
+    background:linear-gradient(180deg, var(--gold), var(--pink));
+  }
+  .idea-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--gold), var(--pink));
+    color:#141420;
+    font-weight:bold;
+    font-family:Arial, sans-serif;
+    font-size:15px;
+    margin-bottom:14px;
+  }
+  .idea .example{
+    font-size:0.98rem;
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:12px;
+    font-family:Arial, sans-serif;
+  }
+  .idea .example strong{ color:var(--text); }
+  .idea .point{
+    font-size:1.08rem;
+    line-height:1.55;
+    color:var(--text);
+  }
+  .idea .point b{ color:var(--gold-soft); }
+
+  h2.section-title{
+    font-size:1.5rem;
+    color:var(--gold-soft);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  p.section-sub{
+    text-align:center;
+    color:var(--muted);
+    font-family:Arial, sans-serif;
+    font-size:0.92rem;
+    margin-bottom:30px;
+  }
+
+  /* STAT VISUAL */
+  .stat-box{
+    text-align:center;
+    padding:30px 20px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    margin-bottom:22px;
+  }
+  .stat-num{
+    font-size:3.4rem;
+    font-weight:bold;
+    color:var(--gold);
+    font-family:Arial, sans-serif;
+  }
+  .stat-label{
+    color:var(--muted);
+    font-family:Arial, sans-serif;
+    font-size:0.95rem;
+    margin-top:6px;
+  }
+  canvas#dollarChart{ width:100%; max-width:500px; height:120px; margin-top:20px; }
+
+  /* HALO INTERACTIVE */
+  .halo-demo{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    margin:26px 0 10px;
+    flex-wrap:wrap;
+  }
+  .halo-card{
+    width:130px;
+    padding:16px 10px;
+    text-align:center;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition:transform 0.3s ease, box-shadow 0.3s ease;
+    font-family:Arial, sans-serif;
+  }
+  .halo-card .face{
+    width:60px; height:60px;
+    margin:0 auto 10px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#3a3a52,#1c1c2e);
+    position:relative;
+    transition:box-shadow 0.3s ease;
+  }
+  .halo-card.attractive .face{
+    box-shadow:0 0 0 0 rgba(232,182,76,0.6);
+  }
+  .halo-card.attractive:hover .face, .halo-card.attractive.active .face{
+    box-shadow:0 0 25px 8px rgba(232,182,76,0.55);
+  }
+  .halo-card:hover, .halo-card.active{ transform:translateY(-6px); }
+  .halo-card .rating{ font-size:0.82rem; color:var(--muted); }
+  .halo-card.active .rating{ color:var(--gold-soft); font-weight:bold; }
+
+  /* SCORE SLIDER */
+  .score-tool{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    margin-bottom:22px;
+    font-family:Arial, sans-serif;
+  }
+  .score-tool label{ display:block; font-size:0.9rem; color:var(--muted); margin-bottom:6px;}
+  .score-tool input[type=range]{ width:100%; accent-color:var(--gold); }
+  .score-result{
+    margin-top:14px;
+    text-align:center;
+    font-size:1.1rem;
+    color:var(--gold-soft);
+    font-weight:bold;
+    min-height:1.4em;
+  }
+
+  /* MAIN LESSON */
+  .lesson{
+    text-align:center;
+    padding:50px 24px;
+    background:linear-gradient(180deg, rgba(232,182,76,0.08), transparent);
+    border-radius:20px;
+    margin-top:20px;
+  }
+  .lesson .tag{
+    font-family:Arial, sans-serif;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  .lesson p{
+    font-size:1.3rem;
+    line-height:1.5;
+    color:var(--gold-soft);
+    font-style:italic;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-family:Arial, sans-serif;
+    font-size:12px;
+    padding:30px 20px 10px;
+  }
+
+  @media(min-width:640px){
+    h1{ font-size:3.1rem; }
+    .idea .point{ font-size:1.15rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="aperture-glow"></div>
+    <div class="aperture">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#e8b64c" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
+        <g stroke="#f3d089" stroke-width="2" fill="none">
+          <path d="M50 10 L50 32" />
+          <path d="M90 50 L68 50" />
+          <path d="M50 90 L50 68" />
+          <path d="M10 50 L32 50" />
+          <path d="M77 23 L61 39" />
+          <path d="M77 77 L61 61" />
+          <path d="M23 77 L39 61" />
+          <path d="M23 23 L39 39" />
+        </g>
+        <circle cx="50" cy="50" r="10" fill="#ff6b8b" opacity="0.85"/>
+      </svg>
+    </div>
+    <div class="eyebrow">Online Dating, Explained Simply</div>
+    <h1>Signing Up Online</h1>
+    <div class="type-line" id="typeLine"></div>
+    <div class="scroll-hint">↓ scroll to see how the algorithm sees you ↓</div>
+  </div>
+
+  <section>
+    <div class="quote">
+      "The strongest predictors of relationship well-being cannot be assessed with such data."
+      <cite>— Eli Finkel, social psychologist</cite>
+    </div>
+    <p style="font-family:Arial, sans-serif; color:var(--muted); line-height:1.6; text-align:center;">
+      A computer cannot feel you. It only reads what you type. So the real skill is not "being yourself" — it's showing yourself in a way the algorithm and a real human can both understand.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="section-title">9 Simple Ideas</h2>
+    <p class="section-sub">Example first. Then the point. Nothing to memorize.</p>
+
+    <div class="idea">
+      <div class="idea-num">1</div>
+      <div class="example"><strong>Example:</strong> A vending machine only gives what the buttons tell it. Press "B4," you get chips — even if you wanted candy.</div>
+      <div class="point"><b>A dating app is like that machine.</b> It matches people using only the words and answers you type. It does not know your real personality — only what you feed it.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">2</div>
+      <div class="example"><strong>Example:</strong> Someone writes "loves hiking" but has never left the couch. Their date finds out on day one.</div>
+      <div class="point">Be <b>honest but positive.</b> Lying gets you caught fast. But being too modest makes people scroll past you. Show your real best side — not a fake one.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">3</div>
+      <div class="example"><strong>Example:</strong> Look at two photos: one where someone is mid-laugh at a real joke, one where they are forcing a smile for the camera.</div>
+      <div class="point"><b>Keep it real.</b> People can tell a fake smile from a real one almost instantly. A genuine, relaxed photo beats a posed one every time.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">4</div>
+      <div class="example"><strong>Example:</strong> A king glares down from his throne. A shy student stares at the floor. Neither looks approachable.</div>
+      <div class="point">Your <b>eye gaze</b> sends a message. Looking down feels dominant, looking up feels submissive. A straight, slightly-angled gaze usually feels the friendliest.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">5</div>
+      <div class="example"><strong>Example:</strong> One photo shows arms crossed and stiff shoulders. Another shows hair blowing, hands mid-gesture, full of life.</div>
+      <div class="point">Your <b>body language</b> speaks before words do. Open, natural movement looks playful and confident — as long as it's not forced.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">6</div>
+      <div class="example"><strong>Example:</strong> A selfie taken alone in a bathroom mirror versus a photo taken by a friend on a fun day out.</div>
+      <div class="point">Skip the <b>selfies.</b> They often look vain or nervous. Ask a friend — someone whose company you enjoy — to snap your photo instead. It shows.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">7</div>
+      <div class="example"><strong>Example:</strong> In a real study, 50 women read the same kind of text — but rated it as "more attractive" when it came with an attractive photo.</div>
+      <div class="point">This is the <b>halo effect.</b> A good photo makes your words seem better too, even if the words didn't change. Your photo is doing more work than you think.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">8</div>
+      <div class="example"><strong>Example:</strong> A stranger says they're 24 but "a doctor for 15 years." They live in a house — then say it's actually an apartment.</div>
+      <div class="point"><b>Watch for contradictions.</b> That's how scammers slip up. If someone needs your money for a ticket to "finally meet you" — stop. Never send money to someone you haven't met.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">9</div>
+      <div class="example"><strong>Example:</strong> Before joining, someone searches the site's name plus the word "reviews" and finds hundreds of complaints about hidden charges.</div>
+      <div class="point">Not every site is <b>ethical.</b> Check reviews and billing terms before you hand over your card details. A few minutes of checking can save real money.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">The Real Cost</h2>
+    <p class="section-sub">Tap to see how much people actually spend</p>
+    <div class="stat-box">
+      <div class="stat-num" id="dollarCount">$0</div>
+      <div class="stat-label">average spent per year by a US online dating customer</div>
+      <canvas id="dollarChart"></canvas>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Try It: The Halo Effect</h2>
+    <p class="section-sub">Tap each card. Same kind of text — different photo energy.</p>
+    <div class="halo-demo">
+      <div class="halo-card" data-rating="Rated: plain">
+        <div class="face"></div>
+        <div class="rating">Tap me</div>
+      </div>
+      <div class="halo-card attractive" data-rating="Rated: charming!">
+        <div class="face"></div>
+        <div class="rating">Tap me</div>
+      </div>
+      <div class="halo-card" data-rating="Rated: okay">
+        <div class="face"></div>
+        <div class="rating">Tap me</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-family:Arial, sans-serif; color:var(--muted); font-size:0.85rem;">Notice how the glowing photo "feels" more trustworthy — even with zero extra information.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Score Your Own Priorities</h2>
+    <p class="section-sub">Amy Webb built a scoring system to find her match. Try a mini version.</p>
+    <div class="score-tool">
+      <label>Physical attraction matters to me:</label>
+      <input type="range" min="0" max="10" value="5" id="rPhysical">
+      <label style="margin-top:16px;">Shared lifestyle matters to me:</label>
+      <input type="range" min="0" max="10" value="5" id="rLifestyle">
+      <label style="margin-top:16px;">Emotional compatibility matters to me:</label>
+      <input type="range" min="0" max="10" value="5" id="rPersonality">
+      <div class="score-result" id="scoreResult">Move the sliders above</div>
+    </div>
+  </section>
+
+  <div class="lesson">
+    <div class="tag">Main Lesson</div>
+    <p>You are not lying to the algorithm — you are teaching it who you really are. Be honest, be positive, be real in your photo, and keep your wallet closed until trust is earned.</p>
+  </div>
+
+  <footer>Based on ideas from "Signing Up Online: Creating a Profile"</footer>
+</div>
+
+<script>
+// ---------- Falling Hearts Background ----------
+const canvas = document.getElementById('hearts');
+const ctx = canvas.getContext('2d');
+let w, h;
+function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+function drawHeart(x, y, size, alpha, color){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  ctx.scale(size/20, size/20);
+  ctx.beginPath();
+  ctx.moveTo(0, 5);
+  ctx.bezierCurveTo(0, 0, -10, 0, -10, -6);
+  ctx.bezierCurveTo(-10, -12, -3, -12, 0, -4);
+  ctx.bezierCurveTo(3, -12, 10, -12, 10, -6);
+  ctx.bezierCurveTo(10, 0, 0, 0, 0, 5);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+const hearts = [];
+const colors = ['#e8b64c', '#ff6b8b', '#f3d089', '#ff8fa3'];
+function makeHeart(){
+  return {
+    x: Math.random()*w,
+    y: -20 - Math.random()*h,
+    size: 8 + Math.random()*16,
+    speed: 0.4 + Math.random()*1.1,
+    drift: (Math.random()-0.5)*0.6,
+    alpha: 0.15 + Math.random()*0.35,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    sway: Math.random()*Math.PI*2
+  };
+}
+for(let i=0;i<40;i++) hearts.push(makeHeart());
+
+function animateHearts(){
+  ctx.clearRect(0,0,w,h);
+  hearts.forEach(hrt=>{
+    hrt.y += hrt.speed;
+    hrt.sway += 0.02;
+    hrt.x += Math.sin(hrt.sway)*0.5 + hrt.drift*0.2;
+    if(hrt.y > h + 20){
+      hrt.y = -20;
+      hrt.x = Math.random()*w;
+    }
+    drawHeart(hrt.x, hrt.y, hrt.size, hrt.alpha, hrt.color);
+  });
+  requestAnimationFrame(animateHearts);
+}
+animateHearts();
+
+// ---------- Typewriter Hero Line ----------
+const lines = [
+  "You have a photo and a few words.",
+  "That's all the algorithm sees.",
+  "Let's make them count."
+];
+const typeEl = document.getElementById('typeLine');
+let lineIdx = 0, charIdx = 0, deleting = false;
+function typeLoop(){
+  const current = lines[lineIdx];
+  if(!deleting){
+    typeEl.textContent = current.slice(0, charIdx+1);
+    charIdx++;
+    if(charIdx === current.length){
+      deleting = true;
+      setTimeout(typeLoop, 1400);
+      return;
+    }
+  } else {
+    typeEl.textContent = current.slice(0, charIdx-1);
+    charIdx--;
+    if(charIdx === 0){
+      deleting = false;
+      lineIdx = (lineIdx+1) % lines.length;
+    }
+  }
+  setTimeout(typeLoop, deleting ? 30 : 55);
+}
+typeLoop();
+
+// ---------- Scroll Reveal ----------
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, {threshold: 0.15});
+sections.forEach(s => observer.observe(s));
+
+// ---------- Dollar Counter + Chart ----------
+let counted = false;
+const dollarCount = document.getElementById('dollarCount');
+const dollarChartCanvas = document.getElementById('dollarChart');
+const dChartCtx = dollarChartCanvas.getContext('2d');
+
+function drawDollarChart(progress){
+  dollarChartCanvas.width = dollarChartCanvas.clientWidth * 2;
+  dollarChartCanvas.height = dollarChartCanvas.clientHeight * 2;
+  const cw = dollarChartCanvas.width, ch = dollarChartCanvas.height;
+  dChartCtx.clearRect(0,0,cw,ch);
+  const bars = [ {label:'Drinks at bars', val:300}, {label:'Online dating', val:239} ];
+  const maxVal = 320;
+  const barW = cw/bars.length * 0.4;
+  bars.forEach((b,i)=>{
+    const x = cw*(0.25 + i*0.5) - barW/2;
+    const fullHeight = (b.val/maxVal) * ch * 0.75;
+    const barHeight = fullHeight * progress;
+    const y = ch - barHeight - 20;
+    const grad = dChartCtx.createLinearGradient(0,y,0,ch-20);
+    grad.addColorStop(0, '#e8b64c');
+    grad.addColorStop(1, '#ff6b8b');
+    dChartCtx.fillStyle = grad;
+    dChartCtx.fillRect(x, y, barW, barHeight);
+    dChartCtx.fillStyle = '#eae6f2';
+    dChartCtx.font = '20px Arial';
+    dChartCtx.textAlign = 'center';
+    dChartCtx.fillText(b.label, x+barW/2, ch-4);
+  });
+}
+drawDollarChart(1);
+
+const statObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting && !counted){
+      counted = true;
+      let val = 0;
+      const target = 239;
+      const step = ()=>{
+        val += 6;
+        if(val >= target){ val = target; dollarCount.textContent = '$'+val; drawDollarChart(1); return; }
+        dollarCount.textContent = '$'+val;
+        drawDollarChart(val/target);
+        requestAnimationFrame(step);
+      };
+      step();
+    }
+  });
+}, {threshold:0.4});
+statObserver.observe(document.getElementById('dollarCount'));
+
+// ---------- Halo Cards ----------
+document.querySelectorAll('.halo-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    document.querySelectorAll('.halo-card').forEach(c=>{ c.classList.remove('active'); c.querySelector('.rating').textContent = 'Tap me'; });
+    card.classList.add('active');
+    card.querySelector('.rating').textContent = card.dataset.rating;
+  });
+});
+
+// ---------- Score Sliders ----------
+const rP = document.getElementById('rPhysical');
+const rL = document.getElementById('rLifestyle');
+const rE = document.getElementById('rPersonality');
+const scoreResult = document.getElementById('scoreResult');
+function updateScore(){
+  const p = +rP.value, l = +rL.value, e = +rE.value;
+  const max = Math.max(p,l,e);
+  let label = 'Balanced — you value all three about equally';
+  if(max === p && p > l && p > e) label = 'Photos and looks matter most to you';
+  else if(max === l && l > p && l > e) label = 'Shared lifestyle matters most to you';
+  else if(max === e && e > p && e > l) label = 'Emotional connection matters most to you';
+  scoreResult.textContent = label;
+}
+[rP, rL, rE].forEach(r => r.addEventListener('input', updateScore));
+</script>
+
+</body>
+</html>

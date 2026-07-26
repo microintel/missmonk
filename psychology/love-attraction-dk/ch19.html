@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Happiness Pie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0f14;
+    --bg2:#14161d;
+    --card:#191b23;
+    --ink:#eee9e0;
+    --dim:#9a97a3;
+    --health:#5fd3a3;
+    --work:#6aa8ff;
+    --esteem:#39c4c9;
+    --spirit:#b79bff;
+    --love:#ff6f8f;
+    --play:#f2c069;
+    --gold:#f2c069;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Outfit', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces', serif;}
+
+  /* ---------- falling hearts background ---------- */
+  #hearts{
+    position:fixed; inset:0; width:100%; height:100%;
+    pointer-events:none; z-index:0;
+  }
+
+  /* ---------- layout shell ---------- */
+  main{position:relative; z-index:1;}
+  section{
+    max-width:640px;
+    margin:0 auto;
+    padding:70px 24px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:40px 24px;
+  }
+  .eyebrow{
+    letter-spacing:.3em; text-transform:uppercase;
+    font-size:.68rem; color:var(--gold); margin-bottom:18px;
+    opacity:.85;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 8vw, 4.2rem);
+    font-weight:600; line-height:1.05;
+    background:linear-gradient(120deg,#fff, var(--gold) 60%, var(--love));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub{
+    margin-top:18px; color:var(--dim); font-size:1.05rem;
+    max-width:420px;
+  }
+  .scroll-hint{
+    margin-top:56px; font-size:.8rem; color:var(--dim);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-hint span{
+    width:1px; height:34px; background:linear-gradient(var(--gold), transparent);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.2} 50%{opacity:1}}
+
+  /* ---------- intro line ---------- */
+  .kicker{
+    font-size:1.3rem; line-height:1.6; font-weight:300;
+    color:var(--ink); text-align:center;
+  }
+  .kicker b{color:var(--gold); font-weight:600;}
+
+  /* ---------- idea cards ---------- */
+  .idea{
+    margin:38px 0;
+    background:linear-gradient(160deg, var(--card), var(--bg2));
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:20px;
+    padding:28px 26px;
+    opacity:0; transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .idea.show{opacity:1; transform:translateY(0);}
+  .idea .num{
+    font-family:'Fraunces', serif; font-size:.85rem;
+    color:var(--dim); letter-spacing:.15em;
+  }
+  .idea .example{
+    margin-top:10px; font-size:1rem; line-height:1.6;
+    color:#cfd0da; font-style:italic;
+    border-left:2px solid var(--gold);
+    padding-left:14px;
+  }
+  .idea .point{
+    margin-top:14px; font-size:1.08rem; line-height:1.65;
+    font-weight:500;
+  }
+  .idea .point b{color:var(--gold);}
+
+  /* ---------- pie section (signature) ---------- */
+  .pie-wrap{
+    text-align:center;
+  }
+  .pie-wrap h2{
+    font-size:clamp(1.7rem,5vw,2.3rem); font-weight:600; margin-bottom:10px;
+  }
+  .pie-wrap p.lead{color:var(--dim); font-size:.98rem; margin-bottom:30px; line-height:1.6;}
+  canvas#pieChart{max-width:100%; touch-action:none;}
+  .pie-toggle{
+    display:flex; justify-content:center; gap:10px; margin-top:22px; flex-wrap:wrap;
+  }
+  .pie-toggle button{
+    background:transparent; color:var(--ink);
+    border:1px solid rgba(255,255,255,.18);
+    padding:10px 20px; border-radius:999px;
+    font-family:'Outfit'; font-size:.9rem; cursor:pointer;
+    transition:.25s;
+  }
+  .pie-toggle button.active{
+    background:var(--gold); color:#141414; border-color:var(--gold);
+    font-weight:600;
+  }
+  .legend{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px 18px;
+    margin-top:24px; font-size:.82rem; color:var(--dim);
+  }
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+  .gap-line{
+    margin-top:26px; font-size:1rem; color:var(--ink);
+    background:rgba(255,255,255,.04); border-radius:14px;
+    padding:16px 18px; line-height:1.6;
+  }
+
+  /* ---------- comfort zone tags ---------- */
+  .tagcloud{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    margin-top:22px;
+  }
+  .tag{
+    border:1px solid rgba(255,255,255,.16);
+    color:var(--dim);
+    padding:9px 16px; border-radius:999px;
+    font-size:.85rem; cursor:pointer;
+    transition:.25s;
+    background:rgba(255,255,255,.02);
+    user-select:none;
+  }
+  .tag.picked{
+    color:#141414; background:var(--love);
+    border-color:var(--love);
+    transform:scale(1.06);
+    box-shadow:0 0 18px rgba(255,111,143,.45);
+  }
+  .zone-readout{
+    margin-top:22px; text-align:center; min-height:50px;
+    font-size:.98rem; color:var(--ink); line-height:1.6;
+  }
+  .zone-readout b{color:var(--love);}
+
+  /* ---------- quote block ---------- */
+  .quote{
+    text-align:center; padding:50px 24px;
+  }
+  .quote blockquote{
+    font-family:'Fraunces', serif; font-weight:500; font-style:italic;
+    font-size:clamp(1.25rem,4.5vw,1.7rem); line-height:1.5;
+    color:var(--ink);
+  }
+  .quote .mark{color:var(--gold); font-size:2.2rem; line-height:0; display:block; margin-bottom:6px;}
+
+  /* ---------- lesson ---------- */
+  .lesson{
+    text-align:center;
+    background:linear-gradient(160deg, rgba(242,192,105,.08), rgba(255,111,143,.06));
+    border:1px solid rgba(242,192,105,.25);
+    border-radius:24px;
+    padding:44px 28px;
+  }
+  .lesson .tag-label{
+    text-transform:uppercase; letter-spacing:.25em; font-size:.7rem;
+    color:var(--gold); margin-bottom:14px;
+  }
+  .lesson p{
+    font-size:1.15rem; line-height:1.7; font-weight:500;
+  }
+
+  footer{
+    text-align:center; padding:40px 24px 70px;
+    color:var(--dim); font-size:.8rem;
+  }
+
+  @media (max-width:480px){
+    section{padding:52px 18px;}
+    .idea{padding:22px 18px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .idea{transition:none;}
+    .scroll-hint span{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<main>
+
+  <section class="hero">
+    <div class="eyebrow">A short guide to knowing yourself</div>
+    <h1>The Happiness<br>Pie</h1>
+    <p class="sub">Two simple tools to see where your time goes, what you truly love, and how that leads you to the right person.</p>
+    <div class="scroll-hint"><span></span>scroll</div>
+  </section>
+
+  <section>
+    <p class="kicker">Psychologist <b>Michael Frisch</b> found a simple trick to understand your life. Draw a circle. Cut it into slices. That circle is <b>you</b>.</p>
+  </section>
+
+  <section class="pie-wrap" id="pieSection">
+    <h2>Your Happiness Pie</h2>
+    <p class="lead">Every slice is a part of your life — health, work, love, play, self‑esteem, spiritual growth. Tap the buttons to see how "real" life often looks nothing like your "ideal" life.</p>
+    <canvas id="pieChart" width="320" height="320"></canvas>
+    <div class="pie-toggle">
+      <button id="btnReal" class="active">Real Pie</button>
+      <button id="btnIdeal">Ideal Pie</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="gap-line">The space between your <b style="color:var(--gold)">real</b> pie and your <b style="color:var(--love)">ideal</b> pie is not a failure. It's a map — it shows you exactly where to spend more of yourself.</div>
+  </section>
+
+  <section id="ideas">
+    <div class="idea">
+      <div class="num">01</div>
+      <p class="example">Example: Priya works 60 hours a week. Her "real" pie is almost all work. But her "ideal" pie has a big slice for health and friends.</p>
+      <p class="point">First draw your <b>real pie</b> — how you actually spend your time and energy right now.</p>
+    </div>
+
+    <div class="idea">
+      <div class="num">02</div>
+      <p class="example">Example: Priya's ideal pie shows gym time, weekend hikes, and dinners with friends taking up much more space than they do today.</p>
+      <p class="point">Then draw your <b>ideal pie</b> — how much you wish you gave to each part of life.</p>
+    </div>
+
+    <div class="idea">
+      <div class="num">03</div>
+      <p class="example">Example: Seeing the gap, Priya joins a Sunday hiking group. Now she is healthier — and meets new people too.</p>
+      <p class="point">Closing the gap between real and ideal doesn't just make you happier. It also puts you in new rooms, with new people — including someone who might be right for you.</p>
+    </div>
+
+    <div class="idea">
+      <div class="num">04</div>
+      <p class="example">Example: Rohan loves loud football stadiums. That doesn't mean his partner must love football too — she just needs to enjoy excitement and energy like he does.</p>
+      <p class="point">Notice your <b>comfort zones</b> — the places and moods where you feel most alive. A good partner may not share the exact place, but shares the <b>feeling</b> you're chasing there.</p>
+    </div>
+  </section>
+
+  <section class="pie-wrap" id="comfortSection">
+    <h2>What's Your Comfort Zone?</h2>
+    <p class="lead">Tap the words that describe you best. This is not a quiz with a score — just a mirror.</p>
+    <div class="tagcloud" id="tagcloud"></div>
+    <div class="zone-readout" id="zoneReadout">Tap a few words above.</div>
+  </section>
+
+  <section>
+    <div class="idea">
+      <div class="num">05</div>
+      <p class="example">Example: Meera spends 45 hours a week at a job she tolerates, but her heart truly lives in the two hours she paints every night.</p>
+      <p class="point">Don't confuse <b>"what I spend most time on"</b> with <b>"what's central to who I am."</b> Look for what makes you feel your best, healthiest, fullest self.</p>
+    </div>
+
+    <div class="idea">
+      <div class="num">06</div>
+      <p class="example">Example: Meera finally dates someone who frames her paintings instead of asking her to quit "the hobby."</p>
+      <p class="point">Look for a partner who supports your finest qualities — someone who helps you become more <b>you</b>, not someone else.</p>
+    </div>
+  </section>
+
+  <section class="quote">
+    <span class="mark">"</span>
+    <blockquote>Pick things that make you the best version of yourself — rather than trying to turn into someone else.</blockquote>
+  </section>
+
+  <section>
+    <div class="lesson">
+      <div class="tag-label">Main Lesson</div>
+      <p>Know how you really spend your time, know what you truly value, and close the gap between the two. That is how you build a fuller life — and how you find people who belong in it.</p>
+    </div>
+  </section>
+
+  <footer>Based on "The Happiness Pie" &amp; "What's Your Comfort Zone?"</footer>
+
+</main>
+
+<script>
+/* ================= Falling hearts background ================= */
+(function(){
+  const canvas = document.getElementById('hearts');
+  const ctx = canvas.getContext('2d');
+  let w, h, hearts = [];
+  const colors = ['#ff6f8f','#f2c069','#b79bff','#6aa8ff','#5fd3a3'];
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function makeHeart(){
+    return {
+      x: Math.random()*w,
+      y: -20 - Math.random()*h,
+      size: 6 + Math.random()*12,
+      speed: .4 + Math.random()*1.1,
+      drift: (Math.random()-.5)*.6,
+      angle: Math.random()*Math.PI*2,
+      spin: (Math.random()-.5)*.02,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      opacity: .15 + Math.random()*.35
+    };
+  }
+  const count = window.innerWidth < 600 ? 26 : 46;
+  for(let i=0;i<count;i++) hearts.push(makeHeart());
+
+  function drawHeart(hObj){
+    const {x,y,size,angle,color,opacity} = hObj;
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(angle);
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    const s = size;
+    ctx.moveTo(0, s*0.3);
+    ctx.bezierCurveTo(-s, -s*0.6, -s*1.6, s*0.5, 0, s*1.4);
+    ctx.bezierCurveTo(s*1.6, s*0.5, s, -s*0.6, 0, s*0.3);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    for(const hObj of hearts){
+      hObj.y += hObj.speed;
+      hObj.x += hObj.drift;
+      hObj.angle += hObj.spin;
+      if(hObj.y > h+30){
+        Object.assign(hObj, makeHeart());
+        hObj.y = -20;
+      }
+      drawHeart(hObj);
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ================= Scroll reveal for idea cards ================= */
+(function(){
+  const items = document.querySelectorAll('.idea');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+    });
+  }, {threshold:.18});
+  items.forEach(i=>io.observe(i));
+})();
+
+/* ================= Signature animation: real vs ideal pie ================= */
+(function(){
+  const canvas = document.getElementById('pieChart');
+  const ctx = canvas.getContext('2d');
+  const legendEl = document.getElementById('legend');
+
+  const slices = [
+    {label:'Health', color:getVar('--health')},
+    {label:'Work',   color:getVar('--work')},
+    {label:'Self-esteem', color:getVar('--esteem')},
+    {label:'Spiritual journey', color:getVar('--spirit')},
+    {label:'Love', color:getVar('--love')},
+    {label:'Play & friendship', color:getVar('--play')},
+  ];
+
+  const realData   = [10, 55, 10, 5, 12, 8];
+  const idealData  = [18, 25, 15, 12, 18, 12];
+
+  function getVar(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  // legend
+  legendEl.innerHTML = slices.map(s=>`<span><i class="dot" style="background:${s.color}"></i>${s.label}</span>`).join('');
+
+  let current = realData.slice();
+  let target = realData.slice();
+  let animT = 1;
+
+  function setTarget(data){
+    current = animatedValues();
+    target = data.slice();
+    animT = 0;
+  }
+
+  function animatedValues(){
+    // returns the values as currently drawn (interpolated)
+    return current.map((v,i)=> v + (target[i]-v)*easeOutCubic(animT));
+  }
+
+  function easeOutCubic(t){ return 1-Math.pow(1-t,3); }
+
+  function draw(){
+    const values = current.map((v,i)=> v + (target[i]-v)*easeOutCubic(animT));
+    const total = values.reduce((a,b)=>a+b,0);
+    const cx = canvas.width/2, cy = canvas.height/2;
+    const r = Math.min(cx,cy) - 14;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    let start = -Math.PI/2;
+    values.forEach((v,i)=>{
+      const angle = (v/total) * Math.PI*2;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,start+angle);
+      ctx.closePath();
+      ctx.fillStyle = slices[i].color;
+      ctx.globalAlpha = 0.92;
+      ctx.fill();
+      start += angle;
+    });
+
+    // center hole for a donut feel
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(cx,cy, r*0.42, 0, Math.PI*2);
+    ctx.fillStyle = getComputedStyle(document.body).backgroundColor || '#0e0f14';
+    ctx.fillStyle = '#0e0f14';
+    ctx.fill();
+
+    ctx.fillStyle = '#eee9e0';
+    ctx.font = '600 15px Outfit, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(animT < 1 ? '...' : (target===realData ? 'Real' : 'Ideal'), cx, cy);
+
+    if(animT < 1){
+      animT += 0.02;
+      requestAnimationFrame(draw);
+    }
+  }
+  draw();
+
+  const btnReal = document.getElementById('btnReal');
+  const btnIdeal = document.getElementById('btnIdeal');
+  btnReal.addEventListener('click', ()=>{
+    btnReal.classList.add('active'); btnIdeal.classList.remove('active');
+    setTarget(realData);
+    requestAnimationFrame(draw);
+  });
+  btnIdeal.addEventListener('click', ()=>{
+    btnIdeal.classList.add('active'); btnReal.classList.remove('active');
+    setTarget(idealData);
+    requestAnimationFrame(draw);
+  });
+
+  // gentle auto-play once when it scrolls into view
+  let played = false;
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && !played){
+        played = true;
+        setTimeout(()=>{ btnIdeal.click(); setTimeout(()=>btnReal.click(), 2600); }, 900);
+      }
+    });
+  }, {threshold:.5});
+  io.observe(document.getElementById('pieSection'));
+})();
+
+/* ================= Comfort zone tag cloud ================= */
+(function(){
+  const words = [
+    "Excitement","Physical challenge","Solitude","Skill-based activity",
+    "Domesticity","Sensory pleasure","Crowds","Artistic inspiration",
+    "Intellectual challenge","A sense of history","Nature",
+    "A sense of community","Entertainment"
+  ];
+  const cloud = document.getElementById('tagcloud');
+  const readout = document.getElementById('zoneReadout');
+  words.forEach(w=>{
+    const el = document.createElement('div');
+    el.className = 'tag';
+    el.textContent = w;
+    el.addEventListener('click', ()=>{
+      el.classList.toggle('picked');
+      updateReadout();
+    });
+    cloud.appendChild(el);
+  });
+
+  function updateReadout(){
+    const picked = [...cloud.querySelectorAll('.tag.picked')].map(t=>t.textContent);
+    if(picked.length === 0){
+      readout.innerHTML = 'Tap a few words above.';
+    } else {
+      readout.innerHTML = `Your comfort zone leans toward <b>${picked.join(', ')}</b>. Look for a partner who shares this feeling — not necessarily the exact same place.`;
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

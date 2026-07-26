@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dating on the Internet — Explained Simply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0b0710;
+    --bg-1:#160c1e;
+    --bg-2:#20122b;
+    --rose:#ff5d8f;
+    --rose-dim:#ff5d8f55;
+    --gold:#f4c95d;
+    --ink:#f1e8f0;
+    --muted:#a998ac;
+    --line: rgba(241,232,240,0.12);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 20% -10%, #2a1533 0%, transparent 45%),
+      radial-gradient(circle at 90% 10%, #1a0f24 0%, transparent 40%),
+      var(--bg-0);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--rose); color:#1a0f1f; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heartCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* ---------- Layout scaffolding ---------- */
+  .wrap{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  section{ padding:96px 0; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:40px 24px;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:22px;
+  }
+
+  .hook-stage{
+    position:relative;
+    width:100%;
+    max-width:220px;
+    height:190px;
+    margin:0 auto 18px;
+  }
+
+  #hookSvg{ width:100%; height:100%; overflow:visible; }
+
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.02;
+    margin:6px 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--rose);
+    font-weight:500;
+  }
+
+  .hero p.sub{
+    font-size:clamp(1rem, 2.4vw, 1.2rem);
+    color:var(--muted);
+    max-width:480px;
+    line-height:1.6;
+    margin: 0 auto;
+  }
+
+  .scroll-hint{
+    margin-top:56px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .scroll-hint .bar{
+    width:1px; height:34px;
+    background:linear-gradient(var(--rose), transparent);
+    animation:pulseBar 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseBar{
+    0%,100%{ transform:scaleY(1); opacity:0.4;}
+    50%{ transform:scaleY(1.3); opacity:1;}
+  }
+
+  /* ---------- Section headers ---------- */
+  .kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  h2.section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.7rem, 4.4vw, 2.6rem);
+    margin:0 0 40px;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Idea cards ---------- */
+  .idea{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:20px;
+    padding:28px 0;
+    border-top:1px solid var(--line);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea:last-child{ border-bottom:1px solid var(--line); }
+  .idea.in{ opacity:1; transform:translateY(0); }
+
+  .idea .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:var(--rose);
+    padding-top:4px;
+  }
+
+  .idea .example{
+    font-style:italic;
+    color:var(--muted);
+    font-size:0.98rem;
+    line-height:1.6;
+    margin:0 0 10px;
+    padding-left:14px;
+    border-left:2px solid var(--rose-dim);
+  }
+
+  .idea .point{
+    font-size:1.08rem;
+    line-height:1.6;
+    margin:0;
+    font-weight:500;
+  }
+  .idea .point .tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-right:8px;
+  }
+
+  /* ---------- Stats ---------- */
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:2px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+  }
+  .stat-cell{
+    background:linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    padding:30px 20px;
+    text-align:center;
+  }
+  .stat-cell .num{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.8rem, 5vw, 2.6rem);
+    color:var(--gold);
+    line-height:1;
+  }
+  .stat-cell .label{
+    margin-top:10px;
+    font-size:0.82rem;
+    color:var(--muted);
+    line-height:1.4;
+  }
+
+  /* ---------- Quotes ---------- */
+  .quote-card{
+    position:relative;
+    background:linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:34px 30px;
+    margin-bottom:22px;
+  }
+  .quote-card .mark{
+    font-family:'Fraunces', serif;
+    font-size:3.2rem;
+    color:var(--rose);
+    line-height:0;
+    position:absolute;
+    top:26px; left:22px;
+    opacity:0.5;
+  }
+  .quote-card p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.2rem;
+    line-height:1.55;
+    margin:14px 0 14px 20px;
+  }
+  .quote-card .who{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-left:20px;
+  }
+
+  /* ---------- ELI5 summary ---------- */
+  .eli5-grid{
+    display:grid;
+    gap:14px;
+  }
+  .eli5-item{
+    display:grid;
+    grid-template-columns:44px 1fr;
+    align-items:center;
+    gap:16px;
+    background:linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 18px;
+    opacity:0;
+    transform:translateX(-18px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  .eli5-item.in{ opacity:1; transform:translateX(0); }
+  .eli5-item .emoji{
+    font-size:1.6rem;
+    text-align:center;
+  }
+  .eli5-item p{
+    margin:0;
+    font-size:1rem;
+    line-height:1.5;
+  }
+  .eli5-final{
+    margin-top:22px;
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--gold);
+    line-height:1.5;
+  }
+
+  /* ---------- Do / Avoid ---------- */
+  .do-avoid-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  .da-col{
+    border-radius:18px;
+    padding:26px 22px;
+    border:1px solid var(--line);
+  }
+  .da-col.do{ background:linear-gradient(160deg, #13241c, #0f1a15); }
+  .da-col.avoid{ background:linear-gradient(160deg, #2a1420, #1c0f18); }
+  .da-col h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    margin:0 0 18px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .da-col.do h3{ color:#6de3a0; }
+  .da-col.avoid h3{ color:#ff7a9a; }
+  .da-col ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .da-col li{
+    display:grid;
+    grid-template-columns:20px 1fr;
+    gap:10px;
+    font-size:0.95rem;
+    line-height:1.5;
+    margin-bottom:14px;
+    color:var(--ink);
+  }
+  .da-col li:last-child{ margin-bottom:0; }
+  .da-col .mk{ font-weight:700; }
+  .da-col.do .mk{ color:#6de3a0; }
+  .da-col.avoid .mk{ color:#ff7a9a; }
+
+  @media (max-width:560px){
+    .do-avoid-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    text-align:center;
+    padding:110px 24px 140px;
+  }
+  .lesson .kicker{ justify-content:center; display:flex; }
+  .lesson blockquote{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.5rem, 4.6vw, 2.3rem);
+    line-height:1.35;
+    margin:0 auto;
+    max-width:640px;
+  }
+  .lesson blockquote .heart-accent{ color:var(--rose); }
+
+  footer{
+    text-align:center;
+    padding:30px 24px 60px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  @media (max-width:560px){
+    .idea{ grid-template-columns:32px 1fr; gap:12px; }
+    .stats-grid{ grid-template-columns:1fr 1fr; }
+    section{ padding:70px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="heartCanvas"></canvas>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="eyebrow">a plain-english breakdown</div>
+
+  <div class="hook-stage">
+    <svg id="hookSvg" viewBox="0 0 200 190">
+      <line x1="100" y1="0" x2="100" y2="40" stroke="#a998ac" stroke-width="1.5"/>
+      <g id="hookGroup">
+        <path d="M100 40 C 100 90, 70 90, 70 120 C 70 150, 100 155, 108 130"
+              fill="none" stroke="#f4c95d" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <g id="heartGroup">
+        <path d="M100 95
+                 C 100 85, 85 80, 78 90
+                 C 71 80, 56 85, 56 95
+                 C 56 108, 78 122, 78 122
+                 C 78 122, 100 108, 100 95 Z"
+              fill="#ff5d8f"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="eyebrow" style="margin-top:6px;">dating on the internet</div>
+  <h1>The world got<br><em>too many fish.</em></h1>
+  <p class="sub">Millions of people. One swipe. Here's what really happens when love moves online — explained the simple way.</p>
+
+  <div class="scroll-hint">
+    <span class="bar"></span>
+    scroll to read
+  </div>
+</section>
+
+<!-- ================= IDEAS ================= -->
+<div class="wrap">
+  <section>
+    <div class="kicker">08 simple ideas</div>
+    <h2 class="section-title">What's really going on</h2>
+
+    <div class="idea">
+      <div class="num">01</div>
+      <div>
+        <p class="example">You open an app instead of hoping to meet someone at a coffee shop.</p>
+        <p class="point"><span class="tag">idea</span>The internet gives you far more people to choose from than daily life ever could.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">02</div>
+      <div>
+        <p class="example">Talking to a stranger in a bar feels scary — but messaging first from home feels safe.</p>
+        <p class="point"><span class="tag">idea</span>Online dating helps shy people, and people with fewer options nearby.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">03</div>
+      <div>
+        <p class="example">Someone got hurt in their last relationship, so now they trust an app more than a stranger at a party.</p>
+        <p class="point"><span class="tag">idea</span>People with painful pasts often move online — and stay hopeful about love.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">04</div>
+      <div>
+        <p class="example">You match with someone great, but keep swiping — "maybe someone better is next."</p>
+        <p class="point"><span class="tag">idea</span>Too many choices can make you too picky. This is the "shopping list effect."</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">05</div>
+      <div>
+        <p class="example">On the street, you don't know who is single. On an app, everyone is looking.</p>
+        <p class="point"><span class="tag">idea</span>Dating apps remove the fear of liking someone who isn't even available.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">06</div>
+      <div>
+        <p class="example">You pay for a subscription, so you try harder to make it work.</p>
+        <p class="point"><span class="tag">idea</span>People who spend time or money on dating are usually more serious about it.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">07</div>
+      <div>
+        <p class="example">In 2013, 1 out of every 3 marriages in the US started online.</p>
+        <p class="point"><span class="tag">idea</span>Online dating really works — real couples and real marriages come from it.</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="num">08</div>
+      <div>
+        <p class="example">A 55-year-old joins a dating site, expecting little — and finds real success.</p>
+        <p class="point"><span class="tag">idea</span>Older daters do well too. They're just more selective, not desperate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section>
+    <div class="kicker">the numbers</div>
+    <h2 class="section-title">Love, by the numbers</h2>
+
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="num" data-target="1" data-suffix=" in 3">0</div>
+        <div class="label">US marriages in 2013 began online</div>
+      </div>
+      <div class="stat-cell">
+        <div class="num" data-target="40" data-suffix="M">0</div>
+        <div class="label">people in the US have tried online dating</div>
+      </div>
+      <div class="stat-cell">
+        <div class="num" data-target="2.1" data-suffix="B" data-decimal="1">0</div>
+        <div class="label">dollars — yearly revenue of the industry</div>
+      </div>
+      <div class="stat-cell">
+        <div class="num" data-target="52" data-suffix="%/48%">0</div>
+        <div class="label">roughly even split — women / men searching online</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUOTES ================= -->
+  <section>
+    <div class="kicker">powerful lines</div>
+    <h2 class="section-title">Worth remembering</h2>
+
+    <div class="quote-card">
+      <div class="mark">"</div>
+      <p>People online have already chosen to spend time, effort, and even money to find real love — so they often try harder to make it work.</p>
+      <div class="who">— Catalina Toma, new media psychologist</div>
+    </div>
+
+    <div class="quote-card">
+      <div class="mark">"</div>
+      <p>When people feel they've seen more fish in the sea, the one they finally choose tends to get deeper commitment.</p>
+      <div class="who">— Graham Jones, internet psychologist</div>
+    </div>
+  </section>
+
+  <!-- ================= ELI5 ================= -->
+  <section>
+    <div class="kicker">explain it like I'm 5</div>
+    <h2 class="section-title">The whole thing, super simple</h2>
+
+    <div class="eli5-grid">
+      <div class="eli5-item"><div class="emoji">🎣</div><p>Lots of fish, one hook — so many people to pick from.</p></div>
+      <div class="eli5-item"><div class="emoji">😊</div><p>Shy kids do better here — easier to wave first from far away.</p></div>
+      <div class="eli5-item"><div class="emoji">🍬</div><p>Too much candy is bad — too many choices can make you greedy, always wanting "one more."</p></div>
+      <div class="eli5-item"><div class="emoji">🤝</div><p>Everyone here wants to play — so no one wastes time guessing.</p></div>
+      <div class="eli5-item"><div class="emoji">💍</div><p>Real friendships happen — 1 in 3 marriages started this way.</p></div>
+      <div class="eli5-item"><div class="emoji">👴👵</div><p>Grown-ups play too — they just pick more carefully.</p></div>
+    </div>
+
+    <p class="eli5-final">"More people to choose from is nice — but you still have to be patient to find the right one, not just the next one."</p>
+  </section>
+
+  <!-- ================= DO / AVOID ================= -->
+  <section>
+    <div class="kicker">before you swipe</div>
+    <h2 class="section-title">What to do, what to avoid</h2>
+
+    <div class="do-avoid-grid">
+      <div class="da-col do">
+        <h3>✓ Do this</h3>
+        <ul>
+          <li><span class="mk">✓</span>Keep an open mind — this is a real way to meet real people.</li>
+          <li><span class="mk">✓</span>Still meet people offline too, not only through apps.</li>
+          <li><span class="mk">✓</span>Take time to actually know someone before judging them.</li>
+          <li><span class="mk">✓</span>Be willing to travel a bit for someone who really fits.</li>
+          <li><span class="mk">✓</span>Put in real effort — it shows you're serious.</li>
+        </ul>
+      </div>
+      <div class="da-col avoid">
+        <h3>✕ Avoid this</h3>
+        <ul>
+          <li><span class="mk">✕</span>Don't expect a "perfect" partner just because choices are endless.</li>
+          <li><span class="mk">✕</span>Don't keep swiping hoping someone better shows up next.</li>
+          <li><span class="mk">✕</span>Don't treat people like items on a shopping list.</li>
+          <li><span class="mk">✕</span>Don't give up on compromise — no one is flawless.</li>
+          <li><span class="mk">✕</span>Don't think you're "too old" to try — age isn't the blocker.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= MAIN LESSON ================= -->
+<section class="lesson">
+  <div class="kicker">main lesson</div>
+  <blockquote>
+    More choices give you more <span class="heart-accent">hope</span> —
+    but real love still needs patience, not just more options.
+  </blockquote>
+</section>
+
+<footer>made simple · read once, remember always</footer>
+
+<script>
+/* ================= Falling hearts + hook signature animation ================= */
+const canvas = document.getElementById('heartCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, hearts = [];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function makeHeart(){
+  return {
+    x: Math.random()*W,
+    y: -20 - Math.random()*H,
+    size: 6 + Math.random()*14,
+    speed: 0.4 + Math.random()*1.1,
+    drift: (Math.random()-0.5)*0.6,
+    sway: Math.random()*Math.PI*2,
+    swaySpeed: 0.01 + Math.random()*0.02,
+    alpha: 0.15 + Math.random()*0.45,
+    hue: Math.random() > 0.7 ? '#f4c95d' : '#ff5d8f'
+  };
+}
+
+const HEART_COUNT = window.innerWidth < 600 ? 26 : 46;
+for(let i=0;i<HEART_COUNT;i++) hearts.push(makeHeart());
+
+function drawHeart(x, y, size, color, alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  ctx.scale(size/16, size/16);
+  ctx.beginPath();
+  ctx.moveTo(0, 4);
+  ctx.bezierCurveTo(0, -2, -8, -2, -8, 4);
+  ctx.bezierCurveTo(-8, 10, 0, 14, 0, 18);
+  ctx.bezierCurveTo(0, 14, 8, 10, 8, 4);
+  ctx.bezierCurveTo(8, -2, 0, -2, 0, 4);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  for(const h of hearts){
+    h.y += h.speed;
+    h.sway += h.swaySpeed;
+    const x = h.x + Math.sin(h.sway)*14 + h.drift*h.y*0.02;
+    drawHeart(x, h.y, h.size, h.hue, h.alpha);
+    if(h.y - h.size > H){
+      h.y = -20;
+      h.x = Math.random()*W;
+    }
+  }
+  if(!reduceMotion) requestAnimationFrame(tick);
+}
+tick();
+if(reduceMotion){
+  // draw a single static calm frame, no loop
+}
+
+/* ---------- Hook + heart hero animation ---------- */
+const hookGroup = document.getElementById('hookGroup');
+const heartGroup = document.getElementById('heartGroup');
+
+if(!reduceMotion){
+  let t = 0;
+  function animateHook(){
+    t += 0.02;
+    const swing = Math.sin(t) * 6;
+    const bob = Math.sin(t*1.3) * 5;
+    hookGroup.setAttribute('transform', `rotate(${swing} 100 40)`);
+    heartGroup.setAttribute('transform', `rotate(${swing} 100 40) translate(0 ${bob})`);
+    requestAnimationFrame(animateHook);
+  }
+  animateHook();
+}
+
+/* ================= Scroll reveal for ideas ================= */
+const ideas = document.querySelectorAll('.idea');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+ideas.forEach(el=>io.observe(el));
+
+const eli5Items = document.querySelectorAll('.eli5-item');
+const io2 = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'), i*0);
+      io2.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+eli5Items.forEach((el, i)=>{
+  el.style.transitionDelay = (i*0.06)+'s';
+  io2.observe(el);
+});
+
+/* ================= Count-up stats ================= */
+const statNums = document.querySelectorAll('.stat-cell .num');
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el = e.target;
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const decimals = el.dataset.decimal ? parseInt(el.dataset.decimal) : 0;
+      let cur = 0;
+      const step = target / 40;
+      const isPercent = suffix.includes('%');
+      function update(){
+        cur += step;
+        if(cur >= target){
+          el.textContent = (decimals ? target.toFixed(decimals) : Math.round(target)) + suffix;
+          return;
+        }
+        el.textContent = (decimals ? cur.toFixed(decimals) : Math.round(cur)) + suffix;
+        requestAnimationFrame(update);
+      }
+      update();
+      statIO.unobserve(el);
+    }
+  });
+}, { threshold: 0.4 });
+statNums.forEach(el=>statIO.observe(el));
+</script>
+
+</body>
+</html>

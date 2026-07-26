@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Like You, But... | The Friend-Crush Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Nunito:wght@400;600;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #150a19;
+    --bg-2: #1f0f26;
+    --card: #251330;
+    --card-line: rgba(239,124,142,0.16);
+    --rose: #ef7c8e;
+    --rose-soft: #f3a6b3;
+    --gold: #e6b455;
+    --teal: #52d6c8;
+    --orange: #f0956b;
+    --ink: #f6ecf1;
+    --muted: #b9a8c9;
+    --display: 'Playfair Display', serif;
+    --body: 'Nunito', sans-serif;
+    --hand: 'Caveat', cursive;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at 50% -10%, var(--bg-2), var(--bg) 60%);
+    color: var(--ink);
+    font-family: var(--body);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+  }
+
+  canvas#hearts{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.55;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 22px 120px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top: 40px;
+  }
+
+  .hero .eyebrow{
+    font-family: var(--hand);
+    color: var(--gold);
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    opacity:0;
+    animation: fadeUp 0.9s ease forwards 0.2s;
+  }
+
+  .hero h1{
+    font-family: var(--display);
+    font-weight:700;
+    font-size: clamp(2.6rem, 9vw, 4.6rem);
+    line-height:1.05;
+    margin: 0 0 14px;
+    background: linear-gradient(180deg, #fff, var(--rose-soft));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    opacity:0;
+    animation: fadeUp 0.9s ease forwards 0.4s;
+  }
+
+  .hero h1 em{
+    font-style: italic;
+    color: var(--rose);
+    -webkit-text-fill-color: var(--rose);
+  }
+
+  .hero p.sub{
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: var(--muted);
+    max-width: 460px;
+    margin: 0 auto 34px;
+    opacity:0;
+    animation: fadeUp 0.9s ease forwards 0.6s;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(18px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* signature heartbeat CTA heart */
+  .signature-heart{
+    width: 92px; height: 84px;
+    position:relative;
+    cursor:pointer;
+    opacity:0;
+    animation: fadeUp 0.9s ease forwards 0.85s;
+  }
+  .signature-heart svg{
+    width:100%; height:100%;
+    filter: drop-shadow(0 0 18px rgba(239,124,142,0.45));
+    animation: beat 1.8s ease-in-out infinite;
+  }
+  @keyframes beat{
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.12); }
+    30% { transform: scale(0.98); }
+    45% { transform: scale(1.08); }
+    60% { transform: scale(1); }
+  }
+  .hero .hint{
+    margin-top:10px;
+    font-size:0.85rem;
+    color: var(--muted);
+    opacity:0;
+    animation: fadeUp 0.9s ease forwards 1.05s;
+  }
+  .scroll-arrow{
+    margin-top: 46px;
+    color: var(--rose-soft);
+    font-size: 1.6rem;
+    animation: bob 2s ease-in-out infinite;
+    opacity:0.7;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-title{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight:600;
+    font-size: clamp(1.5rem, 5vw, 2.1rem);
+    color: var(--ink);
+    text-align:center;
+    margin: 90px 0 8px;
+  }
+  .section-sub{
+    text-align:center;
+    color: var(--muted);
+    font-size:0.95rem;
+    margin-bottom: 40px;
+  }
+
+  /* ---------- IDEA CARDS ---------- */
+  .idea{
+    background: linear-gradient(160deg, var(--card), rgba(37,19,48,0.6));
+    border: 1px solid var(--card-line);
+    border-radius: 18px;
+    padding: 24px 26px;
+    margin-bottom: 22px;
+    opacity:0;
+    transform: translateY(34px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.show{
+    opacity:1;
+    transform: translateY(0);
+  }
+  .idea .num{
+    font-family: var(--display);
+    font-size: 0.95rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform:uppercase;
+    margin-bottom: 10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .idea .num::before{
+    content:'';
+    width: 26px; height: 1px;
+    background: var(--gold);
+    opacity:0.6;
+  }
+  .idea .example{
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height:1.55;
+    margin: 0 0 12px;
+  }
+  .idea .example .tag{
+    color: var(--rose-soft);
+    font-weight:800;
+    font-size:0.75rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-right:6px;
+  }
+  .idea .point{
+    font-size: 1.08rem;
+    line-height:1.5;
+    font-weight:600;
+    color: var(--ink);
+  }
+  .idea .point .tag{
+    color: var(--teal);
+    font-weight:800;
+    font-size:0.75rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-right:6px;
+    display:block;
+    margin-bottom:4px;
+  }
+
+  /* ---------- INTERACTIVE FLOWCHART ---------- */
+  .flow-box{
+    background: linear-gradient(160deg, var(--card), rgba(37,19,48,0.6));
+    border: 1px solid var(--card-line);
+    border-radius: 20px;
+    padding: 30px 22px 34px;
+    text-align:center;
+    margin: 10px 0 30px;
+  }
+  .flow-box h3{
+    font-family: var(--display);
+    font-style:italic;
+    font-weight:600;
+    font-size: 1.3rem;
+    margin: 0 0 6px;
+  }
+  .flow-box p{
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 22px;
+  }
+  .flow-buttons{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom: 26px;
+  }
+  .flow-btn{
+    font-family: var(--body);
+    font-weight:800;
+    font-size: 0.95rem;
+    padding: 13px 22px;
+    border-radius: 999px;
+    border: none;
+    cursor:pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    color: #1a0e1e;
+  }
+  .flow-btn.yes{ background: linear-gradient(135deg, var(--teal), #8ff0e6); }
+  .flow-btn.no{ background: linear-gradient(135deg, var(--orange), var(--gold)); }
+  .flow-btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
+  .flow-btn.active{ outline: 2px solid var(--ink); }
+
+  .outcomes{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+    min-height: 170px;
+  }
+  .bubble{
+    width: 150px; height:150px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 14px;
+    font-size: 0.82rem;
+    font-weight:700;
+    line-height:1.3;
+    color:#1a0e1e;
+    opacity:0;
+    transform: scale(0.4);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .bubble.show{ opacity:1; transform: scale(1); }
+  .bubble.best-yes{ background: radial-gradient(circle at 30% 30%, #7ff0e2, var(--teal)); }
+  .bubble.worst-yes{ background: radial-gradient(circle at 30% 30%, #cdece7, #9fcfc8); color:#20302d;}
+  .bubble.best-no{ background: radial-gradient(circle at 30% 30%, #f6b98d, var(--orange)); }
+  .bubble.worst-no{ background: radial-gradient(circle at 30% 30%, #f3d99a, var(--gold)); color:#3a2c10;}
+  .bubble b{ display:block; font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; opacity:0.75;}
+
+  /* ---------- GRAPH ---------- */
+  .graph-box{
+    background: linear-gradient(160deg, var(--card), rgba(37,19,48,0.6));
+    border: 1px solid var(--card-line);
+    border-radius: 20px;
+    padding: 26px 22px;
+    margin: 0 0 30px;
+  }
+  .graph-box h3{
+    font-family: var(--display);
+    font-style:italic;
+    font-weight:600;
+    font-size: 1.2rem;
+    margin: 0 0 4px;
+    text-align:center;
+  }
+  .graph-box p.desc{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.85rem;
+    margin: 0 0 18px;
+  }
+  .legend{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    font-size:0.8rem;
+    color: var(--muted);
+    margin-top:10px;
+  }
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+  /* ---------- QUOTE ---------- */
+  .quote-box{
+    text-align:center;
+    padding: 50px 10px 20px;
+  }
+  .quote-box .mark{
+    font-family: var(--display);
+    font-size: 3rem;
+    color: var(--gold);
+    opacity:0.5;
+    line-height:0.5;
+  }
+  .quote-box p{
+    font-family: var(--hand);
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
+    color: var(--gold);
+    line-height:1.3;
+    max-width: 560px;
+    margin: 10px auto 16px;
+  }
+  .quote-box .who{
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .quote-box .who b{ color: var(--rose-soft); }
+
+  /* ---------- LESSON ---------- */
+  .lesson{
+    margin-top: 60px;
+    border-radius: 22px;
+    padding: 34px 26px;
+    text-align:center;
+    background: linear-gradient(160deg, rgba(239,124,142,0.15), rgba(230,180,85,0.08));
+    border: 1px solid rgba(239,124,142,0.3);
+  }
+  .lesson .tag{
+    font-size: 0.78rem;
+    letter-spacing: 3px;
+    text-transform:uppercase;
+    color: var(--rose-soft);
+    margin-bottom:10px;
+    display:block;
+  }
+  .lesson p{
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(1.2rem, 4.5vw, 1.55rem);
+    line-height:1.5;
+    margin:0;
+  }
+
+  footer{
+    text-align:center;
+    color: var(--muted);
+    font-size:0.78rem;
+    margin-top: 40px;
+    opacity:0.7;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">a quiet question we all ask...</div>
+    <h1>I Like You, <em>But...</em></h1>
+    <p class="sub">Is friendship all that's available? Here's the whole idea, made simple.</p>
+
+    <div class="signature-heart" id="heroHeart" title="Tap the heart">
+      <svg viewBox="0 0 100 90">
+        <path d="M50 85 C10 55 0 30 20 15 C35 3 50 15 50 28 C50 15 65 3 80 15 C100 30 90 55 50 85 Z"
+              fill="#ef7c8e"/>
+      </svg>
+    </div>
+    <div class="hint">tap it — it holds a choice</div>
+    <div class="scroll-arrow">&#8595;</div>
+  </section>
+
+  <!-- IDEAS -->
+  <div class="section-title">8 ideas, made simple</div>
+  <div class="section-sub">real life first, then the point</div>
+
+  <div id="ideas"></div>
+
+  <!-- INTERACTIVE FLOWCHART -->
+  <div class="section-title">Try the choice yourself</div>
+  <div class="section-sub">tap "yes" or "no" and watch what could happen</div>
+
+  <div class="flow-box">
+    <h3>Do I tell them how I feel?</h3>
+    <p>Every path splits into a best case and a worst case.</p>
+    <div class="flow-buttons">
+      <button class="flow-btn yes" id="btnYes">YES — I'll tell them</button>
+      <button class="flow-btn no" id="btnNo">NO — I'll stay quiet</button>
+    </div>
+    <div class="outcomes" id="outcomes"></div>
+  </div>
+
+  <!-- GRAPH -->
+  <div class="section-title">The trap to avoid</div>
+  <div class="section-sub">what happens when you chase someone who isn't interested</div>
+
+  <div class="graph-box">
+    <h3>Pursuit vs. Peace</h3>
+    <p class="desc">The more you chase, the less peace you feel. Letting go brings peace back.</p>
+    <svg viewBox="0 0 320 140" width="100%" height="160">
+      <line x1="10" y1="120" x2="310" y2="120" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="10" y1="10" x2="10" y2="120" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <path id="pathObsession" d="M10,110 C 80,95 120,20 200,20 C 250,20 280,60 310,55"
+            fill="none" stroke="#f0956b" stroke-width="3" stroke-linecap="round"/>
+      <path id="pathPeace" d="M10,30 C 80,45 120,110 200,112 C 250,113 280,75 310,60"
+            fill="none" stroke="#52d6c8" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="legend">
+      <span><i class="dot" style="background:#f0956b"></i> Obsession / chasing</span>
+      <span><i class="dot" style="background:#52d6c8"></i> Peace / letting go</span>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-box">
+    <div class="mark">&#8220;</div>
+    <p>It's wicked to throw away all your gifts because you can't have the one you love.</p>
+    <div class="who">— <b>Amy March</b>, in <i>Little Women</i> by Louisa May Alcott</div>
+  </div>
+
+  <!-- MAIN LESSON -->
+  <div class="lesson">
+    <span class="tag">Main Lesson</span>
+    <p>Speak up or stay silent — either takes courage. But staying stuck in silent hope hurts more than knowing the truth.</p>
+  </div>
+
+  <footer>Made simple, one heart at a time 🩷</footer>
+
+</div>
+
+<script>
+/* ---------------- FALLING HEARTS BACKGROUND ---------------- */
+const canvas = document.getElementById('hearts');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function drawHeart(x, y, size, color, alpha, broken){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  ctx.scale(size/20, size/20);
+  ctx.beginPath();
+  ctx.moveTo(0, 8);
+  ctx.bezierCurveTo(-10, -4, -20, 4, 0, 18);
+  ctx.bezierCurveTo(20, 4, 10, -4, 0, 8);
+  if(broken){
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+const colors = ['#ef7c8e', '#e6b455', '#f3a6b3', '#52d6c8'];
+const hearts = [];
+const HEART_COUNT = 32;
+for(let i=0;i<HEART_COUNT;i++){
+  hearts.push({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    size: 10 + Math.random()*16,
+    speed: 0.3 + Math.random()*0.9,
+    drift: (Math.random()-0.5)*0.6,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    alpha: 0.2 + Math.random()*0.5,
+    broken: Math.random() < 0.25,
+    sway: Math.random()*Math.PI*2
+  });
+}
+
+function animateHearts(){
+  ctx.clearRect(0,0,W,H);
+  for(const h of hearts){
+    h.y += h.speed;
+    h.sway += 0.02;
+    h.x += Math.sin(h.sway)*0.4 + h.drift*0.1;
+    if(h.y > H + 20){
+      h.y = -20;
+      h.x = Math.random()*W;
+    }
+    drawHeart(h.x, h.y, h.size, h.color, h.alpha, h.broken);
+  }
+  requestAnimationFrame(animateHearts);
+}
+animateHearts();
+
+/* ---------------- IDEAS CONTENT ---------------- */
+const ideas = [
+  {
+    ex: "You feel your heart race every time your best friend texts you back.",
+    pt: "It's normal to catch romantic feelings for a close friend."
+  },
+  {
+    ex: "Before you say anything, picture two roads: \"Tell them\" or \"Stay quiet.\"",
+    pt: "Every choice has a best case and a worst case. Think through both first."
+  },
+  {
+    ex: "You tell them. They say yes — pure joy. They say no — awkward for a while, but it fades.",
+    pt: "Speaking up gives you a real answer, so you can heal and move on either way."
+  },
+  {
+    ex: "You stay quiet for months, hoping they'll \"just know\" one day.",
+    pt: "Silence can trap you in \"what if\" thinking for years, with no real answer ever coming."
+  },
+  {
+    ex: "Grab paper. Write: \"What could go wrong? How likely is it? How can I handle it?\"",
+    pt: "A simple chart turns a scary fear into a clear, doable plan."
+  },
+  {
+    ex: "Your friend is already happy with someone else and has never hinted at more.",
+    pt: "If it's clearly one-sided, chasing it only brings pain — it's kinder to let go gently."
+  },
+  {
+    ex: "They didn't like you back, but you noticed how much you loved their kindness and humor.",
+    pt: "Even an unreturned crush teaches you what you truly want in a partner."
+  },
+  {
+    ex: "Your friend genuinely enjoyed spending time with you.",
+    pt: "If one person liked you, others will too — you're not \"unlovable.\""
+  }
+];
+
+const ideasContainer = document.getElementById('ideas');
+ideas.forEach((idea, i) => {
+  const div = document.createElement('div');
+  div.className = 'idea';
+  div.innerHTML = `
+    <div class="num">Idea ${String(i+1).padStart(2,'0')}</div>
+    <p class="example"><span class="tag">Real life</span>${idea.ex}</p>
+    <p class="point"><span class="tag">Point</span>${idea.pt}</p>
+  `;
+  ideasContainer.appendChild(div);
+});
+
+/* scroll reveal for ideas */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.idea').forEach(el => revealObserver.observe(el));
+
+/* ---------------- HERO HEART TAP -> scroll to flowchart ---------------- */
+document.getElementById('heroHeart').addEventListener('click', () => {
+  document.querySelector('.flow-box').scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=> document.getElementById('btnYes').classList.add('active'), 600);
+});
+
+/* ---------------- INTERACTIVE FLOWCHART ---------------- */
+const outcomes = document.getElementById('outcomes');
+const btnYes = document.getElementById('btnYes');
+const btnNo = document.getElementById('btnNo');
+
+function showOutcomes(kind){
+  outcomes.innerHTML = '';
+  btnYes.classList.toggle('active', kind === 'yes');
+  btnNo.classList.toggle('active', kind === 'no');
+
+  let data;
+  if(kind === 'yes'){
+    data = [
+      {cls:'best-yes', label:'Best case', text:'They say yes too. Hooray!'},
+      {cls:'worst-yes', label:'Worst case', text:'They say no. It stings, then fades.'}
+    ];
+  } else {
+    data = [
+      {cls:'best-no', label:'Best case', text:'You stay friends, heal, and meet someone new.'},
+      {cls:'worst-no', label:'Worst case', text:'You keep hoping forever, stuck feeling lonely.'}
+    ];
+  }
+
+  data.forEach((d, i) => {
+    const b = document.createElement('div');
+    b.className = 'bubble ' + d.cls;
+    b.innerHTML = `<b>${d.label}</b>${d.text}`;
+    outcomes.appendChild(b);
+    setTimeout(() => b.classList.add('show'), 120 * (i+1));
+  });
+}
+
+btnYes.addEventListener('click', () => showOutcomes('yes'));
+btnNo.addEventListener('click', () => showOutcomes('no'));
+
+/* show a default state once flow-box is in view */
+const flowObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      showOutcomes('yes');
+      flowObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+flowObserver.observe(document.querySelector('.flow-box'));
+
+/* ---------------- GRAPH DRAW-IN ANIMATION ---------------- */
+function animatePath(path){
+  const length = path.getTotalLength();
+  path.style.strokeDasharray = length;
+  path.style.strokeDashoffset = length;
+  path.getBoundingClientRect(); // force reflow
+  path.style.transition = 'stroke-dashoffset 1.6s ease';
+  path.style.strokeDashoffset = 0;
+}
+
+const graphObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      animatePath(document.getElementById('pathObsession'));
+      animatePath(document.getElementById('pathPeace'));
+      graphObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+graphObserver.observe(document.querySelector('.graph-box'));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keeping It Safe — Meeting Up in Comfort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e14;
+    --bg-2:#12151d;
+    --card:#171a23;
+    --amber:#e8a34d;
+    --amber-soft:#e8a34d33;
+    --rose:#ff6f81;
+    --text:#f0ece4;
+    --muted:#98a0b3;
+    --line:#262b38;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #heartField{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    font-size:16px;
+    color:var(--rose);
+    opacity:0.18;
+    filter:blur(0.2px);
+    animation:fall linear infinite, sway ease-in-out infinite;
+  }
+  @keyframes fall{
+    to{ transform:translateY(115vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 24px;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.28em;
+    font-size:11px;
+    color:var(--amber);
+    margin-bottom:22px;
+  }
+  .hero h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(2.4rem, 8vw, 4.4rem);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 span{
+    display:block;
+    font-style:italic;
+    font-weight:300;
+    color:var(--amber);
+  }
+  .hero p{
+    margin-top:22px;
+    color:var(--muted);
+    font-size:clamp(1rem, 2.4vw, 1.15rem);
+    max-width:480px;
+    line-height:1.6;
+  }
+
+  /* Signature: safety radar */
+  .radar{
+    position:relative;
+    width:210px;
+    height:210px;
+    margin:44px auto 10px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:radial-gradient(circle at center, #1b2030 0%, #0e1119 75%);
+  }
+  .radar::before, .radar::after{
+    content:'';
+    position:absolute;
+    border:1px solid var(--line);
+    border-radius:50%;
+  }
+  .radar::before{ inset:28px; }
+  .radar::after{ inset:56px; }
+  .sweep{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, var(--amber-soft), transparent 35%);
+    animation:spin 4s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .blip{
+    position:absolute;
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--rose);
+    box-shadow:0 0 10px 2px var(--rose);
+    animation:blip 4s ease-in-out infinite;
+    opacity:0;
+  }
+  .blip:nth-child(2){ top:38%; left:66%; animation-delay:0.4s; }
+  .blip:nth-child(3){ top:64%; left:32%; animation-delay:1.8s; }
+  .blip:nth-child(4){ top:24%; left:30%; animation-delay:3s; }
+  @keyframes blip{
+    0%, 92%, 100%{ opacity:0; transform:scale(0.6); }
+    5%, 15%{ opacity:1; transform:scale(1); }
+  }
+  .radar-label{
+    margin-top:16px;
+    font-size:12px;
+    letter-spacing:0.12em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+
+  .scrollcue{
+    margin-top:52px;
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:0.1em;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- Intro quote ---------- */
+  .intro{
+    padding:100px 24px 70px;
+    text-align:center;
+  }
+  .intro p{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.25rem, 4vw, 1.7rem);
+    line-height:1.5;
+    color:var(--text);
+  }
+  .intro p em{ color:var(--amber); font-style:italic; }
+  .intro .credit{
+    margin-top:20px;
+    font-family:'Inter',sans-serif;
+    font-style:normal;
+    font-size:12px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---------- Idea cards ---------- */
+  .ideas{ padding:20px 0 60px; }
+  .idea{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+    padding:44px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .idea:last-child{ border-bottom:none; }
+  .idea.show{ opacity:1; transform:translateY(0); }
+
+  .idea-num{
+    font-family:'Fraunces',serif;
+    font-size:13px;
+    color:var(--amber);
+    letter-spacing:0.1em;
+    margin-bottom:14px;
+  }
+  .example{
+    background:var(--card);
+    border-left:3px solid var(--rose);
+    border-radius:6px;
+    padding:16px 18px;
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:18px;
+  }
+  .example b{ color:var(--text); font-weight:600; }
+  .idea h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(1.3rem, 4vw, 1.7rem);
+    line-height:1.3;
+    margin-bottom:10px;
+  }
+  .idea p.point{
+    color:#cfd4e0;
+    font-size:16px;
+    line-height:1.65;
+  }
+  .idea p.point strong{ color:var(--amber); }
+
+  /* ---------- Code word interactive ---------- */
+  .codeword{
+    margin:16px 0 0;
+    padding:18px;
+    background:var(--bg-2);
+    border:1px dashed var(--line);
+    border-radius:8px;
+    text-align:center;
+  }
+  .codeword button{
+    background:var(--amber);
+    color:#1a1206;
+    border:none;
+    padding:10px 20px;
+    border-radius:30px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .codeword button:hover{ transform:scale(1.05); box-shadow:0 0 20px var(--amber-soft); }
+  .codeword .out{
+    margin-top:14px;
+    font-size:14px;
+    color:var(--muted);
+    min-height:20px;
+  }
+  .codeword .out.active{ color:var(--rose); font-weight:600; }
+
+  /* ---------- Red flag checklist interactive ---------- */
+  .flags{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:18px;
+  }
+  @media (max-width:520px){ .flags{ grid-template-columns:1fr; } }
+  .flag{
+    background:var(--bg-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13.5px;
+    color:var(--muted);
+    cursor:pointer;
+    transition:all 0.25s ease;
+    user-select:none;
+  }
+  .flag.active{
+    border-color:var(--rose);
+    color:var(--text);
+    background:#231318;
+    box-shadow:0 0 14px #ff6f8122;
+  }
+  .flags-hint{
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    padding:100px 24px 140px;
+    text-align:center;
+    position:relative;
+  }
+  .lesson .tag{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:20px;
+  }
+  .lesson h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(1.8rem, 6vw, 2.8rem);
+    line-height:1.25;
+    max-width:600px;
+    margin:0 auto;
+  }
+  .lesson h2 em{ color:var(--rose); font-style:italic; }
+  .lesson .foot{
+    margin-top:30px;
+    color:var(--muted);
+    font-size:14px;
+  }
+
+  ::selection{ background:var(--amber); color:#1a1206; }
+</style>
+</head>
+<body>
+
+<div id="heartField"></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Meeting Someone New</div>
+    <h1>Keeping It Safe<span>Meeting up, in comfort</span></h1>
+    <p>You're dating someone you don't know very well yet. Here's how to protect yourself, without losing the fun of it.</p>
+
+    <div class="radar">
+      <div class="sweep"></div>
+      <div class="blip"></div>
+      <div class="blip"></div>
+      <div class="blip"></div>
+    </div>
+    <div class="radar-label">Watching for warning signs</div>
+
+    <div class="scrollcue">
+      <span>scroll</span>
+      <span>↓</span>
+    </div>
+  </section>
+
+  <section class="intro">
+    <p>A small person can make <em>big trouble</em> if they're really off the rails. Trust your own instincts.</p>
+    <div class="credit">— on meeting strangers</div>
+  </section>
+
+  <section class="ideas">
+
+    <div class="idea">
+      <div class="idea-num">01</div>
+      <div class="example">You just started chatting with someone online. They ask for your full name and home address before your first date.</div>
+      <h2>Keep your details small at first</h2>
+      <p class="point">Give a first name, a new email, or your cell number — not your landline or address. You can always share more <strong>after</strong> you trust them.</p>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">02</div>
+      <div class="example">You meet at a coffee shop in daylight and pay for your own drink. Not at their house, after dark.</div>
+      <h2>Meet in public, pay your own way</h2>
+      <p class="point">A public place keeps you safe. Paying for yourself means you owe them <strong>nothing</strong> — not even a "thank you" kiss.</p>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">03</div>
+      <div class="example">You drive yourself or take the bus. You don't let someone you just met pick you up from home.</div>
+      <h2>Get there on your own</h2>
+      <p class="point">A date who picks you up from your house now <strong>knows where you live</strong>. Travel your own way, every time, until you're sure.</p>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">04</div>
+      <div class="example">You text a friend: "Meeting Sam at 7, Riverside Café." You agree on a secret word — like <em>peachy</em>.</div>
+      <h2>Tell a friend, set a code word</h2>
+      <p class="point">If you call and slip in the code word, your friend knows something's wrong — even if your date is standing right there listening.</p>
+      <div class="codeword">
+        <button onclick="triggerCode()">Say the code word</button>
+        <div class="out" id="codeOut">Tap to see what happens</div>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">05</div>
+      <div class="example">Your date gets upset that you called a friend to check in. That reaction itself is the red flag.</div>
+      <h2>Trust the feeling in your gut</h2>
+      <p class="point">Someone with good intentions will <strong>support</strong> your right to feel safe. Tap the signs below that would worry you:</p>
+      <div class="flags">
+        <div class="flag" onclick="this.classList.toggle('active')">Pushes you to do more than you're comfortable with</div>
+        <div class="flag" onclick="this.classList.toggle('active')">Gets upset if you set a limit</div>
+        <div class="flag" onclick="this.classList.toggle('active')">Wants to go somewhere isolated</div>
+        <div class="flag" onclick="this.classList.toggle('active')">Is mean to the waiter, sweet to you</div>
+        <div class="flag" onclick="this.classList.toggle('active')">Seems oddly volatile</div>
+        <div class="flag" onclick="this.classList.toggle('active')">Makes you nervous, for no clear reason</div>
+      </div>
+      <div class="flags-hint">Even one of these, trust it.</div>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">06</div>
+      <div class="example">They want your number but won't give theirs. They're only ever free on weekdays, never weekends.</div>
+      <h2>Notice the hidden life</h2>
+      <p class="point">Someone who's vague about family, sneaks around, or vanishes on weekends may be <strong>hiding a whole other life</strong> — sometimes a spouse.</p>
+    </div>
+
+    <div class="idea">
+      <div class="idea-num">07</div>
+      <div class="example">You keep your messages with a new date, just in case, until you're sure they're okay.</div>
+      <h2>Keep proof, just in case</h2>
+      <p class="point">If a date ever really worries you, don't delete anything. A record of what they said and did can protect you later.</p>
+    </div>
+
+  </section>
+
+  <section class="lesson">
+    <div class="tag">Main Lesson</div>
+    <h2>You can't fully know a stranger yet. So <em>protect yourself first</em> — trust gets to grow later.</h2>
+    <div class="foot">Meet public. Tell a friend. Trust your gut.</div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- Falling hearts background ----------
+  const field = document.getElementById('heartField');
+  const HEART_COUNT = 26;
+  for(let i=0; i<HEART_COUNT; i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.innerHTML = '♥';
+    const size = 10 + Math.random()*18;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.opacity = 0.08 + Math.random()*0.18;
+    const duration = 12 + Math.random()*14;
+    const swayDur = 3 + Math.random()*3;
+    h.style.animationDuration = duration + 's, ' + swayDur + 's';
+    h.style.animationDelay = (-Math.random()*duration) + 's, ' + (-Math.random()*swayDur) + 's';
+    field.appendChild(h);
+  }
+
+  // ---------- Scroll reveal ----------
+  const ideas = document.querySelectorAll('.idea');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('show'); }
+    });
+  }, { threshold: 0.15 });
+  ideas.forEach(i=>obs.observe(i));
+
+  // ---------- Code word interaction ----------
+  function triggerCode(){
+    const out = document.getElementById('codeOut');
+    out.textContent = '"...by the way, could you feed my cat?" — friend gets it. Help is on the way.';
+    out.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

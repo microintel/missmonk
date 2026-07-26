@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Time Lucky — Dating After Divorce, Simply Explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #120f1a;
+    --bg-soft: #1a1526;
+    --card: #201a30;
+    --card-line: #322a45;
+    --text: #f3ede6;
+    --text-dim: #b3a8c4;
+    --pink: #ff7aa2;
+    --pink-soft: #ffb3c6;
+    --gold: #e9c46a;
+    --mend: #7fe8c0;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #251c38 0%, transparent 60%),
+      radial-gradient(1000px 600px at 100% 0%, #201631 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+  }
+
+  h1,h2,.serif{ font-family:'Fraunces', serif; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    width:16px;
+    height:16px;
+    opacity:.55;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    filter: drop-shadow(0 0 6px rgba(255,122,162,.35));
+  }
+  .heart::before,
+  .heart::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:var(--pink);
+    border-radius:50% 50% 0 0;
+  }
+  .heart::before{ left:50%; transform:translateX(-100%) rotate(-45deg); transform-origin:right; }
+  .heart::after{ left:0%; transform:rotate(45deg); transform-origin:left; }
+
+  @keyframes fall{
+    0%{ transform: translateY(0) rotate(0deg); }
+    100%{ transform: translateY(115vh) rotate(25deg); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0; }
+    50%{ margin-left:30px; }
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 22px 120px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:60px;
+  }
+  .hero .eyebrow{
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    font-size:.7rem;
+    color:var(--gold);
+    margin-bottom:18px;
+    font-weight:700;
+  }
+  .hero h1{
+    font-size:clamp(2.3rem, 7vw, 4rem);
+    line-height:1.05;
+    margin:0 0 18px;
+    font-weight:600;
+    font-style:italic;
+  }
+  .hero h1 span{ color:var(--pink); font-style:normal; }
+  .hero p.sub{
+    color:var(--text-dim);
+    font-size:1.05rem;
+    max-width:480px;
+    margin:0 auto 42px;
+  }
+
+  /* Signature: mending heart */
+  .mend-heart{
+    width:120px;
+    height:110px;
+    position:relative;
+    margin-bottom:10px;
+  }
+  .mend-half{
+    position:absolute;
+    top:0;
+    width:60px;
+    height:110px;
+    overflow:hidden;
+  }
+  .mend-half svg{ position:absolute; top:0; width:120px; height:110px; }
+  .mend-half.left{ left:0; animation: closeLeft 3.2s ease-in-out infinite; }
+  .mend-half.right{ right:0; animation: closeRight 3.2s ease-in-out infinite; }
+  .mend-half.left svg{ left:0; }
+  .mend-half.right svg{ right:0; }
+
+  @keyframes closeLeft{
+    0%,15%{ transform: translateX(-14px) rotate(-6deg); }
+    45%,100%{ transform: translateX(0) rotate(0deg); }
+  }
+  @keyframes closeRight{
+    0%,15%{ transform: translateX(14px) rotate(6deg); }
+    45%,100%{ transform: translateX(0) rotate(0deg); }
+  }
+  .glow-pulse{
+    animation: glowPulse 3.2s ease-in-out infinite;
+  }
+  @keyframes glowPulse{
+    0%,40%{ filter: drop-shadow(0 0 0px transparent); }
+    55%,100%{ filter: drop-shadow(0 0 18px rgba(127,232,192,.65)); }
+  }
+
+  .scroll-cue{
+    margin-top:50px;
+    font-size:.75rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .scroll-cue .line{
+    width:1px;
+    height:34px;
+    background:linear-gradient(var(--pink), transparent);
+    animation: cueMove 1.6s ease-in-out infinite;
+  }
+  @keyframes cueMove{
+    0%{ opacity:0; transform:translateY(-6px); }
+    50%{ opacity:1; }
+    100%{ opacity:0; transform:translateY(10px); }
+  }
+
+  /* ---------- Section intros ---------- */
+  .section-title{
+    text-align:center;
+    margin:100px 0 46px;
+  }
+  .section-title h2{
+    font-size:1.7rem;
+    font-weight:500;
+    font-style:italic;
+    margin:0 0 10px;
+  }
+  .section-title p{
+    color:var(--text-dim);
+    font-size:.92rem;
+    max-width:460px;
+    margin:0 auto;
+  }
+  .divider{
+    width:46px;
+    height:2px;
+    background:var(--pink);
+    margin:0 auto 22px;
+    border-radius:2px;
+  }
+
+  /* ---------- idea cards ---------- */
+  .idea{
+    background:linear-gradient(180deg, var(--card), var(--bg-soft));
+    border:1px solid var(--card-line);
+    border-radius:18px;
+    padding:26px 24px;
+    margin-bottom:22px;
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .idea.show{ opacity:1; transform:translateY(0); }
+
+  .idea .tag{
+    display:inline-block;
+    font-size:.68rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--pink-soft);
+    background:rgba(255,122,162,.1);
+    border:1px solid rgba(255,122,162,.3);
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:14px;
+    font-weight:700;
+  }
+  .idea .example{
+    color:var(--text-dim);
+    font-size:.95rem;
+    margin:0 0 10px;
+    font-style:italic;
+  }
+  .idea .example b{ color:var(--gold); font-style:normal; font-weight:700;}
+  .idea h3{
+    margin:0 0 8px;
+    font-size:1.25rem;
+    font-weight:600;
+    line-height:1.3;
+  }
+  .idea p.point{
+    margin:0;
+    font-size:1rem;
+    line-height:1.55;
+    color:var(--text);
+  }
+
+  /* ---------- quote blocks ---------- */
+  .quote{
+    text-align:center;
+    margin:44px 0;
+    padding:26px 18px;
+    border-top:1px solid var(--card-line);
+    border-bottom:1px solid var(--card-line);
+    opacity:0;
+    transform: translateY(20px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .quote.show{ opacity:1; transform:translateY(0); }
+  .quote p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.25rem;
+    line-height:1.5;
+    color:var(--gold);
+    margin:0 0 10px;
+  }
+  .quote span{
+    font-size:.78rem;
+    color:var(--text-dim);
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- stat strip ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:36px 0;
+  }
+  .stat{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:16px;
+    padding:20px 14px;
+    text-align:center;
+  }
+  .stat .num{
+    font-family:'Fraunces', serif;
+    font-size:2.1rem;
+    color:var(--pink);
+    line-height:1;
+    margin-bottom:6px;
+  }
+  .stat .lab{
+    font-size:.78rem;
+    color:var(--text-dim);
+    line-height:1.3;
+  }
+
+  /* ---------- main lesson ---------- */
+  .lesson{
+    margin-top:110px;
+    text-align:center;
+    padding:50px 26px;
+    border-radius:22px;
+    background:radial-gradient(500px 260px at 50% 0%, rgba(255,122,162,.16), transparent 70%), var(--card);
+    border:1px solid var(--card-line);
+    position:relative;
+  }
+  .lesson .eyebrow{
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    font-size:.7rem;
+    color:var(--mend);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .lesson h2{
+    font-size:1.6rem;
+    font-weight:500;
+    font-style:italic;
+    line-height:1.4;
+    margin:0;
+  }
+  .lesson h2 em{ color:var(--pink); font-style:normal; }
+
+  footer{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:.78rem;
+    margin-top:60px;
+    opacity:.7;
+  }
+
+  @media (max-width:480px){
+    .stats{ grid-template-columns:1fr 1fr; }
+    .hero h1{ font-size:2.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .heart, .mend-half, .glow-pulse, .scroll-cue .line { animation: none !important; }
+    .idea, .quote{ transition:none; opacity:1 !important; transform:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="mend-heart">
+      <div class="mend-half left glow-pulse">
+        <svg viewBox="0 0 120 110"><path d="M60 100 C10 70,-5 35,20 18 C38 6,55 14,60 32 L60 100 Z" fill="#ff7aa2"/></svg>
+      </div>
+      <div class="mend-half right glow-pulse">
+        <svg viewBox="0 0 120 110"><path d="M60 100 C110 70,125 35,100 18 C82 6,65 14,60 32 L60 100 Z" fill="#ff7aa2"/></svg>
+      </div>
+    </div>
+    <div class="eyebrow">Next Time Lucky</div>
+    <h1>Your heart isn't <span>broken</span>.<br>It's just healing.</h1>
+    <p class="sub">A simple guide to dating again after divorce — what to feel, what to watch for, and when you're really ready.</p>
+    <div class="scroll-cue">
+      <div class="line"></div>
+      scroll to begin
+    </div>
+  </section>
+
+  <!-- SECTION: too soon -->
+  <div class="section-title">
+    <div class="divider"></div>
+    <h2>Signs it's too soon</h2>
+    <p>Some hearts need more time before they're ready to open again.</p>
+  </div>
+
+  <div class="idea" data-tag="01">
+    <span class="tag">Sign 01</span>
+    <p class="example">Example: <b>You compare every new date to your ex</b> — their laugh, their habits, everything.</p>
+    <h3>Still stuck on the ex</h3>
+    <p class="point">If you can't stop thinking about your ex, your mind isn't free yet. Clear it first, then start fresh.</p>
+  </div>
+
+  <div class="idea" data-tag="02">
+    <span class="tag">Sign 02</span>
+    <p class="example">Example: <b>You feel a wave of anger</b> every time money or custody comes up.</p>
+    <h3>Still bitter, not ready</h3>
+    <p class="point">Anger after a rough split is normal. But anger is not a good place to begin something new.</p>
+  </div>
+
+  <div class="idea" data-tag="03">
+    <span class="tag">Sign 03</span>
+    <p class="example">Example: <b>You still talk and think as "we"</b>, months after the split.</p>
+    <h3>Still feel like half a pair</h3>
+    <p class="point">Marriage can blur who you are. Take time to remember yourself as one whole person again.</p>
+  </div>
+
+  <div class="quote">
+    <p>Give yourself a break, and treat yourself to some self-compassion.</p>
+    <span>— on being kind to yourself first</span>
+  </div>
+
+  <!-- SECTION: ready -->
+  <div class="section-title">
+    <div class="divider"></div>
+    <h2>Signs you're ready</h2>
+    <p>Readiness feels different from loneliness. Here's how to tell them apart.</p>
+  </div>
+
+  <div class="idea" data-tag="04">
+    <span class="tag">Sign 04</span>
+    <p class="example">Example: <b>You enjoy a quiet Friday night</b>, alone, and feel fine about it.</p>
+    <h3>You feel whole on your own</h3>
+    <p class="point">We tend to pick partners who match how much we value ourselves. Like yourself first — the right match follows.</p>
+  </div>
+
+  <div class="idea" data-tag="05">
+    <span class="tag">Sign 05</span>
+    <p class="example">Example: <b>A friend mentions setting you up</b>, and it sounds fun instead of scary.</p>
+    <h3>Dating feels possible again</h3>
+    <p class="point">If the idea of dating turns you off completely, you're not ready. If it feels doable, it probably is.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="num">30–45</div>
+      <div class="lab">Most common age people start dating again after divorce</div>
+    </div>
+    <div class="stat">
+      <div class="num">30%</div>
+      <div class="lab">Of couples in the US met simply through friends</div>
+    </div>
+  </div>
+
+  <!-- SECTION: worth -->
+  <div class="section-title">
+    <div class="divider"></div>
+    <h2>Know your worth</h2>
+    <p>Divorce can shake your confidence. Don't let it shrink your standards.</p>
+  </div>
+
+  <div class="idea" data-tag="06">
+    <span class="tag">Sign 06</span>
+    <p class="example">Example: <b>A house priced too low</b> sells fast — but for far less than it's worth.</p>
+    <h3>Don't sell yourself short</h3>
+    <p class="point">We often lower our standards after a breakup. Don't. Take time to rebuild confidence — you deserve someone who makes you happy.</p>
+  </div>
+
+  <!-- SECTION: friends -->
+  <div class="section-title">
+    <div class="divider"></div>
+    <h2>Hiding in plain sight</h2>
+    <p>The people who introduce you to someone new are often closer than you think.</p>
+  </div>
+
+  <div class="idea" data-tag="07">
+    <span class="tag">Sign 07</span>
+    <p class="example">Example: <b>Your friend brings a college buddy</b> to a weekend barbeque.</p>
+    <h3>Friends already vet people for you</h3>
+    <p class="point">People close to your friends are usually easier to trust than total strangers. Say yes to more invitations.</p>
+  </div>
+
+  <div class="idea" data-tag="08">
+    <span class="tag">Sign 08</span>
+    <p class="example">Example: <b>You have 10 friends. One of them has 100 friends of their own.</b></p>
+    <h3>Your circle is bigger than it feels</h3>
+    <p class="point">On average, your friends know more people than you do. More chances are hiding nearby than you'd guess.</p>
+  </div>
+
+  <div class="quote">
+    <p>"Friends are the people we are closest to."</p>
+    <span>— Michael J. Rosenfeld, Sociologist, Stanford University</span>
+  </div>
+
+  <div class="idea" data-tag="09">
+    <span class="tag">Sign 09</span>
+    <p class="example">Example: <b>Five minutes into talking to someone new</b>, it still feels stiff and awkward.</p>
+    <h3>Don't force a bad conversation</h3>
+    <p class="point">If it's not clicking early on, it's fine to move on. Save your energy for someone easier to talk to.</p>
+  </div>
+
+  <div class="quote">
+    <p>Dip in a toe at a time.</p>
+    <span>— Diana Kirschner, Psychologist</span>
+  </div>
+
+  <!-- SECTION: healing -->
+  <div class="section-title">
+    <div class="divider"></div>
+    <h2>It gets better with time</h2>
+    <p>The hardest part of a breakup usually isn't the last part.</p>
+  </div>
+
+  <div class="idea" data-tag="10">
+    <span class="tag">Sign 10</span>
+    <p class="example">Example: <b>A study followed 100 divorced women</b> — every one struggled at first.</p>
+    <h3>Pain fades, confidence returns</h3>
+    <p class="point">Nearly all of them said their mental health got better as time passed. Give yourself the same time.</p>
+  </div>
+
+  <div class="idea" data-tag="11">
+    <span class="tag">Sign 11</span>
+    <p class="example">Example: <b>Someone whose marriage lacked real listening</b> now looks for a partner who truly hears them.</p>
+    <h3>Divorce teaches you what you need</h3>
+    <p class="point">Use what didn't work last time. It becomes your checklist for choosing better this time.</p>
+  </div>
+
+  <div class="quote">
+    <p>Divorce can be a challenge to create positive meaning.</p>
+    <span>— Debora Schneller, Researcher, Virginia Tech</span>
+  </div>
+
+  <!-- MAIN LESSON -->
+  <div class="lesson idea" data-tag="lesson">
+    <div class="eyebrow">Main lesson</div>
+    <h2>Divorce isn't the end of your story.<br>It's a <em>pause</em> to know yourself —<br>then a wiser, fresher start.</h2>
+  </div>
+
+  <footer>Made simple, so you can spend less time reading and more time healing.</footer>
+
+</div>
+
+<script>
+  // Build falling hearts background
+  const field = document.getElementById('heart-field');
+  const HEART_COUNT = 24;
+  for(let i=0;i<HEART_COUNT;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    const size = 10 + Math.random()*16;
+    h.style.width = size+'px';
+    h.style.height = size+'px';
+    h.style.left = Math.random()*100+'vw';
+    const duration = 9 + Math.random()*10;
+    const delay = Math.random()*-20;
+    h.style.animationDuration = duration+'s';
+    h.style.animationDelay = delay+'s';
+    h.style.opacity = (0.25 + Math.random()*0.4).toFixed(2);
+    field.appendChild(h);
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.idea, .quote');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

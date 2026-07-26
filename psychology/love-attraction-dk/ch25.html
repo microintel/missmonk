@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 Seconds to Like Someone — Speed Dating, Explained Simply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #170b12;
+    --bg-2: #23101a;
+    --card: #2a1420;
+    --rose: #ff6f91;
+    --rose-soft: #ff9db2;
+    --gold: #e8b86d;
+    --cream: #f6ebe4;
+    --muted: #c9a8b4;
+  }
+  *{ box-sizing: border-box; }
+  html, body{
+    margin:0; padding:0;
+    background: radial-gradient(ellipse at top, var(--bg-2), var(--bg) 60%);
+    color: var(--cream);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  ::selection{ background: var(--rose); color: #170b12; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .falling-heart{
+    position: absolute;
+    top: -40px;
+    color: var(--rose);
+    opacity: 0.55;
+    will-change: transform, opacity;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    filter: drop-shadow(0 0 6px rgba(255,111,145,0.35));
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 0; }
+    8%{ opacity: 0.6; }
+    92%{ opacity: 0.5; }
+    100%{ transform: translateY(110vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 22px 120px;
+  }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    min-height: 92vh;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align:center;
+    padding-top: 40px;
+  }
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  h1.title{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.3rem, 8vw, 4rem);
+    line-height: 1.05;
+    margin: 0 0 20px;
+    background: linear-gradient(180deg, #ffffff, var(--rose-soft));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .subtitle{
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 44px;
+  }
+
+  /* ---------- 3-second stopwatch signature ---------- */
+  .stopwatch{
+    position: relative;
+    width: 190px;
+    height: 190px;
+    margin: 0 auto 20px;
+  }
+  .stopwatch svg{ width:100%; height:100%; transform: rotate(-90deg); }
+  .stopwatch circle.track{
+    fill:none; stroke: rgba(255,255,255,0.08); stroke-width: 6;
+  }
+  .stopwatch circle.sweep{
+    fill:none; stroke: url(#swGrad); stroke-width: 6; stroke-linecap: round;
+    stroke-dasharray: 566; stroke-dashoffset: 566;
+    animation: sweep 3s cubic-bezier(.3,0,.2,1) infinite;
+  }
+  @keyframes sweep{
+    0%{ stroke-dashoffset: 566; }
+    95%{ stroke-dashoffset: 0; }
+    100%{ stroke-dashoffset: 0; }
+  }
+  .stopwatch .num{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700; font-size: 2.6rem; color: var(--cream);
+  }
+  .stopwatch .num span{
+    animation: pulseNum 3s steps(1) infinite;
+  }
+  @keyframes pulseNum{
+    0%{ content:"3"; }
+  }
+  .stopwatch::after{
+    content: "";
+  }
+  .tick-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--rose-soft);
+    text-transform: uppercase;
+  }
+
+  .scroll-cue{
+    margin-top: 50px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); opacity:0.6; }
+    50%{ transform: translateY(8px); opacity:1; }
+  }
+
+  /* ---------- intro quote ---------- */
+  .quote-block{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--gold);
+    text-align:center;
+    padding: 50px 0 60px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    opacity:0;
+    transform: translateY(24px);
+    transition: all 0.8s ease;
+  }
+  .quote-block.show{ opacity:1; transform: translateY(0); }
+
+  /* ---------- idea cards ---------- */
+  .idea{
+    position: relative;
+    margin: 34px 0;
+    padding: 26px 24px 28px;
+    background: linear-gradient(160deg, var(--card), rgba(42,20,32,0.4));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.show{ opacity: 1; transform: translateY(0) scale(1); }
+  .idea::before{
+    content: attr(data-num);
+    position:absolute;
+    top: -18px; left: 22px;
+    font-family:'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #170b12;
+    background: var(--rose);
+    padding: 5px 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(255,111,145,0.35);
+  }
+  .idea .example{
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 14px 0 12px;
+    padding-left: 14px;
+    border-left: 2px solid var(--gold);
+  }
+  .idea .example b{ color: var(--gold); font-weight: 600; }
+  .idea h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0 0 4px;
+    color: var(--cream);
+  }
+  .idea p.point{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: #eadde2;
+    margin: 0;
+  }
+  .idea p.point .hl{
+    color: var(--rose-soft);
+    font-weight: 600;
+  }
+
+  /* small stat chips inside cards */
+  .stat-chip{
+    display:inline-block;
+    margin-top: 12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    background: rgba(232,184,109,0.1);
+    border: 1px solid rgba(232,184,109,0.3);
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  /* ---------- interactive: heart click meter ---------- */
+  .click-demo{
+    text-align:center;
+    padding: 40px 20px 10px;
+    opacity:0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+  }
+  .click-demo.show{ opacity:1; transform: translateY(0); }
+  .click-demo h3{
+    font-family:'Fraunces', serif;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+  .click-demo p{ color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; }
+  #tapHeart{
+    font-size: 4rem;
+    cursor: pointer;
+    user-select: none;
+    display:inline-block;
+    transition: transform 0.15s ease;
+    filter: drop-shadow(0 0 10px rgba(255,111,145,0.4));
+  }
+  #tapHeart:active{ transform: scale(0.85); }
+  #tapResult{
+    margin-top: 16px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--rose-soft);
+    min-height: 20px;
+  }
+
+  /* ---------- main lesson ---------- */
+  .lesson{
+    margin-top: 70px;
+    text-align:center;
+    padding: 40px 26px;
+    border-radius: 22px;
+    background: linear-gradient(150deg, rgba(255,111,145,0.14), rgba(232,184,109,0.08));
+    border: 1px solid rgba(255,111,145,0.25);
+    opacity:0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+  .lesson.show{ opacity:1; transform: translateY(0); }
+  .lesson .eyebrow{ margin-bottom: 14px; }
+  .lesson p{
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.55;
+    color: var(--cream);
+    margin: 0;
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 60px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 480px){
+    .idea{ padding: 22px 18px 24px; }
+    h1.title{ font-size: 2.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .falling-heart, .stopwatch circle.sweep, .scroll-cue{ animation: none !important; }
+    .idea, .quote-block, .lesson, .click-demo{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">The Five-Minute Mile · Speed Dating</div>
+    <h1 class="title">You Decide Faster<br>Than You Think</h1>
+    <p class="subtitle">Meet a stranger. Talk for a few minutes. Move to the next. Here's what science says about how we pick who we like.</p>
+
+    <div class="stopwatch">
+      <svg viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="swGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6f91"/>
+            <stop offset="100%" stop-color="#e8b86d"/>
+          </linearGradient>
+        </defs>
+        <circle class="track" cx="100" cy="100" r="90"></circle>
+        <circle class="sweep" cx="100" cy="100" r="90"></circle>
+      </svg>
+      <div class="num"><span id="countNum">3</span></div>
+    </div>
+    <div class="tick-label">seconds to decide</div>
+
+    <div class="scroll-cue">↓ scroll to begin ↓</div>
+  </header>
+
+  <div class="quote-block" id="q1">
+    "Most people made their decision within three seconds of meeting."
+  </div>
+
+  <section id="ideas"></section>
+
+  <div class="click-demo" id="clickDemo">
+    <h3>Try it yourself</h3>
+    <p>Hold the heart. Let go the moment you "like" it. Real daters usually take 3 seconds.</p>
+    <div id="tapHeart">💗</div>
+    <div id="tapResult"></div>
+  </div>
+
+  <div class="lesson">
+    <div class="eyebrow">Main Lesson</div>
+    <p>We judge fast. But real connection often comes from someone we didn't expect. So stay open, be yourself, and let people surprise you.</p>
+  </div>
+
+  <footer>Based on "The Five-Minute Mile: Speed Dating" · made simple 💗</footer>
+</div>
+
+<script>
+/* ---------------- Falling hearts background ---------------- */
+(function(){
+  const field = document.getElementById('heart-field');
+  const symbols = ['❤','💗','💕','♥'];
+  const count = window.innerWidth < 600 ? 18 : 30;
+  for(let i=0;i<count;i++){
+    const h = document.createElement('div');
+    h.className = 'falling-heart';
+    h.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    const size = 10 + Math.random()*22;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.setProperty('--drift', (Math.random()*160-80) + 'px');
+    h.style.setProperty('--spin', (Math.random()*360-180) + 'deg');
+    const dur = 9 + Math.random()*10;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = (-Math.random()*dur) + 's';
+    field.appendChild(h);
+  }
+})();
+
+/* ---------------- Idea content ---------------- */
+const ideas = [
+  {
+    num: '01',
+    title: 'Speed dating is old-style matchmaking, made new',
+    example: '<b>Example:</b> Long ago, elders helped young people find a partner.',
+    point: 'In <span class="hl">1999</span>, a couple named Yaacov and Sue Deyo made a modern version of this. They tried it in Los Angeles. People loved it. Now it happens all over the world.'
+  },
+  {
+    num: '02',
+    title: 'We notice looks first',
+    example: '<b>Example:</b> Scrolling a photo app — you swipe based on the photo, not the bio.',
+    point: 'A big study of <span class="hl">10,526 people</span> found the same thing. Looks come first. Job, money, or personality only matter <em>after</em> someone looks good to you.',
+    chip: '10,526 people studied'
+  },
+  {
+    num: '03',
+    title: 'A busy room makes you rush',
+    example: '<b>Example:</b> At a buffet with 50 dishes, you grab fast. At home with one dish, you eat calmly.',
+    point: 'Speed dating rooms are busy and fast. So people <span class="hl">judge quicker</span> than they normally would in real life.'
+  },
+  {
+    num: '04',
+    title: 'A fun stranger can change your mind — for a bit',
+    example: '<b>Example:</b> You say you dislike loud people. Then you meet one who makes you laugh all night.',
+    point: 'Scientists found this happens to everyone. Right after meeting someone surprising, <span class="hl">what we want changes</span>. But after some months, we go back to liking what we liked before.'
+  },
+  {
+    num: '05',
+    title: 'You like more types of people than you think',
+    example: '<b>Example:</b> You only date quiet people. One day, a funny loud person surprises you.',
+    point: 'This shows we can enjoy <span class="hl">many different kinds</span> of people — not just our usual "type".'
+  },
+  {
+    num: '06',
+    title: 'It builds confidence, even without a match',
+    example: '<b>Example:</b> Practicing a speech before the real one, just to feel less nervous.',
+    point: 'Speed dating is low-risk. Even with no match, you <span class="hl">practice talking and get more confident</span>.'
+  },
+  {
+    num: '07',
+    title: 'Women often take more time to decide',
+    example: '<b>Example:</b> One friend orders food in 5 seconds. Another reads the whole menu first.',
+    point: 'A study found women speed daters are <span class="hl">more careful</span>. They take longer to feel they "like" someone than men do.'
+  },
+  {
+    num: '08',
+    title: 'Sitting still makes you picky',
+    example: '<b>Example:</b> Walking through many shops, you buy easily. Sitting in one shop with items brought to you, you say "no" more.',
+    point: 'Usually men move around and women sit. When this was flipped in one study, the <span class="hl">sitting men became picky</span>, and the moving women said "yes" more easily.'
+  },
+  {
+    num: '09',
+    title: 'We decide in seconds',
+    example: '<b>Example:</b> You know if you like a photo the moment it loads. No real thinking needed.',
+    point: 'A study found most people decide if they like someone in just <span class="hl">3 seconds</span> of meeting them.',
+    chip: '3 seconds average'
+  },
+  {
+    num: '10',
+    title: 'Small talk habits that women liked',
+    example: '<b>Example:</b> One friend says "Wow, really?" and listens. Another stays silent and bored.',
+    point: 'Women liked men who were <span class="hl">warm, shared their own stories, didn\'t ask too many questions, and sounded excited</span> when talking.'
+  }
+];
+
+const ideaSection = document.getElementById('ideas');
+ideas.forEach(idea => {
+  const div = document.createElement('div');
+  div.className = 'idea';
+  div.setAttribute('data-num', idea.num);
+  div.innerHTML = `
+    <h3>${idea.title}</h3>
+    <div class="example">${idea.example}</div>
+    <p class="point">${idea.point}</p>
+    ${idea.chip ? `<div class="stat-chip">${idea.chip}</div>` : ''}
+  `;
+  ideaSection.appendChild(div);
+});
+
+/* ---------------- Scroll reveal ---------------- */
+const revealTargets = document.querySelectorAll('.idea, .quote-block, .lesson, .click-demo');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+    }
+  });
+}, { threshold: 0.18 });
+revealTargets.forEach(t => observer.observe(t));
+
+/* ---------------- 3-second tap demo ---------------- */
+const tapHeart = document.getElementById('tapHeart');
+const tapResult = document.getElementById('tapResult');
+let pressStart = null;
+
+function startPress(){
+  pressStart = performance.now();
+  tapResult.textContent = 'Deciding...';
+}
+function endPress(){
+  if(pressStart === null) return;
+  const elapsed = ((performance.now() - pressStart)/1000).toFixed(2);
+  pressStart = null;
+  let msg;
+  if(elapsed <= 3.2){
+    msg = `You decided in ${elapsed}s — just like a real speed dater! 💗`;
+  } else {
+    msg = `You took ${elapsed}s — more thoughtful than the average 3-second dater.`;
+  }
+  tapResult.textContent = msg;
+}
+tapHeart.addEventListener('mousedown', startPress);
+tapHeart.addEventListener('touchstart', startPress, {passive:true});
+tapHeart.addEventListener('mouseup', endPress);
+tapHeart.addEventListener('touchend', endPress);
+</script>
+
+</body>
+</html>

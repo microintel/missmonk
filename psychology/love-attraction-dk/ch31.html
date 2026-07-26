@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiding in Plain Sight — How Love Finds You Through Friends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0d0b16;
+    --bg-2: #14101f;
+    --rose: #ff5d8f;
+    --rose-soft: #ffb3c8;
+    --gold: #ffd166;
+    --lavender: #c9c3d9;
+    --ink: #f5f2f8;
+    --card: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.08);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at top, #1b1428 0%, var(--bg) 55%, #08060d 100%);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ---------- Falling hearts background ---------- */
+  #heartCanvas{
+    position: fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    z-index: 0;
+    pointer-events:none;
+  }
+
+  .content{
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ---------- Typography ---------- */
+  h1, h2, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--rose-soft);
+    opacity: 0.85;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height: 100svh;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 6vh 6vw 8vh;
+  }
+
+  .hero .eyebrow{ margin-bottom: 1.1rem; }
+
+  .hero h1{
+    font-size: clamp(2.2rem, 7vw, 4.4rem);
+    line-height: 1.05;
+    max-width: 16ch;
+    margin: 0 0 1.3rem;
+    background: linear-gradient(180deg, #ffffff 0%, var(--rose-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero h1 em{
+    font-style: italic;
+    color: var(--rose);
+    -webkit-text-fill-color: var(--rose);
+  }
+
+  .hero p.sub{
+    max-width: 40ch;
+    color: var(--lavender);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0 0 2.4rem;
+  }
+
+  .scrollcue{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: var(--rose-soft);
+    opacity: 0.6;
+    animation: bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); opacity:.5;}
+    50%{ transform: translateY(8px); opacity:1;}
+  }
+
+  /* ---------- Section shell ---------- */
+  section.beat{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 9vh 6vw;
+    display:flex;
+    flex-direction:column;
+    gap: 1rem;
+  }
+
+  .idea{
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .idea.show{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .idea-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.6rem;
+    display:block;
+  }
+
+  .example{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--rose);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    color: var(--lavender);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+  .example b{ color: var(--ink); }
+
+  .point{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    color: var(--ink);
+    margin: 0;
+  }
+  .point .hi{ color: var(--rose); font-style: italic; }
+
+  hr.div{
+    border: none;
+    border-top: 1px solid var(--border);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Quote blocks ---------- */
+  .quote-block{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 3vh 6vw 1vh;
+    text-align:center;
+  }
+  .quote-block blockquote{
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: var(--rose-soft);
+    margin: 0 0 0.7rem;
+    line-height: 1.5;
+  }
+  .quote-block cite{
+    font-family:'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 0.75rem;
+    color: var(--lavender);
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- Friendship paradox visual ---------- */
+  .paradox-wrap{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4vh 6vw 8vh;
+  }
+  .paradox-title{
+    font-size: 0.78rem;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.6rem;
+    text-align:center;
+  }
+  .nodes{
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap: 10px;
+    height: 140px;
+    margin-bottom: 1.4rem;
+  }
+  .node{
+    width: 14px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--rose-soft), var(--rose));
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform .6s ease, opacity .6s ease;
+  }
+  .node.big{ background: linear-gradient(180deg, var(--gold), #e0a72e); }
+  .paradox-wrap.show .node{ opacity:1; transform: scaleY(1); }
+  .paradox-caption{
+    text-align:center;
+    color: var(--lavender);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+  .paradox-caption b{ color: var(--ink); }
+
+  /* ---------- Stats ---------- */
+  .stats{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4vh 6vw 8vh;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  .stat{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.2rem;
+    text-align:center;
+  }
+  .stat .num{
+    font-family:'Fraunces', serif;
+    font-size: clamp(2.2rem, 8vw, 3rem);
+    color: var(--rose);
+    line-height:1;
+    margin-bottom: 0.4rem;
+  }
+  .stat .desc{
+    font-size: 0.85rem;
+    color: var(--lavender);
+    line-height: 1.5;
+  }
+  @media (max-width: 520px){
+    .stats{ grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Signature: Social Clock ---------- */
+  .clock-section{
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 6vh 6vw 10vh;
+    text-align:center;
+  }
+  .clock-section .eyebrow{ display:block; margin-bottom: 0.6rem; }
+  .clock-section h2{
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    margin: 0 0 0.6rem;
+    color: var(--ink);
+  }
+  .clock-section > p.lead{
+    color: var(--lavender);
+    max-width: 46ch;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+
+  .clock-stage{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 2rem;
+  }
+
+  .clock-face-wrap{
+    position: relative;
+    width: min(260px, 60vw);
+    height: min(260px, 60vw);
+  }
+
+  svg.clock{
+    width:100%;
+    height:100%;
+    transform: rotate(-90deg);
+  }
+  .clock-track{
+    fill:none;
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 14;
+  }
+  .clock-fill{
+    fill:none;
+    stroke: url(#clockGradient);
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-dasharray: 691;
+    stroke-dashoffset: 691;
+    transition: stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1);
+  }
+  .clock-center{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .clock-center .minutes{
+    font-family:'Fraunces', serif;
+    font-size: 2.6rem;
+    color: var(--ink);
+    line-height:1;
+  }
+  .clock-center .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--rose-soft);
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+  }
+
+  .clock-caption{
+    max-width: 46ch;
+    color: var(--lavender);
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 3.2em;
+  }
+  .clock-caption b{ color: var(--rose-soft); }
+
+  .clock-dots{
+    display:flex;
+    gap: 10px;
+  }
+  .clock-dots button{
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    padding:0;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .clock-dots button.active{
+    background: var(--rose);
+    transform: scale(1.25);
+    border-color: var(--rose);
+  }
+
+  /* ---------- Main lesson ---------- */
+  .lesson{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 8vh 6vw 16vh;
+    text-align:center;
+  }
+  .lesson .eyebrow{ display:block; margin-bottom: 1rem; }
+  .lesson p{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    line-height: 1.5;
+    color: var(--ink);
+    background: linear-gradient(180deg, #ffffff, var(--rose-soft));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .lesson .heart{
+    margin-top: 2rem;
+    font-size: 1.8rem;
+    color: var(--rose);
+  }
+
+  footer{
+    text-align:center;
+    padding: 0 6vw 6vh;
+    color: var(--lavender);
+    opacity: 0.4;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="heartCanvas"></canvas>
+
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="eyebrow">Hiding in plain sight</span>
+    <h1>The person you'll love<br>might already be <em>one hello away</em></h1>
+    <p class="sub">Most couples don't meet by magic. They meet through people they already know. Here's how it really works — in plain, simple words.</p>
+    <span class="scrollcue">scroll ↓</span>
+  </section>
+
+  <!-- IDEA 1 -->
+  <section class="beat">
+    <div class="idea">
+      <span class="idea-num">01</span>
+      <div class="example">Example: <b>You meet your friend's roommate at a small dinner.</b> They already vibe-checked her before you two even spoke.</div>
+      <p class="point">Meeting through friends works because someone <span class="hi">already trusts</span> that person. That trust makes a stranger feel safe.</p>
+    </div>
+  </section>
+
+  <!-- IDEA 2 -->
+  <section class="beat">
+    <div class="idea">
+      <span class="idea-num">02</span>
+      <div class="example">Example: <b>You're exhausted after work</b> and want to skip your friend's barbeque — but you go anyway.</div>
+      <p class="point">Say yes to gatherings, even tired ones. The <span class="hi">more parties you attend</span>, the more chances you get to meet someone real.</p>
+    </div>
+  </section>
+
+  <!-- Quote 1 -->
+  <div class="quote-block idea">
+    <blockquote>"The brain is changing and optimizing to reflect your needs."</blockquote>
+    <cite>— MaryAnn Noonan, Oxford Neuroscientist</cite>
+  </div>
+
+  <!-- IDEA 3 -->
+  <section class="beat">
+    <div class="idea">
+      <span class="idea-num">03</span>
+      <div class="example">Example: <b>You've known someone from your friend group for 6 months</b> but never said a word about how you feel.</div>
+      <p class="point">Don't wait forever. Waiting too long can turn into a <span class="hi">safe pattern</span> where nothing ever happens — say something.</p>
+    </div>
+  </section>
+
+  <!-- IDEA 4 - Friendship Paradox -->
+  <section class="beat">
+    <div class="idea">
+      <span class="idea-num">04</span>
+      <div class="example">Example: <b>You have 10 friends.</b> Nine of them have 10 friends of their own — but one has 100.</div>
+      <p class="point">On average, your friends know <span class="hi">more people than you do</span>. Your circle opens more doors than you think.</p>
+    </div>
+  </section>
+
+  <div class="paradox-wrap" id="paradoxWrap">
+    <div class="paradox-title">Your friends' friends</div>
+    <div class="nodes" id="nodes"></div>
+    <p class="paradox-caption">You have <b>10 friends</b>. On average, <b>they</b> have <b>19 friends</b> each. That's the friendship paradox — one well-connected friend pulls the average way up.</p>
+  </div>
+
+  <!-- Quote 2 -->
+  <div class="quote-block idea">
+    <blockquote>Friends are the people closest to us — so they're the ones most likely to introduce us to someone we'd like.</blockquote>
+    <cite>— Michael J. Rosenfeld, Sociologist, Stanford University</cite>
+  </div>
+
+  <!-- IDEA 5 - Stats -->
+  <section class="beat">
+    <div class="idea">
+      <span class="idea-num">05</span>
+      <div class="example">Example: <b>Out of every 10 couples you know</b>, at least 3 met through a friend.</div>
+      <p class="point">Friends are still one of the <span class="hi">strongest ways</span> people find love — even online matches often started from the same friend circle.</p>
+    </div>
+  </section>
+
+  <div class="stats idea">
+    <div class="stat">
+      <div class="num">30%</div>
+      <div class="desc">of couples in the US met through friends</div>
+    </div>
+    <div class="stat">
+      <div class="num">10%</div>
+      <div class="desc">of online couples were already in the same social circle</div>
+    </div>
+  </div>
+
+  <!-- IDEA 6 - Signature Clock -->
+  <section class="clock-section" id="clockSection">
+    <span class="eyebrow">06 — the social clock</span>
+    <h2>Is that the time?</h2>
+    <p class="lead">Talking to someone new? Use these time checks to know if it's worth staying.</p>
+
+    <div class="clock-stage">
+      <div class="clock-face-wrap">
+        <svg class="clock" viewBox="0 0 240 240">
+          <defs>
+            <linearGradient id="clockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffd166"/>
+              <stop offset="100%" stop-color="#ff5d8f"/>
+            </linearGradient>
+          </defs>
+          <circle class="clock-track" cx="120" cy="120" r="110"></circle>
+          <circle class="clock-fill" id="clockFill" cx="120" cy="120" r="110"></circle>
+        </svg>
+        <div class="clock-center">
+          <div class="minutes" id="clockMinutes">5</div>
+          <div class="label">MINUTES</div>
+        </div>
+      </div>
+
+      <p class="clock-caption" id="clockCaption">If it's been <b>5 minutes</b> and the chat still feels stiff, it's okay to move on.</p>
+
+      <div class="clock-dots" id="clockDots"></div>
+    </div>
+  </section>
+
+  <!-- MAIN LESSON -->
+  <section class="lesson">
+    <span class="eyebrow">Main lesson</span>
+    <p>You don't need luck to find love. You need friends, a little courage, and the willingness to show up.</p>
+    <div class="heart">♥</div>
+  </section>
+
+  <footer>hiding in plain sight — meeting through friends</footer>
+
+</div>
+
+<script>
+/* ================= Falling Hearts Background ================= */
+const canvas = document.getElementById('heartCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function drawHeart(x, y, size, alpha, rot){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  const s = size;
+  ctx.moveTo(0, s*0.3);
+  ctx.bezierCurveTo(-s, -s*0.6, -s*1.7, s*0.3, 0, s*1.2);
+  ctx.bezierCurveTo(s*1.7, s*0.3, s, -s*0.6, 0, s*0.3);
+  ctx.closePath();
+  ctx.fillStyle = ctx.fillStyle;
+  ctx.fill();
+  ctx.restore();
+}
+
+const colors = ['rgba(255,93,143,', 'rgba(255,179,200,', 'rgba(255,209,102,'];
+const hearts = [];
+const HEART_COUNT = 34;
+
+function makeHeart(initial){
+  return {
+    x: Math.random()*W,
+    y: initial ? Math.random()*H : -20 - Math.random()*100,
+    size: 6 + Math.random()*12,
+    speed: 0.4 + Math.random()*0.9,
+    drift: (Math.random()-0.5)*0.6,
+    rot: Math.random()*Math.PI*2,
+    rotSpeed: (Math.random()-0.5)*0.01,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    alpha: 0.15 + Math.random()*0.35,
+    sway: Math.random()*Math.PI*2
+  };
+}
+for(let i=0;i<HEART_COUNT;i++) hearts.push(makeHeart(true));
+
+function animateHearts(){
+  ctx.clearRect(0,0,W,H);
+  for(const h of hearts){
+    ctx.fillStyle = h.color + h.alpha + ')';
+    drawHeart(h.x, h.y, h.size, h.alpha, h.rot);
+    h.y += h.speed;
+    h.sway += 0.02;
+    h.x += Math.sin(h.sway)*0.3 + h.drift*0.2;
+    h.rot += h.rotSpeed;
+    if(h.y > H + 30){
+      Object.assign(h, makeHeart(false));
+    }
+  }
+  requestAnimationFrame(animateHearts);
+}
+animateHearts();
+
+/* ================= Scroll reveal ================= */
+const revealEls = document.querySelectorAll('.idea, .paradox-wrap');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('show');
+    }
+  });
+},{ threshold: 0.25 });
+revealEls.forEach(el=>io.observe(el));
+
+/* ================= Friendship paradox bars ================= */
+const nodesWrap = document.getElementById('nodes');
+const values = [10,10,10,10,10,10,10,10,10,100];
+values.forEach((v, i)=>{
+  const bar = document.createElement('div');
+  bar.className = 'node' + (v > 50 ? ' big' : '');
+  const h = Math.min(120, 20 + v*0.9);
+  bar.style.height = h + 'px';
+  bar.style.transitionDelay = (i*0.06) + 's';
+  nodesWrap.appendChild(bar);
+});
+
+/* ================= Signature: Social Clock ================= */
+const clockData = [
+  { minutes: 5, offsetFrac: 0.083, caption: "If it's been <b>5 minutes</b> and the chat still feels stiff, it's okay to move on." },
+  { minutes: 15, offsetFrac: 0.25, caption: "Talked for <b>15 minutes</b> without it dragging? This might be someone worth knowing." },
+  { minutes: 30, offsetFrac: 0.5, caption: "At <b>30 minutes</b>, circulate. Say hi to others too — don't miss the whole room." },
+  { minutes: 45, offsetFrac: 0.75, caption: "Still enjoying it after <b>45 minutes</b>? Time to drop a hint that you're available." },
+  { minutes: 60, offsetFrac: 1.0, caption: "By <b>60 minutes</b>, if you're tired and there's no spark, it's respectable to head home." }
+];
+
+const CIRC = 2 * Math.PI * 110; // ~691.15
+const clockFill = document.getElementById('clockFill');
+const clockMinutes = document.getElementById('clockMinutes');
+const clockCaption = document.getElementById('clockCaption');
+const dotsWrap = document.getElementById('clockDots');
+let currentStep = 0;
+
+clockData.forEach((d, i)=>{
+  const dot = document.createElement('button');
+  if(i===0) dot.classList.add('active');
+  dot.addEventListener('click', ()=> setStep(i));
+  dotsWrap.appendChild(dot);
+});
+
+function setStep(i){
+  currentStep = i;
+  const d = clockData[i];
+  const offset = CIRC - (CIRC * d.offsetFrac);
+  clockFill.style.strokeDashoffset = offset;
+  clockMinutes.textContent = d.minutes;
+  clockCaption.innerHTML = d.caption;
+  [...dotsWrap.children].forEach((dot, idx)=> dot.classList.toggle('active', idx===i));
+}
+
+// Auto-advance when clock section is visible, then let user click
+let clockStarted = false;
+let clockInterval;
+const clockObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting && !clockStarted){
+      clockStarted = true;
+      setStep(0);
+      let i = 0;
+      clockInterval = setInterval(()=>{
+        i = (i+1) % clockData.length;
+        setStep(i);
+        if(i === clockData.length - 1){
+          clearInterval(clockInterval);
+        }
+      }, 2200);
+    }
+  });
+},{ threshold: 0.4 });
+clockObserver.observe(document.getElementById('clockSection'));
+
+// stop auto-advance if user interacts manually
+dotsWrap.addEventListener('click', ()=>{
+  clearInterval(clockInterval);
+});
+</script>
+
+</body>
+</html>

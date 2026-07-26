@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Across a Crowded Office</title>
+<style>
+  @font-face { font-family: 'system-serif'; src: local('Georgia'); }
+
+  :root{
+    --bg: #120c15;
+    --panel: #1c1420;
+    --panel-2: #221828;
+    --rose: #ff4d6d;
+    --gold: #ffb703;
+    --text: #f3e9e6;
+    --text-dim: #b8a8ae;
+    --line: rgba(255,255,255,0.08);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family: 'Work Sans', 'Segoe UI', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  body{ font-family:'Work Sans', sans-serif; }
+  h1,h2,.serif{ font-family:'Fraunces', serif; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  #hearts-canvas{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .content{ position:relative; z-index:2; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:6vh 6vw;
+    position:relative;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--gold);
+    margin-bottom:1.4rem;
+    opacity:0;
+    animation: fadeUp 1s ease forwards 0.2s;
+  }
+
+  .hero h1{
+    font-size:clamp(2.4rem, 8vw, 5.2rem);
+    font-weight:700;
+    line-height:1.03;
+    max-width:16ch;
+    opacity:0;
+    animation: fadeUp 1s ease forwards 0.5s;
+    background: linear-gradient(100deg, #fff 30%, var(--rose) 60%, var(--gold) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero p.sub{
+    margin-top:1.4rem;
+    max-width:38ch;
+    color:var(--text-dim);
+    font-size:1.05rem;
+    line-height:1.6;
+    opacity:0;
+    animation: fadeUp 1s ease forwards 0.8s;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(22px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* skyline heartbeat signature */
+  .skyline{
+    margin-top:3.5rem;
+    width:min(600px, 92vw);
+    opacity:0;
+    animation: fadeUp 1.2s ease forwards 1.1s;
+  }
+  .skyline svg{ width:100%; height:auto; display:block; }
+
+  .pulse-line{
+    stroke: var(--gold);
+    stroke-width:2.5;
+    fill:none;
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: drawPulse 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(255,183,3,0.6));
+  }
+  @keyframes drawPulse{
+    0%{ stroke-dashoffset:900; }
+    55%{ stroke-dashoffset:0; }
+    100%{ stroke-dashoffset:-900; }
+  }
+  .skyline-heart{
+    transform-origin:center;
+    animation: heartbeat 2.4s ease-in-out infinite;
+  }
+  @keyframes heartbeat{
+    0%,100%{ transform:scale(1); }
+    20%{ transform:scale(1.18); }
+    35%{ transform:scale(0.96); }
+    50%{ transform:scale(1.1); }
+    65%{ transform:scale(1); }
+  }
+
+  .scroll-cue{
+    margin-top:3rem;
+    font-size:0.75rem;
+    color:var(--text-dim);
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    opacity:0;
+    animation: fadeUp 1s ease forwards 1.6s, bob 2s ease-in-out infinite 2.6s;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(6px); }
+  }
+
+  /* ---------- STAT BAND ---------- */
+  .stats{
+    padding:6vh 6vw;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .stats-intro{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.95rem;
+    margin-bottom:2.4rem;
+  }
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1.2rem;
+  }
+  @media(max-width:640px){ .stat-grid{ grid-template-columns:1fr; } }
+
+  .stat-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.6rem 1.4rem;
+  }
+  .stat-num{
+    font-family:'Fraunces', serif;
+    font-size:2.6rem;
+    font-weight:700;
+    color:var(--rose);
+    line-height:1;
+  }
+  .stat-bar-track{
+    height:6px;
+    background:rgba(255,255,255,0.08);
+    border-radius:4px;
+    margin:0.9rem 0 0.7rem;
+    overflow:hidden;
+  }
+  .stat-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--gold), var(--rose));
+    border-radius:4px;
+    transition:width 1.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .stat-label{
+    color:var(--text-dim);
+    font-size:0.85rem;
+    line-height:1.5;
+  }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-head{
+    max-width:700px;
+    margin:12vh auto 4vh;
+    padding:0 6vw;
+    text-align:center;
+  }
+  .section-head .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:block;
+    margin-bottom:0.8rem;
+  }
+  .section-head h2{
+    font-size:clamp(1.6rem, 4vw, 2.4rem);
+    font-weight:600;
+  }
+
+  /* ---------- IDEA CARDS ---------- */
+  .ideas{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 6vw 6vh;
+    display:flex;
+    flex-direction:column;
+    gap:1.1rem;
+  }
+
+  .idea{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.6rem 1.6rem 1.7rem;
+    opacity:0;
+    transform:translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .idea.visible{ opacity:1; transform:translateY(0); }
+
+  .idea::before{
+    content:'';
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:3px;
+    background:linear-gradient(180deg, var(--rose), var(--gold));
+    opacity:0.7;
+  }
+
+  .idea-num{
+    font-family:'Fraunces', serif;
+    font-size:1.1rem;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:0.6rem;
+    display:block;
+  }
+
+  .idea-example{
+    font-size:0.92rem;
+    color:var(--text-dim);
+    line-height:1.55;
+    margin-bottom:0.7rem;
+    font-style:italic;
+  }
+  .idea-example::before{ content:'\201C'; color:var(--rose); font-style:normal; margin-right:2px; }
+  .idea-example::after{ content:'\201D'; color:var(--rose); font-style:normal; margin-left:2px; }
+
+  .idea-point{
+    font-size:1.03rem;
+    line-height:1.55;
+    font-weight:500;
+  }
+  .idea-point b{ color:var(--gold); font-weight:600; }
+
+  /* pull quote */
+  .quote{
+    max-width:640px;
+    margin:8vh auto;
+    padding:0 6vw;
+    text-align:center;
+  }
+  .quote p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,3.4vw,1.9rem);
+    line-height:1.4;
+    color:var(--text);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .quote p.visible{ opacity:1; transform:translateY(0); }
+  .quote .mark{ color:var(--rose); }
+
+  /* ---------- CHECKLIST (interactive) ---------- */
+  .checklist-wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 6vw 10vh;
+  }
+  .check-progress{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.85rem;
+    margin-bottom:1.4rem;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .check-progress span{ color:var(--gold); }
+
+  .check-item{
+    display:flex;
+    align-items:flex-start;
+    gap:0.9rem;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1rem 1.1rem;
+    margin-bottom:0.7rem;
+    cursor:pointer;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    user-select:none;
+  }
+  .check-item:hover{ transform:translateX(4px); border-color:rgba(255,183,3,0.35); }
+  .check-item.checked{
+    background:linear-gradient(90deg, rgba(255,77,109,0.14), rgba(255,183,3,0.08));
+    border-color:rgba(255,77,109,0.4);
+  }
+
+  .box{
+    flex:0 0 22px;
+    width:22px; height:22px;
+    border-radius:6px;
+    border:2px solid var(--text-dim);
+    margin-top:2px;
+    position:relative;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+  .check-item.checked .box{
+    border-color:var(--rose);
+    background:var(--rose);
+  }
+  .box::after{
+    content:'';
+    position:absolute;
+    left:5px; top:1px;
+    width:6px; height:11px;
+    border:solid white;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+    opacity:0;
+    transition:opacity 0.2s ease;
+  }
+  .check-item.checked .box::after{ opacity:1; }
+
+  .check-text{ font-size:0.96rem; line-height:1.5; }
+  .check-text b{ color:var(--gold); }
+
+  /* ---------- MAIN LESSON ---------- */
+  .lesson{
+    text-align:center;
+    padding:10vh 6vw 14vh;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .lesson .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:block;
+    margin-bottom:1.2rem;
+  }
+  .lesson h2{
+    font-size:clamp(1.6rem, 5vw, 2.6rem);
+    line-height:1.35;
+    background: linear-gradient(100deg, #fff 20%, var(--rose) 65%, var(--gold) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  footer{
+    text-align:center;
+    padding:2rem 6vw 3rem;
+    color:var(--text-dim);
+    font-size:0.75rem;
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.05em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts-canvas"></canvas>
+
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="eyebrow">Office Romance, Explained Simply</span>
+    <h1>Across a Crowded Office</h1>
+    <p class="sub">You spend most of your waking hours at work. So what happens when your heart starts paying attention to a colleague?</p>
+
+    <div class="skyline">
+      <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+        <!-- buildings -->
+        <rect x="30" y="90" width="70" height="110" fill="#241a29" stroke="#3a2a3f" stroke-width="1"/>
+        <rect x="115" y="60" width="55" height="140" fill="#2a1e30" stroke="#3a2a3f" stroke-width="1"/>
+        <rect x="430" y="70" width="60" height="130" fill="#2a1e30" stroke="#3a2a3f" stroke-width="1"/>
+        <rect x="500" y="95" width="70" height="105" fill="#241a29" stroke="#3a2a3f" stroke-width="1"/>
+        <!-- windows -->
+        <g fill="#ffb703" opacity="0.35">
+          <rect x="40" y="105" width="8" height="8"/><rect x="58" y="105" width="8" height="8"/><rect x="76" y="105" width="8" height="8"/>
+          <rect x="40" y="125" width="8" height="8"/><rect x="58" y="125" width="8" height="8"/><rect x="76" y="125" width="8" height="8"/>
+          <rect x="440" y="90" width="8" height="8"/><rect x="458" y="90" width="8" height="8"/><rect x="476" y="90" width="8" height="8"/>
+          <rect x="440" y="110" width="8" height="8"/><rect x="458" y="110" width="8" height="8"/><rect x="476" y="110" width="8" height="8"/>
+        </g>
+        <!-- pulse line connecting the two offices -->
+        <path class="pulse-line" d="M 170 150 L 250 150 L 265 100 L 285 190 L 300 150 L 430 150" />
+        <!-- heart at the center where the pulse peaks -->
+        <g class="skyline-heart" transform="translate(300,120)">
+          <path d="M0,-8 C-14,-22 -34,-8 0,16 C34,-8 14,-22 0,-8 Z" fill="#ff4d6d"/>
+        </g>
+        <!-- ground line -->
+        <line x1="10" y1="200" x2="590" y2="200" stroke="#3a2a3f" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <span class="scroll-cue">scroll to read ↓</span>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <p class="stats-intro">Before the advice — here is how common this really is.</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num mono" data-target="79">0%</div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" data-fill="79"></div></div>
+        <div class="stat-label">of workers at one large UK law firm said they had dated someone from work.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num mono" data-target="47">0%</div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" data-fill="47"></div></div>
+        <div class="stat-label">said the same in an early 2000s office romance survey — different offices, same story.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num mono" data-target="10">0%</div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" data-fill="10"></div></div>
+        <div class="stat-label">of couples in a Stanford study met through a colleague or at work.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num mono" data-target="14">0%</div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" data-fill="14"></div></div>
+        <div class="stat-label">of couples who met at work went on to get married — the office is the top place people find a spouse.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IDEAS -->
+  <div class="section-head">
+    <span class="tag">Part One — What Happens At Work</span>
+    <h2>Why the office turns into a love story</h2>
+  </div>
+
+  <div class="ideas" id="ideas-1"></div>
+
+  <div class="quote">
+    <p>When you take a chance on love at work, <span class="mark">it's not just your heart on the line — it's your livelihood too.</span></p>
+  </div>
+
+  <div class="section-head">
+    <span class="tag">Part Two — Know The Difference</span>
+    <h2>Not every "interested" colleague means the same thing</h2>
+  </div>
+
+  <div class="ideas" id="ideas-2"></div>
+
+  <div class="quote">
+    <p>The wisest course is to <span class="mark">be honest and mature</span>, and hope for the best.</p>
+  </div>
+
+  <div class="section-head">
+    <span class="tag">Part Three — Before You Say Yes</span>
+    <h2>Date smart, not just fast</h2>
+  </div>
+
+  <div class="checklist-wrap">
+    <div class="check-progress"><span id="check-count">0</span> / 9 questions considered</div>
+    <div id="checklist"></div>
+  </div>
+
+  <!-- MAIN LESSON -->
+  <section class="lesson">
+    <span class="tag">Main Lesson</span>
+    <h2>Love at work can be real. Just don't let your heart sign a contract your head hasn't read.</h2>
+  </section>
+
+  <footer>ACROSS A CROWDED OFFICE · read with your eyes open</footer>
+</div>
+
+<script>
+// ---------------- FALLING HEARTS BACKGROUND ----------------
+const canvas = document.getElementById('hearts-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+function drawHeart(x, y, size, color, alpha, rotation){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  const s = size;
+  ctx.moveTo(0, s*0.3);
+  ctx.bezierCurveTo(-s, -s*0.6, -s*1.6, s*0.3, 0, s*1.2);
+  ctx.bezierCurveTo(s*1.6, s*0.3, s, -s*0.6, 0, s*0.3);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+const colors = ['#ff4d6d', '#ffb703', '#ff8fa3'];
+const hearts = [];
+const HEART_COUNT = window.innerWidth < 640 ? 18 : 32;
+for(let i=0;i<HEART_COUNT;i++){
+  hearts.push({
+    x: Math.random()*W,
+    y: Math.random()*H - H,
+    size: 5 + Math.random()*10,
+    speed: 0.3 + Math.random()*0.7,
+    drift: (Math.random()-0.5)*0.6,
+    rot: Math.random()*Math.PI,
+    rotSpeed: (Math.random()-0.5)*0.01,
+    alpha: 0.12 + Math.random()*0.28,
+    color: colors[Math.floor(Math.random()*colors.length)]
+  });
+}
+
+function animateHearts(){
+  ctx.clearRect(0,0,W,H);
+  for(const h of hearts){
+    h.y += h.speed;
+    h.x += h.drift;
+    h.rot += h.rotSpeed;
+    if(h.y - h.size > H){ h.y = -20; h.x = Math.random()*W; }
+    drawHeart(h.x, h.y, h.size, h.color, h.alpha, h.rot);
+  }
+  requestAnimationFrame(animateHearts);
+}
+animateHearts();
+
+// ---------------- IDEA CONTENT ----------------
+const ideasPart1 = [
+  {
+    example:"You eat lunch with the same colleague every day, laugh at the same jokes, and finish each other's sentences by month two.",
+    point:"You spend most of your waking hours at work, so it's <b>natural</b> to fall for someone you see every single day."
+  },
+  {
+    example:"You and a colleague started dating quietly. Six months later, you're still together — and still sitting three desks apart.",
+    point:"Workplace romance is <b>very common</b> — surveys show almost half, sometimes nearly 8 in 10, people say they've dated a coworker."
+  },
+  {
+    example:"Two people meet on a project team, start dating, and five years later send out wedding invitations to the whole office.",
+    point:"The office isn't just where romances start — it's actually the <b>top place</b> people go on to find a husband or wife."
+  },
+  {
+    example:"Someone starts dating the department head. Suddenly, teammates stop sharing gossip or plans around them, just in case.",
+    point:"Dating someone <b>senior</b> to you can make coworkers trust you less, even if you never asked for any favors."
+  },
+  {
+    example:"A couple at work says they focus harder on projects and feel closer to each other whenever a big deadline goes well.",
+    point:"A healthy work romance can create a <b>positive cycle</b> — better love can mean better work, and better work can mean better love."
+  },
+  {
+    example:"A couple breaks up but must still sit in the same Monday meeting every week, pretending nothing happened.",
+    point:"Unlike most breakups, you <b>can't just walk away</b> — you still have to work together after it ends."
+  },
+  {
+    example:"After a breakup, one person stays calm and professional in meetings. Coworkers barely notice anything changed.",
+    point:"How <b>maturely</b> you end things decides whether people trust you afterward — or expect trouble."
+  }
+];
+
+const ideasPart2 = [
+  {
+    example:"A colleague is just being warm and chatty with everyone. You mistake it for flirting and ask them out — awkward silence follows.",
+    point:"Some people are <b>misperceiving</b> — not dangerous, just a little clueless about reading friendliness as romance."
+  },
+  {
+    example:"Someone keeps pushing for a date even after being told 'no' clearly, more than once.",
+    point:"Some people are <b>exploitative</b> — they carry genuinely dangerous attitudes into the workplace, and 'no' means no."
+  },
+  {
+    example:"In a mostly-male office, one man constantly puts down his female coworkers' ideas just because they're women.",
+    point:"Some people are <b>misogynistic</b> — they use sexism to make coworkers feel small, especially in one-gender-heavy teams."
+  },
+  {
+    example:"Before assuming the worst — or the best — about someone's attention, most people pause and watch the pattern over time.",
+    point:"Knowing <b>which type</b> you're dealing with helps you respond the right way — as harmless awkwardness or a real warning sign."
+  }
+];
+
+function buildIdeas(containerId, list, offset){
+  const container = document.getElementById(containerId);
+  list.forEach((item, i)=>{
+    const div = document.createElement('div');
+    div.className = 'idea';
+    div.innerHTML = `
+      <span class="idea-num">${String(i+1+offset).padStart(2,'0')}</span>
+      <div class="idea-example">${item.example}</div>
+      <div class="idea-point">${item.point}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+buildIdeas('ideas-1', ideasPart1, 0);
+buildIdeas('ideas-2', ideasPart2, ideasPart1.length);
+
+// ---------------- CHECKLIST ----------------
+const checklist = [
+  "Does the company have <b>a written policy</b> about employees dating each other?",
+  "Do either of you handle <b>confidential information</b> the other shouldn't see?",
+  "Could your profession give you <b>harsh penalties</b> — even losing a license — for misconduct?",
+  "How <b>secure</b> is each of your job positions right now?",
+  "How is your <b>standing</b> with the rest of your colleagues?",
+  "Does your job depend a lot on <b>networking or reputation</b>?",
+  "Is one of you more <b>senior</b> than the other — could that unbalance things?",
+  "How would it affect your <b>working relationship</b> if you broke up?",
+  "Can you honestly see this becoming <b>serious enough</b> to be worth the risk?"
+];
+
+const checklistContainer = document.getElementById('checklist');
+const countEl = document.getElementById('check-count');
+let checkedCount = 0;
+
+checklist.forEach((text)=>{
+  const item = document.createElement('div');
+  item.className = 'check-item';
+  item.innerHTML = `<div class="box"></div><div class="check-text">${text}</div>`;
+  item.addEventListener('click', ()=>{
+    item.classList.toggle('checked');
+    checkedCount = document.querySelectorAll('.check-item.checked').length;
+    countEl.textContent = checkedCount;
+  });
+  checklistContainer.appendChild(item);
+});
+
+// ---------------- SCROLL REVEAL ----------------
+const revealTargets = document.querySelectorAll('.idea, .quote p');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealTargets.forEach(el=>io.observe(el));
+
+// ---------------- STAT COUNT-UP ----------------
+const statCards = document.querySelectorAll('.stat-card');
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const card = entry.target;
+      const numEl = card.querySelector('.stat-num');
+      const fillEl = card.querySelector('.stat-bar-fill');
+      const target = parseInt(numEl.dataset.target, 10);
+      const fillTarget = parseInt(fillEl.dataset.fill, 10);
+      fillEl.style.width = fillTarget + '%';
+      let current = 0;
+      const step = Math.max(1, Math.round(target / 40));
+      const timer = setInterval(()=>{
+        current += step;
+        if(current >= target){ current = target; clearInterval(timer); }
+        numEl.textContent = current + '%';
+      }, 25);
+      statIO.unobserve(card);
+    }
+  });
+}, { threshold: 0.4 });
+statCards.forEach(c=>statIO.observe(c));
+</script>
+
+</body>
+</html>
