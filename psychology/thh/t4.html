@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controlled vs. Automatic — The Divided Self</title>
+<style>
+  :root{
+    --bg:#0d1016;
+    --ink:#ecebe6;
+    --dim:#9aa1ad;
+    --auto:#ff9a5a;   /* automatic - warm amber, the elephant */
+    --ctrl:#5fb0ff;   /* controlled - cool blue, the rider */
+    --card:#161b25;
+    --line:#232a37;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Iowan Old Style","Georgia",serif; line-height:1.6;
+    overflow-x:hidden; position:relative;
+  }
+  canvas#fall{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:0 22px 100px; }
+
+  header.hero{ padding:70px 0 40px; text-align:center; }
+  .eyebrow{ font-family:"Helvetica Neue",Arial,sans-serif; letter-spacing:.22em; text-transform:uppercase; font-size:11.5px; color:var(--dim); margin-bottom:18px; }
+  h1{ font-size:clamp(30px,6.4vw,50px); margin:0 0 6px; font-weight:600; letter-spacing:-0.01em; }
+  h1 .c{color:var(--ctrl);} h1 .a{color:var(--auto);}
+  .sub{ font-family:"Helvetica Neue",Arial,sans-serif; color:var(--dim); font-size:15px; max-width:500px; margin:14px auto 0; }
+
+  /* signature: speed meters */
+  .scene{ margin:44px auto 6px; max-width:420px; }
+  .meter-row{ display:flex; gap:16px; }
+  .meter{ flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center; }
+  .meter .label{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px; }
+  .meter.a .label{ color:var(--auto); } .meter.c .label{ color:var(--ctrl); }
+  .meter .count{ font-size:34px; font-weight:700; font-family:"Helvetica Neue",Arial,sans-serif; }
+  .meter.a .count{ color:var(--auto); } .meter.c .count{ color:var(--ctrl); }
+  .meter .desc{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:11.5px; color:var(--dim); margin-top:6px; }
+  .caption{ text-align:center; font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--dim); margin-top:12px; font-style:italic; }
+
+  .idea{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 26px 24px; margin:22px 0; }
+  .idea .num{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12px; letter-spacing:.18em; color:var(--dim); text-transform:uppercase; margin-bottom:10px; }
+  .idea h2{ font-size:22px; margin:0 0 12px; font-weight:600; }
+  .idea .example{ background:rgba(255,255,255,0.03); border-left:3px solid var(--auto); padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:14px; font-size:15.5px; color:#d9d7d0; }
+  .idea .example b{ color:var(--auto); font-weight:600; }
+  .idea p{ margin:10px 0; font-size:16px; }
+  .idea .quote{ font-style:italic; color:#f2d9c2; border-top:1px dashed var(--line); margin-top:16px; padding-top:14px; font-size:15px; }
+
+  /* word chips for unscramble */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+  .chip{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px;
+    background:rgba(255,255,255,0.05); border:1px solid var(--line);
+    padding:7px 14px; border-radius:8px; cursor:pointer; user-select:none;
+    transition:all 150ms ease;
+  }
+  .chip:hover{ background:rgba(255,255,255,0.1); }
+  .chip.used{ opacity:0.25; pointer-events:none; }
+  .built{
+    min-height:30px; font-family:"Helvetica Neue",Arial,sans-serif; font-size:15.5px;
+    color:var(--ctrl); border-bottom:1px dashed var(--line); padding-bottom:10px; margin-bottom:6px;
+  }
+  .tiny-btn{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--dim);
+    background:none; border:1px solid var(--line); border-radius:16px; padding:5px 12px; cursor:pointer;
+  }
+  .tiny-btn:hover{ color:var(--ink); border-color:#3a4457; }
+
+  /* mode switch buttons */
+  .mode-row{ display:flex; gap:10px; margin:14px 0; flex-wrap:wrap; }
+  .mode-btn{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:13.5px;
+    background:rgba(95,176,255,0.08); color:#cfe6ff;
+    border:1px solid rgba(95,176,255,0.35); border-radius:20px;
+    padding:8px 16px; cursor:pointer; transition:all 150ms ease;
+  }
+  .mode-btn.active, .mode-btn:hover{ background:rgba(95,176,255,0.2); }
+
+  .reveal-btn{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:13.5px;
+    background:rgba(255,154,90,0.08); color:#f2d9c2;
+    border:1px solid rgba(255,154,90,0.35); border-radius:20px;
+    padding:8px 16px; cursor:pointer; margin-top:8px; transition:all 150ms ease;
+  }
+  .reveal-btn:hover{ background:rgba(255,154,90,0.18); }
+  .reveal-panel{ max-height:0; overflow:hidden; opacity:0; transition:max-height 400ms ease, opacity 400ms ease, margin 400ms ease; }
+  .reveal-panel.open{ max-height:260px; opacity:1; margin-top:12px; }
+
+  /* sort game */
+  .sort-item{
+    display:flex; align-items:center; justify-content:space-between;
+    background:rgba(255,255,255,0.03); border:1px solid var(--line);
+    border-radius:10px; padding:10px 14px; margin:8px 0;
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:14.5px;
+  }
+  .sort-buttons{ display:flex; gap:6px; }
+  .sort-buttons button{
+    font-size:12px; font-family:"Helvetica Neue",Arial,sans-serif;
+    border-radius:14px; padding:5px 10px; cursor:pointer; border:1px solid var(--line);
+    background:none; color:var(--dim);
+  }
+  .sort-buttons button.pick-a{ border-color:var(--auto); color:var(--auto); }
+  .sort-buttons button.pick-c{ border-color:var(--ctrl); color:var(--ctrl); }
+  .sort-item.correct{ border-color:#4caf7d; }
+  .sort-item.wrong{ border-color:#c0526a; }
+  .sort-feedback{ font-size:12px; margin-left:8px; }
+
+  /* zap-like picker for word priming */
+  .zap-row{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+  .zap-btn{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:13.5px;
+    background:rgba(255,154,90,0.08); color:#f2d9c2;
+    border:1px solid rgba(255,154,90,0.35); border-radius:20px;
+    padding:8px 16px; cursor:pointer; transition:all 150ms ease;
+  }
+  .zap-btn:hover{ background:rgba(255,154,90,0.18); }
+  .zap-result{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:14.5px; color:var(--auto); min-height:22px; padding-left:2px; }
+
+  .lesson{ margin-top:50px; padding:34px 28px; text-align:center; background:linear-gradient(160deg, rgba(255,154,90,0.08), rgba(95,176,255,0.08)); border:1px solid var(--line); border-radius:16px; }
+  .lesson p{ font-size:19px; margin:0; max-width:520px; margin:0 auto; }
+
+  footer{ text-align:center; margin-top:50px; font-family:"Helvetica Neue",Arial,sans-serif; font-size:12px; color:var(--dim); }
+
+  @media (max-width:480px){ .idea{padding:20px 18px;} .lesson{padding:26px 18px;} .meter-row{flex-direction:column;} }
+</style>
+</head>
+<body>
+
+<canvas id="fall"></canvas>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">The Divided Self · Chapter 1</div>
+    <h1><span class="c">Controlled</span> vs. <span class="a">Automatic</span></h1>
+    <p class="sub">Right now, your mind is running hundreds of processes at once. You're only aware of one of them.</p>
+
+    <div class="scene">
+      <div class="meter-row">
+        <div class="meter a">
+          <div class="label">Automatic</div>
+          <div class="count" id="autoCount">0</div>
+          <div class="desc">things happening right now, without you thinking about them</div>
+        </div>
+        <div class="meter c">
+          <div class="label">Controlled</div>
+          <div class="count">1</div>
+          <div class="desc">thing you can consciously focus on at a time</div>
+        </div>
+      </div>
+      <p class="caption">the elephant runs on every cylinder — the rider can only look at one thing</p>
+    </div>
+  </header>
+
+  <!-- IDEA 1 -->
+  <div class="idea">
+    <div class="num">Idea 1</div>
+    <h2>Two systems, running at the same time</h2>
+    <div class="example">
+      <b>Real life:</b> Driving to the airport, you consciously plan one thing — what time to leave, given traffic and security lines. Everything else happens on its own: breathing, blinking, keeping your distance from the car ahead, even muttering at a slow driver.
+    </div>
+    <p>Psychologists call these two systems <b>controlled</b> processing (slow, one-thing-at-a-time, needs effort) and <b>automatic</b> processing (fast, runs many things at once, needs no effort). You're not choosing between them — both are working, all the time. You just only notice the controlled one.</p>
+  </div>
+
+  <!-- IDEA 2 -->
+  <div class="idea">
+    <div class="num">Idea 2</div>
+    <h2>Try it: can five words secretly steer your behavior?</h2>
+    <div class="example">
+      <b>Real life:</b> In a real study, people unscrambled sets of 5 words into sentences. Half the sets were built from rude words. Half were built from polite words. Nobody was told this was the point of the study.
+    </div>
+    <p>Pick a set below and build the sentence yourself — click the words in order.</p>
+
+    <div class="mode-row">
+      <button class="mode-btn active" onclick="loadScramble('rude', this)">Try the "rude" set</button>
+      <button class="mode-btn" onclick="loadScramble('polite', this)">Try the "polite" set</button>
+    </div>
+
+    <div class="built" id="builtSentence">click the words below, in order</div>
+    <div class="chip-row" id="chipRow"></div>
+    <button class="tiny-btn" onclick="resetScramble()">reset</button>
+
+    <button class="reveal-btn" id="revealScrambleBtn" onclick="revealScramble()">What happened next in the real study?</button>
+    <div class="reveal-panel" id="scrambleReveal">
+      <p id="scrambleRevealText"></p>
+    </div>
+  </div>
+
+  <!-- IDEA 3 -->
+  <div class="idea">
+    <div class="num">Idea 3</div>
+    <h2>Words can nudge your body without asking permission</h2>
+    <div class="example">
+      <b>Real life:</b> Researchers had people read word lists connected to different ideas — old age, professors, or soccer hooligans — with nothing to do with the actual task ahead. It changed how people acted, every time.
+    </div>
+    <p style="font-size:14px;color:var(--dim);margin-bottom:6px;">Pick a word list and see what it did:</p>
+    <div class="zap-row">
+      <button class="zap-btn" onclick="prime('elderly')">Words about old age</button>
+      <button class="zap-btn" onclick="prime('professor')">Words about professors</button>
+      <button class="zap-btn" onclick="prime('hooligan')">Words about hooligans</button>
+    </div>
+    <div class="zap-result" id="primeResult"></div>
+    <p style="margin-top:14px;">This even works when the words flash for a fraction of a second — too fast to consciously read. Some part of your mind still catches it, and quietly acts on it.</p>
+  </div>
+
+  <!-- IDEA 4 -->
+  <div class="idea">
+    <div class="num">Idea 4</div>
+    <h2>Sort it yourself: automatic, or controlled?</h2>
+    <p>Here are six things a mind does every day. Tap <b>A</b> if you think it's automatic, or <b>C</b> if it's controlled.</p>
+    <div id="sortGame"></div>
+  </div>
+
+  <!-- IDEA 5 -->
+  <div class="idea">
+    <div class="num">Idea 5</div>
+    <h2>The rider is a new hire, not the boss</h2>
+    <div class="example">
+      <b>Real life:</b> Language — the thing that makes conscious planning possible — is only a few million years old at most. The automatic system that runs breathing, movement, and gut feeling is over 600 million years old.
+    </div>
+    <p>It's tempting to think evolution built the thinking brain to take charge, with the older instincts as its obedient staff. But evolution doesn't plan ahead like that. The automatic system was already working extremely well. Language was simply added on top, because it helped that older system do its job even better — not because it was meant to rule it.</p>
+    <p>That's why the rider can advise, argue, and see further into the future — but can't simply order the elephant around. The elephant still has its finger on the button that makes you feel pleasure and pain.</p>
+    <p class="quote">"Reason is, and ought only to be the slave of the passions, and can never pretend to any other office than to serve and obey them." — David Hume</p>
+  </div>
+
+  <div class="lesson">
+    <div class="eyebrow">The Lesson</div>
+    <p>Your conscious mind isn't a king giving orders — it's an advisor riding on something much older, much faster, and much more powerful than itself. The best days happen when the advisor and the elephant are pulling the same way.</p>
+  </div>
+
+  <footer>The Happiness Hypothesis — Chapter 1: The Divided Self</footer>
+</div>
+
+<script>
+/* falling background */
+const canvas = document.getElementById('fall');
+const ctx = canvas.getContext('2d');
+let w,h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const glyphs = ['❤','🧠'];
+const items = Array.from({length:26}, () => ({
+  x: Math.random()*w, y: Math.random()*h,
+  s: 10 + Math.random()*14, v: 0.3 + Math.random()*0.6,
+  drift: (Math.random()-0.5)*0.4,
+  g: glyphs[Math.floor(Math.random()*glyphs.length)],
+  o: 0.08 + Math.random()*0.14
+}));
+function tick(){
+  ctx.clearRect(0,0,w,h);
+  items.forEach(it=>{
+    ctx.globalAlpha = it.o;
+    ctx.font = it.s+"px sans-serif";
+    ctx.fillText(it.g, it.x, it.y);
+    it.y += it.v; it.x += it.drift;
+    if(it.y > h+20){ it.y = -20; it.x = Math.random()*w; }
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(tick);
+}
+tick();
+
+/* signature: automatic counter ticking up fast */
+const autoCountEl = document.getElementById('autoCount');
+let autoCount = 0;
+setInterval(()=>{
+  autoCount += Math.floor(20 + Math.random()*60);
+  autoCountEl.textContent = autoCount.toLocaleString();
+}, 250);
+
+/* ---------- Idea 2: unscramble demo ---------- */
+const scrambles = {
+  rude: {
+    words: ["they","her","bother","see","usually"],
+    valid: ["they usually bother her", "they usually see her"]
+  },
+  polite: {
+    words: ["they","her","respect","see","usually"],
+    valid: ["they usually see her", "they usually respect her"]
+  }
+};
+let currentSet = 'rude';
+let built = [];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function loadScramble(set, btn){
+  currentSet = set;
+  built = [];
+  document.querySelectorAll('.mode-row .mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderChips();
+  document.getElementById('builtSentence').textContent = 'click the words below, in order';
+  document.getElementById('scrambleReveal').classList.remove('open');
+  document.getElementById('revealScrambleBtn').textContent = 'What happened next in the real study?';
+}
+
+function renderChips(){
+  const row = document.getElementById('chipRow');
+  row.innerHTML = '';
+  const words = shuffle(scrambles[currentSet].words);
+  words.forEach(word=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.onclick = ()=>{
+      if(chip.classList.contains('used')) return;
+      chip.classList.add('used');
+      built.push(word);
+      document.getElementById('builtSentence').textContent = built.join(' ');
+    };
+    row.appendChild(chip);
+  });
+}
+renderChips();
+
+function resetScramble(){
+  built = [];
+  document.getElementById('builtSentence').textContent = 'click the words below, in order';
+  document.querySelectorAll('#chipRow .chip').forEach(c=>c.classList.remove('used'));
+}
+
+function revealScramble(){
+  const panel = document.getElementById('scrambleReveal');
+  const btn = document.getElementById('revealScrambleBtn');
+  const isOpen = panel.classList.toggle('open');
+  btn.textContent = isOpen ? 'Hide' : 'What happened next in the real study?';
+  if(isOpen){
+    const text = currentSet === 'rude'
+      ? "People who unscrambled sentences full of rude words went on to interrupt the researcher within about a minute or two — even though the words had nothing to do with rudeness on the surface. The idea of rudeness had quietly primed them to act ruder."
+      : "People who unscrambled sentences full of polite words waited patiently — some for over ten minutes — without interrupting at all. They didn't know why they were being so patient. They just were.";
+    document.getElementById('scrambleRevealText').textContent = text;
+  }
+}
+
+/* ---------- Idea 3: word priming picker ---------- */
+const primeMessages = {
+  elderly: "People who read words linked to old age — like 'wrinkle,' 'Florida,' 'bingo' — walked measurably slower down the hallway afterward. No one told them to.",
+  professor: "People who first thought about 'professor' scored noticeably higher on a trivia game right after — as if they'd briefly borrowed the professor's confidence.",
+  hooligan: "People who first thought about 'soccer hooligan' scored lower on the very same trivia game — same brain, same knowledge, worse performance."
+};
+function prime(kind){
+  const el = document.getElementById('primeResult');
+  el.style.opacity = 0;
+  setTimeout(()=>{
+    el.textContent = primeMessages[kind];
+    el.style.transition = 'opacity 250ms ease';
+    el.style.opacity = 1;
+  }, 120);
+}
+
+/* ---------- Idea 4: sort game ---------- */
+const sortItems = [
+  { text: "Breathing while you read this", answer: "a" },
+  { text: "Deciding what time to leave for a flight", answer: "c" },
+  { text: "Flinching at a loud sudden noise", answer: "a" },
+  { text: "Weighing the pros and cons of a big decision", answer: "c" },
+  { text: "Keeping your balance while walking", answer: "a" },
+  { text: "Working out a plan to pay off a loan", answer: "c" }
+];
+
+const sortGameEl = document.getElementById('sortGame');
+sortItems.forEach((item, idx)=>{
+  const row = document.createElement('div');
+  row.className = 'sort-item';
+  row.id = 'sort-'+idx;
+  row.innerHTML = `
+    <span>${item.text}</span>
+    <span class="sort-buttons">
+      <button class="pick-a" onclick="checkSort(${idx}, 'a')">Automatic</button>
+      <button class="pick-c" onclick="checkSort(${idx}, 'c')">Controlled</button>
+      <span class="sort-feedback" id="fb-${idx}"></span>
+    </span>
+  `;
+  sortGameEl.appendChild(row);
+});
+
+function checkSort(idx, guess){
+  const row = document.getElementById('sort-'+idx);
+  const fb = document.getElementById('fb-'+idx);
+  const correct = sortItems[idx].answer === guess;
+  row.classList.remove('correct','wrong');
+  row.classList.add(correct ? 'correct' : 'wrong');
+  fb.textContent = correct ? '✓ right' : ('✗ it is ' + (sortItems[idx].answer === 'a' ? 'automatic' : 'controlled'));
+}
+</script>
+
+</body>
+</html>
