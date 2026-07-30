@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Left vs. Right — The Divided Self</title>
+<style>
+  :root{
+    --bg:#0d1016;
+    --bg2:#12161f;
+    --ink:#ecebe6;
+    --dim:#9aa1ad;
+    --left:#5fb0ff;   /* left hemisphere - cool blue, language/logic */
+    --right:#ff9a5a;  /* right hemisphere - warm amber, pattern/space */
+    --card:#161b25;
+    --line:#232a37;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family: "Iowan Old Style","Georgia",serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    position:relative;
+  }
+  canvas#fall{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+  }
+  .wrap{
+    position:relative; z-index:1;
+    max-width:760px;
+    margin:0 auto;
+    padding:0 22px 100px;
+  }
+
+  /* Hero */
+  header.hero{
+    padding:70px 0 40px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    font-size:11.5px;
+    color:var(--dim);
+    margin-bottom:18px;
+  }
+  h1{
+    font-size:clamp(34px,7vw,54px);
+    margin:0 0 6px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  h1 .l{color:var(--left);}
+  h1 .r{color:var(--right);}
+  .sub{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    color:var(--dim);
+    font-size:15px;
+    max-width:480px;
+    margin:14px auto 0;
+  }
+
+  /* Signature: split brain visual */
+  .brain-scene{
+    margin:44px auto 10px;
+    width:100%;
+    max-width:420px;
+    height:230px;
+    position:relative;
+  }
+  .brain-scene svg{width:100%;height:100%;display:block;}
+  .caption{
+    text-align:center;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12.5px;
+    color:var(--dim);
+    margin-top:6px;
+    font-style:italic;
+  }
+
+  /* idea cards */
+  .idea{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px 26px 24px;
+    margin:22px 0;
+  }
+  .idea .num{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--dim);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .idea h2{
+    font-size:22px;
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .idea .example{
+    background:rgba(255,255,255,0.03);
+    border-left:3px solid var(--right);
+    padding:12px 16px;
+    border-radius:0 8px 8px 0;
+    margin-bottom:14px;
+    font-size:15.5px;
+    color:#d9d7d0;
+  }
+  .idea .example b{color:var(--right);font-weight:600;}
+  .idea p{margin:10px 0;font-size:16px;}
+  .idea .quote{
+    font-style:italic;
+    color:#f2d9c2;
+    border-top:1px dashed var(--line);
+    margin-top:16px;
+    padding-top:14px;
+    font-size:15px;
+  }
+
+  /* lesson */
+  .lesson{
+    margin-top:50px;
+    padding:34px 28px;
+    text-align:center;
+    background:linear-gradient(160deg, rgba(95,176,255,0.08), rgba(255,154,90,0.08));
+    border:1px solid var(--line);
+    border-radius:16px;
+  }
+  .lesson .eyebrow{margin-bottom:14px;}
+  .lesson p{
+    font-size:19px;
+    margin:0;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  footer{
+    text-align:center;
+    margin-top:50px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12px;
+    color:var(--dim);
+  }
+
+  @media (max-width:480px){
+    .idea{padding:20px 18px;}
+    .lesson{padding:26px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="fall"></canvas>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">The Divided Self · Chapter 1</div>
+    <h1>Left <span class="l">vs.</span> <span class="r">Right</span></h1>
+    <p class="sub">Your brain has two halves. One of them talks. And it will make up an answer even when it doesn't know the truth.</p>
+
+    <div class="brain-scene">
+      <svg viewBox="0 0 420 230" xmlns="http://www.w3.org/2000/svg">
+        <!-- gap line -->
+        <line x1="210" y1="20" x2="210" y2="210" stroke="#2a3242" stroke-width="2" stroke-dasharray="4 6"/>
+
+        <!-- left hemisphere -->
+        <g id="leftHemi">
+          <path d="M205 30 C120 25, 55 70, 60 120 C64 170, 130 205, 205 200 Z"
+                fill="none" stroke="var(--left)" stroke-width="2.5" opacity="0.85"/>
+          <text x="120" y="230" text-anchor="middle" font-family="Helvetica Neue, Arial" font-size="11" fill="var(--left)" letter-spacing="1">LEFT · LANGUAGE</text>
+        </g>
+
+        <!-- right hemisphere -->
+        <g id="rightHemi">
+          <path d="M215 30 C300 25, 365 70, 360 120 C356 170, 290 205, 215 200 Z"
+                fill="none" stroke="var(--right)" stroke-width="2.5" opacity="0.85"/>
+          <text x="300" y="230" text-anchor="middle" font-family="Helvetica Neue, Arial" font-size="11" fill="var(--right)" letter-spacing="1">RIGHT · PATTERN</text>
+        </g>
+
+        <!-- flashed object left visual field -> right hemisphere -->
+        <g id="flashLeft" opacity="0">
+          <circle cx="380" cy="90" r="14" fill="#ffe9d6"/>
+          <text x="380" y="95" text-anchor="middle" font-size="14">🐔</text>
+        </g>
+        <!-- flashed object right visual field -> left hemisphere -->
+        <g id="flashRight" opacity="0">
+          <circle cx="40" cy="90" r="14" fill="#d9ecff"/>
+          <text x="40" y="95" text-anchor="middle" font-size="14">❄️</text>
+        </g>
+
+        <!-- speech bubble from left hemisphere: the interpreter -->
+        <g id="bubble" opacity="0">
+          <path d="M150 55 h120 a8 8 0 0 1 8 8 v28 a8 8 0 0 1 -8 8 h-70 l-14 16 v-16 h-36 a8 8 0 0 1 -8 -8 v-28 a8 8 0 0 1 8 -8 z"
+                fill="#111621" stroke="var(--left)" stroke-width="1.5"/>
+          <text x="210" y="76" text-anchor="middle" font-family="Helvetica Neue, Arial" font-size="10.5" fill="#e7e4dc">"You need a shovel</text>
+          <text x="210" y="89" text-anchor="middle" font-family="Helvetica Neue, Arial" font-size="10.5" fill="#e7e4dc">to clean the chicken shed."</text>
+        </g>
+      </svg>
+    </div>
+    <p class="caption">each side sees something different — only one side can speak</p>
+  </header>
+
+  <!-- IDEA 1 -->
+  <div class="idea">
+    <div class="num">Idea 1</div>
+    <h2>A doctor cut the wire between the two halves</h2>
+    <div class="example">
+      <b>Real life:</b> Imagine a bad electrical fault in one room of a house, that keeps spreading through the wiring and knocking out power everywhere. Now imagine cutting one wire to stop that spread.
+    </div>
+    <p>Your brain has a left half and a right half, joined by a thick wire of nerves. In the 1960s, some patients had seizures so bad that a small electrical storm in one half would spread to the other half, and they'd collapse.</p>
+    <p>A surgeon named Joe Bogen tried something bold: cut that wire. It sounds risky, since that wire is the biggest one in the whole body. But it worked — seizures dropped a lot, and the patients seemed totally fine afterward.</p>
+  </div>
+
+  <!-- IDEA 2 -->
+  <div class="idea">
+    <div class="num">Idea 2</div>
+    <h2>One half talks. The other half can't.</h2>
+    <div class="example">
+      <b>Real life:</b> Your left brain controls your right hand and handles talking. Your right brain controls your left hand and handles things like faces and patterns — but it has no words.
+    </div>
+    <p>Normally the two halves share everything instantly through that wire. But once the wire is cut, scientists could show something to just one half — say, flash a picture only to the right brain. The person could point at it with their left hand. But if you asked "what did you see?", they'd say "nothing" — because the half that talks never saw it.</p>
+  </div>
+
+  <!-- IDEA 3 -->
+  <div class="idea">
+    <div class="num">Idea 3</div>
+    <h2>A made-up answer, said with full confidence</h2>
+    <div class="example">
+      <b>Real life:</b> A scientist showed one patient two pictures at once — a chicken's claw for his talking (left) brain, and a snowy scene for his silent (right) brain. Then he asked the patient to point at pictures that matched what he saw. The patient's right hand pointed at a chicken. His left hand pointed at a snow shovel.
+    </div>
+    <p>Now here's the strange part. The scientist asked: <b>"Why did you point at the shovel?"</b> The patient's talking brain never saw the snow — it only knew about the chicken. But instead of saying "I don't know," it instantly answered:</p>
+    <p class="quote">"The chicken claw goes with the chicken, and you need a shovel to clean out the chicken shed."</p>
+    <p>That's a made-up reason. It sounds totally reasonable — but it has nothing to do with the real cause, which was the snow picture his talking brain never even saw.</p>
+  </div>
+
+  <!-- IDEA 4 -->
+  <div class="idea">
+    <div class="num">Idea 4</div>
+    <h2>Your brain always has an answer ready</h2>
+    <div class="example">
+      <b>Real life:</b> A scientist showed the word "walk" only to a patient's silent (right) brain. The patient stood up and started walking. When asked "why are you getting up?", he said: "I'm going to get a Coke."
+    </div>
+    <p>He wasn't lying. His talking brain genuinely had no idea the word "walk" caused it. So it did what it always does — it invented a reasonable-sounding answer, and said it with full confidence.</p>
+    <p>Scientists have a name for this: <b>confabulation</b>. It means making up a believable reason for something you did, without knowing the real reason. And here's the important part — this isn't just something that happens to patients with a cut brain wire. It happens in ordinary people, every day, including you and me. A lot of "why I did that" explanations we give are just our best guess, dressed up to sound like a fact.</p>
+  </div>
+
+  <!-- IDEA 5 -->
+  <div class="idea">
+    <div class="num">Idea 5</div>
+    <h2>Sometimes the two halves fight each other</h2>
+    <div class="example">
+      <b>Real life:</b> Some patients pick a shirt off the rack with one hand — then their other hand puts it straight back. Or one hand picks up a ringing phone, and the other hand won't let it near their ear.
+    </div>
+    <p>Doctors call this <b>alien hand syndrome</b>. One half of the brain seems to want something different from the other half, and they end up working against each other. It's a dramatic version of something small and normal — like wanting to eat the cake, and also wanting to say no to it, at the same time.</p>
+  </div>
+
+  <div class="lesson">
+    <div class="eyebrow">The Lesson</div>
+    <p>You are not just one voice in charge. You're made of several parts, and they don't always agree. The part of you that talks and explains "why" is not always the part that actually decided. So next time you're 100% sure why you did something — hold that answer a little more loosely.</p>
+  </div>
+
+  <footer>The Happiness Hypothesis — Chapter 1: The Divided Self</footer>
+</div>
+
+<script>
+// Falling hearts + brains ambient background
+const canvas = document.getElementById('fall');
+const ctx = canvas.getContext('2d');
+let w,h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const glyphs = ['❤','🧠'];
+const items = Array.from({length:26}, () => ({
+  x: Math.random()*w,
+  y: Math.random()*h,
+  s: 10 + Math.random()*14,
+  v: 0.3 + Math.random()*0.6,
+  drift: (Math.random()-0.5)*0.4,
+  g: glyphs[Math.floor(Math.random()*glyphs.length)],
+  o: 0.08 + Math.random()*0.14
+}));
+
+function tick(){
+  ctx.clearRect(0,0,w,h);
+  items.forEach(it=>{
+    ctx.globalAlpha = it.o;
+    ctx.font = it.s+"px sans-serif";
+    ctx.fillText(it.g, it.x, it.y);
+    it.y += it.v;
+    it.x += it.drift;
+    if(it.y > h+20){ it.y = -20; it.x = Math.random()*w; }
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(tick);
+}
+tick();
+
+// Signature animation: split-brain flash sequence, looping
+const flashLeft = document.getElementById('flashLeft');
+const flashRight = document.getElementById('flashRight');
+const bubble = document.getElementById('bubble');
+const leftHemi = document.getElementById('leftHemi');
+const rightHemi = document.getElementById('rightHemi');
+
+function setOpacity(el, val, dur){
+  el.style.transition = `opacity ${dur}ms ease`;
+  el.style.opacity = val;
+}
+
+function playSequence(){
+  setOpacity(flashLeft, 0, 200);
+  setOpacity(flashRight, 0, 200);
+  setOpacity(bubble, 0, 200);
+  rightHemi.style.filter = 'none';
+  leftHemi.style.filter = 'none';
+
+  setTimeout(()=>{ setOpacity(flashRight, 1, 300); leftHemi.style.filter='drop-shadow(0 0 6px var(--left))'; }, 400);
+  setTimeout(()=>{ setOpacity(flashLeft, 1, 300); rightHemi.style.filter='drop-shadow(0 0 6px var(--right))'; }, 1000);
+  setTimeout(()=>{ setOpacity(bubble, 1, 400); }, 1900);
+  setTimeout(()=>{ }, 4800);
+}
+playSequence();
+setInterval(playSequence, 6000);
+</script>
+
+</body>
+</html>
