@@ -1,1 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Divided Self — You and Your Elephant</title>
+<style>
+  :root{
+    --bg:#14110e;
+    --bg-soft:#1b1712;
+    --ink:#f1e9dd;
+    --ink-dim:#a89a87;
+    --rider:#7fa3a8;      /* calm, reasoning blue-teal */
+    --elephant:#cf8f45;   /* warm, wanting ochre */
+    --line:#332b22;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:400;
+    margin:0;
+  }
 
+  /* ---------- falling hearts + brains background ---------- */
+  #hearts{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0.16;
+    color:var(--elephant);
+    animation:fall linear infinite;
+    will-change:transform;
+  }
+  .heart.rider-heart{ color:var(--rider); }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); }
+    50%{ transform:translateY(50vh) translateX(15px) rotate(15deg); }
+    100%{ transform:translateY(110vh) translateX(-10px) rotate(-10deg); }
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px 24px;
+  }
+  .eyebrow{
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    font-size:0.72rem;
+    color:var(--ink-dim);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(2.2rem,7vw,3.6rem);
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  .hero h1 span{ color:var(--elephant); }
+  .hero p.tag{
+    color:var(--ink-dim);
+    font-size:1.05rem;
+    max-width:460px;
+    margin-bottom:36px;
+  }
+  .hero p.tag em{
+    color:var(--elephant);
+    font-style:normal;
+    font-weight:600;
+  }
+
+  /* ---------- signature animation: rider on the elephant ---------- */
+  .scene{
+    width:100%;
+    max-width:520px;
+    height:170px;
+    position:relative;
+    margin:10px auto 8px;
+  }
+  .path-line{
+    position:absolute;
+    top:50%;
+    left:0; right:0;
+    height:0;
+    border-top:2px dashed #3d3327;
+  }
+  .path-label{
+    position:absolute;
+    top:calc(50% + 8px);
+    right:0;
+    font-size:0.65rem;
+    color:#5b4d3c;
+    letter-spacing:0.05em;
+  }
+  .traveler{
+    position:absolute;
+    left:-60px;
+    top:50%;
+    animation:travel 9s linear infinite;
+  }
+  @keyframes travel{
+    0%   { left:-60px; }
+    100% { left:calc(100% + 60px); }
+  }
+  .elephant-body{
+    position:relative;
+    animation:wander 3.1s ease-in-out infinite;
+  }
+  @keyframes wander{
+    0%,100%{ transform:translateY(-6px) rotate(-2deg); }
+    50%{ transform:translateY(14px) rotate(2deg); }
+  }
+  .elephant{ font-size:3.4rem; display:block; filter:drop-shadow(0 6px 10px rgba(0,0,0,0.4)); }
+  .rider{
+    position:absolute;
+    top:-30px;
+    left:38px;
+    font-size:1.6rem;
+    animation:bob 1.5s ease-in-out infinite;
+    transform-origin:bottom center;
+  }
+  @keyframes bob{
+    0%,100%{ transform:rotate(-6deg) translateY(0); }
+    50%{ transform:rotate(6deg) translateY(-3px); }
+  }
+  .rein{
+    position:absolute;
+    top:-8px;
+    left:14px;
+    width:34px;
+    height:2px;
+    background:var(--rider);
+    opacity:0.6;
+    transform-origin:left center;
+    animation:tug 3.1s ease-in-out infinite;
+  }
+  @keyframes tug{
+    0%,100%{ transform:rotate(6deg) scaleX(1); }
+    50%{ transform:rotate(-4deg) scaleX(1.25); opacity:0.9; }
+  }
+  .scene-caption{
+    text-align:center;
+    font-size:0.78rem;
+    color:var(--ink-dim);
+    margin-top:6px;
+  }
+  .scene-caption b{ color:var(--rider); font-weight:600; }
+  .scene-caption i{ color:var(--elephant); font-style:normal; font-weight:600; }
+
+  .scroll-hint{
+    margin-top:44px;
+    font-size:0.75rem;
+    color:var(--ink-dim);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+  /* ---------- idea cards ---------- */
+  .ideas{ padding:20px 0 60px; }
+  .idea{
+    padding:46px 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .idea.show{ opacity:1; transform:translateY(0); }
+  .idea:last-child{ border-bottom:none; }
+
+  .idea-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--elephant);
+    color:var(--elephant);
+    font-family:Georgia,serif;
+    font-size:0.95rem;
+    margin-bottom:16px;
+  }
+  .idea h2{
+    font-size:1.4rem;
+    margin-bottom:14px;
+    color:var(--ink);
+  }
+  .example{
+    background:var(--bg-soft);
+    border-left:3px solid var(--rider);
+    padding:14px 18px;
+    border-radius:4px;
+    font-size:0.96rem;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  .example .lbl{
+    display:block;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--rider);
+    margin-bottom:6px;
+  }
+  .point{
+    font-size:1.02rem;
+    color:var(--ink);
+  }
+  .point b{ color:var(--elephant); font-weight:600; }
+
+  blockquote{
+    margin:20px 0 0;
+    padding:14px 20px;
+    font-family:Georgia,serif;
+    font-style:italic;
+    font-size:1.02rem;
+    color:var(--ink-dim);
+    border-left:2px solid var(--line);
+  }
+  blockquote cite{
+    display:block;
+    font-style:normal;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#6f6252;
+    margin-top:8px;
+  }
+
+  /* ---------- main lesson ---------- */
+  .lesson{
+    margin:20px 0 100px;
+    padding:36px 26px;
+    background:linear-gradient(160deg, rgba(207,143,69,0.12), rgba(127,163,168,0.08));
+    border:1px solid var(--line);
+    border-radius:10px;
+    text-align:center;
+  }
+  .lesson .eyebrow{ margin-bottom:14px; }
+  .lesson p{
+    font-family:Georgia,serif;
+    font-size:1.25rem;
+    color:var(--ink);
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  footer{
+    text-align:center;
+    color:#5b5142;
+    font-size:0.72rem;
+    padding-bottom:40px;
+  }
+
+  @media (max-width:480px){
+    .scene{ height:150px; }
+    .elephant{ font-size:2.8rem; }
+    .idea h2{ font-size:1.22rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Based on “The Happiness Hypothesis” — The Divided Self</div>
+    <h1>You Are Not <span>One</span> Person</h1>
+    <p class="tag">You are two minds sharing one body. One plans. One wants. Once you see the split, you can finally work <em>with</em> yourself instead of against yourself.</p>
+
+    <div class="scene">
+      <div class="path-line"></div>
+      <span class="path-label">the path the rider intends</span>
+      <div class="traveler">
+        <div class="elephant-body">
+          <div class="rein"></div>
+          <span class="rider">🧍</span>
+          <span class="elephant">🐘</span>
+        </div>
+      </div>
+    </div>
+    <p class="scene-caption"><b>The rider</b> steers. <i>The elephant</i> decides where it really goes.</p>
+
+    <div class="scroll-hint">↓ scroll to meet your elephant</div>
+  </section>
+
+  <section class="ideas">
+
+    <div class="idea">
+      <span class="idea-num">1</span>
+      <h2>Stop blaming yourself. Start understanding yourself.</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        You say "no dessert tonight." The cake arrives. You eat it anyway.
+      </div>
+      <p class="point">This is not weak willpower. It's two parts of you talking at once — one <b>decides</b>, one <b>wants</b>. Once you know that, you stop fighting yourself and start managing yourself.</p>
+    </div>
+
+    <div class="idea">
+      <span class="idea-num">2</span>
+      <h2>Your body moves before you decide</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        You blush before you choose to feel shy. Your heart races before you choose to feel scared.
+      </div>
+      <p class="point">Your body often reacts <b>first</b>, and asks your mind later. Once you notice this, sweaty palms and a racing heart stop feeling like failure — they're just your body doing its job.</p>
+      <blockquote>
+        "We are right to note the license and disobedience" of the body — it acts "independent of our wishes or even opposed to them."
+        <cite>Michel de Montaigne</cite>
+      </blockquote>
+    </div>
+
+    <div class="idea">
+      <span class="idea-num">3</span>
+      <h2>Trust your gut — it's smarter than you think</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        A nervous stomach before an exam. A "gut feeling" you can't explain, but turns out to be right.
+      </div>
+      <p class="point">Your gut holds over <b>100 million nerve cells</b> — almost a second brain. It reads situations fast, without asking permission. That's why "trust your gut" is real advice, not just a saying.</p>
+    </div>
+
+    <div class="idea">
+      <span class="idea-num">4</span>
+      <h2>You're in good company</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        Buddha called the untrained mind a wild animal. Plato pictured two horses pulling one chariot. Freud split the mind into three fighting parts.
+      </div>
+      <p class="point">Every great thinker, in every age, felt the same inner tug-of-war you feel today. You're not broken. You're <b>human</b> — and humans have always been divided like this.</p>
+      <blockquote>
+        "In days gone by this mind of mine used to stray wherever selfish desire... would lead it. Today this mind is under harmony of control, even as a wild elephant is controlled by the trainer."
+        <cite>Buddha</cite>
+      </blockquote>
+    </div>
+
+    <div class="idea">
+      <span class="idea-num">5</span>
+      <h2>Meet your elephant</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        You're on an elephant's back, holding the reins. You can steer left or right. But when the elephant really wants food, your reins mean nothing.
+      </div>
+      <p class="point"><b>The rider</b> is your thinking self. <b>The elephant</b> is your feelings, habits, and cravings. The rider is smart, but small. The elephant is strong. Win the elephant over, and it will carry you anywhere.</p>
+      <blockquote>
+        "If Passion drives, let Reason hold the Reins."
+        <cite>Benjamin Franklin</cite>
+      </blockquote>
+    </div>
+
+    <div class="idea">
+      <span class="idea-num">6</span>
+      <h2>Stop relying on willpower alone</h2>
+      <div class="example">
+        <span class="lbl">Real life</span>
+        You set your alarm for 6 A.M., determined to wake up early. It rings. You switch it off and go back to sleep.
+      </div>
+      <p class="point">Knowing the right thing (rider) doesn't make it happen (elephant). So don't just try harder — <b>train the elephant</b>: small habits, not big promises, are what actually move it.</p>
+      <blockquote>
+        "I see the right way and approve it, but follow the wrong."
+        <cite>Ovid, on Medea</cite>
+      </blockquote>
+    </div>
+
+  </section>
+
+  <div class="lesson">
+    <div class="eyebrow">Main Lesson</div>
+    <p>You will never delete the elephant. But you don't have to fight it either. Understand it, work with it, and it will carry you further than willpower ever could.</p>
+  </div>
+
+  <footer>The Divided Self — a short guide</footer>
+
+</div>
+
+<script>
+  // falling hearts + brains background (feeling vs. thinking)
+  const heartsContainer = document.getElementById('hearts');
+  const total = window.innerWidth < 600 ? 16 : 26;
+  for(let i=0;i<total;i++){
+    const h = document.createElement('span');
+    const isBrain = i % 2 === 0;
+    h.className = 'heart' + (isBrain ? ' rider-heart' : '');
+    h.textContent = isBrain ? '🧠' : '❤';
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = (isBrain ? (12 + Math.random()*14) : (10 + Math.random()*16)) + 'px';
+    const duration = 10 + Math.random()*14;
+    h.style.animationDuration = duration + 's';
+    h.style.animationDelay = (-Math.random()*duration) + 's';
+    heartsContainer.appendChild(h);
+  }
+
+  // scroll reveal for ideas
+  const ideas = document.querySelectorAll('.idea');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  ideas.forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
