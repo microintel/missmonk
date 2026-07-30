@@ -45,6 +45,9 @@
     },
     "Emotional intelligence": {
       "author": "Daniel Goleman"
+    },
+    "The Happiness Hypothesis": {
+      "author": "Jonathan Haidt"
     }
   },
   "diploma": {
@@ -516,6 +519,90 @@
       "PART FIVE: EMOTIONAL LITERACY": {
         "The Cost of Emotional Illiteracy": "",
         "Schooling the Emotions": ""
+      }
+    },
+    "The Happiness Hypothesis": {
+      "Chapter 1 - The Divided Self": {
+        "FIRST DIVISION: MIND VS. BODY": "https://microintel.github.io/missmonk/psychology/thh/t1.html",
+        "SECOND DIVISION: LEFT VS. RIGHT": "https://microintel.github.io/missmonk/psychology/thh/t2.html",
+        "THIRD DIVISION: NEW VS. OLD": "https://microintel.github.io/missmonk/psychology/thh/t3.html",
+        "FOURTH DIVISION: CONTROLLED VS. AUTOMATIC": "https://microintel.github.io/missmonk/psychology/thh/t4.html",
+        "FAILURES OF SELF CONTROL": "",
+        "MENTAL INTRUSIONS": "",
+        "THE DIFFICULTY OF WINNING AN ARGUMENT": ""
+      },
+      "Chapter 2 - Changing Your Mind": {
+        "THE LIKE-O-METER": "",
+        "NEGATIVITY BIAS": "",
+        "THE CORTICAL LOTTERY": "",
+        "HOW TO CHANGE YOUR MIND": ""
+      },
+      "Chapter 3 - Reciprocity with a Vengeance": {
+        "ULTRASOCIALITY": "",
+        "YOU SCRATCH MY BACK, I'LL SCRATCH YOURS": "",
+        "YOU STAB HIS BACK, I'LL STAB YOURS": "",
+        "USE THE FORCE, LUKE": ""
+      },
+      "Chapter 4 - The Faults of Others": {
+        "KEEPING UP APPEARANCES": "",
+        "FIND YOUR INNER LAWYER": "",
+        "THE ROSE-COLORED MIRROR": "",
+        "I'M RIGHT; YOU'RE BIASED": "",
+        "SATAN SATISFIES": "",
+        "THE MYTH OF PURE EVIL": "",
+        "FINDING THE GREAT WAY": ""
+      },
+      "Chapter 5 - The Pursuit of Happiness": {
+        "THE PROGRESS PRINCIPLE": "",
+        "THE ADAPTATION PRINCIPLE": "",
+        "AN EARLY HAPPINESS HYPOTHESIS": "",
+        "THE HAPPINESS FORMULA": "",
+        "FINDING FLOW": "",
+        "MISGUIDED PURSUITS": "",
+        "THE HAPPINESS HYPOTHESIS RECONSIDERED": ""
+      },
+      "Chapter 6 - Love and Attachments": {
+        "TO HAVE AND TO HOLD": "",
+        "LOVE CONQUERS FEAR": "",
+        "THE PROOF IS IN THE PARTING": "",
+        "IT'S NOT JUST FOR CHILDREN": "",
+        "LOVE AND THE SWELLED HEAD": "",
+        "TWO LOVES, TWO ERRORS": "",
+        "WHY DO PHILOSOPHERS HATE LOVE?": "",
+        "FREEDOM CAN BE HAZARDOUS TO YOUR HEALTH": ""
+      },
+      "Chapter 7 - The Uses of Adversity": {
+        "POSTTRAUMATIC GROWTH": "",
+        "MUST WE SUFFER?": "",
+        "BLESSED ARE THE SENSE MAKERS": "",
+        "FOR EVERYTHING THERE IS A SEASON": "",
+        "ERROR AND WISDOM": ""
+      },
+      "Chapter 8 - The Felicity of Virtue": {
+        "THE VIRTUES OF THE ANCIENTS": "",
+        "HOW THE WEST WAS LOST": "",
+        "THE VIRTUES OF POSITIVE PSYCHOLOGY": "",
+        "HARD QUESTION, EASY ANSWERS": "",
+        "HARD QUESTION, HARD ANSWERS": "",
+        "THE FUTURE OF VIRTUE": ""
+      },
+      "Chapter 9 - Divinity With or Without God": {
+        "ARE WE NOT ANIMALS?": "",
+        "THE ETHIC OF DIVINITY": "",
+        "SACRED INTRUSIONS": "",
+        "ELEVATION AND AGAPE": "",
+        "AWE AND TRANSCENDENCE": "",
+        "THE SATANIC SELF": "",
+        "FLATLAND AND THE CULTURE WAR": ""
+      },
+      "Chapter 10 - Happiness Comes from Between": {
+        "WHAT WAS THE QUESTION?": "",
+        "LOVE AND WORK": "",
+        "VITAL ENGAGEMENT": "",
+        "CROSS-LEVEL COHERENCE": "",
+        "GOD GIVES US HIVES": "",
+        "HARMONY AND PURPOSE": "",
+        "THE MEANING OF LIFE": ""
       }
     }
   },
