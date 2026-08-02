@@ -633,7 +633,73 @@
     "2025-2028 (Reference Syllabus )": {
       "CSE": {
         "Sem 3": {
-          "A PROBABILITY AND INTEGRAL TRANSFORMS": {},
+        "A PROBABILITY AND INTEGRAL TRANSFORMS": {
+        "Unit 1": {
+        "Probability and Random Variables": {
+        "Probability": {
+        "Definition, Axioms of Probability, Addition Rule, Conditional Probability, Multiplication Rule": ""
+        },
+        "Random Variables": {
+        "Probability Distribution - Discrete and Continuous, Probability Density Function (PDF), Cumulative Distribution Function (CDF), Mean, Variance, Expectation": ""
+        },
+        "Joint Distribution": {
+        "Discrete Joint Probability Distribution, Marginal Distribution, Expectation, Covariance, Rank Correlation": ""
+        }
+        }
+        },
+        "Unit 2": {
+        "Sampling Distribution": {
+        "Probability Distributions": {
+        "Binomial Distribution, Poisson Distribution, Normal Distribution": ""
+        },
+        "Sampling and Testing of Hypothesis": {
+        "Sampling with Replacement, Sampling without Replacement, Sampling Distribution of Means, Estimation, Confidence Intervals for Mean, Statistical Hypothesis, One-tailed Test, Two-tailed Test, Significance Level, Testing of Hypothesis for Large Samples, t-test, Chi-square Test": ""
+        }
+        }
+        },
+        "Unit 3": {
+        "Markov Process": {
+        "Markov Process Concepts": {
+        "Definition, Examples, Transition Probability Matrix (TPM), n-step Transitional Probabilities, Regular Matrices, Ergodic Matrices, Stationary Distribution, States of Markov Process": ""
+        }
+        },
+        "Correlation and Regression": {
+        "Correlation and Regression Concepts": {
+        "Karl Pearson's Coefficient, Regression Lines, Multiple Linear Regression, Rank Correlation": ""
+        }
+        },
+        "Continuous Optimization": {
+        "Unconstrained Optimization": {
+        "Single Variable Function, Fibonacci Search Method": ""
+        }
+        }
+        },
+        "Unit 4": {
+        "Continuous Optimization": {
+        "Optimization Concepts": {
+        "Condition for Local Minima and Maxima, Multivariable Function, Constrained Optimization, Lagrange Multipliers": ""
+        }
+        }
+        },
+        "Unit 5": {
+        "Fourier Series": {
+        "Fourier Series Concepts": {
+        "Euler's Formulae, Dirichlet's Conditions for Fourier Series Expansion, Even and Odd Functions": ""
+        }
+        },
+        "Fourier Transforms": {
+        "Fourier Transform Concepts": {
+        "Complex Fourier Transform, Cosine Transform, Sine Transform, Inverse Fourier Transform": ""
+        }
+        },
+        "Laplace Transforms": {
+        "Laplace Transform Concepts": {
+        "Definition, Transforms of Standard Functions, Laplace Transforms of Periodic Functions, Inverse Laplace Transforms": ""
+        }
+        }
+        }
+        }
+        ,
           "DESIGN OF ANALOG AND DIGITAL CIRCUITS": {},
           "DATA STRUCTURES USING C": {},
           "COMPUTER ORGANIZATION AND MICROPROCESSORS": {
