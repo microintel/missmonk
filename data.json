@@ -703,13 +703,56 @@
           "DESIGN OF ANALOG AND DIGITAL CIRCUITS": {},
           "DATA STRUCTURES USING C": {},
           "COMPUTER ORGANIZATION AND MICROPROCESSORS": {
-            "Unit 1": {
-              "Basic Structure of Computers: Computer Types, Functional Units, Basic Operational Concepts, Bus Structures, \rPerformance – Processor Clock, Basic Performance Equation, Pipelining and Superscalar Operation, Clock Rate, \rInstruction set: CISC and RISC, Compiler, Performance Measurement, multiprocessors and multi computers, \rHistorical Perspective. Machine Instructions and Programs: Basic Input/output Operation, Input/output \rOrganization: Accessing I/O Devices, Interrupts – Interrupt Hardware, Enabling and Disabling Interrupts, Handling \rMultiple Devices, Controlling Device Requests, Exceptions": ""
-            },
-            "Unit 2": {},
-            "Unit 3": {},
-            "Unit 4": {},
-            "Unit 5": {}
+          "Unit 1": {
+          "Basic Structure of Computers": {
+          "Computer Fundamentals": {
+          "Computer Types, Functional Units, Basic Operational Concepts, Bus Structures": ""
+          },
+          "Performance": {
+          "Processor Clock, Basic Performance Equation, Pipelining and Superscalar Operation, Clock Rate": ""
+          },
+          "Instructions": {
+          "CISC and RISC, Compiler, Performance Measurement, Multiprocessors and Multi Computers, Historical Perspective": ""
+          },
+          "Machine Instructions and Programs": {
+          "Basic Input/Output Operation, Input/Output Organization, Accessing I/O Devices, Interrupts – Interrupt Hardware, Enabling and Disabling Interrupts, Handling Multiple Devices, Controlling Device Requests, Exceptions": ""
+          }
+          }
+          },
+          "Unit 2": {
+          "Memory and Interfaces": {
+          "Memory Organization": {
+          "Direct Memory Access (DMA), Buses, Interface Circuits, Standard I/O Interfaces (Introduction)": ""
+          },
+          "Memory System": {
+          "Speed-Size-Cost, Cache Memories, Performance Consideration, Virtual Memories": ""
+          }
+          }
+          },
+          "Unit 3": {
+          "Arithmetic": {
+          "Arithmetic Operations": {
+          "Addition and Subtraction of Signed Numbers, Design of Fast Adders, Multiplication of Positive Numbers, Signed Operand Multiplication, Fast Multiplication, Integer Division, Floating-Point Numbers and Operations": ""
+          }
+          }
+          },
+          "Unit 4": {
+          "Basic Processing Unit": {
+          "Processing Unit Concepts": {
+          "Some Fundamental Concepts, Execution of a Complete Instruction, Multiple Bus Organization, Hard-wired Control, Microprogrammed Control": ""
+          },
+          "Pipelining": {
+          "Basic Concepts, Data Hazards, Instruction Hazard": ""
+          }
+          }
+          },
+          "Unit 5": {
+          "Microprocessors and Microcontroller": {
+          "Overview": {
+          "Overview of Microprocessors and Microcontrollers, Processor Chips for Embedded Applications, A Simple Microcontroller, Programming Considerations, I/O Device Timing Constraints, Reaction Timer – An Example": ""
+          }
+          }
+          }
           },
           "DATA STRUCTURES LAB USING C": {},
           "OOP WITH JAVA": {},
