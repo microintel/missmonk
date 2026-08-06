@@ -1,6 +1,5 @@
 /* Missmonk service worker — caches static assets, fonts, icons and images
    so repeat visits fire far fewer network requests. */
-
 const CACHE_VERSION  = 'missmonk-v1';
 const STATIC_CACHE    = CACHE_VERSION + '-static';
 const IMAGE_CACHE      = CACHE_VERSION + '-images';
