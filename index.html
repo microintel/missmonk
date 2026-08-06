@@ -1437,16 +1437,15 @@ a { color:inherit; text-decoration:none; }
   </div>
 
   <hr class="theme-divider"/>
-  <div class="theme-section-lbl">Load Curriculum from URL</div>
+  <div class="theme-section-lbl">Curriculum Data</div>
   <div class="url-form">
-    <input class="url-input" id="urlInput" type="url" value="https://microintel.github.io/missmonk/data.json" placeholder="https://example.com/curriculum.json" style="display:none;"/>
     <div style="display:flex;gap:.5rem;">
-      <button class="btn-sm" onclick="fetchFromUrl()" style="flex:1;">↓ Fetch &amp; Load</button>
+      <button class="btn-sm" onclick="fetchFromUrl()" style="flex:1;">↓ Refresh</button>
       <button class="btn-sm secondary" onclick="resetToBuiltIn()">Reset</button>
     </div>
     <div class="url-status" id="urlStatus"></div>
     <p style="font-size:.72rem;color:var(--text3);line-height:1.5;">
-      JSON must be an object matching the curriculum format.
+      Refresh pulls the latest curriculum from the server. Reset falls back to the built-in offline copy.
     </p>
   </div>
 </div>
@@ -1586,6 +1585,7 @@ let completedLessons = new Set();   // set of lesson-lids the signed-in user has
 let progressChart     = null;       // Chart.js pie instance on the Progress page
 let progressSaveTimer = null;       // debounce handle for Firestore writes
 let allSearchItems = [];
+let curriculumFullyLoaded = false; // becomes true once /api/curriculum/full has been fetched (Books/Progress need it)
 
 /* ══════════════════════════════
    THEME
@@ -1683,84 +1683,70 @@ function initAccentUI() {
 }
 
 /* ══════════════════════════════
-   URL FETCH
+   LAZY CURRICULUM LOADING
+   Initial load only fetches the top-level "skeleton" (courses collapsed
+   into { __lazy, __count } stubs). Each stub is expanded to its real
+   children on demand — one network round trip per navigation — via
+   /api/curriculum/node. Books/Progress need every lesson at once, so
+   they trigger a one-time /api/curriculum/full fetch instead.
 ══════════════════════════════ */
-const CURRICULUM_CACHE_KEY = 'lp_curriculum_cache';
-const CURRICULUM_CACHE_TTL = 15 * 60 * 1000; // 15 min — long enough to skip repeat fetches, short enough to stay fresh
 
-function readCurriculumCache(url) {
-  try {
-    const raw = localStorage.getItem(CURRICULUM_CACHE_KEY);
-    if (!raw) return null;
-    const entry = JSON.parse(raw);
-    if (entry.url !== url) return null;
-    return entry; // { url, data, ts }
-  } catch (e) { return null; }
-}
-function writeCurriculumCache(url, data) {
-  try {
-    localStorage.setItem(CURRICULUM_CACHE_KEY, JSON.stringify({ url, data, ts: Date.now() }));
-  } catch (e) { /* storage full/unavailable — safe to skip caching */ }
+// Expands a lazy stub in place by fetching its children from the server.
+// cleanSegments is the path (clean keys, excluding the course itself) from
+// the course root down to and including this node — it relies on
+// `currentCourse` already being set to the node's raw top-level key.
+async function ensureExpanded(node, cleanSegments) {
+  if (!node || !node.__lazy) return node;
+  const path = cleanSegments.join('|');
+  const url = '/api/curriculum/node?course=' + encodeURIComponent(currentCourse) + (path ? '&path=' + encodeURIComponent(path) : '');
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const children = await res.json();
+  delete node.__lazy;
+  delete node.__count;
+  Object.assign(node, children);
+  return node;
 }
 
-function applyCurriculumData(data, sourceLabel) {
-  const parsed = parseCurriculumData(data);
-  if (!parsed) throw new Error('Invalid curriculum format');
-  CURRICULUM = parsed;
-  BOOK_META = (CURRICULUM._bookMeta && typeof CURRICULUM._bookMeta === 'object') ? CURRICULUM._bookMeta : {};
+// Books tab and Progress page need to enumerate every lesson id at once —
+// fetch the full tree exactly once and cache it in memory for the session.
+async function ensureFullyLoaded() {
+  if (curriculumFullyLoaded) return;
+  const res = await fetch('/api/curriculum/full');
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const full = await res.json();
+  const { _bookMeta, ...courses } = full;
+  CURRICULUM = courses;
+  BOOK_META = _bookMeta || {};
+  curriculumFullyLoaded = true;
   allLessons = [];
   buildLessonIndex(CURRICULUM, []);
   buildAll();
-  if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
-  if (currentCourse) renderContent(); else showWelcome();
-  setUrlStatus('ok', `<i class="bi bi-check-circle-fill"></i> Loaded ${Object.keys(CURRICULUM).filter(k=>!k.startsWith('_')).length} course(s)${sourceLabel ? ' ' + sourceLabel : ''}`);
+}
+
+async function loadSkeleton() {
+  const res = await fetch('/api/curriculum/skeleton');
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const raw = await res.json();
+  const { _bookMeta, ...courses } = raw;
+  CURRICULUM = courses;
+  BOOK_META = _bookMeta || {};
+  curriculumFullyLoaded = false;
+  allLessons = [];
+  buildAll();
 }
 
 async function fetchFromUrl() {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url) { setUrlStatus('err', 'Please enter a URL.'); return; }
-
-  // Serve instantly from cache if we have a fresh-enough copy, so most loads
-  // need zero network round trips for the curriculum itself.
-  const cached = readCurriculumCache(url);
-  if (cached) {
-    try {
-      applyCurriculumData(cached.data, '(cached)');
-      showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
-    } catch (e) { /* fall through to network fetch below */ }
-    if (Date.now() - cached.ts < CURRICULUM_CACHE_TTL) return; // still fresh, skip network entirely
-  }
-
-  if (!cached) setUrlStatus('loading', '<i class="bi bi-hourglass-split"></i> Fetching…');
+  setUrlStatus('loading', '<i class="bi bi-hourglass-split"></i> Refreshing…');
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    writeCurriculumCache(url, data);
-    applyCurriculumData(data);
-    if (!cached) showToast('<i class="bi bi-check-circle-fill"></i> Curriculum loaded!');
-  } catch(e) {
-    if (!cached) {
-      setUrlStatus('err', '<i class="bi bi-x-circle-fill"></i> ' + e.message);
-      showWelcome();
-    }
-    // if cached data is already showing, a background refresh failure is silent
+    await loadSkeleton();
+    if (currentCourse && !CURRICULUM[currentCourse]) { currentCourse = null; pathStack = []; }
+    if (currentCourse) renderContent(); else showWelcome();
+    setUrlStatus('ok', `<i class="bi bi-check-circle-fill"></i> Loaded ${Object.keys(CURRICULUM).filter(k=>!k.startsWith('_')).length} course(s)`);
+    showToast('<i class="bi bi-check-circle-fill"></i> Curriculum refreshed!');
+  } catch (e) {
+    setUrlStatus('err', '<i class="bi bi-x-circle-fill"></i> ' + e.message);
   }
-}
-
-function parseCurriculumData(data) {
-  if (!data || typeof data !== 'object') return null;
-  if (Array.isArray(data)) {
-    const result = {};
-    for (const item of data) {
-      if (!item.name) continue;
-      if (item.url)      result[item.name] = `<a href="${item.url}">${item.name}</a>`;
-      else if (item.children) result[item.name] = parseCurriculumData(item.children) || {};
-      else result[item.name] = {};
-    }
-    return result;
-  }
-  return data;
 }
 
 function setUrlStatus(type, msg) {
@@ -1770,15 +1756,13 @@ function setUrlStatus(type, msg) {
 }
 
 function resetToBuiltIn() {
-  try { localStorage.removeItem(CURRICULUM_CACHE_KEY); } catch (e) {}
   CURRICULUM = JSON.parse(JSON.stringify(BUILT_IN_CURRICULUM));
   BOOK_META = {};
+  curriculumFullyLoaded = false;
   allLessons = [];
-  buildLessonIndex(CURRICULUM, []);
   buildAll();
   currentCourse = null; pathStack = [];
   showWelcome();
-  document.getElementById('urlInput').value = 'https://microintel.github.io/missmonk/data.json';
   setUrlStatus('', '');
   showToast('<i class="bi bi-arrow-counterclockwise"></i> Reset to built-in curriculum');
 }
@@ -1900,7 +1884,7 @@ async function initAppData() {
   await fetchFromUrl();
 
   // If the URL carries a shared course/path, jump straight there
-  handleSharedUrl();
+  await handleSharedUrl();
 
   // Keyboard shortcut
   document.getElementById('searchInput').addEventListener('keydown', e => {
@@ -2155,14 +2139,17 @@ function extractText(s) {
 }
 function countDeep(obj) {
   if (!obj || typeof obj !== 'object') return 0;
-  const ks = Object.keys(obj);
+  if (obj.__lazy) return obj.__count || 0; // not-yet-fetched subtree — best we know is its lesson count
+  const ks = Object.keys(obj).filter(k => !k.startsWith('_'));
   return ks.length + ks.reduce((a, k) => a + countDeep(obj[k]), 0);
 }
 function countLessons(obj) {
   if (typeof obj === 'string') return extractHref(obj) ? 1 : 0;
   if (!obj || typeof obj !== 'object') return 0;
+  if (obj.__lazy) return obj.__count || 0; // stub carries a precomputed count from the server
   return Object.values(obj).reduce((a, v) => a + countLessons(v), 0);
 }
+function isLazyStub(v) { return !!(v && typeof v === 'object' && v.__lazy); }
 function cleanKey(k) { return String(k).replace(/\t/g,' ').replace(/\s+/g,' ').trim(); }
 function lessonId(path, key) { return btoa(encodeURIComponent([...path, key].join('|'))).replace(/=/g,''); }
 
@@ -2408,18 +2395,63 @@ function buildSidebar() {
 /* ══════════════════════════════
    NAVIGATION
 ══════════════════════════════ */
-function selectCourse(course) {
+async function selectCourse(course) {
   currentCourse = course;
-  pathStack     = [{ key: cleanKey(course), obj: CURRICULUM[course] }];
+  let node = CURRICULUM[course];
+  if (isLazyStub(node)) {
+    try { node = await ensureExpanded(node, []); }
+    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message); return; }
+  }
+  pathStack = [{ key: cleanKey(course), obj: node }];
   document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
   const si = document.getElementById('si-' + CSS.escape(course));
   if (si) si.classList.add('active');
   renderContent();
   closeSidebarMobile();
 }
-function navPush(key, obj) {
+async function navPush(key, obj) {
+  const segs = [...pathStack.slice(1).map(p => p.key), cleanKey(key)];
+  if (isLazyStub(obj)) {
+    try { obj = await ensureExpanded(obj, segs); }
+    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message); return; }
+  }
   pathStack.push({ key: cleanKey(key), obj });
   renderContent();
+}
+
+// Shared by search results and (indirectly) shared links: walks from a
+// course root down through clean path segments, expanding any lazy stub
+// it meets along the way, then renders the resulting location.
+async function navigateToPath(course, cleanSegments) {
+  if (!CURRICULUM[course]) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Course not found'); return; }
+  currentCourse = course;
+  let node = CURRICULUM[course];
+  let stack;
+  try {
+    if (isLazyStub(node)) node = await ensureExpanded(node, []);
+    stack = [{ key: cleanKey(course), obj: node }];
+    const acc = [];
+    for (const seg of cleanSegments) {
+      const matchKey = Object.keys(node).find(k => !k.startsWith('_') && cleanKey(k) === seg);
+      if (!matchKey) { showWrongPath(); return; }
+      acc.push(cleanKey(matchKey));
+      let child = node[matchKey];
+      if (isLazyStub(child)) child = await ensureExpanded(child, acc);
+      node = child;
+      stack.push({ key: cleanKey(matchKey), obj: node });
+    }
+  } catch (e) {
+    showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message);
+    return;
+  }
+  currentView = 'home';
+  setBottomNavActive('home');
+  pathStack = stack;
+  document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById('si-' + CSS.escape(course));
+  if (si) si.classList.add('active');
+  renderContent();
+  closeSidebarMobile();
 }
 function navTo(idx) {
   pathStack = pathStack.slice(0, idx + 1);
@@ -2442,28 +2474,35 @@ function buildShareUrl() {
   return qs ? `${base}?${qs}` : base;
 }
 
-function handleSharedUrl() {
+async function handleSharedUrl() {
   const params = new URLSearchParams(window.location.search);
   const course = params.get('course');
   if (!course) return; // nothing shared, normal home view
 
   if (!CURRICULUM[course]) { showWrongPath(); return; }
 
-  let obj   = CURRICULUM[course];
-  let stack = [{ key: cleanKey(course), obj }];
+  currentCourse = course;
+  let obj = CURRICULUM[course];
   const rawPath = params.get('path');
   const segments = rawPath ? rawPath.split('|').filter(Boolean) : [];
 
-  for (const seg of segments) {
-    if (typeof obj !== 'object' || obj === null) { showWrongPath(); return; }
-    const matchKey = Object.keys(obj).find(k => !k.startsWith('_') && cleanKey(k) === seg);
-    if (!matchKey) { showWrongPath(); return; }
-    obj = obj[matchKey];
-    stack.push({ key: cleanKey(matchKey), obj });
-  }
+  let stack;
+  try {
+    if (isLazyStub(obj)) obj = await ensureExpanded(obj, []);
+    stack = [{ key: cleanKey(course), obj }];
+    const acc = [];
+    for (const seg of segments) {
+      if (typeof obj !== 'object' || obj === null) { showWrongPath(); return; }
+      const matchKey = Object.keys(obj).find(k => !k.startsWith('_') && cleanKey(k) === seg);
+      if (!matchKey) { showWrongPath(); return; }
+      acc.push(cleanKey(matchKey));
+      obj = obj[matchKey];
+      if (isLazyStub(obj)) obj = await ensureExpanded(obj, acc);
+      stack.push({ key: cleanKey(matchKey), obj });
+    }
+  } catch (e) { showWrongPath(); return; }
 
-  currentCourse = course;
-  pathStack     = stack;
+  pathStack = stack;
   document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
   const si = document.getElementById('si-' + CSS.escape(course));
   if (si) si.classList.add('active');
@@ -2609,11 +2648,12 @@ function renderContent() {
         <div class="card-footer"><span class="card-count">Coming soon</span></div>
       </div>`;
     } else {
+      const itemsText = isLazyStub(val) ? '' : `${Object.keys(val).length} item${Object.keys(val).length!==1?'s':''} · `;
       html += `<div class="card" data-a="nav" data-key="${key.replace(/"/g,'&quot;')}">
         <div class="card-type-badge ${tagColor}">${tagIcon} ${subLbl}</div>
         <div class="card-title">${ck}</div>
         <div class="card-footer">
-          <span class="card-count">${Object.keys(val).length} item${Object.keys(val).length!==1?'s':''} · ${lcount} lesson${lcount!==1?'s':''}</span>
+          <span class="card-count">${itemsText}${lcount} lesson${lcount!==1?'s':''}</span>
           <span class="card-arrow">→</span>
         </div>
       </div>`;
@@ -2647,8 +2687,9 @@ function toggleWelcomeInfo() {
 }
 
 function showWelcome() {
-  const total   = allLessons.length;
-  const courses = Object.keys(CURRICULUM).filter(k => !k.startsWith('_')).length;
+  const courseKeys = Object.keys(CURRICULUM).filter(k => !k.startsWith('_'));
+  const total   = courseKeys.reduce((a, k) => a + countLessons(CURRICULUM[k]), 0);
+  const courses = courseKeys.length;
   document.getElementById('content').innerHTML = `
     <div class="welcome-hero">
       <div class="hero-glow"><i class="bi bi-patch-question-fill"></i></div>
@@ -2846,9 +2887,16 @@ function openBookNode(node) {
 /* ══════════════════════════════
    BOOKS PAGE
 ══════════════════════════════ */
-function showBooksPage() {
+async function showBooksPage() {
   currentView = 'books';
   setBottomNavActive('books');
+  if (!curriculumFullyLoaded) {
+    document.getElementById('content').innerHTML = `
+      <div class="welcome-hero"><div class="hero-glow"><i class="bi bi-hourglass-split"></i></div><h1 class="hero-title">Loading…</h1></div>`;
+    try { await ensureFullyLoaded(); }
+    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load books: ' + e.message); return; }
+    if (currentView !== 'books') return; // user navigated away while this was loading
+  }
   const books = findBookNodes();
   let html = `
     <div class="page-header">
@@ -2991,9 +3039,16 @@ function showAccountPage() {
 /* ══════════════════════════════
    PROGRESS PAGE
 ══════════════════════════════ */
-function showProgressPage() {
+async function showProgressPage() {
   currentView = 'progress';
   setBottomNavActive('progress');
+  if (!curriculumFullyLoaded) {
+    document.getElementById('content').innerHTML = `
+      <div class="welcome-hero"><div class="hero-glow"><i class="bi bi-hourglass-split"></i></div><h1 class="hero-title">Loading…</h1></div>`;
+    try { await ensureFullyLoaded(); }
+    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load progress: ' + e.message); return; }
+    if (currentView !== 'progress') return; // user navigated away while this was loading
+  }
 
   const allLids   = collectAllLessonLids();
   const total     = allLids.length;
@@ -3337,14 +3392,23 @@ function onSearch() {
 }
 
 let lastSearchResults = [];
+let searchToken = 0; // guards against a slower, older request overwriting a newer one
 
-function performSearch() {
+async function performSearch() {
   const q   = document.getElementById('searchInput').value.trim();
   const box = document.getElementById('searchResults');
   if (!q) { box.classList.remove('open'); return; }
 
+  const myToken = ++searchToken;
+  let items = [];
+  try {
+    const res = await fetch('/api/curriculum/search?q=' + encodeURIComponent(q));
+    if (res.ok) items = await res.json();
+  } catch (e) { /* network hiccup — fall through and show "no results" */ }
+  if (myToken !== searchToken) return; // a newer search has already started
+
   const ql = q.toLowerCase();
-  const scored = allSearchItems.map(item => {
+  const scored = items.map(item => {
     const ll = item.label.toLowerCase();
     const pl = item.path.toLowerCase();
     const al = (item.author || '').toLowerCase();
@@ -3391,10 +3455,10 @@ function performSearch() {
 
 function openSearchResult(item) {
   if (item.type === 'lesson') {
-    const lid = lessonId(item.stack.map(s => s.key), item.key);
+    const lid = lessonId(item.pathSegs.slice(0, -1), item.key);
     openLesson(item.href, item.label, lid);
   } else {
-    navigateToStack(item.course, item.stack);
+    navigateToPath(item.course, item.pathSegs.slice(1)); // slice(1): pathSegs[0] is the course label itself
   }
 }
 
