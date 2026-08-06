@@ -2408,6 +2408,7 @@ async function selectCourse(course) {
   if (si) si.classList.add('active');
   renderContent();
   closeSidebarMobile();
+  syncUrl();
 }
 async function navPush(key, obj) {
   const segs = [...pathStack.slice(1).map(p => p.key), cleanKey(key)];
@@ -2417,12 +2418,13 @@ async function navPush(key, obj) {
   }
   pathStack.push({ key: cleanKey(key), obj });
   renderContent();
+  syncUrl();
 }
 
 // Shared by search results and (indirectly) shared links: walks from a
 // course root down through clean path segments, expanding any lazy stub
 // it meets along the way, then renders the resulting location.
-async function navigateToPath(course, cleanSegments) {
+async function navigateToPath(course, cleanSegments, fromPopstate = false) {
   if (!CURRICULUM[course]) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Course not found'); return; }
   currentCourse = course;
   let node = CURRICULUM[course];
@@ -2452,10 +2454,12 @@ async function navigateToPath(course, cleanSegments) {
   if (si) si.classList.add('active');
   renderContent();
   closeSidebarMobile();
+  if (!fromPopstate) syncUrl();
 }
 function navTo(idx) {
   pathStack = pathStack.slice(0, idx + 1);
   renderContent();
+  syncUrl();
 }
 
 /* ══════════════════════════════
@@ -2472,6 +2476,14 @@ function buildShareUrl() {
   const base = window.location.origin + window.location.pathname;
   const qs = params.toString();
   return qs ? `${base}?${qs}` : base;
+}
+
+// Pushes the current course/path into the address bar (mirrors buildShareUrl)
+// so the URL always reflects where the user is, not just when they hit Share.
+function syncUrl(replace = false) {
+  const url = buildShareUrl();
+  const fn  = replace ? 'replaceState' : 'pushState';
+  history[fn]({ course: currentCourse, path: pathStack.slice(1).map(p => p.key) }, '', url);
 }
 
 async function handleSharedUrl() {
@@ -2507,7 +2519,22 @@ async function handleSharedUrl() {
   const si = document.getElementById('si-' + CSS.escape(course));
   if (si) si.classList.add('active');
   renderContent();
+  syncUrl(true); // replace, not push — this is just reflecting the URL we loaded from
 }
+
+// Browser back/forward: re-derive the view from whatever state pushState
+// stashed (falls back to re-reading the URL if state is missing, e.g. after
+// a hard refresh on a pushed entry).
+window.addEventListener('popstate', () => {
+  const state = history.state;
+  if (state && state.course) {
+    navigateToPath(state.course, state.path || [], true);
+  } else if (window.location.search) {
+    handleSharedUrl();
+  } else {
+    goHome();
+  }
+});
 
 function showWrongPath() {
   currentView = 'home';
