@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <link rel="manifest" href="manifest.json">
-
+<script>
+  
+  if (window.location.hostname.endsWith('github.io')) {
+    window.location.replace(
+      'https://microintel-missmonk.vercel.app' +
+      window.location.pathname.replace(/^\/[^/]+/, '') +
+      window.location.search
+    );
+  }
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>Missmonk</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
