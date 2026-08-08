@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Did You Wake Up This Morning? — The Miracle Morning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night-deep:#0a0e27;
+    --night-plum:#241b45;
+    --dawn-rose:#6f3a5f;
+    --dawn-coral:#ff7a54;
+    --gold:#ffbe5c;
+    --cream:#fff2df;
+    --ink:#1b1330;
+    --card-night:rgba(255,255,255,0.05);
+    --card-border-night:rgba(255,255,255,0.10);
+    --card-day:rgba(27,19,48,0.06);
+    --card-border-day:rgba(27,19,48,0.12);
+    --text-night:#f2ecff;
+    --text-night-dim:#c9c0e8;
+    --text-day:#241833;
+    --text-day-dim:#5a4a68;
+    --accent: var(--gold);
+    --progress:0;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Manrope', sans-serif;
+    color:var(--text-night);
+    min-height:100vh;
+    overflow-x:hidden;
+    transition:color .4s ease;
+  }
+
+  body.day-mode{ color:var(--text-day); }
+
+  /* ---------- Background layer ---------- */
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background: linear-gradient(180deg,
+      var(--sky-top, #0a0e27) 0%,
+      var(--sky-mid, #241b45) 45%,
+      var(--sky-bottom, #6f3a5f) 100%);
+    transition: background .1s linear;
+  }
+
+  #stars{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    transition: opacity .5s ease;
+  }
+  .star{
+    position:absolute;
+    width:2px; height:2px;
+    background:#fff;
+    border-radius:50%;
+    animation: twinkle 3.5s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15;}
+    50%{opacity:1;}
+  }
+
+  #sun{
+    position:fixed;
+    left:50%;
+    width:min(38vw, 320px);
+    height:min(38vw, 320px);
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #fff6da, var(--gold) 55%, var(--dawn-coral) 100%);
+    box-shadow: 0 0 90px 30px rgba(255,190,92,0.35);
+    transform: translate(-50%, 60vh);
+    z-index:-2;
+    transition: box-shadow .4s ease;
+    pointer-events:none;
+  }
+
+  #horizon{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    height:22vh;
+    z-index:-1;
+    pointer-events:none;
+  }
+  #horizon svg{ width:100%; height:100%; display:block; }
+
+  #grain{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{ position:relative; z-index:1; }
+
+  .container{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  header.hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding:0 24px;
+    position:relative;
+  }
+
+  .eyebrow{
+    font-size:.78rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:18px;
+  }
+
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.4rem, 7vw, 5.2rem);
+    line-height:1.02;
+    max-width:14ch;
+    letter-spacing:-.01em;
+  }
+
+  .title em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--accent);
+  }
+
+  .hero-sub{
+    margin-top:22px;
+    font-size:clamp(1rem, 2vw, 1.25rem);
+    max-width:46ch;
+    color:var(--text-night-dim);
+    line-height:1.6;
+  }
+  body.day-mode .hero-sub{ color:var(--text-day-dim); }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:38px; left:24px;
+    font-size:.75rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    opacity:.6;
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-cue::after{
+    content:'';
+    width:1px; height:34px;
+    background:currentColor;
+    animation: cue-move 2s ease-in-out infinite;
+    transform-origin:top;
+  }
+  @keyframes cue-move{ 0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);} }
+
+  /* epigraphs */
+  .epigraphs{
+    display:grid;
+    gap:16px;
+    margin-top:56px;
+    max-width:640px;
+  }
+  .epigraph{
+    border-left:2px solid var(--accent);
+    padding:6px 0 6px 18px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.02rem;
+    line-height:1.55;
+    color:var(--text-night-dim);
+  }
+  body.day-mode .epigraph{ color:var(--text-day-dim); }
+  .epigraph cite{
+    display:block;
+    font-style:normal;
+    font-family:'Manrope', sans-serif;
+    font-size:.78rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-top:8px;
+    font-weight:700;
+  }
+
+  /* section blocks */
+  main{ padding-bottom:40px; }
+
+  .idea{
+    padding:70px 0;
+    border-bottom:1px solid var(--card-border-night);
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  body.day-mode .idea{ border-color:var(--card-border-day); }
+  .idea.in-view{ opacity:1; transform:translateY(0); }
+
+  .idea-num{
+    font-family:'Fraunces', serif;
+    font-size:.85rem;
+    font-weight:600;
+    color:var(--accent);
+    letter-spacing:.12em;
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .idea-num::before{
+    content:'';
+    width:26px; height:1px;
+    background:var(--accent);
+  }
+
+  .idea h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.4rem, 3.4vw, 2rem);
+    line-height:1.15;
+    margin-bottom:18px;
+    max-width:22ch;
+  }
+
+  .idea p{
+    line-height:1.75;
+    font-size:1.02rem;
+    color:var(--text-night-dim);
+    margin-bottom:14px;
+    max-width:60ch;
+  }
+  body.day-mode .idea p{ color:var(--text-day-dim); }
+
+  .idea ul{
+    margin:8px 0 18px 0;
+    padding-left:0;
+    list-style:none;
+    display:grid;
+    gap:8px;
+  }
+  .idea ul li{
+    padding-left:22px;
+    position:relative;
+    line-height:1.6;
+    color:var(--text-night-dim);
+  }
+  body.day-mode .idea ul li{ color:var(--text-day-dim); }
+  .idea ul li::before{
+    content:'—';
+    position:absolute; left:0; top:0;
+    color:var(--accent);
+  }
+
+  .callout{
+    margin-top:20px;
+    padding:20px 22px;
+    background:var(--card-night);
+    border:1px solid var(--card-border-night);
+    border-radius:14px;
+    backdrop-filter: blur(6px);
+  }
+  body.day-mode .callout{ background:var(--card-day); border-color:var(--card-border-day); }
+
+  .callout .label{
+    font-size:.7rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:800;
+    margin-bottom:8px;
+  }
+  .callout .line{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    line-height:1.5;
+  }
+
+  .flow{
+    margin-top:16px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    color:var(--accent);
+  }
+
+  /* ---------- interactive: snooze meter ---------- */
+  .snooze-widget{
+    margin-top:24px;
+    padding:24px;
+    background:var(--card-night);
+    border:1px solid var(--card-border-night);
+    border-radius:16px;
+  }
+  body.day-mode .snooze-widget{ background:var(--card-day); border-color:var(--card-border-day); }
+
+  .snooze-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .btn{
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.02em;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid var(--card-border-night);
+    background:transparent;
+    color:inherit;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  body.day-mode .btn{ border-color:var(--card-border-day); }
+  .btn:hover{ transform:translateY(-2px); border-color:var(--accent); }
+  .btn:active{ transform:translateY(0); }
+  .btn.primary{
+    background:var(--accent);
+    color:#241833;
+    border-color:var(--accent);
+  }
+
+  .meter-track{
+    height:10px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  body.day-mode .meter-track{ background:rgba(27,19,48,.1); }
+  .meter-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--gold), var(--dawn-coral));
+    transition:width .35s ease;
+  }
+  .snooze-msg{
+    font-size:.92rem;
+    color:var(--text-night-dim);
+    min-height:1.4em;
+  }
+  body.day-mode .snooze-msg{ color:var(--text-day-dim); }
+
+  /* ---------- interactive: sleep experiment ---------- */
+  .lab{
+    margin-top:24px;
+    padding:24px;
+    background:var(--card-night);
+    border:1px solid var(--card-border-night);
+    border-radius:16px;
+  }
+  body.day-mode .lab{ background:var(--card-day); border-color:var(--card-border-day); }
+
+  .lab-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .lab-row label{
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--accent);
+    font-weight:700;
+  }
+  input[type=range]{
+    flex:1;
+    min-width:140px;
+    accent-color:var(--accent);
+  }
+  .hours-val{ font-family:'Fraunces', serif; font-size:1.3rem; min-width:3.5ch; }
+
+  .toggle-group{ display:flex; gap:8px; margin-bottom:18px; }
+  .toggle-btn{
+    flex:1;
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--card-border-night);
+    background:transparent;
+    color:inherit;
+    cursor:pointer;
+    font-family:'Manrope', sans-serif;
+    font-size:.85rem;
+    font-weight:600;
+    transition:all .2s ease;
+  }
+  body.day-mode .toggle-btn{ border-color:var(--card-border-day); }
+  .toggle-btn.active{
+    background:var(--accent);
+    color:#241833;
+    border-color:var(--accent);
+  }
+
+  .energy-display{
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .energy-emoji{ font-size:2.4rem; transition:transform .3s ease; }
+  .energy-bar-track{
+    flex:1;
+    height:14px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+  body.day-mode .energy-bar-track{ background:rgba(27,19,48,.1); }
+  .energy-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--dawn-coral), var(--gold));
+    transition:width .4s ease;
+  }
+  .energy-label{
+    font-size:.85rem;
+    margin-top:10px;
+    color:var(--text-night-dim);
+  }
+  body.day-mode .energy-label{ color:var(--text-day-dim); }
+
+  /* ---------- core ideas recap ---------- */
+  .recap{
+    padding:70px 0;
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .recap.in-view{ opacity:1; transform:translateY(0); }
+
+  .recap h2{
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.6rem,3.6vw,2.2rem);
+    margin-bottom:24px;
+  }
+
+  .chip-grid{
+    display:grid;
+    gap:12px;
+  }
+  .chip{
+    padding:16px 18px;
+    border-radius:12px;
+    background:var(--card-night);
+    border:1px solid var(--card-border-night);
+    font-size:.95rem;
+    line-height:1.5;
+  }
+  body.day-mode .chip{ background:var(--card-day); border-color:var(--card-border-day); }
+
+  /* ---------- quotes ---------- */
+  .quotes{
+    padding:70px 0 100px;
+  }
+  .quotes h2{
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.6rem,3.6vw,2.2rem);
+    margin-bottom:28px;
+  }
+  .quote-list{ display:grid; gap:20px; }
+  .quote-card{
+    padding:22px 24px;
+    border-radius:14px;
+    background:var(--card-night);
+    border:1px solid var(--card-border-night);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.08rem;
+    line-height:1.55;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  body.day-mode .quote-card{ background:var(--card-day); border-color:var(--card-border-day); }
+  .quote-card.in-view{ opacity:1; transform:translateY(0); }
+
+  footer{
+    text-align:center;
+    padding:40px 24px 60px;
+    font-size:.78rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-night-dim);
+    opacity:.6;
+  }
+  body.day-mode footer{ color:var(--text-day-dim); }
+
+  @media (max-width:600px){
+    header.hero{ align-items:flex-start; }
+    .scroll-cue{ display:none; }
+    .lab-row{ align-items:stretch; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .star{ animation:none; opacity:.6; }
+    .scroll-cue::after{ animation:none; }
+    .idea, .recap, .quote-card{ transition:opacity .01s linear; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+<div id="sun"></div>
+<div id="horizon">
+  <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path d="M0,200 L0,120 Q180,60 360,110 T720,90 T1080,120 T1440,80 L1440,200 Z" fill="#120a24" opacity="0.85"/>
+    <path d="M0,200 L0,150 Q220,110 440,150 T880,140 T1440,150 L1440,200 Z" fill="#0a0616" opacity="0.9"/>
+  </svg>
+</div>
+<div id="grain"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">The Miracle Morning · Chapter Notes</div>
+    <h1 class="title">Why did you <em>wake up</em> this morning?</h1>
+    <p class="hero-sub">A detailed walk through the chapter's ideas — from the resistance of the snooze button to the belief that shapes how rested you feel. Scroll, and watch the night become morning.</p>
+
+    <div class="epigraphs">
+      <div class="epigraph">
+        "You've got to get up every morning with determination if you're going to go to bed with satisfaction."
+        <cite>George Lorimer</cite>
+      </div>
+      <div class="epigraph">
+        "Your first ritual that you do during the day is the highest leveraged ritual... because it sets your mind and the context for the rest of your day."
+        <cite>Eben Pagan</cite>
+      </div>
+    </div>
+
+    <div class="scroll-cue">Scroll to sunrise</div>
+  </header>
+
+  <main class="container">
+
+    <section class="idea" data-idea>
+      <div class="idea-num">01 — The question</div>
+      <h2>Why do you wake up every morning?</h2>
+      <p>Most people have never seriously thought about this. Ask yourself: did you wake up because you were excited, or because your alarm forced you? If there were no responsibilities, would you still get out of bed?</p>
+      <p>Most people wake up because they have to, not because they truly want to — to go to work, attend college, pay bills, take care of family, meet obligations. If given complete freedom, many would simply continue sleeping.</p>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">02 — The snooze button</div>
+      <h2>The snooze button represents resistance</h2>
+      <p>Beep! Beep! Beep! Instead of getting up, the mind says "just five more minutes," "I don't want to wake up," "I'm too tired." Then the hand reaches for snooze. This is much deeper than just sleeping — every time you hit snooze, you're telling yourself: "I don't want to face today."</p>
+      <div class="callout">
+        <div class="line">Every time you hit the snooze button, you're resisting your life.</div>
+      </div>
+      <p>This resistance becomes a habit. Instead of welcoming the day, you begin it by fighting it — and that negative feeling stays with you.</p>
+
+      <div class="snooze-widget">
+        <div class="snooze-row">
+          <button class="btn" id="snoozeBtn">Hit snooze</button>
+          <button class="btn primary" id="wakeBtn">I'm getting up</button>
+        </div>
+        <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+        <div class="snooze-msg" id="snoozeMsg">Resistance level: 0. Try hitting snooze a few times.</div>
+      </div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">03 — You snooze, you lose</div>
+      <h2>Delaying waking is delaying living</h2>
+      <p>Normally this saying means sleeping too much makes you miss opportunities. But there's a deeper meaning: when you keep delaying waking up until the last possible second, you're actually delaying living.</p>
+      <div class="flow">"I'm excited for today." → "I wish today didn't exist."</div>
+      <p>That shift creates negative emotional energy before your day even starts.</p>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">04 — The ripple effect</div>
+      <h2>Morning mood controls the entire day</h2>
+      <p>Many people experience their worst emotions immediately after waking, especially those dealing with depression, stress, anxiety, job dissatisfaction, or relationship problems. They wake up feeling dread, hopelessness, sadness — and that feeling follows them all day, only to repeat the same cycle tomorrow. This is a cycle of melancholy.</p>
+      <div class="flow">Morning ➜ Thoughts ➜ Feelings ➜ Actions ➜ Entire Day</div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">05 — Purpose vs. obligation</div>
+      <h2>Wake because you want to, not because you must</h2>
+      <p>Most people wake because they must. Successful people wake because they want to. Waking with passion, purpose, and excitement changes everything.</p>
+      <div class="callout">
+        <div class="line">Wake up with purpose — not because you have to, but because you genuinely want to.</div>
+      </div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">06 — Stop living on autopilot</div>
+      <h2>When are you actually going to live?</h2>
+      <p>If your daily routine is only: wake up → work or college → come home → watch TV → sleep → repeat — when are you improving yourself? When are you learning, growing, building your future?</p>
+      <div class="callout">
+        <div class="line">When are you going to actually live your life instead of merely going through the motions?</div>
+      </div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">07 — Become better</div>
+      <h2>Improve yourself first</h2>
+      <p>Don't wait for life to improve — improve yourself first, because your life improves when you improve.</p>
+      <div class="callout">
+        <div class="line">There is no better day than today to give up who you've been for who you can become.</div>
+      </div>
+      <p>Stop identifying with your old habits. Become a stronger version of yourself.</p>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">08 — On sleep</div>
+      <h2>How much sleep do we really need?</h2>
+      <p>Sleep experts agree on one thing: there is no single magic number. Sleep needs depend on age, genetics, health, exercise, and lifestyle. One person may perform best on 7 hours; another may genuinely need 9.</p>
+      <ul>
+        <li>The National Sleep Foundation notes that sleeping 9 hours or more has been associated in some studies with illness, accidents, and even higher mortality.</li>
+        <li>These findings are also linked to other factors such as depression — so extra sleep itself isn't necessarily the cause.</li>
+      </ul>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">09 — The main theory</div>
+      <h2>We need as much sleep as we believe we need</h2>
+      <p>Our expectations strongly influence how rested we feel. Say you need to wake at 6 AM but sleep at midnight — only 6 hours. Before sleeping you tell yourself, "I need 8 hours, tomorrow I'll be exhausted." Morning comes, and the first thought is: "I only slept six hours." Immediately, you feel tired.</p>
+      <div class="flow">"I'll be tired." → You expect tiredness. → You notice tiredness. → You feel tired.</div>
+      <p>Your belief helps create your experience — a self-fulfilling prophecy.</p>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">10 — The experiment</div>
+      <h2>Testing belief against sleep length</h2>
+      <p>The author experimented with sleeping 4 through 9 hours. In the first experiment, he kept repeating "I'm not getting enough sleep" before bed — and no matter how many hours he slept, even 9, he woke up exhausted.</p>
+      <p>In the second experiment, he changed one thing: an affirmation before sleeping, along the lines of thanking his body for exactly the hours he had and choosing to wake up energized. Even after fewer hours, he often woke feeling far more energetic.</p>
+      <p>He isn't claiming everyone only needs four or five hours — mindset about sleep can significantly influence how rested you feel, alongside actually getting adequate sleep. Try the two mindsets below.</p>
+
+      <div class="lab">
+        <div class="lab-row">
+          <label for="hoursSlider">Hours slept</label>
+          <input type="range" id="hoursSlider" min="4" max="9" value="6" step="1">
+          <span class="hours-val" id="hoursVal">6h</span>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-mode="without">Without affirmation</button>
+          <button class="toggle-btn" data-mode="with">With affirmation</button>
+        </div>
+        <div class="energy-display">
+          <div class="energy-emoji" id="energyEmoji">😴</div>
+          <div class="energy-bar-track"><div class="energy-bar-fill" id="energyFill"></div></div>
+        </div>
+        <div class="energy-label" id="energyLabel">Illustrative only — a feel for how belief can shift experienced energy.</div>
+      </div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">11 — Christmas morning</div>
+      <h2>Make every morning feel like Christmas</h2>
+      <p>Think back to childhood — Christmas morning. Did your parents need to drag you out of bed? No. You woke before sunrise, excited, happy, full of energy. Why? Because you had something to look forward to. The same happens on vacation, your birthday, your wedding day, your first day at a new job.</p>
+      <p>Notice: sometimes you sleep only 4 or 5 hours yet still wake up full of energy — because excitement changes your experience.</p>
+      <div class="callout">
+        <div class="line">Imagine if every morning felt like Christmas morning.</div>
+      </div>
+    </section>
+
+    <section class="idea" data-idea>
+      <div class="idea-num">12 — The Miracle Morning</div>
+      <h2>Wake because you want to</h2>
+      <p>The purpose of the Miracle Morning is to help you wake up excited, wake up energized, wake up with purpose, develop yourself every day, and become the person capable of creating your dream life. Instead of waking because you have to, you wake because you want to.</p>
+    </section>
+
+    <section class="recap" data-idea>
+      <h2>Core ideas of this chapter</h2>
+      <div class="chip-grid">
+        <div class="chip">Your morning determines the direction of your entire day.</div>
+        <div class="chip">Hitting the snooze button represents resistance to your life.</div>
+        <div class="chip">Waking with enthusiasm creates positive momentum.</div>
+        <div class="chip">Most people live by obligation; extraordinary people live with purpose.</div>
+        <div class="chip">Personal growth must become part of your daily routine.</div>
+        <div class="chip">Sleep needs differ between individuals — there is no universal "perfect" number.</div>
+        <div class="chip">Your beliefs and expectations about sleep can influence how energized you feel, though they don't replace the need for sufficient sleep.</div>
+        <div class="chip">Excitement and purpose can make waking up feel easier.</div>
+        <div class="chip">The goal: make every morning feel meaningful, like waking up on Christmas morning.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Developed by Microintel</footer>
+
+</div>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- stars ---- */
+  const starsEl = document.getElementById('stars');
+  const STAR_COUNT = 90;
+  for(let i=0;i<STAR_COUNT;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*70+'%';
+    s.style.animationDelay = (Math.random()*3.5)+'s';
+    s.style.width = s.style.height = (Math.random()<0.15 ? '3px':'2px');
+    starsEl.appendChild(s);
+  }
+
+  /* ---- color interpolation for sky ---- */
+  function hexToRgb(hex){
+    const v = parseInt(hex.slice(1),16);
+    return [(v>>16)&255,(v>>8)&255,v&255];
+  }
+  function rgbToStr(rgb){ return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function lerpColor(c1,c2,t){
+    return [lerp(c1[0],c2[0],t), lerp(c1[1],c2[1],t), lerp(c1[2],c2[2],t)];
+  }
+
+  // stops: [progress, top, mid, bottom]
+  const stops = [
+    {p:0.00, top:'#0a0e27', mid:'#241b45', bottom:'#2d1b45'},
+    {p:0.30, top:'#241b45', mid:'#4a2a5a', bottom:'#6f3a5f'},
+    {p:0.55, top:'#4a2a5a', mid:'#a04a5a', bottom:'#ff7a54'},
+    {p:0.78, top:'#7a5aa0', mid:'#ffb15c', bottom:'#ffd9a0'},
+    {p:1.00, top:'#6fa8dc', mid:'#bfe3ff', bottom:'#fff2df'}
+  ];
+
+  function skyColorsAt(t){
+    for(let i=0;i<stops.length-1;i++){
+      const a = stops[i], b = stops[i+1];
+      if(t>=a.p && t<=b.p){
+        const localT = (t-a.p)/(b.p-a.p);
+        return {
+          top: rgbToStr(lerpColor(hexToRgb(a.top), hexToRgb(b.top), localT)),
+          mid: rgbToStr(lerpColor(hexToRgb(a.mid), hexToRgb(b.mid), localT)),
+          bottom: rgbToStr(lerpColor(hexToRgb(a.bottom), hexToRgb(b.bottom), localT))
+        };
+      }
+    }
+    const last = stops[stops.length-1];
+    return {top:last.top, mid:last.mid, bottom:last.bottom};
+  }
+
+  const root = document.documentElement;
+  const sunEl = document.getElementById('sun');
+  const starsWrap = document.getElementById('stars');
+  const body = document.body;
+
+  function updateBackground(){
+    const doc = document.documentElement;
+    const scrollTop = window.scrollY;
+    const max = doc.scrollHeight - window.innerHeight;
+    const t = max > 0 ? Math.min(Math.max(scrollTop/max, 0), 1) : 0;
+
+    const colors = skyColorsAt(t);
+    root.style.setProperty('--sky-top', colors.top);
+    root.style.setProperty('--sky-mid', colors.mid);
+    root.style.setProperty('--sky-bottom', colors.bottom);
+
+    // sun rises from below the fold to upper third
+    const startY = window.innerHeight * 0.85;
+    const endY = window.innerHeight * 0.12;
+    const sunY = lerp(startY, endY, t);
+    sunEl.style.transform = `translate(-50%, ${sunY}px)`;
+    sunEl.style.boxShadow = `0 0 ${lerp(40,140,t)}px ${lerp(10,50,t)}px rgba(255,190,92,${lerp(0.15,0.5,t)})`;
+
+    starsWrap.style.opacity = Math.max(1 - t*2.2, 0);
+
+    // accent shifts from gold to coral to gold-on-day for readability
+    root.style.setProperty('--accent', t > 0.6 ? '#e0602f' : '#ffbe5c');
+
+    if(t > 0.62){ body.classList.add('day-mode'); } else { body.classList.remove('day-mode'); }
+  }
+
+  let ticking = false;
+  function onScroll(){
+    if(!ticking){
+      requestAnimationFrame(()=>{ updateBackground(); ticking = false; });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', updateBackground);
+  updateBackground();
+
+  /* ---- reveal on scroll ---- */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.18});
+  document.querySelectorAll('[data-idea], .quote-card').forEach(el=>io.observe(el));
+
+  /* ---- snooze widget ---- */
+  const meterFill = document.getElementById('meterFill');
+  const snoozeMsg = document.getElementById('snoozeMsg');
+  const messages = [
+    "Resistance level: 0. Try hitting snooze a few times.",
+    "\"Just five more minutes...\"",
+    "\"I don't want to face today.\"",
+    "The resistance is becoming a habit.",
+    "You're fighting the day before it's begun.",
+    "Full resistance. The day is already lost to dread."
+  ];
+  let snoozeCount = 0;
+  document.getElementById('snoozeBtn').addEventListener('click', ()=>{
+    snoozeCount = Math.min(snoozeCount+1, 5);
+    meterFill.style.width = (snoozeCount/5*100)+'%';
+    snoozeMsg.textContent = messages[snoozeCount];
+  });
+  document.getElementById('wakeBtn').addEventListener('click', ()=>{
+    snoozeCount = 0;
+    meterFill.style.width = '0%';
+    snoozeMsg.textContent = "You're up. The day starts with you, not against you.";
+  });
+
+  /* ---- sleep lab ---- */
+  const hoursSlider = document.getElementById('hoursSlider');
+  const hoursVal = document.getElementById('hoursVal');
+  const energyEmoji = document.getElementById('energyEmoji');
+  const energyFill = document.getElementById('energyFill');
+  const energyLabel = document.getElementById('energyLabel');
+  const toggleBtns = document.querySelectorAll('.toggle-btn');
+  let mode = 'without';
+
+  function updateLab(){
+    const hours = parseInt(hoursSlider.value, 10);
+    hoursVal.textContent = hours+'h';
+    let energy;
+    if(mode === 'without'){
+      energy = Math.round((hours-4)/5*70) + 10; // 10 - 80, tracks hours closely
+    } else {
+      energy = 62 + Math.round((hours-4)/5*22); // 62 - 84, mostly high regardless of hours
+    }
+    energyFill.style.width = energy+'%';
+    energyEmoji.textContent = energy > 70 ? '⚡' : energy > 45 ? '🙂' : '😴';
+    energyEmoji.style.transform = energy > 70 ? 'scale(1.15)' : 'scale(1)';
+    energyLabel.textContent = mode === 'without'
+      ? `"I'm not getting enough sleep." Energy tracks the hours closely — fewer hours, more exhaustion.`
+      : `An affirmation before bed. Energy stays comparatively high — belief is doing some of the work.`;
+  }
+
+  hoursSlider.addEventListener('input', updateLab);
+  toggleBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      toggleBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      mode = btn.dataset.mode;
+      updateLab();
+    });
+  });
+  updateLab();
+
+})();
+</script>
+
+</body>
+</html>

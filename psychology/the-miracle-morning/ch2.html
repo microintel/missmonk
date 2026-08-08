@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Miracle Morning — Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#171633;
+    --indigo:#2c2a5c;
+    --mauve:#6a4a83;
+    --coral:#d97769;
+    --amber:#f4a35f;
+    --gold:#ffd89a;
+    --cream:#fff6e8;
+    --ink:#1b1730;
+    --sun:#ffe4a8;
+    --progress:0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Outfit',sans-serif;
+    color:var(--cream);
+    overflow-x:hidden;
+    background:var(--night);
+    min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- Animated Sky Background ---------- */
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(
+      to top,
+      var(--night) 0%,
+      var(--indigo) 25%,
+      var(--mauve) 50%,
+      var(--coral) 72%,
+      var(--amber) 88%,
+      var(--gold) 100%
+    );
+    background-size:100% 400%;
+    background-position: 0% calc(100% - var(--progress) * 100%);
+    transition:background-position 0.05s linear;
+  }
+  #stars{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    opacity:calc(1 - var(--progress) * 1.6);
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 28% 8%, #fff, transparent),
+      radial-gradient(1px 1px at 45% 22%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 62% 12%, #fff, transparent),
+      radial-gradient(1px 1px at 78% 28%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 85% 6%, #fff, transparent),
+      radial-gradient(1px 1px at 15% 42%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 92% 48%, #fff, transparent),
+      radial-gradient(1px 1px at 38% 55%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 68% 38%, #fff, transparent);
+    background-repeat:no-repeat;
+  }
+  #sun{
+    position:fixed;
+    left:50%;
+    width:min(46vw, 340px);
+    height:min(46vw, 340px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fffaf0, var(--sun) 45%, var(--amber) 100%);
+    box-shadow:0 0 90px 30px rgba(255,216,154,0.45);
+    transform:translate(-50%, 0);
+    top:calc(112vh - (var(--progress) * 130vh));
+    z-index:-1;
+    transition:top 0.05s linear, box-shadow 0.3s ease;
+  }
+  #grain{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Layout ---------- */
+  main{position:relative; z-index:1;}
+  section{
+    max-width:920px;
+    margin:0 auto;
+    padding:7vh 6vw 10vh;
+    position:relative;
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.3,1), transform 0.9s cubic-bezier(.2,.7,.3,1);
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .eyebrow{
+    font-family:'Outfit',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.22em;
+    font-size:0.72rem;
+    font-weight:600;
+    color:var(--gold);
+    opacity:0.85;
+    margin-bottom:0.9rem;
+    display:block;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    line-height:1.08;
+  }
+  h2{
+    font-size:clamp(1.7rem, 4vw, 2.7rem);
+    margin-bottom:1.3rem;
+    color:var(--cream);
+  }
+  p{
+    font-size:1.05rem;
+    line-height:1.7;
+    color:rgba(255,246,232,0.88);
+    max-width:62ch;
+  }
+  strong{color:var(--gold); font-weight:600;}
+
+  /* ---------- Hero ---------- */
+  #hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:0;
+  }
+  #hero .eyebrow{align-self:center;}
+  #hero h1{
+    font-size:clamp(2.6rem, 9vw, 5.5rem);
+    font-style:italic;
+    background:linear-gradient(180deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:1.2rem;
+  }
+  #hero .sub{
+    font-size:clamp(1rem, 2vw, 1.25rem);
+    max-width:46ch;
+    color:rgba(255,246,232,0.85);
+    margin-bottom:2.4rem;
+  }
+  .scroll-hint{
+    font-size:0.75rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    opacity:0.7;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.5rem;
+  }
+  .scroll-hint::after{
+    content:"";
+    width:1px;
+    height:34px;
+    background:linear-gradient(to bottom, rgba(255,246,232,0.8), transparent);
+    animation:pulse-down 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-down{
+    0%,100%{opacity:0.3; transform:scaleY(0.7);}
+    50%{opacity:1; transform:scaleY(1);}
+  }
+
+  /* ---------- Rock bottom cards ---------- */
+  .duo{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.5rem;
+    margin-top:1rem;
+  }
+  .card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:18px;
+    padding:1.8rem 1.6rem;
+    backdrop-filter:blur(6px);
+  }
+  .card h3{
+    font-size:1.25rem;
+    font-style:italic;
+    color:var(--gold);
+    margin-bottom:0.9rem;
+  }
+  .card ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:0.6rem;
+  }
+  .card li{
+    font-size:0.98rem;
+    line-height:1.55;
+    color:rgba(255,246,232,0.85);
+    padding-left:1.1rem;
+    position:relative;
+  }
+  .card li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--coral);
+  }
+
+  /* ---------- Quote block ---------- */
+  .quote-block{
+    border-left:3px solid var(--amber);
+    padding:0.4rem 0 0.4rem 1.6rem;
+    margin:1.6rem 0;
+  }
+  .quote-block p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:clamp(1.2rem, 2.6vw, 1.7rem);
+    color:var(--cream);
+    line-height:1.4;
+  }
+
+  /* ---------- Level bars ---------- */
+  .levels{
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+    margin-top:1.6rem;
+  }
+  .level-row{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+  }
+  .level-label{
+    width:100px;
+    flex-shrink:0;
+    font-size:0.85rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:rgba(255,246,232,0.7);
+  }
+  .level-track{
+    flex:1;
+    height:10px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.1);
+    overflow:hidden;
+  }
+  .level-fill{
+    height:100%;
+    border-radius:6px;
+    width:0%;
+    background:linear-gradient(90deg, var(--coral), var(--gold));
+    transition:width 1.4s cubic-bezier(.2,.7,.3,1);
+  }
+  .in .level-fill.l10{width:100%;}
+  .in .level-fill.l3{width:30%;}
+
+  /* ---------- Finding time ---------- */
+  .time-options{
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+    margin-top:1.6rem;
+  }
+  .time-row{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:0.9rem 1.2rem;
+    border-radius:12px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+  }
+  .time-row.yes{
+    background:rgba(255,216,154,0.14);
+    border-color:rgba(255,216,154,0.4);
+  }
+  .mark{
+    font-size:1.3rem;
+    width:1.6rem;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .mark.no{color:var(--coral);}
+  .mark.yes{color:var(--gold);}
+  .time-row .t-label{font-weight:600; width:90px; flex-shrink:0;}
+  .time-row .t-reason{color:rgba(255,246,232,0.7); font-size:0.95rem;}
+
+  /* ---------- SAVERS wheel (signature) ---------- */
+  #savers{text-align:center;}
+  #savers h2{margin-bottom:0.4rem;}
+  #savers p.lead{margin:0 auto 3rem; text-align:center;}
+  .wheel-wrap{
+    position:relative;
+    width:min(88vw, 480px);
+    height:min(88vw, 480px);
+    margin:0 auto;
+  }
+  .wheel-center{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:34%;
+    height:34%;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fffaf0, var(--sun) 55%, var(--amber) 100%);
+    box-shadow:0 0 50px 10px rgba(255,216,154,0.4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:2;
+  }
+  .wheel-center span{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-style:italic;
+    color:var(--ink);
+    font-size:clamp(1.1rem, 3vw, 1.5rem);
+  }
+  .wheel-center small{
+    color:var(--ink);
+    font-size:0.65rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    opacity:0.75;
+  }
+  .petal{
+    position:absolute;
+    top:50%; left:50%;
+    width:46%;
+    height:46%;
+    transform-origin:0% 0%;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top:8%;
+  }
+  .petal .petal-inner{
+    width:88px;
+    max-width:26vw;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:14px;
+    padding:0.7rem 0.5rem;
+    text-align:center;
+    backdrop-filter:blur(6px);
+    transform:rotate(var(--counter-rot));
+  }
+  .petal .letter{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:700;
+    color:var(--gold);
+    font-size:1.3rem;
+    display:block;
+  }
+  .petal .word{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:rgba(255,246,232,0.85);
+    display:block;
+    margin-top:0.2rem;
+  }
+  .petal .num{
+    font-size:0.62rem;
+    color:rgba(255,246,232,0.5);
+    display:block;
+    margin-top:0.15rem;
+  }
+
+  /* positions for 6 petals, computed via rotation */
+  .p1{transform:rotate(-90deg) translate(0,0);}
+  .p2{transform:rotate(-30deg) translate(0,0);}
+  .p3{transform:rotate(30deg) translate(0,0);}
+  .p4{transform:rotate(90deg) translate(0,0);}
+  .p5{transform:rotate(150deg) translate(0,0);}
+  .p6{transform:rotate(210deg) translate(0,0);}
+  .p1 .petal-inner{--counter-rot:90deg;}
+  .p2 .petal-inner{--counter-rot:30deg;}
+  .p3 .petal-inner{--counter-rot:-30deg;}
+  .p4 .petal-inner{--counter-rot:-90deg;}
+  .p5 .petal-inner{--counter-rot:-150deg;}
+  .p6 .petal-inner{--counter-rot:-210deg;}
+
+  /* ---------- Results ---------- */
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.4rem;
+    margin-top:1.6rem;
+  }
+  .stat{
+    padding:1.4rem;
+    border-left:2px solid var(--gold);
+  }
+  .stat .num{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.9rem;
+    color:var(--gold);
+    display:block;
+  }
+  .stat .lbl{
+    font-size:0.9rem;
+    color:rgba(255,246,232,0.75);
+  }
+
+  /* ---------- Key lessons ---------- */
+  .lessons{
+    list-style:none;
+    counter-reset:lesson;
+    margin-top:1.6rem;
+    display:flex;
+    flex-direction:column;
+    gap:1.1rem;
+  }
+  .lessons li{
+    counter-increment:lesson;
+    position:relative;
+    padding-left:2.6rem;
+    font-size:1.05rem;
+    line-height:1.6;
+    color:var(--cream);
+  }
+  .lessons li::before{
+    content:counter(lesson);
+    position:absolute;
+    left:0;
+    top:-0.15rem;
+    width:1.8rem;
+    height:1.8rem;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:0.9rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* ---------- Student comparison ---------- */
+  .students{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.5rem;
+    margin-top:1.8rem;
+  }
+  .student{
+    border-radius:18px;
+    padding:1.7rem 1.5rem;
+  }
+  .student.a{
+    background:rgba(60,50,90,0.35);
+    border:1px solid rgba(255,255,255,0.1);
+  }
+  .student.b{
+    background:rgba(255,216,154,0.12);
+    border:1px solid rgba(255,216,154,0.35);
+  }
+  .student h3{
+    font-size:1.15rem;
+    font-style:italic;
+    margin-bottom:0.8rem;
+  }
+  .student.a h3{color:rgba(255,246,232,0.75);}
+  .student.b h3{color:var(--gold);}
+  .student p{font-size:0.95rem;}
+  .verdict{
+    margin-top:1.8rem;
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--gold);
+  }
+
+  /* ---------- Closing ---------- */
+  #closing{
+    text-align:center;
+    padding-bottom:16vh;
+  }
+  #closing h2{
+    font-size:clamp(1.8rem, 5vw, 3rem);
+    font-style:italic;
+    max-width:18ch;
+    margin:0 auto 1rem;
+  }
+  #closing p{
+    margin:0 auto;
+    text-align:center;
+    color:rgba(255,246,232,0.75);
+  }
+  footer{
+    text-align:center;
+    padding:2rem 1rem 3rem;
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(255,246,232,0.4);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:720px){
+    .duo, .stat-grid, .students{grid-template-columns:1fr;}
+    section{padding:5.5vh 6.5vw 7vh;}
+    .wheel-wrap{width:92vw; height:92vw;}
+    .petal .petal-inner{width:76px; padding:0.55rem 0.4rem;}
+    .petal .letter{font-size:1.1rem;}
+    .petal .word{font-size:0.62rem;}
+  }
+  @media (max-width:420px){
+    .wheel-wrap{transform:scale(0.92);}
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+<div id="sun"></div>
+<div id="grain"></div>
+
+<main>
+
+  <section id="hero">
+    <span class="eyebrow">The Miracle Morning — Chapter Summary</span>
+    <h1>Rock Bottom<br>to Sunrise</h1>
+    <p class="sub">Major life changes often begin when we're desperate. When everything falls apart, we finally become willing to change our habits and beliefs.</p>
+    <div class="scroll-hint">Scroll to begin</div>
+  </section>
+
+  <section id="rockbottom">
+    <div class="reveal">
+      <span class="eyebrow">01 — The Author's Two Rock Bottoms</span>
+      <h2>Falling apart, twice.</h2>
+      <p>Two moments broke him open — one physical, one financial. Both, eventually, rebuilt him.</p>
+    </div>
+    <div class="duo reveal">
+      <div class="card">
+        <h3>First Rock Bottom</h3>
+        <ul>
+          <li>At age 20, hit by a drunk driver.</li>
+          <li>He died briefly, entered a coma — doctors doubted he'd walk again.</li>
+          <li>He recovered with the help of family and medical staff.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Second Rock Bottom</h3>
+        <ul>
+          <li>Years later, during the 2008 recession, his business lost income.</li>
+          <li>He couldn't pay his bills and fell deeply into debt.</li>
+          <li>He became severely depressed — this period felt harder than the accident, faced mostly alone.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="morning-change">
+    <div class="reveal">
+      <span class="eyebrow">02 — The Morning That Changed Everything</span>
+      <h2>One run. One idea.</h2>
+      <p>A friend suggested he go for a run. While listening to a personal development audio, one line stopped him cold:</p>
+    </div>
+    <div class="quote-block reveal">
+      <p>"Your success rarely becomes greater than your personal development."</p>
+    </div>
+    <p class="reveal">He wanted a successful life — but he wasn't becoming the kind of person who could create and maintain that success. That realization changed his thinking.</p>
+  </section>
+
+  <section id="success-within">
+    <div class="reveal">
+      <span class="eyebrow">03 — Success Starts From Within</span>
+      <h2>Your outer life reflects your inner life.</h2>
+      <p>If you want Level&nbsp;10 success, you need Level&nbsp;10 skills, knowledge, mindset, habits, and discipline. Money, career, and relationships are often a mirror of beliefs, habits, and mindset.</p>
+    </div>
+    <div class="levels reveal">
+      <div class="level-row">
+        <span class="level-label">Desired life</span>
+        <div class="level-track"><div class="level-fill l10"></div></div>
+      </div>
+      <div class="level-row">
+        <span class="level-label">Actual habits</span>
+        <div class="level-track"><div class="level-fill l3"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="finding-time">
+    <div class="reveal">
+      <span class="eyebrow">04 — Finding Time</span>
+      <h2>"I don't have time."</h2>
+      <p>He wanted to improve every day but faced the excuse most people have. He weighed his options.</p>
+    </div>
+    <div class="time-options reveal">
+      <div class="time-row">
+        <span class="mark no">✕</span>
+        <span class="t-label">Evening</span>
+        <span class="t-reason">Too tired.</span>
+      </div>
+      <div class="time-row">
+        <span class="mark no">✕</span>
+        <span class="t-label">Afternoon</span>
+        <span class="t-reason">Too busy.</span>
+      </div>
+      <div class="time-row yes">
+        <span class="mark yes">✓</span>
+        <span class="t-label">Morning</span>
+        <span class="t-reason">Nothing interrupts it — best choice.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="savers">
+    <div class="reveal">
+      <span class="eyebrow">05 — The Six Morning Habits</span>
+      <h2>A one-hour routine. Ten minutes each.</h2>
+      <p class="lead">Six activities, ten minutes each — later known as the SAVERS routine.</p>
+    </div>
+    <div class="wheel-wrap reveal">
+      <div class="wheel-center"><span>SAVERS</span><small>60 min total</small></div>
+      <div class="petal p1"><div class="petal-inner"><span class="letter">S</span><span class="word">Silence</span><span class="num">10 min</span></div></div>
+      <div class="petal p2"><div class="petal-inner"><span class="letter">A</span><span class="word">Affirmations</span><span class="num">10 min</span></div></div>
+      <div class="petal p3"><div class="petal-inner"><span class="letter">V</span><span class="word">Visualization</span><span class="num">10 min</span></div></div>
+      <div class="petal p4"><div class="petal-inner"><span class="letter">E</span><span class="word">Exercise</span><span class="num">10 min</span></div></div>
+      <div class="petal p5"><div class="petal-inner"><span class="letter">R</span><span class="word">Reading</span><span class="num">10 min</span></div></div>
+      <div class="petal p6"><div class="petal-inner"><span class="letter">S</span><span class="word">Journaling</span><span class="num">10 min</span></div></div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="reveal">
+      <span class="eyebrow">06 — The Results</span>
+      <h2>The dramatic turn.</h2>
+      <p>After practicing this routine every morning, he became happier, less stressed, and more focused — and named the routine <strong>The Miracle Morning</strong> because of the change it brought.</p>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat"><span class="num">↓ Stress</span><span class="lbl">Noticeably decreased</span></div>
+      <div class="stat"><span class="num">↑ Focus</span><span class="lbl">More energy, more clarity</span></div>
+      <div class="stat"><span class="num">2 months</span><span class="lbl">For his business to recover</span></div>
+      <div class="stat"><span class="num">↑ Income</span><span class="lbl">Higher than before the crash</span></div>
+    </div>
+  </section>
+
+  <section id="others">
+    <div class="reveal">
+      <span class="eyebrow">07 — It Helped Others Too</span>
+      <h2>Word of mouth became a movement.</h2>
+      <p>He shared the routine with coaching clients. Many reported similar improvements, and the idea spread through word of mouth and online communities — becoming a worldwide movement focused on daily personal development.</p>
+    </div>
+  </section>
+
+  <section id="lessons">
+    <div class="reveal">
+      <span class="eyebrow">Key Lessons</span>
+      <h2>What this means for everyone.</h2>
+    </div>
+    <ol class="lessons reveal">
+      <li>Difficult times can become opportunities for growth.</li>
+      <li>Your habits shape your future.</li>
+      <li>Invest in yourself every day.</li>
+      <li>Starting the day with intention can improve the rest of the day.</li>
+      <li>Small daily improvements can lead to major life changes over time.</li>
+    </ol>
+  </section>
+
+  <section id="example">
+    <div class="reveal">
+      <span class="eyebrow">Simple Example</span>
+      <h2>Two students, two mornings.</h2>
+    </div>
+    <div class="students reveal">
+      <div class="student a">
+        <h3>Student A</h3>
+        <p>Wakes up, checks social media, rushes to college, and starts the day feeling stressed.</p>
+      </div>
+      <div class="student b">
+        <h3>Student B</h3>
+        <p>Wakes up 45 minutes earlier, reads for 10 minutes, exercises, plans the day, and reviews goals.</p>
+      </div>
+    </div>
+    <p class="verdict reveal">After several months, Student B is more disciplined, knowledgeable, and productive — not from one big change, but consistent daily habits.</p>
+  </section>
+
+  <section id="closing">
+    <div class="reveal">
+      <h2>Don't just chase better results.<br>Become a better version of yourself, every day.</h2>
+      <p>The core message of The Miracle Morning.</p>
+    </div>
+  </section>
+
+  <footer>Summary · The Miracle Morning</footer>
+
+</main>
+
+<script>
+  // Scroll-driven sky progress (0 = night at top, 1 = full day at bottom)
+  const root = document.documentElement;
+  function updateSky(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+    root.style.setProperty('--progress', progress.toFixed(4));
+  }
+  updateSky();
+  window.addEventListener('scroll', updateSky, { passive: true });
+  window.addEventListener('resize', updateSky);
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Miracle Morning — S.A.V.E.R.S.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1229;
+    --indigo:#1B2A4A;
+    --coral:#FF6B4A;
+    --gold:#F4A94A;
+    --cream:#F5EDE1;
+    --slate:#8A93A8;
+    --progress:0;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    background:var(--navy);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  /* ---------- Fixed sunrise background ---------- */
+  .sky{
+    position:fixed; inset:0; z-index:-2;
+    background:linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 60%)), var(--indigo) calc(var(--progress) * 60%)) 0%,
+      color-mix(in srgb, var(--indigo) calc(100% - (var(--progress) * 80%)), var(--coral) calc(var(--progress) * 80%)) 55%,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 90%)), var(--gold) calc(var(--progress) * 90%)) 100%
+    );
+    transition:background 0.15s linear;
+  }
+  .horizon-wrap{position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;}
+  .sun{
+    position:absolute; left:50%;
+    width:min(46vw,420px); height:min(46vw,420px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE3B0, var(--gold) 55%, var(--coral) 100%);
+    box-shadow:0 0 120px 40px rgba(244,169,74,0.35);
+    transform:translate(-50%, 40vh);
+    top:calc(78vh - (var(--progress) * 92vh));
+    opacity:calc(0.35 + var(--progress) * 0.65);
+    filter:blur(0.5px);
+  }
+  .ridge{position:absolute; bottom:-2px; left:0; width:100%; height:14vh; background:linear-gradient(to bottom, transparent, var(--navy) 65%); z-index:1;}
+  .stars{
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(245,237,225,0.6) 50%, transparent),
+      radial-gradient(1px 1px at 70% 15%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 85% 45%, rgba(245,237,225,0.7) 50%, transparent),
+      radial-gradient(1px 1px at 45% 60%, rgba(245,237,225,0.4) 50%, transparent),
+      radial-gradient(1px 1px at 10% 75%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 60% 80%, rgba(245,237,225,0.6) 50%, transparent);
+    opacity:calc(1 - var(--progress) * 1.4);
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:760px; margin:0 auto; padding:0 28px;}
+  section{padding:12vh 0;}
+  .eyebrow{
+    font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); font-weight:600;
+    margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--gold); display:inline-block;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif; font-weight:600; line-height:1.14; letter-spacing:-0.01em;}
+
+  /* ---------- Hero ---------- */
+  .hero{min-height:100svh; display:flex; flex-direction:column; justify-content:center;}
+  .hero h1{font-size:clamp(34px,6.4vw,58px); font-weight:700;}
+  .hero p{max-width:56ch; font-size:clamp(16px,2.2vw,19px); color:var(--cream); opacity:0.85; margin-top:24px;}
+  .scroll-cue{margin-top:60px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--slate); display:flex; align-items:center; gap:12px;}
+  .scroll-cue::after{content:""; width:1px; height:32px; background:linear-gradient(to bottom, var(--gold), transparent); animation:drip 1.8s ease-in-out infinite;}
+  @keyframes drip{0%,100%{transform:scaleY(0.4);opacity:0.4;} 50%{transform:scaleY(1);opacity:1;}}
+
+  /* ---------- Reveal ---------- */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);}
+  .reveal.is-visible{opacity:1; transform:translateY(0);}
+
+  /* ---------- Text blocks ---------- */
+  h2{font-size:clamp(24px,4.4vw,34px); color:var(--gold);}
+  h3{font-size:clamp(19px,3vw,24px); color:var(--cream); margin-top:22px;}
+  h4{font-size:15px; letter-spacing:0.04em; color:var(--slate); text-transform:uppercase; margin-top:18px;}
+  p{font-size:15.5px; color:var(--cream); opacity:0.88; margin-top:10px; max-width:62ch;}
+  ul, ol{margin-top:10px; padding-left:22px; max-width:62ch;}
+  li{font-size:15.5px; color:var(--cream); opacity:0.88; margin-top:6px;}
+  strong{color:var(--gold); font-weight:600;}
+  em{font-style:italic; color:var(--coral);}
+
+  .quote-card{margin-top:26px; border-left:2px solid var(--gold); padding-left:20px;}
+  .quote-card p.q{font-family:'Fraunces',serif; font-style:italic; font-size:clamp(18px,2.6vw,22px); color:var(--gold); opacity:1; max-width:52ch; margin-top:0;}
+  .quote-card .attr{font-size:13px; color:var(--slate); margin-top:8px; letter-spacing:0.04em;}
+
+  /* ---------- Stat rows (reused for reading/exercise/number stats) ---------- */
+  .stat-table{margin-top:20px; border-top:1px solid rgba(245,237,225,0.12); max-width:62ch;}
+  .stat-row{display:grid; grid-template-columns:110px 1fr; gap:18px; align-items:center; padding:14px 0; border-bottom:1px solid rgba(245,237,225,0.12);}
+  .stat-row .score{font-family:'Fraunces',serif; font-size:22px; color:var(--gold);}
+  .stat-row .meaning-txt{font-size:14px; color:var(--cream); opacity:0.8;}
+
+  /* ---------- Steps ---------- */
+  .step{display:grid; grid-template-columns:56px 1fr; gap:20px; padding:30px 0; border-top:1px solid rgba(245,237,225,0.14);}
+  .step:last-of-type{border-bottom:1px solid rgba(245,237,225,0.14);}
+  .step .n{font-family:'Fraunces',serif; font-size:30px; color:rgba(245,237,225,0.28); font-weight:300;}
+  .step h3{margin-top:0; color:var(--cream);}
+
+  /* ---------- Grid cards ---------- */
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px;}
+  .card{
+    background:rgba(245,237,225,0.05); border:1px solid rgba(245,237,225,0.12); border-radius:14px;
+    padding:22px 20px; backdrop-filter:blur(6px);
+    transition:border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  }
+  .card:hover{border-color:var(--gold); background:rgba(245,237,225,0.08); transform:translateY(-4px);}
+  .card .label{font-family:'Fraunces',serif; font-size:18px; color:var(--gold);}
+  .card p{font-size:14px; margin-top:6px;}
+
+  /* ---------- Letter overview strip ---------- */
+  .letters{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:28px;}
+  .letter{
+    background:rgba(245,237,225,0.05); border:1px solid rgba(245,237,225,0.12); border-radius:12px;
+    padding:16px 8px; text-align:center;
+  }
+  .letter .L{font-family:'Fraunces',serif; font-size:22px; color:var(--gold);}
+  .letter .word{font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--slate); margin-top:6px;}
+
+  footer{padding:8vh 0 14vh;}
+  footer .source{font-size:13px; color:var(--slate); letter-spacing:0.04em;}
+
+  /* ---------- Progress rail ---------- */
+  .rail{position:fixed; right:24px; top:50%; transform:translateY(-50%); width:2px; height:160px; background:rgba(245,237,225,0.15); z-index:5; border-radius:2px; overflow:hidden;}
+  .rail-fill{width:100%; background:linear-gradient(to bottom, var(--gold), var(--coral)); height:calc(var(--progress) * 100%); transition:height 0.15s linear;}
+  @media (max-width:760px){.rail{display:none;}}
+
+  /* ---------- Chapter gauge ---------- */
+  .ch-gauge{
+    position:fixed; left:24px; bottom:24px; z-index:5; display:flex; align-items:center; gap:14px;
+    padding:12px 18px 12px 14px; border:1px solid rgba(245,237,225,0.18); border-radius:999px;
+    background:rgba(11,18,41,0.55); backdrop-filter:blur(10px);
+  }
+  .ch-gauge .dial{
+    position:relative; width:40px; height:40px; border-radius:50%;
+    background:conic-gradient(var(--gold) calc(var(--ch, 0) / 7 * 360deg), rgba(245,237,225,0.12) 0);
+    display:flex; align-items:center; justify-content:center; transition:background 0.6s ease; flex-shrink:0;
+  }
+  .ch-gauge .dial::before{content:""; position:absolute; inset:4px; border-radius:50%; background:var(--navy);}
+  .ch-gauge .dial span{position:relative; font-family:'Fraunces',serif; font-size:15px; color:var(--cream);}
+  .ch-gauge .txt{display:flex; flex-direction:column; line-height:1.25;}
+  .ch-gauge .label-top{font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--slate);}
+  .ch-gauge .label-main{font-size:13px; color:var(--cream); font-weight:600;}
+  @media (max-width:640px){
+    .ch-gauge{left:14px; bottom:14px; padding:10px 14px 10px 10px;}
+    .ch-gauge .dial{width:34px; height:34px;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:640px){
+    section{padding:8vh 0;}
+    .grid{grid-template-columns:1fr;}
+    .step{grid-template-columns:40px 1fr; gap:12px;}
+    .step .n{font-size:24px;}
+    .letters{grid-template-columns:repeat(3,1fr);}
+    .wrap{padding:0 20px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{transition:none; opacity:1; transform:none;}
+    .scroll-cue::after{animation:none;}
+    .sky,.sun,.dial{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="horizon-wrap">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="ridge"></div>
+</div>
+<div class="rail"><div class="rail-fill"></div></div>
+
+<div class="ch-gauge" aria-live="polite">
+  <div class="dial" id="dial"><span id="dial-num">1</span></div>
+  <div class="txt">
+    <span class="label-top">Chapter</span>
+    <span class="label-main" id="dial-label">Visualization</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">S · A · V · E · R · S</div>
+    <h1>The Miracle Morning — Complete Explanation</h1>
+    <p>The uploaded material covers Visualization, Exercise, Reading, Scribing, customizing the Life S.A.V.E.R.S., and the 6-Minute Miracle Morning.</p>
+    <div class="scroll-cue">Scroll toward sunrise</div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Life S.A.V.E.R.S.</h2>
+      <p>Six practices: Silence, Affirmations, Visualization, Exercise, Reading and Scribing.</p>
+      <div class="letters">
+        <div class="letter"><div class="L">S</div><div class="word">Silence</div></div>
+        <div class="letter"><div class="L">A</div><div class="word">Affirmations</div></div>
+        <div class="letter"><div class="L">V</div><div class="word">Visualization</div></div>
+        <div class="letter"><div class="L">E</div><div class="word">Exercise</div></div>
+        <div class="letter"><div class="L">R</div><div class="word">Reading</div></div>
+        <div class="letter"><div class="L">S</div><div class="word">Scribing</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VISUALIZATION ================= -->
+  <section data-ch="1" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">1. V = Visualization</div>
+      <h2>What is visualization?</h2>
+      <p>Visualization—also called creative visualization or mental rehearsal—means creating mental pictures of specific behaviors and outcomes you want in your life.</p>
+      <p>In simple words: You mentally see yourself achieving something before you actually achieve it.</p>
+      <p>It isn't just imagining the final result. The author describes imagining:</p>
+      <ul>
+        <li>What you want to achieve</li>
+        <li>How you will achieve it</li>
+        <li>The actions you need to take</li>
+        <li>Yourself performing those actions successfully</li>
+      </ul>
+      <p>Visualization is frequently used by athletes to improve performance.</p>
+
+      <h4>Famous examples</h4>
+      <p>The book gives several examples of successful people who have advocated visualization: Bill Gates, Arnold Schwarzenegger, Anthony Robbins, Tiger Woods, Will Smith, Jim Carrey, Oprah.</p>
+
+      <h4>Tiger Woods</h4>
+      <p>Tiger Woods is described as using visualization to mentally rehearse the perfect execution of his golf swing.</p>
+      <p>Another famous golfer, Jack Nicklaus, said he never hit a shot without first having a sharp mental picture of it.</p>
+
+      <div class="quote-card">
+        <p class="q">"For acting services rendered."</p>
+        <div class="attr">— Jim Carrey, memo line on a $10 million check he wrote himself in 1987, dated Thanksgiving 1995. In 1994 he was paid $10 million for Dumb and Dumber.</div>
+      </div>
+      <p>The important lesson isn't that writing a check magically creates money.</p>
+      <p>The useful idea is: Create a clear target → repeatedly imagine it → keep it psychologically present → take action toward it.</p>
+
+      <h4>Why visualization?</h4>
+      <p>The author says many people are trapped by their past. They repeatedly replay: previous failures, disappointments, heartbreaks, mistakes.</p>
+      <p>Instead, visualization allows you to deliberately create a picture of the future you want.</p>
+      <p>The purpose is to make your future vision stronger than your memories of past failures.</p>
+
+      <h4>The author's 3-step visualization method</h4>
+      <p>The author normally spends around 5 minutes visualizing. After reading affirmations, he sits upright, closes his eyes, takes slow, deep breaths, visualizes his ideal day, and imagines performing tasks with ease, confidence, and enjoyment.</p>
+      <p>When writing his book, he imagined himself writing easily and enjoying the creative process without stress, fear, or writer's block. He also visualized the finished book being read and enjoyed by people.</p>
+    </div>
+
+    <div class="reveal step">
+      <div class="n">01</div>
+      <div>
+        <h3>Get ready</h3>
+        <p>The book recommends: sit comfortably, sit upright, breathe deeply, close your eyes, clear your mind.</p>
+        <p>You can sit on a chair, couch, or floor. Some people may also use quiet instrumental music, such as classical or baroque music.</p>
+      </div>
+    </div>
+    <div class="reveal step">
+      <div class="n">02</div>
+      <div>
+        <h3>Visualize what you really want</h3>
+        <p>This is where you imagine your ideal future. The author asks you to temporarily forget logic, limits, practicality — and ask: What would I have, do, or become if I could choose freely?</p>
+        <p>Then visualize your major goals, deepest desires, life-changing dreams — involving your senses: see it, hear it, feel/touch it, smell it, taste it. The book argues that making the visualization more vivid can make you feel more compelled to take the actions required.</p>
+        <h4>Example</h4>
+        <p>Suppose your goal is becoming a software engineer. Don't simply imagine: "I'm a successful software engineer." Instead imagine: yourself studying programming, writing code, solving difficult problems, building projects, applying for opportunities, attending interviews, getting better at communication, eventually working as the professional you want to become. The process matters.</p>
+      </div>
+    </div>
+    <div class="reveal step">
+      <div class="n">03</div>
+      <div>
+        <h3>Visualize who you need to become</h3>
+        <p>This is one of the most important ideas. Don't only visualize: What do I want? Also visualize: Who do I need to become to achieve it?</p>
+        <p>The author gives examples such as visualizing yourself: exercising, studying, working, writing, making calls, sending emails, taking action, making progress. And importantly, visualize yourself enjoying the process, rather than only imagining the reward.</p>
+        <p>So: Goal → person required → daily actions.</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <h4>Visualization does NOT replace action</h4>
+      <p>This is extremely important. The book explicitly warns about Vision Boards:</p>
+      <div class="quote-card">
+        <p class="q">"Nothing changes in your life without action."</p>
+      </div>
+      <p>A vision board can increase motivation and help you focus, but taking the necessary actions is what produces results.</p>
+      <p>So: Visualization + Action &gt; Visualization alone.</p>
+    </div>
+  </section>
+
+  <!-- ================= EXERCISE ================= -->
+  <section data-ch="2" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">2. E = Exercise</div>
+      <h2>Exercise</h2>
+      <p>The second practice is Exercise. The author argues that morning exercise can: increase energy, improve health, improve self-confidence, improve emotional well-being, improve thinking, help concentration.</p>
+      <p>And even a few minutes can be useful as part of the morning routine.</p>
+
+      <h4>Eben Pagan's advice</h4>
+      <p>The book describes an interview involving personal-development expert Eben Pagan and Anthony Robbins. When asked his number-one key to success, Pagan answered: Start every morning with a personal success ritual.</p>
+      <p>He emphasized morning exercise — getting the heart rate up, and getting blood flowing and oxygen into the lungs. He specifically suggested 10–20 minutes of jumping jacks or some form of aerobic exercise in the morning.</p>
+
+      <h4>Yoga</h4>
+      <p>The author says that if he could choose only one type of exercise for the rest of his life, he would choose yoga. He describes yoga as combining stretching, strength training, cardio, focused breathing, potentially meditation.</p>
+      <p>The book also contains a contribution from yoga instructor Dashama, who describes yoga as having physical, mental, emotional, and spiritual applications.</p>
+
+      <div class="grid">
+        <div class="card">
+          <div class="label">The practical idea</div>
+          <p>You don't have to copy the author's preferred exercise. It can be walking, running, yoga, or another suitable workout. The important idea is to make movement part of the morning routine.</p>
+        </div>
+        <div class="card">
+          <div class="label">Why morning exercise?</div>
+          <p>The author identifies two common excuses: "I don't have time" and "I'm too tired." His solution is to exercise before the day has a chance to wear you down — removing many opportunities to postpone it.</p>
+        </div>
+      </div>
+
+      <div class="quote-card" style="margin-top:30px;">
+        <p class="q">Consult a doctor or physician before starting an exercise regimen, particularly if you have physical pain, discomfort, disabilities, etc.</p>
+        <div class="attr">— Safety note from the book</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= READING ================= -->
+  <section data-ch="3" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">3. R = Reading</div>
+      <h2>Reading</h2>
+      <p>Reading is the fifth practice in S.A.V.E.R.S. The author calls reading a fast way to acquire: knowledge, ideas, strategies, skills.</p>
+      <p>The basic principle is: Learn from people who have already achieved what you want to achieve. Instead of reinventing everything yourself, study people who have already done it.</p>
+
+      <h4>What should you read?</h4>
+      <div class="grid">
+        <div class="card">
+          <div class="label">For financial success</div>
+          <p>Think and Grow Rich — Napoleon Hill<br>Secrets of the Millionaire Mind — T. Harv Eker<br>Total Money Makeover — Dave Ramsey</p>
+        </div>
+        <div class="card">
+          <div class="label">For relationships</div>
+          <p>The Five Love Languages — Gary D. Chapman<br>The SoulMate Experience — Jo Dunn<br>The Seven Principles for Making a Marriage Work — John M. Gottman and Nan Silver</p>
+        </div>
+      </div>
+      <p style="margin-top:20px;">The author's broader point is that books exist on almost every area of life you want to improve.</p>
+
+      <h4>The 10-page rule</h4>
+      <p>This is one of the most useful statistics in this section. The author recommends 10 pages per day. If you're new to reading or read slowly, he says 5 pages is okay to start.</p>
+      <div class="stat-table">
+        <div class="stat-row"><div class="score">3,650</div><div class="meaning-txt">pages/year — 10 pages × 365 days</div></div>
+        <div class="stat-row"><div class="score">≈18 books</div><div class="meaning-txt">at 200 pages each — a tiny daily habit can theoretically produce around 18 personal-development books per year</div></div>
+        <div class="stat-row"><div class="score">10–15 min</div><div class="meaning-txt">to read 10 pages — approximately 15–30 minutes for slower readers</div></div>
+      </div>
+
+      <h4>Read with a purpose</h4>
+      <p>Before reading, ask: Why am I reading this? What do you want to learn? The author also emphasizes something more important: Don't merely read. Implement what you learn. Knowledge that isn't applied doesn't create much change.</p>
+
+      <h4>Re-reading is important</h4>
+      <p>The author strongly recommends rereading valuable books. Why? Because mastery requires: Exposure → Practice → Repetition → Internalization.</p>
+      <p>He compares this with karate. You don't learn a technique once and automatically master it — you practice it repeatedly. Similarly, rereading a valuable book can be more useful than constantly jumping to new books before you've applied the lessons from the previous one.</p>
+      <p>He says he read Think and Grow Rich as many as three times and referred back to it throughout the year.</p>
+    </div>
+  </section>
+
+  <!-- ================= SCRIBING ================= -->
+  <section data-ch="4" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">4. S = Scribing</div>
+      <h2>Scribing</h2>
+      <p>"Scribing" is basically the author's unusual word for: Writing. He needed an S to complete S.A.V.E.R.S., so he used "Scribing."</p>
+      <p>His favorite form is journaling — around 5–10 minutes. The idea is simple: Thoughts in your head → words on paper. Writing can help reveal ideas and insights that aren't obvious when they're only in your mind.</p>
+
+      <h4>Why journal?</h4>
+      <p>The author says journaling can help you document: insights, ideas, breakthroughs, realizations, successes, lessons, opportunities, personal growth, areas for improvement.</p>
+
+      <h4>The author's first yearly journal review</h4>
+      <p>After his first year of Miracle Morning journaling, he began reading his journal from the beginning on December 31, reviewing the year day by day. This allowed him to see how his mindset changed, what he had accomplished, what actions he had taken, how much he had grown, and lessons he had previously forgotten.</p>
+
+      <h4>Gratitude 2.0</h4>
+      <p>During this review, the author describes what he calls a "Back to the Future" moment — his current self looked back at his previous self's gratitude. So he experienced gratitude twice: past gratitude ("I was grateful for this experience then") and present gratitude ("I'm grateful now for how far I've come since then").</p>
+
+      <h4>Accelerated growth</h4>
+      <p>The author then created two columns — Lessons Learned and New Commitments: What did I learn? What will I do because of it? While reviewing hundreds of journal entries, he recovered dozens of valuable lessons and converted them into new commitments. He says this process contributed greatly to his personal growth.</p>
+
+      <h4>Three additional benefits of journaling</h4>
+      <ul>
+        <li><strong>Gain clarity</strong> — writing forces you to think through something enough to understand it; it can help with clarity, brainstorming, solving problems.</li>
+        <li><strong>Capture ideas</strong> — writing prevents valuable ideas from disappearing.</li>
+        <li><strong>Review lessons</strong> — you can return to what you learned.</li>
+        <li><strong>Acknowledge progress</strong> — you can compare yourself with your previous self and see how far you've progressed.</li>
+      </ul>
+
+      <h4>Gap-focus</h4>
+      <p>This is a particularly important psychological concept in this section. The author calls it Gap-focus: focusing on the distance between where I am and where I want to be — "I'm not good enough yet," "I haven't achieved enough," "I'm behind," "I should be better." The author says constant negative gap-focus can damage confidence and self-image.</p>
+      <p>But here's the interesting part... Gap-focus isn't always bad. The author says it can actually drive high achievers, because wanting to close the gap can motivate people to improve. The problem occurs when the gap becomes "I'm not enough" rather than "I'm excited and committed to reaching my potential."</p>
+
+      <div class="quote-card">
+        <p class="q">"I'm doing the best I can right now" — and — "I can and will do better."</p>
+        <div class="attr">The balanced mindset — avoids feelings of inadequacy while maintaining ambition.</div>
+      </div>
+
+      <h4>The 10-item example</h4>
+      <p>Suppose you have 10 tasks on your to-do list. You complete 6/10. Negative gap-focus makes you think "I failed to finish everything." But the author asks you to notice: you successfully completed 6 things. He argues that people often remember the few things they did wrong while overlooking the many things they did right. Journaling can redirect attention toward what you accomplished, what you're grateful for, and what you'll improve tomorrow.</p>
+    </div>
+
+    <div class="reveal step">
+      <div class="n">01</div>
+      <div>
+        <h3>Choose your format</h3>
+        <p>Physical notebook, digital journal, or journaling app. The author says the choice depends on personal preference: write by hand or type?</p>
+      </div>
+    </div>
+    <div class="reveal step">
+      <div class="n">02</div>
+      <div>
+        <h3>Get a journal</h3>
+        <p>Even a cheap notebook works — the author mentions a 99-cent spiral notebook as an example. But he personally recommends a durable, dated journal with space for all 365 days: if you miss a day, the blank space makes you notice it and can motivate you to catch up.</p>
+      </div>
+    </div>
+    <div class="reveal step">
+      <div class="n">03</div>
+      <div>
+        <h3>Decide what to write</h3>
+        <p>There are countless possibilities — gratitude, dreams, food, workouts, goals, plans, family, commitments, lessons, your day. The author's own method can include: What am I grateful for? What did I accomplish? What should I improve? What specific action will I take? He also sometimes simply writes a dated summary of his day.</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="quote-card">
+        <p class="q">82% of Americans want to write a book</p>
+        <div class="attr">USA Today survey — but the #1 obstacle identified in the passage is that they can't find the time. The author says he was writing the book at 6:03 a.m. during his Miracle Morning.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CUSTOMIZE ================= -->
+  <section data-ch="5" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">Customizing Life S.A.V.E.R.S.</div>
+      <h2>Your Miracle Morning should fit your life</h2>
+      <p>The author emphasizes that you don't have to copy one rigid routine. Your Miracle Morning can be 20 minutes, 30 minutes, 60 minutes, longer on weekends. You can also change the order.</p>
+      <p>For example, some people prefer exercise first — because it wakes them up. The author personally prefers silence → other practices → exercise last — because he can then shower and start the day. The important point: Your Miracle Morning should fit your life.</p>
+
+      <h4>The deeper message of S.A.V.E.R.S.</h4>
+      <p>The author says new experiences are difficult and uncomfortable before they become natural. He gives himself as an example: his first meditation experience was difficult because his mind was racing, and his first yoga experience was uncomfortable because he wasn't flexible and couldn't perform the poses properly. But with practice, both became natural to him.</p>
+      <p>So don't expect Day 1 → perfect routine. Instead: Practice → repetition → familiarity → habit.</p>
+    </div>
+  </section>
+
+  <!-- ================= 6-MINUTE VERSION ================= -->
+  <section data-ch="6" class="ch-section">
+    <div class="reveal">
+      <div class="eyebrow">The 6-Minute Miracle Morning</div>
+      <h2>"I don't have time."</h2>
+      <p>The author recognizes that the biggest objection people have is "I don't have time." So he created a compressed version called The 6-Minute Miracle Morning — designed for extremely busy days, people under pressure, people who feel overwhelmed, and days when adding another routine feels stressful. The author argues that spending at least 6 minutes developing yourself is reasonable even when you're extremely busy.</p>
+      <p>Each of the six S.A.V.E.R.S. gets approximately 1 minute.</p>
+    </div>
+
+    <div class="reveal step">
+      <div class="n">01</div>
+      <div><h3>Silence</h3><p>Sit quietly. Breathe slowly and deeply. You can meditate, pray, practice gratitude, or simply be present. The purpose described is to calm your mind and body and create peace, purpose, and direction.</p></div>
+    </div>
+    <div class="reveal step">
+      <div class="n">02</div>
+      <div><h3>Affirmations</h3><p>Read your affirmations aloud. They remind you of your potential, priorities, commitments, purpose, goals. The author says this can increase internal motivation and confidence and remind you what actions you need to take.</p></div>
+    </div>
+    <div class="reveal step">
+      <div class="n">03</div>
+      <div><h3>Visualization</h3><p>Close your eyes or look at your vision board. Visualize reaching your goals, your day going well, enjoying your work, relationships, accomplishing what you intend to accomplish — experiencing what your desired future would look and feel like.</p></div>
+    </div>
+    <div class="reveal step">
+      <div class="n">04</div>
+      <div><h3>Scribing</h3><p>Write down things you're grateful for, things you're proud of, results you're committed to creating that day. The purpose is to enter the day feeling more empowered, inspired, confident.</p></div>
+    </div>
+    <div class="reveal step">
+      <div class="n">05</div>
+      <div><h3>Reading</h3><p>Read a page or two from a useful book. The idea is to obtain one new idea that you can potentially use that day — it might improve work, relationships, thinking, emotional state, life generally.</p></div>
+    </div>
+    <div class="reveal step">
+      <div class="n">06</div>
+      <div><h3>Exercise</h3><p>Move for 60 seconds — running in place, jumping jacks, push-ups, sit-ups. The goal described is to raise your heart rate and increase alertness and focus.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>The whole system in one picture</h2>
+      <p>S — Silence → Calm your mind. A — Affirmations → Direct your thoughts. V — Visualization → Create a picture of where you're going. E — Exercise → Activate your body. R — Reading → Feed your mind with knowledge. S — Scribing → Capture your thoughts and lessons.</p>
+      <p>Then: Action during the day → Progress toward your goals.</p>
+
+      <h4>The most important lesson</h4>
+      <p>The book isn't ultimately saying: "Wake up early and everything will magically become better."</p>
+      <p>The deeper system is: Morning routine → personal development → clearer thinking → stronger intention → better actions → gradual improvement.</p>
+      <p>And one of the most important warnings in the chapter is: Visualization without action isn't enough. The vision gives you direction. The routine prepares you. But your actions create the actual results.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Key numbers from this section</h2>
+      <div class="stat-table">
+        <div class="stat-row"><div class="score">5 min</div><div class="meaning-txt">author's normal visualization practice</div></div>
+        <div class="stat-row"><div class="score">10–20 min</div><div class="meaning-txt">morning aerobic exercise recommendation (Eben Pagan)</div></div>
+        <div class="stat-row"><div class="score">5–10 min</div><div class="meaning-txt">author's journaling practice</div></div>
+        <div class="stat-row"><div class="score">10 pages/day</div><div class="meaning-txt">recommended reading target</div></div>
+        <div class="stat-row"><div class="score">5 pages/day</div><div class="meaning-txt">acceptable starting point for slower/new readers</div></div>
+        <div class="stat-row"><div class="score">3,650 pages/yr</div><div class="meaning-txt">10 pages × 365 days</div></div>
+        <div class="stat-row"><div class="score">≈18 books/yr</div><div class="meaning-txt">at 200 pages per book</div></div>
+        <div class="stat-row"><div class="score">82%</div><div class="meaning-txt">USA Today survey figure — Americans wanting to write a book</div></div>
+        <div class="stat-row"><div class="score">6 minutes</div><div class="meaning-txt">compressed Miracle Morning</div></div>
+        <div class="stat-row"><div class="score">1 min each</div><div class="meaning-txt">six S.A.V.E.R.S. practices in the compressed version</div></div>
+        <div class="stat-row"><div class="score">365 days</div><div class="meaning-txt">suggested dated journal structure</div></div>
+        <div class="stat-row"><div class="score">12 months</div><div class="meaning-txt">period used in the author's first annual journal review</div></div>
+        <div class="stat-row"><div class="score">6/10 tasks</div><div class="meaning-txt">example used to explain Gap-focus</div></div>
+      </div>
+      <p style="margin-top:20px;">These figures and examples are from the uploaded text — not replaced with newer external statistics.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="reveal">
+      <div class="source">Based on <em>The Miracle Morning</em></div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const root = document.documentElement;
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+    root.style.setProperty('--progress', progress.toFixed(4));
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -8% 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  const chLabels = {
+    1: "Visualization", 2: "Exercise", 3: "Reading", 4: "Scribing",
+    5: "Customizing", 6: "6-Minute Morning"
+  };
+  const dial = document.getElementById('dial');
+  const dialNum = document.getElementById('dial-num');
+  const dialLabel = document.getElementById('dial-label');
+  const chSections = document.querySelectorAll('.ch-section');
+
+  const chIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const level = entry.target.getAttribute('data-ch');
+        dial.style.setProperty('--ch', level);
+        dialNum.textContent = level;
+        dialLabel.textContent = chLabels[level] || '';
+      }
+    });
+  }, { threshold:0.4 });
+  chSections.forEach(el=>chIO.observe(el));
+</script>
+
+</body>
+</html>

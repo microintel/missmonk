@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 5-Step Snooze-Proof Wake-Up Strategy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1229;
+    --indigo:#1B2A4A;
+    --coral:#FF6B4A;
+    --gold:#F4A94A;
+    --cream:#F5EDE1;
+    --slate:#8A93A8;
+    --progress:0;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    background:var(--navy);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  /* ---------- Fixed sunrise background ---------- */
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 60%)), var(--indigo) calc(var(--progress) * 60%)) 0%,
+      color-mix(in srgb, var(--indigo) calc(100% - (var(--progress) * 80%)), var(--coral) calc(var(--progress) * 80%)) 55%,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 90%)), var(--gold) calc(var(--progress) * 90%)) 100%
+    );
+    transition:background 0.15s linear;
+  }
+
+  .horizon-wrap{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    overflow:hidden;
+    pointer-events:none;
+  }
+
+  .sun{
+    position:absolute;
+    left:50%;
+    width:min(46vw,420px);
+    height:min(46vw,420px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE3B0, var(--gold) 55%, var(--coral) 100%);
+    box-shadow:0 0 120px 40px rgba(244,169,74,0.35);
+    transform:translate(-50%, 40vh);
+    top:calc(78vh - (var(--progress) * 92vh));
+    opacity:calc(0.35 + var(--progress) * 0.65);
+    filter:blur(0.5px);
+  }
+
+  .ridge{
+    position:absolute;
+    bottom:-2px;
+    left:0;
+    width:100%;
+    height:14vh;
+    background:linear-gradient(to bottom, transparent, var(--navy) 65%);
+    z-index:1;
+  }
+
+  .stars{
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(245,237,225,0.6) 50%, transparent),
+      radial-gradient(1px 1px at 70% 15%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 85% 45%, rgba(245,237,225,0.7) 50%, transparent),
+      radial-gradient(1px 1px at 45% 60%, rgba(245,237,225,0.4) 50%, transparent),
+      radial-gradient(1px 1px at 10% 75%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 60% 80%, rgba(245,237,225,0.6) 50%, transparent);
+    opacity:calc(1 - var(--progress) * 1.4);
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  section{
+    padding:12vh 0;
+  }
+
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    line-height:1.14;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .hero h1{
+    font-size:clamp(34px,6.4vw,58px);
+    font-weight:700;
+  }
+  .hero p{
+    max-width:56ch;
+    font-size:clamp(16px,2.2vw,19px);
+    color:var(--cream);
+    opacity:0.85;
+    margin-top:24px;
+  }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .scroll-cue::after{
+    content:"";
+    width:1px;
+    height:32px;
+    background:linear-gradient(to bottom, var(--gold), transparent);
+    animation:drip 1.8s ease-in-out infinite;
+  }
+  @keyframes drip{
+    0%,100%{transform:scaleY(0.4);opacity:0.4;}
+    50%{transform:scaleY(1);opacity:1;}
+  }
+
+  /* ---------- Reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- Text blocks ---------- */
+  h2{
+    font-size:clamp(24px,4.4vw,34px);
+    color:var(--gold);
+  }
+  h3{
+    font-size:clamp(19px,3vw,24px);
+    color:var(--cream);
+    margin-top:22px;
+  }
+  h4{
+    font-size:15px;
+    letter-spacing:0.04em;
+    color:var(--slate);
+    text-transform:uppercase;
+    margin-top:18px;
+  }
+  p{
+    font-size:15.5px;
+    color:var(--cream);
+    opacity:0.88;
+    margin-top:10px;
+    max-width:62ch;
+  }
+  ul, ol{
+    margin-top:10px;
+    padding-left:22px;
+    max-width:62ch;
+  }
+  li{
+    font-size:15.5px;
+    color:var(--cream);
+    opacity:0.88;
+    margin-top:6px;
+  }
+  strong{color:var(--gold);font-weight:600;}
+  em{font-style:italic;color:var(--coral);}
+
+  .quote-card{
+    margin-top:26px;
+    border-left:2px solid var(--gold);
+    padding-left:20px;
+  }
+  .quote-card p.q{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(18px,2.6vw,22px);
+    color:var(--gold);
+    opacity:1;
+    max-width:52ch;
+    margin-top:0;
+  }
+  .quote-card .attr{
+    font-size:13px;
+    color:var(--slate);
+    margin-top:8px;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- WUML scale table ---------- */
+  .wuml-table{
+    margin-top:20px;
+    border-top:1px solid rgba(245,237,225,0.12);
+    max-width:62ch;
+  }
+  .wuml-row{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:18px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid rgba(245,237,225,0.12);
+  }
+  .wuml-row .score{
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    color:var(--gold);
+  }
+  .wuml-row .bar-track{
+    height:6px;
+    border-radius:999px;
+    background:rgba(245,237,225,0.1);
+    overflow:hidden;
+  }
+  .wuml-row .bar-fill{
+    height:100%;
+    background:linear-gradient(to right, var(--coral), var(--gold));
+    border-radius:999px;
+  }
+  .wuml-row .meaning-txt{
+    font-size:14px;
+    color:var(--cream);
+    opacity:0.75;
+    margin-top:6px;
+  }
+
+  /* ---------- Steps ---------- */
+  .step{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:20px;
+    padding:30px 0;
+    border-top:1px solid rgba(245,237,225,0.14);
+  }
+  .step:last-of-type{border-bottom:1px solid rgba(245,237,225,0.14);}
+  .step .n{
+    font-family:'Fraunces',serif;
+    font-size:30px;
+    color:rgba(245,237,225,0.28);
+    font-weight:300;
+  }
+  .step h3{margin-top:0;color:var(--cream);}
+
+  /* ---------- Bonus tips grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:28px;
+  }
+  .card{
+    background:rgba(245,237,225,0.05);
+    border:1px solid rgba(245,237,225,0.12);
+    border-radius:14px;
+    padding:22px 20px;
+    backdrop-filter:blur(6px);
+    transition:border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  }
+  .card:hover{
+    border-color:var(--gold);
+    background:rgba(245,237,225,0.08);
+    transform:translateY(-4px);
+  }
+  .card .label{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    color:var(--gold);
+  }
+  .card p{
+    font-size:14px;
+    margin-top:6px;
+  }
+
+  footer{
+    padding:8vh 0 14vh;
+  }
+  footer .source{
+    font-size:13px;
+    color:var(--slate);
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- Progress rail ---------- */
+  .rail{
+    position:fixed;
+    right:24px;
+    top:50%;
+    transform:translateY(-50%);
+    width:2px;
+    height:160px;
+    background:rgba(245,237,225,0.15);
+    z-index:5;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .rail-fill{
+    width:100%;
+    background:linear-gradient(to bottom, var(--gold), var(--coral));
+    height:calc(var(--progress) * 100%);
+    transition:height 0.15s linear;
+  }
+  @media (max-width:760px){
+    .rail{display:none;}
+  }
+
+  /* ---------- WUML gauge ---------- */
+  .wuml-gauge{
+    position:fixed;
+    left:24px;
+    bottom:24px;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 18px 12px 14px;
+    border:1px solid rgba(245,237,225,0.18);
+    border-radius:999px;
+    background:rgba(11,18,41,0.55);
+    backdrop-filter:blur(10px);
+  }
+  .wuml-gauge .dial{
+    position:relative;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:conic-gradient(var(--gold) calc(var(--wuml, 1) / 10 * 360deg), rgba(245,237,225,0.12) 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.6s ease;
+    flex-shrink:0;
+  }
+  .wuml-gauge .dial::before{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border-radius:50%;
+    background:var(--navy);
+  }
+  .wuml-gauge .dial span{
+    position:relative;
+    font-family:'Fraunces',serif;
+    font-size:15px;
+    color:var(--cream);
+  }
+  .wuml-gauge .txt{
+    display:flex;
+    flex-direction:column;
+    line-height:1.25;
+  }
+  .wuml-gauge .label-top{
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+  }
+  .wuml-gauge .label-main{
+    font-size:13px;
+    color:var(--cream);
+    font-weight:600;
+  }
+  @media (max-width:640px){
+    .wuml-gauge{left:14px;bottom:14px;padding:10px 14px 10px 10px;}
+    .wuml-gauge .dial{width:34px;height:34px;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:640px){
+    section{padding:8vh 0;}
+    .grid{grid-template-columns:1fr;}
+    .step{grid-template-columns:40px 1fr;gap:12px;}
+    .step .n{font-size:24px;}
+    .wrap{padding:0 20px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{transition:none;opacity:1;transform:none;}
+    .scroll-cue::after{animation:none;}
+    .sky,.sun,.dial{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="horizon-wrap">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="ridge"></div>
+</div>
+<div class="rail"><div class="rail-fill"></div></div>
+
+<div class="wuml-gauge" aria-live="polite">
+  <div class="dial" id="dial"><span id="dial-num">1</span></div>
+  <div class="txt">
+    <span class="label-top">WUML</span>
+    <span class="label-main" id="dial-label">Wants nothing except more sleep</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">The Miracle Morning</div>
+    <h1>The 5-Step Snooze-Proof Wake-Up Strategy</h1>
+    <p>This section of The Miracle Morning explains why people keep pressing the snooze button and provides a simple 5-step system to wake up more easily—even if you believe you're "not a morning person."</p>
+    <div class="scroll-cue">Scroll toward sunrise</div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Opening Quotes</h2>
+      <div class="quote-card">
+        <p class="q">"If you really think about it, hitting the snooze button in the morning doesn't even make sense. It's like saying, 'I hate getting up in the morning—so I do it over… and over… and over again.'"</p>
+        <div class="attr">— Demetri Martin</div>
+      </div>
+      <p><strong>Meaning:</strong> Every time you press snooze, you're not avoiding waking up—you are forcing yourself to wake up repeatedly. Instead of waking up once, you experience the unpleasant part several times.</p>
+
+      <div class="quote-card" style="margin-top:30px;">
+        <p class="q">"I'd like mornings better if they started later."</p>
+        <div class="attr">— Unknown</div>
+      </div>
+      <p><strong>Meaning:</strong> Many people dislike early mornings. The book acknowledges this feeling before explaining how to overcome it.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Author's Personal Experience</h2>
+      <p>Hal Elrod says:</p>
+      <ul>
+        <li>Before discovering this strategy, he constantly pressed the snooze button.</li>
+        <li>He believed he simply wasn't a "morning person."</li>
+        <li>After using this method, he realized waking up early is a habit that can be trained.</li>
+      </ul>
+      <h4>Key lesson</h4>
+      <p>Being a "morning person" is not a fixed identity. Your habits and mindset matter more.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Important Observation</h2>
+      <p>The author says:</p>
+      <ul>
+        <li>Nobody actually enjoys the moment of waking up early.</li>
+      </ul>
+      <p>But...</p>
+      <ul>
+        <li>Almost everyone enjoys having already woken up early.</li>
+      </ul>
+      <h4>Example</h4>
+      <p>Think about exercising.</p>
+      <p>Before going: "I don't want to go."</p>
+      <p>After finishing: "I'm glad I went."</p>
+      <p>Waking up early works the same way.<br>The difficult part is only the first few minutes.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Wake Up Motivation Level (WUML)</h2>
+      <p>The author introduces a simple concept called:</p>
+      <p><strong>WUML = Wake Up Motivation Level</strong></p>
+      <p>It measures how motivated you feel when your alarm rings.</p>
+      <h4>Scale</h4>
+      <div class="wuml-table">
+        <div class="wuml-row">
+          <div class="score">10</div>
+          <div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+            <div class="meaning-txt">Extremely excited to wake up</div>
+          </div>
+        </div>
+        <div class="wuml-row">
+          <div class="score">8</div>
+          <div>
+            <div class="bar-track"><div class="bar-fill" style="width:80%"></div></div>
+            <div class="meaning-txt">Happy and energetic</div>
+          </div>
+        </div>
+        <div class="wuml-row">
+          <div class="score">5</div>
+          <div>
+            <div class="bar-track"><div class="bar-fill" style="width:50%"></div></div>
+            <div class="meaning-txt">Neutral</div>
+          </div>
+        </div>
+        <div class="wuml-row">
+          <div class="score">2</div>
+          <div>
+            <div class="bar-track"><div class="bar-fill" style="width:20%"></div></div>
+            <div class="meaning-txt">Very sleepy</div>
+          </div>
+        </div>
+        <div class="wuml-row">
+          <div class="score">1</div>
+          <div>
+            <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+            <div class="meaning-txt">Wants nothing except more sleep</div>
+          </div>
+        </div>
+      </div>
+      <p>Most people wake up at: WUML = 1 or 2 because they are waking from deep sleep.<br>This is perfectly normal.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>The Main Problem</h2>
+      <p>At WUML 1 or 2:</p>
+      <ul>
+        <li>Bed feels comfortable.</li>
+        <li>Brain isn't fully awake.</li>
+        <li>Decision-making is poor.</li>
+        <li>Snooze becomes very tempting.</li>
+      </ul>
+      <p>Trying to rely on willpower at this moment is difficult.</p>
+      <p>Instead...<br>The author suggests gradually increasing your motivation level through small actions.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>The Solution</h2>
+      <p>Increase your Wake-Up Motivation Level step by step, instead of expecting yourself to suddenly become energetic.</p>
+      <p>Each small action wakes your body and brain a little more.</p>
+    </div>
+  </section>
+
+  <section data-wuml="1" class="wuml-section">
+    <div class="reveal step">
+      <div class="n">01</div>
+      <div>
+        <h3>Step 1 — Set Your Intentions Before Bed</h3>
+        <p>This is the most important step.</p>
+        <h4>Main idea</h4>
+        <p>Your first thought in the morning is usually your last thought before sleeping.</p>
+        <h4>Example 1: Exciting Morning</h4>
+        <p>Imagine tomorrow is:</p>
+        <ul>
+          <li>Christmas</li>
+          <li>Vacation</li>
+          <li>Your first job</li>
+          <li>Your birthday</li>
+        </ul>
+        <p>Before sleeping you're excited.</p>
+        <p>Morning comes...<br>You wake immediately.<br>No snooze.<br>No struggle.</p>
+        <p>Why?<br>Because your brain was already expecting something exciting.</p>
+        <h4>Example 2: Negative Thinking</h4>
+        <p>Suppose before sleeping you think:</p>
+        <p>"I only have six hours to sleep."<br>or<br>"Tomorrow is going to be terrible."</p>
+        <p>Morning comes...<br>Your first thought becomes:<br>"No! Already morning?"<br>You immediately want more sleep.</p>
+        <h4>Lesson</h4>
+        <p>Before sleeping: Choose positive expectations.</p>
+        <p>Instead of thinking: "Tomorrow will be exhausting."</p>
+        <p>Think: "Tomorrow is another opportunity to improve my life."</p>
+        <p>Your mindset before bed influences your mindset after waking.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-wuml="3" class="wuml-section">
+    <div class="reveal step">
+      <div class="n">02</div>
+      <div>
+        <h3>Step 2 — Put Your Alarm Across the Room</h3>
+        <p>Most people keep their alarm beside the bed.</p>
+        <h4>Problem</h4>
+        <p>Turn alarm off.<br>Lie back down.<br>Fall asleep again.</p>
+        <p>Sometimes people don't even remember turning it off.</p>
+        <p>The author even jokes that he sometimes believed the alarm was part of his dream.</p>
+        <h4>Solution</h4>
+        <p>Place your alarm far enough away that you must:</p>
+        <ul>
+          <li>stand up</li>
+          <li>walk</li>
+          <li>reach it</li>
+        </ul>
+        <p>Movement immediately increases alertness.</p>
+        <h4>Important Principle</h4>
+        <p>Movement creates energy.<br>Standing up already increases your WUML.</p>
+        <p>Approximate improvement:<br><strong>WUML 1 → 2 or 3</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section data-wuml="4" class="wuml-section">
+    <div class="reveal step">
+      <div class="n">03</div>
+      <div>
+        <h3>Step 3 — Brush Your Teeth</h3>
+        <p>Immediately after turning off the alarm:</p>
+        <p>Go straight to the bathroom.<br>Brush your teeth.</p>
+        <p>Also splash:</p>
+        <ul>
+          <li>warm water or</li>
+          <li>cold water</li>
+        </ul>
+        <p>on your face.</p>
+        <h4>Why?</h4>
+        <p>Fresh mouth.<br>Cold or warm water stimulates alertness.<br>Body becomes more awake.</p>
+        <p>WUML increases again.<br>Approximately: <strong>3 → 4</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section data-wuml="5" class="wuml-section">
+    <div class="reveal step">
+      <div class="n">04</div>
+      <div>
+        <h3>Step 4 — Drink a Full Glass of Water</h3>
+        <p>This step is based on body science.</p>
+        <p>During sleep: You go 6–8 hours without drinking water. That causes mild dehydration.</p>
+        <h4>Why dehydration matters</h4>
+        <p>Dehydration often causes:</p>
+        <ul>
+          <li>tiredness</li>
+          <li>fatigue</li>
+          <li>reduced alertness</li>
+        </ul>
+        <p>Many people think: "I need more sleep."</p>
+        <p>Actually...<br>Sometimes they simply need water.</p>
+        <h4>What to do</h4>
+        <p>Drink a full glass of water as soon as possible.</p>
+        <p>The author even fills his glass the night before.</p>
+        <p>Purpose: Replace the water lost overnight.</p>
+        <p>Result:<br><strong>WUML 3 or 4 → 4 or 5</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section data-wuml="6" class="wuml-section">
+    <div class="reveal step">
+      <div class="n">05</div>
+      <div>
+        <h3>Step 5 — Get Dressed or Take a Shower</h3>
+        <p>You have two choices.</p>
+        <h4>Option 1</h4>
+        <p>Put on exercise clothes immediately.<br>This prepares you to start your Miracle Morning routine.</p>
+        <h4>Option 2</h4>
+        <p>Take a shower.<br>Many people feel:</p>
+        <ul>
+          <li>refreshed</li>
+          <li>cleaner</li>
+          <li>fully awake</li>
+        </ul>
+        <p>The author personally chooses exercise clothes because he prefers showering after exercising.<br>But both options work.</p>
+        <p>Now your motivation becomes roughly:<br><strong>WUML 5 → 6</strong></p>
+        <p>At this level: Staying awake requires much less discipline.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Why This Works</h2>
+      <p>Notice something important.</p>
+      <p>The author never asks you to suddenly jump from:<br>WUML 1<br>to<br>WUML 10.</p>
+      <p>Instead:<br>Each tiny action gives a small boost.<br>Like climbing stairs.<br>Small improvements become big improvements.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Quick Review</h2>
+      <h4>Step 1</h4>
+      <p>Set positive intentions before sleeping.<br>Remember: Your first morning thought often comes from your last bedtime thought.</p>
+      <h4>Step 2</h4>
+      <p>Move your alarm clock across the room.<br>Movement creates energy.</p>
+      <h4>Step 3</h4>
+      <p>Brush your teeth.<br>Wash your face.<br>Become more alert.</p>
+      <h4>Step 4</h4>
+      <p>Drink a full glass of water.<br>After 6–8 hours without water, rehydrate your body to reduce fatigue.</p>
+      <h4>Step 5</h4>
+      <p>Either:<br>get dressed, or<br>take a shower.</p>
+      <p>Now you're awake enough to begin your Miracle Morning.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Bonus Wake-Up Tips</h2>
+      <p>The author also shares ideas from other Miracle Morning readers.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">1. Bedtime Affirmations</div>
+          <p>Read positive affirmations before sleeping.<br>Purpose: Create excitement and positive expectations for tomorrow.</p>
+        </div>
+        <div class="card">
+          <div class="label">2. Automatic Bedroom Lights</div>
+          <p>Use a timer so your bedroom lights turn on when the alarm rings.<br>Reason: It's much harder to fall back asleep in a bright room than in a dark one.</p>
+        </div>
+        <div class="card">
+          <div class="label">3. Bedroom Heater Timer (Winter)</div>
+          <p>A reader used a heater timer. It turned on 15 minutes before waking.<br>Result: The room was warm, making it easier to leave the bed instead of hiding under blankets.</p>
+        </div>
+        <div class="card">
+          <div class="label">4. Motivational Alarm Messages</div>
+          <p>Instead of a normal alarm tone, wake up to a short motivational message.<br>The idea: Begin the day with encouragement instead of irritation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Core Psychological Principle</h2>
+      <p>Your motivation isn't fixed.<br>You don't suddenly become energetic.</p>
+      <p>Instead, each small physical action gradually increases your:</p>
+      <ul>
+        <li>alertness</li>
+        <li>energy</li>
+        <li>motivation</li>
+      </ul>
+      <p>until staying awake feels natural.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li>Most people naturally wake at WUML 1–2.</li>
+        <li>After 6–8 hours of sleep without water, mild dehydration contributes to tiredness.</li>
+        <li>Your last thought before sleep often becomes your first thought after waking.</li>
+        <li>Movement creates energy, so placing the alarm across the room helps.</li>
+        <li>Brushing your teeth, washing your face, drinking water, and getting dressed each raise your wake-up motivation.</li>
+        <li>The strategy works because it gradually increases your Wake Up Motivation Level, rather than relying on willpower immediately after the alarm rings.</li>
+        <li>The goal is not to force yourself awake instantly, but to create a pre-planned sequence of small actions that make waking up easier and help you start the day with purpose.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="reveal">
+      <div class="source">Based on <em>The Miracle Morning</em></div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Scroll progress drives the sunrise: 0 at top, 1 at bottom.
+  const root = document.documentElement;
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+    root.style.setProperty('--progress', progress.toFixed(4));
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+
+  // Reveal-on-scroll for content blocks.
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -8% 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  // WUML gauge: tracks which step section is centered in the viewport.
+  const wumlLabels = {
+    1: "Wants nothing except more sleep",
+    3: "Standing and moving",
+    4: "Alert after brushing up",
+    5: "Rehydrated and clearer",
+    6: "Ready to begin the day"
+  };
+  const dial = document.getElementById('dial');
+  const dialNum = document.getElementById('dial-num');
+  const dialLabel = document.getElementById('dial-label');
+  const wumlSections = document.querySelectorAll('.wuml-section');
+
+  const wumlIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const level = entry.target.getAttribute('data-wuml');
+        dial.style.setProperty('--wuml', level);
+        dialNum.textContent = level;
+        dialLabel.textContent = wumlLabels[level] || '';
+      }
+    });
+  }, { threshold:0.5 });
+  wumlSections.forEach(el=>wumlIO.observe(el));
+</script>
+
+</body>
+</html>

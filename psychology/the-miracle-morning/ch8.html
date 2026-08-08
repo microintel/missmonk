@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Miracle Morning — It's Not About the Hour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #14152b;
+    --midnight: #1c2541;
+    --deep-blue: #24406b;
+    --coral: #e9573f;
+    --amber: #f4a261;
+    --gold: #ffd166;
+    --cream: #fdf6ec;
+    --ink: #f2ede2;
+    --ink-dim: rgba(242,237,226,0.68);
+    --hair: rgba(242,237,226,0.14);
+    --max-w: 760px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+    background: linear-gradient(180deg, var(--night), var(--night));
+    transition: background 0.4s linear;
+    overflow-x:hidden;
+  }
+
+  /* faint star / grain field, fades out as page brightens */
+  #stars{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:1; transition: opacity 0.6s ease;
+  }
+  #stars span{
+    position:absolute; width:2px; height:2px; border-radius:50%;
+    background:var(--cream); opacity:0.5;
+  }
+
+  /* horizon + rising sun, signature element */
+  #horizon-wrap{
+    position:fixed;
+    top:0; left:0; right:0;
+    height:100vh;
+    pointer-events:none;
+    z-index:1;
+  }
+  #sun{
+    position:absolute;
+    width:46px; height:46px;
+    border-radius:50%;
+    left:calc(50% - 23px);
+    background: radial-gradient(circle at 35% 30%, var(--gold), var(--coral) 70%);
+    box-shadow: 0 0 40px 10px rgba(244,162,97,0.45);
+    transition: box-shadow 0.4s ease;
+  }
+  #horizon-line{
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:1px;
+    background: linear-gradient(90deg, transparent, var(--hair) 20%, var(--hair) 80%, transparent);
+  }
+
+  header.progress-rail{
+    position:fixed; top:0; left:0; right:0; height:3px; z-index:20;
+    background: rgba(255,255,255,0.06);
+  }
+  #progress-fill{
+    height:100%; width:0%;
+    background: linear-gradient(90deg, var(--coral), var(--amber), var(--gold));
+  }
+
+  main{ position:relative; z-index:2; }
+
+  .wrap{
+    max-width:var(--max-w);
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:8vh;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:22px;
+  }
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:1.02;
+    margin:0 0 26px 0;
+    letter-spacing:-0.01em;
+  }
+  h1.title em{
+    font-style:italic;
+    font-weight:300;
+    color:var(--amber);
+  }
+  .hero-sub{
+    font-size:clamp(1.05rem, 2vw, 1.25rem);
+    color:var(--ink-dim);
+    max-width:56ch;
+    line-height:1.6;
+    font-weight:300;
+  }
+  .scroll-cue{
+    margin-top:64px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue::before{
+    content:"";
+    display:block;
+    width:24px; height:1px;
+    background:var(--ink-dim);
+    animation:pulse-w 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse-w{ 0%,100%{width:24px;opacity:.5;} 50%{width:40px;opacity:1;} }
+
+  .lede{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.3rem, 2.6vw, 1.7rem);
+    line-height:1.5;
+    color:var(--ink);
+    padding:120px 0 100px;
+    border-top:1px solid var(--hair);
+  }
+
+  /* SECTIONS */
+  section.chapter{
+    padding:90px 0;
+    border-top:1px solid var(--hair);
+    opacity:0;
+    transform:translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  section.chapter.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .sec-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    color:var(--amber);
+    letter-spacing:0.1em;
+    margin-bottom:14px;
+  }
+  h2.sec-title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(1.5rem, 3.4vw, 2.15rem);
+    line-height:1.15;
+    margin:0 0 28px 0;
+  }
+  section.chapter p{
+    font-size:1.02rem;
+    line-height:1.75;
+    color:var(--ink-dim);
+    margin:0 0 20px 0;
+    font-weight:300;
+  }
+  section.chapter p strong{
+    color:var(--ink);
+    font-weight:500;
+  }
+  section.chapter ul, section.chapter ol{
+    margin:0 0 24px 0;
+    padding-left:22px;
+  }
+  section.chapter li{
+    font-size:1.02rem;
+    line-height:1.7;
+    color:var(--ink-dim);
+    margin-bottom:8px;
+    font-weight:300;
+  }
+  .callout{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.2rem;
+    line-height:1.55;
+    color:var(--gold);
+    border-left:2px solid var(--coral);
+    padding:4px 0 4px 22px;
+    margin:28px 0;
+  }
+  .quote{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.25rem;
+    line-height:1.55;
+    color:var(--ink);
+    padding:26px 30px;
+    margin:28px 0;
+    background:rgba(255,255,255,0.03);
+    border-radius:2px;
+    position:relative;
+  }
+  .quote::before{
+    content:"“";
+    font-family:'Fraunces', serif;
+    font-size:3rem;
+    color:var(--coral);
+    position:absolute;
+    top:-4px; left:8px;
+    opacity:0.5;
+  }
+  .sub-h{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.85rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin:32px 0 14px 0;
+  }
+  .chain{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.95rem;
+    color:var(--cream);
+    background:rgba(255,255,255,0.03);
+    padding:16px 20px;
+    border-radius:2px;
+    margin:20px 0;
+    line-height:1.9;
+  }
+  .diagram{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.82rem;
+    line-height:1.7;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.03);
+    padding:24px;
+    border-radius:2px;
+    overflow-x:auto;
+    white-space:pre;
+    margin:24px 0;
+  }
+  .example-box{
+    border:1px solid var(--hair);
+    border-radius:2px;
+    padding:22px 24px;
+    margin:24px 0;
+  }
+  .example-box .sub-h{ margin-top:0; }
+  .stat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 24px;
+    margin:24px 0;
+  }
+  .stat{
+    border-top:1px solid var(--hair);
+    padding-top:10px;
+  }
+  .stat .num{
+    font-family:'Fraunces', serif;
+    font-size:1.5rem;
+    color:var(--gold);
+    display:block;
+  }
+  .stat .lbl{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ink-dim);
+    letter-spacing:0.04em;
+  }
+
+  footer{
+    padding:100px 0 120px;
+    border-top:1px solid var(--hair);
+    text-align:left;
+  }
+  footer .final{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(1.6rem, 3.4vw, 2.3rem);
+    line-height:1.3;
+    color:var(--cream);
+    max-width:52ch;
+  }
+  footer .final em{ color:var(--coral); font-style:italic; }
+  footer .sign{
+    margin-top:40px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+
+  @media (max-width: 640px){
+    .wrap{ padding:0 20px; }
+    #sun{ width:30px; height:30px; left:calc(50% - 15px); }
+    .stat-grid{ grid-template-columns:1fr; }
+    section.chapter{ padding:64px 0; }
+    .hero{ padding-top:14vh; min-height:88vh; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="horizon-wrap">
+  <div id="horizon-line"></div>
+  <div id="sun"></div>
+</div>
+<header class="progress-rail"><div id="progress-fill"></div></header>
+
+<main>
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="eyebrow">Chapter Notes · The Miracle Morning</div>
+      <h1 class="title">It’s not the hour.<br><em>It’s the intention.</em></h1>
+      <p class="hero-sub">A framework you redesign around your own life, goals, schedule, and energy — not a rigid 5&nbsp;AM ritual you force yourself into.</p>
+      <div class="scroll-cue">Scroll to read the chapter</div>
+    </section>
+
+    <p class="lede">Absolutely. This chapter is basically saying: The Miracle Morning is not a rigid “wake up at 5 AM and do exactly six things” system. It is a framework that you can redesign around your life, goals, schedule, and energy.</p>
+
+    <section class="chapter">
+      <div class="sec-num">01</div>
+      <h2 class="sec-title">The central idea: customize it</h2>
+      <p>The author says the Miracle Morning is <strong>100% customizable.</strong></p>
+      <p>You can change:</p>
+      <ul>
+        <li>When you wake up</li>
+        <li>When you start your Miracle Morning</li>
+        <li>How long it lasts</li>
+        <li>Which Life S.A.V.E.R.S. activities you do</li>
+        <li>How much time you spend on each activity</li>
+        <li>The order of the activities</li>
+        <li>What you focus on</li>
+        <li>How you adapt it on weekends</li>
+        <li>How you adapt it when travelling or busy</li>
+      </ul>
+      <p class="callout">The goal isn't to create a perfect morning routine. The goal is to create dedicated time for personal development so you can improve yourself and move toward your important goals.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">02</div>
+      <h2 class="sec-title">You don't necessarily have to do it in the morning</h2>
+      <p>This is one of the most important ideas in the chapter.</p>
+      <p>The author says: <strong>You don't actually have to do The Miracle Morning in the morning.</strong></p>
+      <p>That sounds contradictory, but the reasoning is simple. Someone who works during the night has a completely different schedule from someone who sleeps at 9 PM. For example:</p>
+      <div class="example-box">
+        <div class="sub-h">Person A</div>
+        <p style="margin-bottom:4px;">Sleeps: 9:30 PM &nbsp;·&nbsp; Wakes: 5:30 AM</p>
+        <p>Miracle Morning: 5:30–6:30 AM</p>
+        <div class="sub-h">Person B — night-shift worker</div>
+        <p style="margin-bottom:4px;">Sleeps: 8:00 AM &nbsp;·&nbsp; Wakes: 3:00 PM</p>
+        <p style="margin-bottom:0;">Miracle Morning: 3:00–4:00 PM</p>
+      </div>
+      <p>Both can use the same principle.</p>
+      <div class="sub-h">The key principle</div>
+      <p class="callout">Wake up earlier than you normally would — the author typically suggests 30–60 minutes earlier — and use that time for intentional self-development.</p>
+      <p>So the important thing isn't:</p>
+      <div class="quote">“5 AM = success.”</div>
+      <p>It's:</p>
+      <div class="quote">“I deliberately create time for myself before the demands of the day take over.”</div>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">03</div>
+      <h2 class="sec-title">When should you eat?</h2>
+      <p>The author spends considerable time discussing food because eating can affect how you feel during your Miracle Morning.</p>
+      <p>His recommendation is: <strong>Ideally, eat AFTER the Miracle Morning.</strong></p>
+      <p>His reasoning is that digestion requires energy. A large meal can make you feel less alert and more sluggish. Therefore, he argues that doing your S.A.V.E.R.S. before breakfast may help you stay more alert and focused.</p>
+      <div class="sub-h">But what if you're hungry?</div>
+      <p>He doesn't say you must completely avoid food. If you need something before starting, he recommends keeping it small, light, and easy to digest, giving examples such as:</p>
+      <ul>
+        <li>Fresh fruit</li>
+        <li>A smoothie</li>
+      </ul>
+      <p>The important distinction is:</p>
+      <p class="callout">Don't turn your Miracle Morning into a period of discomfort just because you're following a rule. Adapt it to your body and schedule.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">04</div>
+      <h2 class="sec-title">Why you eat matters</h2>
+      <p>The author then makes a bigger argument about food. He says people frequently choose food primarily because:</p>
+      <ul>
+        <li>It tastes good</li>
+        <li>They enjoy it</li>
+        <li>They're emotionally attached to it</li>
+        <li>They're craving it</li>
+        <li>It's convenient</li>
+      </ul>
+      <p>For example, if someone asks:</p>
+      <div class="quote">“Why did you drink that soda?”</div>
+      <p>A common answer might be:</p>
+      <div class="quote">“Because I like it.”</div>
+      <p>The author argues that we should also consider another question:</p>
+      <div class="quote">“What will this food do for me?”</div>
+      <p>Think about:</p>
+      <ul>
+        <li>Energy</li>
+        <li>Health</li>
+        <li>Mental focus</li>
+        <li>Long-term wellbeing</li>
+        <li>How you'll feel afterward</li>
+      </ul>
+      <p>His point isn't:</p>
+      <div class="quote">“Only eat food that doesn't taste good.”</div>
+      <p>Quite the opposite. He argues that you can seek foods that are both enjoyable and supportive of health and sustained energy.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">05</div>
+      <h2 class="sec-title">What should you drink?</h2>
+      <p>The author refers back to his earlier 5-Step Snooze-Proof Wake Up Strategy. Step #4 was:</p>
+      <p class="callout">Drink a full glass of water.</p>
+      <p>The reasoning is that you've gone through the night without drinking, so water can help you rehydrate after sleep.</p>
+      <p>The author also says he typically starts his Miracle Morning by making a cup of tea. He even says he sets his alarm 15 minutes earlier specifically to give himself time to prepare the tea without taking time away from his Miracle Morning.</p>
+      <p>If someone prefers coffee, he says they can have coffee instead.</p>
+      <p>So again, the underlying message is:</p>
+      <p class="callout">Customize the routine rather than blindly copying someone else's routine.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">06</div>
+      <h2 class="sec-title">What about food quality?</h2>
+      <p>The author strongly emphasizes fruits and vegetables and what he calls “living foods.”</p>
+      <p>He claims that a diet rich in fresh fruits and vegetables can:</p>
+      <ul>
+        <li>Increase energy</li>
+        <li>Improve mental focus</li>
+        <li>Support emotional wellbeing</li>
+        <li>Support health</li>
+        <li>Help protect against disease</li>
+      </ul>
+      <p>He then introduces his own Miracle Morning Super-food Smoothie. According to the passage, he describes it as containing:</p>
+      <ul>
+        <li>Complete protein</li>
+        <li>Essential amino acids</li>
+        <li>Antioxidants</li>
+        <li>Omega-3 essential fatty acids</li>
+        <li>Vitamins</li>
+        <li>Minerals</li>
+        <li>Cacao</li>
+        <li>Maca</li>
+        <li>Chia seeds</li>
+      </ul>
+      <p>He associates these ingredients with things such as immunity, cardiovascular health, brain function, energy, mood, and other benefits.</p>
+      <div class="sub-h">Important distinction</div>
+      <p>These nutritional claims are the author's claims in the book, not statistics presented in this chapter. The passage doesn't provide numerical research data proving each claim. So don't interpret statements like “greatly increase your energy levels” as a specific scientific statistic.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">07</div>
+      <h2 class="sec-title">Connect your Miracle Morning to your biggest goals</h2>
+      <p>This is arguably the most useful section.</p>
+      <p>The author says many people use the Miracle Morning specifically to make progress toward goals they've been delaying. Examples include:</p>
+      <ul>
+        <li>Starting a business</li>
+        <li>Writing a book</li>
+        <li>Building something important</li>
+        <li>Developing yourself</li>
+        <li>Pursuing a major dream</li>
+      </ul>
+      <p>The S.A.V.E.R.S. become tools for keeping those goals visible.</p>
+      <div class="example-box">
+        <div class="sub-h">Example</div>
+        <p>Suppose your goal is:</p>
+        <div class="quote" style="margin-top:0;">“I want to become a software developer.”</div>
+        <p>You could customize S.A.V.E.R.S. around that goal.</p>
+        <ul>
+          <li><strong>Silence</strong> → Clear your mind.</li>
+          <li><strong>Affirmations</strong> → Remind yourself what you're working toward and what actions you need to take.</li>
+          <li><strong>Visualization</strong> → Imagine yourself successfully completing projects, solving problems, and becoming capable.</li>
+          <li><strong>Exercise</strong> → Get physically active and energized.</li>
+          <li><strong>Reading</strong> → Learn programming concepts.</li>
+          <li><strong>Scribing</strong> → Write down what you learned, what you're building, and what you'll do today.</li>
+        </ul>
+      </div>
+      <p>Now the Miracle Morning isn't just:</p>
+      <div class="quote">“A morning routine.”</div>
+      <p>It's becoming:</p>
+      <div class="quote">“A daily system for moving toward your desired future.”</div>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">08</div>
+      <h2 class="sec-title">Affirmations should be connected to real action</h2>
+      <p>The author says your affirmations shouldn't just contain vague statements. They should be aligned with:</p>
+      <ul>
+        <li>Your goals</li>
+        <li>Your dreams</li>
+        <li>What you need to believe</li>
+        <li>What you need to think</li>
+        <li>What you need to do</li>
+      </ul>
+      <p>So instead of merely saying:</p>
+      <div class="quote">“I will be successful.”</div>
+      <p>The affirmation should reinforce the behaviors and commitments required to become successful.</p>
+      <div class="sub-h">Why?</div>
+      <p>Because repeatedly reading your affirmations keeps your important priorities mentally visible. The intended chain is:</p>
+      <div class="chain">Affirmation → focus → commitment → action → progress</div>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">09</div>
+      <h2 class="sec-title">Visualization should include the process, not just the result</h2>
+      <p>The author gives another important distinction. Don't only visualize:</p>
+      <div class="quote">“I achieved my dream.”</div>
+      <p>Visualize yourself going through the process of achieving it. For example, if you're writing a book:</p>
+      <p>Don't only imagine holding the finished book. Imagine yourself:</p>
+      <ul>
+        <li>Sitting down to write</li>
+        <li>Continuing when it's difficult</li>
+        <li>Completing chapters</li>
+        <li>Reviewing your work</li>
+        <li>Eventually finishing the project</li>
+      </ul>
+      <p>He also recommends making visualization vivid by involving your senses:</p>
+      <ul>
+        <li>See</li>
+        <li>Feel</li>
+        <li>Taste</li>
+        <li>Touch</li>
+        <li>Smell</li>
+      </ul>
+      <p>The idea is that a vivid mental picture can increase desire and motivation to take action.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">10</div>
+      <h2 class="sec-title">Procrastination: “Do the worst first”</h2>
+      <p>This is one of the chapter's strongest productivity ideas.</p>
+      <p>The author recommends starting your day with your <strong>most important or least enjoyable task.</strong></p>
+      <p>This connects to Brian Tracy's idea from <em>Eat That Frog</em>. The metaphor is: if you have to eat a frog, you'd better do it first.</p>
+      <p>In practical terms, suppose you have three tasks:</p>
+      <ol>
+        <li>Check social media</li>
+        <li>Watch tutorials</li>
+        <li>Complete the difficult project you've been avoiding</li>
+      </ol>
+      <p>Your brain naturally wants #1 and #2 because they're easier. But the author recommends: <strong>Do #3 first.</strong></p>
+      <div class="sub-h">Why?</div>
+      <p>Because completing a difficult task can create a feeling of accomplishment and momentum, making the rest of the day easier to manage. The principle is:</p>
+      <div class="chain">Hard task → completion → psychological momentum → greater productivity</div>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">11</div>
+      <h2 class="sec-title">The Miracle Morning isn't really about the six activities</h2>
+      <p>This is a subtle but extremely important point.</p>
+      <p>The author says the Miracle Morning is more about waking up with purpose than following a specific list of activities.</p>
+      <p>The purpose is to combine:</p>
+      <div class="chain">Intentional time + personal development + proactive action</div>
+      <p>The activities you choose should:</p>
+      <ul>
+        <li>Be proactive.</li>
+        <li>Improve your inner world — your mind, emotions, beliefs, skills.</li>
+        <li>Improve your outer world — your actions, work, relationships, life.</li>
+      </ul>
+      <p>Therefore, if your circumstances require modifications, that's okay.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">12</div>
+      <h2 class="sec-title">What about weekends?</h2>
+      <p>The author originally practiced the Miracle Morning Monday → Friday and took weekends off. But he noticed something.</p>
+      <p>On days when he practiced it, he generally felt:</p>
+      <ul>
+        <li>Better</li>
+        <li>More fulfilled</li>
+        <li>More productive</li>
+      </ul>
+      <p>On days when he slept in, he says he felt:</p>
+      <ul>
+        <li>Lethargic</li>
+        <li>Unfocused</li>
+        <li>Unproductive</li>
+      </ul>
+      <p>So he suggests experimenting for yourself. Try:</p>
+      <div class="example-box">
+        <p style="margin-bottom:4px;">Monday–Friday: Miracle Morning</p>
+        <p style="margin-bottom:0;">Saturday–Sunday: Sleep in</p>
+      </div>
+      <p>Then compare how you actually feel.</p>
+      <p>He also quotes Oprah Winfrey describing the advantage she found in waking early on Saturday: having quiet time to plan and work without weekday time pressure.</p>
+      <p class="callout">The important thing is personal observation, not blindly copying Oprah.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">13</div>
+      <h2 class="sec-title">Don't let the routine become boring</h2>
+      <p>Another major principle: <strong>your Miracle Morning should evolve.</strong></p>
+      <p>The author says he has continued using the S.A.V.E.R.S., but changes elements of his routine to keep things interesting. For example:</p>
+      <div class="sub-h">Exercise</div>
+      <p>Change your exercise routine: monthly, every few months, when your circumstances change.</p>
+      <div class="sub-h">Meditation</div>
+      <p>Try different approaches.</p>
+      <div class="sub-h">Vision board</div>
+      <p>Create one and update it regularly.</p>
+      <div class="sub-h">Affirmations</div>
+      <p>Update them as your goals and vision change.</p>
+      <p>This matters because your life changes, so your routine should change too.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">14</div>
+      <h2 class="sec-title">Your routine should change with your current project</h2>
+      <p>The author gives several examples.</p>
+      <div class="sub-h">Preparing for a speech</div>
+      <p>If he has an upcoming speech or seminar, he allocates more Miracle Morning time toward practicing and rehearsing the presentation.</p>
+      <div class="sub-h">Travelling</div>
+      <p>If he's travelling, he adjusts his routine according to his environment.</p>
+      <div class="sub-h">Late-night event</div>
+      <p>If he has a late-night keynote or workshop, he moves his wake-up time later.</p>
+      <div class="sub-h">Writing the book</div>
+      <p>Ironically, while writing the very book you're reading, he says his Miracle Morning became heavily focused on completing the book. But he didn't completely abandon S.A.V.E.R.S. Instead: he shortened S.A.V.E.R.S. → created more time for writing.</p>
+      <p class="callout">That's a perfect example of customization.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">15</div>
+      <h2 class="sec-title">Humans need variety</h2>
+      <p>The author ends with a broader psychological lesson: repetition can become boring. And when something becomes boring, motivation can decrease.</p>
+      <p>He compares this to relationships and work: if something becomes stale, you have some responsibility for making it interesting again.</p>
+      <p>He recalls advice from an early mentor:</p>
+      <div class="quote">“Whose fault is it that it's boring? And whose responsibility is it to make it fun again?”</div>
+      <p>The lesson is:</p>
+      <p class="callout">Don't just complain about a boring routine. Change the routine.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">16</div>
+      <h2 class="sec-title">The deeper message of the entire chapter</h2>
+      <p>The chapter can be reduced to this:</p>
+      <p class="callout">Don't serve the routine. Make the routine serve you.</p>
+      <p>Your Miracle Morning should fit:</p>
+      <div class="chain">Your schedule ↓ Your lifestyle ↓ Your energy ↓ Your current priorities ↓ Your biggest goals ↓ Your changing circumstances</div>
+      <p>That's why there is no universally perfect Miracle Morning. Someone else's:</p>
+      <div class="example-box">
+        <p style="margin-bottom:0;">5:00 AM + 60 minutes + meditation + exercise + reading</p>
+      </div>
+      <p>doesn't automatically become your perfect routine. Your version might be:</p>
+      <div class="example-box">
+        <p style="margin-bottom:0;">7:00 AM + 20 minutes + reading + planning + exercise</p>
+      </div>
+      <p>or even a shortened version when you're extremely busy. The system is flexible.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">17</div>
+      <h2 class="sec-title">The chapter's practical framework</h2>
+      <p>Think of it like this:</p>
+      <div class="diagram">                YOUR LIFE
+                    ↓
+             Your schedule
+                    ↓
+             Your priorities
+                    ↓
+             Your biggest goal
+                    ↓
+       ┌────────────────────────┐
+       │   CUSTOMIZE S.A.V.E.R.S│
+       └────────────────────────┘
+          ↓    ↓    ↓    ↓
+       Mind  Body  Learning  Action
+                    ↓
+              Daily progress
+                    ↓
+             Long-term change</div>
+      <p>And there are five major customization rules:</p>
+      <ol>
+        <li><strong>Customize the time</strong> — You don't have to wake at a specific “magic” hour.</li>
+        <li><strong>Customize the duration</strong> — You don't need exactly one hour.</li>
+        <li><strong>Customize the activities</strong> — S.A.V.E.R.S. can be shortened or adapted.</li>
+        <li><strong>Customize the content</strong> — Make your affirmations, visualization, reading, and writing relevant to your actual goals.</li>
+        <li><strong>Customize it as life changes</strong> — College, work, travel, projects, weekends, deadlines — all can require adjustments.</li>
+      </ol>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">18</div>
+      <h2 class="sec-title">One important correction about the “statistics”</h2>
+      <p>This chapter contains very little numerical statistical data. The notable numbers/details actually given are:</p>
+      <div class="stat-grid">
+        <div class="stat"><span class="num">100%</span><span class="lbl">customizable — the author's description of the system</span></div>
+        <div class="stat"><span class="num">30–60 min</span><span class="lbl">earlier — his typical suggested earlier wake-up window</span></div>
+        <div class="stat"><span class="num">15 min</span><span class="lbl">earlier — his example of setting his alarm to prepare tea</span></div>
+        <div class="stat"><span class="num">Monthly</span><span class="lbl">or 90 days — how often exercise routines might be changed</span></div>
+        <div class="stat"><span class="num">Mon–Fri</span><span class="lbl">his original weekday-only practice, before experimenting with weekends</span></div>
+        <div class="stat"><span class="num">168 hrs</span><span class="lbl">per week — mentioned in Katie Heaney's opening testimonial</span></div>
+      </div>
+      <p class="callout">The chapter does not provide detailed sample sizes, percentages, controlled-study results, or statistical evidence for most of its health/productivity claims. So when explaining this chapter, it's important not to turn the author's personal experiences and recommendations into scientific statistics.</p>
+    </section>
+
+    <section class="chapter">
+      <div class="sec-num">19</div>
+      <h2 class="sec-title">The simplest way to understand it</h2>
+      <p>Imagine you have a huge goal. You don't have enough time during your normal day because college/work/messages/social media/family responsibilities keep taking your attention.</p>
+      <p>The Miracle Morning says:</p>
+      <p class="callout">Create a protected block of time before your normal responsibilities consume your attention.</p>
+      <p>Then use that time to:</p>
+      <div class="chain">Improve your mind → improve your body → learn → plan → work toward your goals</div>
+      <p>And when life changes:</p>
+      <p class="callout">Change the routine.</p>
+      <p>Not:</p>
+      <div class="quote">“I failed because I couldn't follow the perfect routine.”</div>
+      <p>Instead:</p>
+      <div class="quote">“My life changed, so I'll redesign my routine.”</div>
+    </section>
+
+    <footer>
+      <p class="final">That's the real message of this chapter.</p>
+      <div class="sign">The Miracle Morning · Chapter Notes</div>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+  // scatter stars
+  (function(){
+    const field = document.getElementById('stars');
+    const count = window.innerWidth < 640 ? 50 : 100;
+    let html = '';
+    for(let i=0;i<count;i++){
+      const x = Math.random()*100;
+      const y = Math.random()*100;
+      const s = Math.random()*1.6 + 0.6;
+      const d = (Math.random()*3).toFixed(2);
+      html += `<span style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation:twinkle 4s ease-in-out ${d}s infinite;"></span>`;
+    }
+    field.innerHTML = html;
+  })();
+
+  const styleEl = document.createElement('style');
+  styleEl.textContent = '@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.75}}';
+  document.head.appendChild(styleEl);
+
+  // color stops: night -> dawn -> day, tied to scroll progress
+  const stops = [
+    { p: 0.00, c: [20, 21, 43]   },  // night
+    { p: 0.30, c: [28, 37, 65]   },  // midnight
+    { p: 0.55, c: [63, 45, 74]   },  // dusky violet
+    { p: 0.75, c: [163, 79, 66]  },  // sunrise coral haze
+    { p: 1.00, c: [58, 92, 126]  },  // day blue
+  ];
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function colorAt(p){
+    for(let i=0;i<stops.length-1;i++){
+      const a = stops[i], b = stops[i+1];
+      if(p >= a.p && p <= b.p){
+        const t = (p - a.p) / (b.p - a.p || 1);
+        return [
+          Math.round(lerp(a.c[0], b.c[0], t)),
+          Math.round(lerp(a.c[1], b.c[1], t)),
+          Math.round(lerp(a.c[2], b.c[2], t)),
+        ];
+      }
+    }
+    return stops[stops.length-1].c;
+  }
+
+  const sun = document.getElementById('sun');
+  const progressFill = document.getElementById('progress-fill');
+  const starsField = document.getElementById('stars');
+
+  let ticking = false;
+
+  function updateOnScroll(){
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = (doc.scrollHeight - doc.clientHeight) || 1;
+    const progress = Math.min(Math.max(scrollTop / scrollHeight, 0), 1);
+
+    // background gradient
+    const top = colorAt(progress);
+    const bottom = colorAt(Math.max(progress - 0.18, 0));
+    document.body.style.background =
+      `linear-gradient(180deg, rgb(${bottom.join(',')}), rgb(${top.join(',')}))`;
+
+    // sun arcs across a shallow horizon curve
+    const angle = Math.PI * (1 - progress); // PI -> 0
+    const arcHeight = window.innerHeight * 0.42;
+    const yBase = window.innerHeight * 0.62;
+    const y = yBase - Math.sin(angle) * arcHeight * progress;
+    const x = window.innerWidth * (0.15 + progress * 0.7);
+    sun.style.transform = `translate(${x - window.innerWidth/2}px, ${y - window.innerHeight*0.5}px)`;
+    sun.style.opacity = 0.35 + progress * 0.65;
+    sun.style.boxShadow = `0 0 ${20 + progress*40}px ${6 + progress*10}px rgba(244,162,97,${0.25 + progress*0.35})`;
+
+    // stars fade with dawn
+    starsField.style.opacity = Math.max(1 - progress * 1.4, 0);
+
+    // progress rail
+    progressFill.style.width = (progress * 100).toFixed(1) + '%';
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      requestAnimationFrame(updateOnScroll);
+      ticking = true;
+    }
+  }, { passive:true });
+
+  window.addEventListener('resize', updateOnScroll);
+  updateOnScroll();
+
+  // reveal sections on view
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('section.chapter').forEach(sec => io.observe(sec));
+</script>
+
+</body>
+</html>

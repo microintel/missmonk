@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Unbearable to Unstoppable — The Miracle Morning</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --night-1:#080b16;
+  --night-2:#182446;
+  --dusk-1:#2c1f45;
+  --dusk-2:#8a4f6b;
+  --dawn-1:#8a3a3f;
+  --dawn-2:#f2a44b;
+  --dawn-3:#ffd28a;
+  --cream:#f6efe4;
+  --cream-dim:#cdc3b3;
+  --gold:#f2a44b;
+  --line:rgba(246,239,228,0.14);
+  --sky-a:var(--night-1);
+  --sky-b:var(--night-2);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  color:var(--cream);
+  background:#080b16;
+  overflow-x:hidden;
+  min-height:100%;
+}
+
+/* ---------- animated background ---------- */
+.sky{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  background:linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) 100%);
+  transition:background 2.2s ease;
+}
+.sky::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 120%, rgba(255,209,138,0.25), transparent 60%);
+  opacity:var(--glow,0);
+  transition:opacity 2.2s ease;
+}
+body[data-sky="dusk"] .sky::after{ --glow:0.5; }
+body[data-sky="dawn"] .sky::after{ --glow:0.9; }
+
+.stars{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  opacity:1;
+  transition:opacity 1.8s ease;
+  pointer-events:none;
+}
+body[data-sky="dusk"] .stars{opacity:0.35;}
+body[data-sky="dawn"] .stars{opacity:0;}
+.star{
+  position:absolute;
+  width:2px;height:2px;
+  background:#fff;
+  border-radius:50%;
+  animation:twinkle 4s ease-in-out infinite;
+}
+@keyframes twinkle{
+  0%,100%{opacity:0.15;}
+  50%{opacity:0.9;}
+}
+
+.sun{
+  position:fixed;
+  left:50%;
+  bottom:-10vh;
+  width:120px;height:120px;
+  margin-left:-60px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff2d2, var(--gold) 60%, #d9752f 100%);
+  box-shadow:0 0 80px 20px rgba(242,164,75,0.35);
+  z-index:-1;
+  transition:transform 0.05s linear, opacity 1.8s ease;
+  opacity:0;
+  pointer-events:none;
+}
+body[data-sky="dusk"] .sun{opacity:0.55;}
+body[data-sky="dawn"] .sun{opacity:1;}
+
+.horizon{
+  position:fixed;
+  left:0;right:0;
+  bottom:0;
+  height:14vh;
+  background:linear-gradient(180deg, transparent, rgba(8,11,22,0.9) 70%);
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* ---------- top day bar ---------- */
+.daybar{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:44px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  padding:0 clamp(16px,4vw,40px);
+  background:rgba(8,11,22,0.55);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.daybar-track{
+  position:relative;
+  flex:1;
+  height:3px;
+  background:rgba(246,239,228,0.15);
+  border-radius:2px;
+  margin-right:16px;
+}
+.daybar-fill{
+  position:absolute;
+  top:0;left:0;bottom:0;
+  width:0%;
+  background:linear-gradient(90deg,var(--night-2),var(--dawn-2));
+  border-radius:2px;
+  transition:width 0.05s linear;
+}
+.daybar-dot{
+  position:absolute;
+  top:50%;
+  left:0%;
+  width:9px;height:9px;
+  margin-top:-4.5px;margin-left:-4.5px;
+  background:var(--dawn-3);
+  border-radius:50%;
+  box-shadow:0 0 8px 2px rgba(255,210,138,0.8);
+  transition:left 0.05s linear;
+}
+.daybar-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.04em;
+  color:var(--cream-dim);
+  white-space:nowrap;
+}
+
+/* ---------- layout ---------- */
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 clamp(20px,6vw,32px);
+}
+section{
+  position:relative;
+  padding:clamp(70px,12vh,140px) 0;
+}
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.in-view{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:14px;
+  display:block;
+}
+h1,h2,h3{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  line-height:1.08;
+  margin:0 0 18px;
+}
+h2{ font-size:clamp(1.7rem,4vw,2.6rem); }
+h3{ font-size:clamp(1.2rem,2.6vw,1.5rem); font-weight:500; color:var(--dawn-3); }
+p{ font-size:1.05rem; line-height:1.75; color:var(--cream); margin:0 0 20px; }
+p.dim{ color:var(--cream-dim); }
+ul{ margin:0 0 20px; padding-left:1.3em; }
+li{ font-size:1.03rem; line-height:1.7; margin-bottom:6px; }
+.quote{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:clamp(1.1rem,2.4vw,1.5rem);
+  color:var(--dawn-3);
+  border-left:2px solid var(--gold);
+  padding:6px 0 6px 22px;
+  margin:24px 0;
+  line-height:1.4;
+}
+.stat-big{
+  font-family:'Fraunces',serif;
+  font-size:clamp(3rem,10vw,5.5rem);
+  font-weight:700;
+  color:var(--gold);
+  line-height:1;
+  margin-bottom:6px;
+}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding-top:44px;
+}
+.hero .eyebrow{ letter-spacing:0.18em; }
+.hero h1{
+  font-size:clamp(2.4rem,7.5vw,4.6rem);
+  max-width:14ch;
+}
+.hero p{ max-width:46ch; font-size:1.15rem; color:var(--cream-dim);}
+.scrolldown{
+  margin-top:40px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  color:var(--cream-dim);
+  letter-spacing:0.08em;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.scrolldown::after{
+  content:"";
+  width:1px;height:34px;
+  background:linear-gradient(var(--gold),transparent);
+  animation:down 1.8s ease-in-out infinite;
+}
+@keyframes down{
+  0%{transform:scaleY(0.3);transform-origin:top;}
+  50%{transform:scaleY(1);transform-origin:top;}
+  50.1%{transform-origin:bottom;}
+  100%{transform:scaleY(0.3);transform-origin:bottom;}
+}
+
+/* ---------- phase timeline (section 5) ---------- */
+.phase-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin:32px 0 12px;
+}
+.phase-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px 16px;
+  background:rgba(255,255,255,0.03);
+}
+.phase-card .days{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem;
+  color:var(--gold);
+  margin-bottom:10px;
+  display:block;
+}
+.phase-card h4{
+  font-family:'Fraunces',serif;
+  font-size:1.25rem;
+  margin:0 0 8px;
+  color:var(--cream);
+}
+.phase-card p{
+  font-size:0.9rem;
+  color:var(--cream-dim);
+  margin:0;
+}
+
+/* ---------- scene sections tinting ---------- */
+.scene{ scroll-margin-top:44px; }
+
+/* ---------- table-style numbers grid (section 16) ---------- */
+.numgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin:28px 0;
+}
+.numchip{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px 14px;
+  background:rgba(255,255,255,0.03);
+}
+.numchip .n{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;
+  font-weight:700;
+  color:var(--gold);
+  display:block;
+  margin-bottom:4px;
+}
+.numchip .d{
+  font-size:0.82rem;
+  color:var(--cream-dim);
+  line-height:1.35;
+}
+
+/* ---------- flow diagram (section 15) ---------- */
+.flow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin:28px 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.82rem;
+}
+.flow span.step{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:8px 16px;
+  color:var(--dawn-3);
+  background:rgba(255,255,255,0.03);
+}
+.flow span.arrow{ color:var(--cream-dim); }
+.identity-box{
+  margin-top:26px;
+  text-align:center;
+  padding:26px;
+  border:1px dashed var(--gold);
+  border-radius:16px;
+}
+.identity-box .quote{ border:none; padding:0; margin:0; }
+
+/* ---------- running story numbers ---------- */
+.milesrow{
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+  margin:24px 0;
+}
+.miles-item{ min-width:110px; }
+.miles-item .stat-big{ font-size:clamp(2rem,6vw,3rem); }
+.miles-item span.label{
+  font-size:0.82rem;
+  color:var(--cream-dim);
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+}
+
+/* ---------- footer ---------- */
+footer{
+  padding:60px 0 100px;
+  border-top:1px solid var(--line);
+  margin-top:40px;
+}
+footer p{ color:var(--cream-dim); font-size:0.95rem; }
+
+@media (max-width:640px){
+  .phase-grid{ grid-template-columns:1fr; }
+  .milesrow{ gap:20px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .reveal{ transition:none; opacity:1; transform:none; }
+  .scrolldown::after{ animation:none; }
+  .star{ animation:none; opacity:0.4; }
+  .sky, .stars, .sun{ transition:none; }
+}
+</style>
+</head>
+<body data-sky="night">
+
+<div class="sky"></div>
+<div class="stars" id="stars"></div>
+<div class="sun" id="sun"></div>
+<div class="horizon"></div>
+
+<div class="daybar">
+  <div class="daybar-track">
+    <div class="daybar-fill" id="daybarFill"></div>
+    <div class="daybar-dot" id="daybarDot"></div>
+  </div>
+  <div class="daybar-label" id="daybarLabel">DAY 1 · UNBEARABLE</div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="eyebrow reveal in-view">The Miracle Morning · From Unbearable to Unstoppable</span>
+    <h1 class="reveal in-view">Your habits<br>create your life.</h1>
+    <p class="reveal in-view">A 30-day framework for building a new habit — from the first unbearable morning to the day it becomes who you are.</p>
+    <div class="scrolldown reveal in-view">SCROLL — DAY 1 BEGINS</div>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">01 · The central idea</span>
+    <h2>Your habits create your life</h2>
+    <p>The author begins with a simple argument: your quality of life is strongly connected to the quality of your habits.</p>
+    <p>If someone is achieving the results they want, the author says they have developed habits that produce and maintain those results. If someone isn't getting the results they want, the problem may be that they haven't established the habits required to produce those results.</p>
+    <p>Therefore, the author considers habit mastery one of the most important skills you can develop. You need to learn to:</p>
+    <ul>
+      <li>Identify the habits you need.</li>
+      <li>Implement them.</li>
+      <li>Maintain them.</li>
+      <li>Remove negative habits that hold you back.</li>
+    </ul>
+    <p class="dim">The CHAPTER defines habits as behaviors that are repeated regularly and tend to occur subconsciously.</p>
+    <div class="quote">"If you don't control your habits, your habits will control you."</div>
+    <p>For example, if you repeatedly wake up late, check your phone immediately, avoid difficult work, procrastinate, and skip exercise — those behaviors can eventually become automatic. The opposite is also possible: waking up at a consistent time, exercising, reading, studying, and working on important goals can become habitual too.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">02 · Why resolutions fail</span>
+    <h2>Why New Year's resolutions usually fail</h2>
+    <p>The book uses New Year's resolutions as an example of habitual failure. It states:</p>
+    <div class="stat-big">&lt;5%</div>
+    <p class="dim">The author says that less than 5% of people stick to their New Year's resolutions.</p>
+    <p>A New Year's resolution is essentially a desired habit change. For example — positive habits: exercise regularly, wake up earlier, read every day. Negative habits to remove: smoking, eating fast food, other unwanted behaviors.</p>
+    <p>The author gives the example of gyms being extremely crowded during the first week of January, while much of that crowd disappears later in the month.</p>
+    <div class="quote">The lesson: wanting to change isn't enough. You need a strategy for maintaining the behavior when motivation disappears.</div>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">03 · Why change feels difficult</span>
+    <h2>Why changing habits feels difficult</h2>
+    <p>The author says we're, to some degree, "addicted to the old." Once a behavior has been reinforced through repetition, changing it can become difficult.</p>
+    <p>The problem isn't necessarily that people don't want to improve. A major problem is: they don't know what to expect during the habit-change process. Without a strategy, people encounter discomfort and interpret that discomfort as evidence that they should stop.</p>
+    <p>Think about waking up early:</p>
+    <ul>
+      <li><strong>Day 1:</strong> "I'm excited to start!"</li>
+      <li><strong>Day 5:</strong> "Why am I doing this?"</li>
+      <li><strong>Day 8:</strong> "I'll start again next week."</li>
+    </ul>
+    <p>The author argues that understanding the stages beforehand helps you continue.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">04 · The 21-day myth</span>
+    <h2>The famous "21-day habit" idea</h2>
+    <p>The CHAPTER discusses the commonly repeated idea that it takes 21 days to form a habit. But the author explains where this idea came from.</p>
+    <p>In the 1960 book <em>Psycho-Cybernetics</em>, Dr. Maxwell Maltz observed that amputees took, on average, about 21 days to adjust to the loss of a limb. The author says this observation was later generalized into the idea that people need 21 days to adjust to major life changes.</p>
+    <p>The CHAPTER also acknowledges that habit formation can depend on the difficulty of the habit.</p>
+    <div class="quote">"You can change any habit in 30 days if you have the right strategy." — based on the author's personal experience and work with hundreds of coaching clients. That's the author's conclusion, not a universal scientific law.</div>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">05 · The system</span>
+    <h2>The 30-day system</h2>
+    <p>This is the most important part. The author divides the 30 days into three phases of 10 days each. Each phase presents different emotional challenges and mental roadblocks.</p>
+    <div class="phase-grid">
+      <div class="phase-card">
+        <span class="days">DAYS 1–10</span>
+        <h4>Unbearable</h4>
+        <p>Very difficult</p>
+      </div>
+      <div class="phase-card">
+        <span class="days">DAYS 11–20</span>
+        <h4>Uncomfortable</h4>
+        <p>Getting easier</p>
+      </div>
+      <div class="phase-card">
+        <span class="days">DAYS 21–30</span>
+        <h4>Unstoppable</h4>
+        <p>Habit becomes rewarding</p>
+      </div>
+    </div>
+    <p>Let's understand each one.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="night">
+    <span class="eyebrow">Phase 1 · Days 1–10</span>
+    <h2>Unbearable</h2>
+    <p>The first ten days can feel extremely difficult. Interestingly, the author says the first few days may actually feel exciting because everything is new. Then the excitement disappears. Reality arrives. You start thinking: "I hate this." Your mind resists. Your body resists. You want to return to your old routine.</p>
+    <h3>Example: waking up early</h3>
+    <p><strong>Alarm:</strong> 6:00 AM<br><strong>Your brain:</strong> "I'm tired. I need more sleep."<br><strong>Then:</strong> Snooze.</p>
+    <p>The important point is that the author says this feeling is temporary. The mistake is thinking "This is what the habit will always feel like." Instead, you should think "This difficult stage is temporary."</p>
+    <div class="stat-big">95%</div>
+    <p class="dim">The author states that 95% of society — the "mediocre majority" in his wording — fail repeatedly to establish habits such as exercising, quitting smoking, improving their diets, sticking to a budget, and other behaviors that could improve their quality of life.</p>
+    <p>The author's message: if you know beforehand that Days 1–10 will be difficult, you won't be as surprised when difficulty appears. Instead of thinking "Something is wrong," you can think "This is Phase 1. I expected it."</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dusk">
+    <span class="eyebrow">Phase 2 · Days 11–20</span>
+    <h2>Uncomfortable</h2>
+    <p>After surviving the first ten days, things become easier. You're beginning to get used to the behavior, develop confidence, and associate the habit with its benefits. But it isn't completely comfortable yet. You still need discipline + commitment — and you may still be tempted to return to your old behavior.</p>
+    <p>For example:</p>
+    <ul>
+      <li><strong>Days 1–10:</strong> "I hate waking up early."</li>
+      <li><strong>Days 11–20:</strong> "I still don't want to wake up early, but I'm getting used to it."</li>
+    </ul>
+    <div class="quote">That's progress. You have moved from UNBEARABLE → UNCOMFORTABLE.</div>
+  </section>
+
+  <section class="scene reveal" data-sky="dusk">
+    <span class="eyebrow">Phase 3 · Days 21–30</span>
+    <h2>Unstoppable</h2>
+    <p>This is where the author says something particularly important happens. Many people believe "I've done this for 21 days, so the habit is finished." The author argues that this is a mistake.</p>
+    <p>According to his framework, the first 20 days primarily involve pain, resistance, and discomfort. Days 21–30 are used to create positive reinforcement and pleasure associated with the habit. This is also where the author says the habit begins becoming part of your identity.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dusk">
+    <span class="eyebrow">06 · Behavior → Identity</span>
+    <h2>Behavior becomes identity</h2>
+    <p>This is one of the strongest ideas in the chapter.</p>
+    <p><strong>At first:</strong> "I'm trying to wake up early."<br><strong>Later:</strong> "I'm someone who wakes up early."</p>
+    <p>The author uses the example of someone changing from "I'm not a morning person" to "I'm a morning person." That's the identity transformation he describes.</p>
+    <div class="quote">The goal isn't simply to do something for 30 days. The deeper goal is to become the kind of person for whom that behavior is normal.</div>
+  </section>
+
+  <section class="scene reveal" data-sky="dusk">
+    <span class="eyebrow">07 · The danger of stopping early</span>
+    <h2>Why stopping after 20 days can be dangerous</h2>
+    <p>The author warns against saying "I've done it for 20 days, so I'll take a few days off." Why? Because you haven't yet completed the final reinforcement stage.</p>
+    <p>According to the book's framework: Days 1–20 = establishing the behavior. Days 21–30 = reinforcing and enjoying the behavior. Taking several days off before completing this process can make it harder to return to the habit.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dusk">
+    <span class="eyebrow">08 · The author's running example</span>
+    <h2>"I am not a runner."</h2>
+    <p>The author then tells a personal story about running. He initially believed he was not a runner. He hadn't intentionally run much since high school. He was also afraid of putting too much pressure on his leg because of a previous accident.</p>
+    <p>Eventually, after encouragement from Jon Berghoff and seeing Katie Fingerhut complete a marathon, he decided to challenge that belief. He started running. His first attempt didn't go smoothly: he injured his ankle and had to try again the next day.</p>
+    <p class="dim">The important part isn't the running itself. It's the change in identity and belief.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">09 · His actual 30-day experience</span>
+    <h2>Days 1–10</h2>
+    <p>The author describes the first ten days as physically painful, mentally challenging, a constant internal battle, filled with thoughts telling him to quit.</p>
+    <div class="quote">"Do what's right, not what's easy." — and he continued.</div>
+    <h3>Days 11–20</h3>
+    <p>Running was still uncomfortable. But something had changed. He didn't hate it as much. For the first time, running every day was becoming a normal part of his life. After almost two weeks, waking up and running was becoming routine.</p>
+    <h3>Days 21–30</h3>
+    <p>Now running became almost enjoyable. He didn't have to fight himself mentally every morning. He would wake up, put on his running shoes, run, and record his miles. The mental battle had largely disappeared. He also used positive affirmations and self-improvement audio while running.</p>
+    <p><strong>"I can't run."</strong> became <strong>"I'm becoming a runner."</strong></p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">10 · The result after 30 days</span>
+    <h2>50 miles, and a first 6-mile run</h2>
+    <p>The author says that 30 days after starting the running habit, he had accumulated 50 miles, including a first 6-mile run.</p>
+    <div class="milesrow">
+      <div class="miles-item"><span class="stat-big">50</span><span class="label">Total miles</span></div>
+      <div class="miles-item"><span class="stat-big">6</span><span class="label">First run, miles</span></div>
+    </div>
+    <p>That was dramatically different from where he started: before, essentially no intentional running. Thirty days later, 6 consecutive miles and 50 total miles.</p>
+    <p>This experience gave him confidence that his previous belief — "I'm not a runner" — wasn't a permanent limitation.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">11 · Raising the goal</span>
+    <h2>Then he raised the goal to 52 miles</h2>
+    <p>After reaching that point, Jon challenged him to run an ultra-marathon of 52 miles. The author accepted. Over the following six months, he says he logged 475 miles, including three 20-mile runs.</p>
+    <div class="milesrow">
+      <div class="miles-item"><span class="stat-big">475</span><span class="label">Miles in 6 months</span></div>
+      <div class="miles-item"><span class="stat-big">3×20</span><span class="label">20-mile runs</span></div>
+    </div>
+    <p>Eventually, he and three others attempted the 52-mile distance.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">12 · The 52-mile challenge</span>
+    <h2>The 52-mile challenge</h2>
+    <p>They started at approximately 3:30 AM. Their plan was: first 26 miles before the official marathon, then the second 26 miles alongside the regular marathon runners.</p>
+    <div class="milesrow">
+      <div class="miles-item"><span class="stat-big">6h 5m</span><span class="label">First 26 miles</span></div>
+      <div class="miles-item"><span class="stat-big">15½h</span><span class="label">Full 52 miles</span></div>
+    </div>
+    <p>The author emphasizes that support and accountability within the group helped them continue. They eventually completed the entire 52 miles in 15½ hours. They finished together.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">13 · The deeper lesson</span>
+    <h2>One foot in front of the other</h2>
+    <p>During the challenge, they adopted a simple principle: keep moving forward.</p>
+    <p>The author uses the physical act of taking one step at a time as a metaphor for life. You don't necessarily need to solve the entire journey today. You need to keep moving toward the destination. One step, another step, another step. Eventually, you cover the distance.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">14 · Freedom from limitations</span>
+    <h2>Freedom from self-imposed limitations</h2>
+    <p>The author says the biggest reward wasn't simply completing 52 miles. It was what the experience did to their beliefs about themselves. They had previously struggled with fear, self-doubt, and perceived limitations. Crossing the finish line gave them what the author calls freedom from self-imposed limitations.</p>
+    <div class="quote">When you deliberately challenge yourself beyond your comfort zone, you can discover that your previous assumptions about what you can do aren't necessarily permanent.</div>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">15 · The chapter in one model</span>
+    <h2>Decision → Identity</h2>
+    <p>Think of habit change like this: 30 days, split into three phases.</p>
+    <div class="flow">
+      <span class="step">Decision</span><span class="arrow">→</span>
+      <span class="step">Repetition</span><span class="arrow">→</span>
+      <span class="step">Resistance</span><span class="arrow">→</span>
+      <span class="step">Adaptation</span><span class="arrow">→</span>
+      <span class="step">Reinforcement</span><span class="arrow">→</span>
+      <span class="step">Identity</span>
+    </div>
+    <div class="phase-grid">
+      <div class="phase-card">
+        <span class="days">DAYS 1–10 · UNBEARABLE</span>
+        <h4>Resistance</h4>
+        <p>"I hate it"</p>
+      </div>
+      <div class="phase-card">
+        <span class="days">DAYS 11–20 · UNCOMFORTABLE</span>
+        <h4>Adaptation</h4>
+        <p>"Getting used to it"</p>
+      </div>
+      <div class="phase-card">
+        <span class="days">DAYS 21–30 · UNSTOPPABLE</span>
+        <h4>Reinforcement</h4>
+        <p>"I enjoy it"</p>
+      </div>
+    </div>
+    <div class="identity-box">
+      <div class="quote">↓ NEW IDENTITY ↓<br>"This is who I am."</div>
+    </div>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">16 · The important numbers</span>
+    <h2>The numbers from this section</h2>
+    <div class="numgrid">
+      <div class="numchip"><span class="n">30 days</span><span class="d">The author's proposed habit-change framework</span></div>
+      <div class="numchip"><span class="n">3 phases</span><span class="d">The 30 days are divided into three stages</span></div>
+      <div class="numchip"><span class="n">10 days</span><span class="d">Each stage lasts 10 days</span></div>
+      <div class="numchip"><span class="n">&lt;5%</span><span class="d">Stated percentage of people who stick to New Year's resolutions</span></div>
+      <div class="numchip"><span class="n">21 days</span><span class="d">Popular habit-formation idea discussed in the chapter</span></div>
+      <div class="numchip"><span class="n">95%</span><span class="d">Stated figure for people who repeatedly fail at various habit changes</span></div>
+      <div class="numchip"><span class="n">50 miles</span><span class="d">Running distance accumulated by the author after 30 days</span></div>
+      <div class="numchip"><span class="n">6 miles</span><span class="d">His first 6-mile run after starting the habit</span></div>
+      <div class="numchip"><span class="n">475 miles</span><span class="d">Miles he says he logged over the following six months</span></div>
+      <div class="numchip"><span class="n">52 miles</span><span class="d">Ultra-marathon challenge</span></div>
+      <div class="numchip"><span class="n">6h 5m</span><span class="d">Time to complete the first 26 miles</span></div>
+      <div class="numchip"><span class="n">15½ hours</span><span class="d">Total time to complete 52 miles</span></div>
+    </div>
+    <p class="dim">The numbers above are claims/data presented in the uploaded book section, not necessarily independently verified statistics.</p>
+  </section>
+
+  <section class="scene reveal" data-sky="dawn">
+    <span class="eyebrow">17 · What the author wants you to do</span>
+    <h2>Which day of the 30-day process are you on?</h2>
+    <p>The chapter ends by connecting this 30-day habit framework to the Miracle Morning 30-Day Life Transformation Challenge. The author describes the Miracle Morning as a daily habit and says that following it consistently for 30 days requires unwavering commitment.</p>
+    <p>So the practical message is: don't ask "Do I feel like doing this today?" Instead ask "What habit am I trying to become consistent with, and which day of the 30-day process am I on?"</p>
+    <p>If Day 4 feels terrible, that doesn't necessarily mean the habit is wrong. According to this chapter's framework, Day 4 is supposed to be difficult. If Day 15 feels uncomfortable, that's also expected. And if Day 25 starts feeling natural, that's the point where you're beginning to associate the habit with positive feelings and incorporate it into your identity.</p>
+    <div class="quote">You aren't merely trying to perform a behavior for 30 days. You're trying to become the person who naturally performs that behavior.</div>
+    <p>That is what the book means by moving "From Unbearable to Unstoppable."</p>
+  </section>
+
+  <footer>
+    <p>Source: <em>The Miracle Morning</em> — "From Unbearable to Unstoppable" chapter summary.</p>
+  </footer>
+
+</main>
+
+<script>
+// ---- generate stars ----
+const starsEl = document.getElementById('stars');
+const STAR_COUNT = 90;
+for(let i=0;i<STAR_COUNT;i++){
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random()*100 + '%';
+  s.style.top = Math.random()*70 + '%';
+  s.style.animationDelay = (Math.random()*4) + 's';
+  s.style.opacity = (0.2 + Math.random()*0.6).toFixed(2);
+  starsEl.appendChild(s);
+}
+
+// ---- scroll-driven sun + day bar ----
+const sun = document.getElementById('sun');
+const fill = document.getElementById('daybarFill');
+const dot = document.getElementById('daybarDot');
+const label = document.getElementById('daybarLabel');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function phaseName(day){
+  if(day <= 10) return 'UNBEARABLE';
+  if(day <= 20) return 'UNCOMFORTABLE';
+  return 'UNSTOPPABLE';
+}
+
+function onScroll(){
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - doc.clientHeight;
+  const frac = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+
+  fill.style.width = (frac*100) + '%';
+  dot.style.left = (frac*100) + '%';
+
+  const day = Math.min(30, Math.max(1, Math.round(frac*30) || 1));
+  label.textContent = 'DAY ' + day + ' · ' + phaseName(day);
+
+  if(!reduceMotion){
+    const sunY = 100 - frac*130; // rises from below horizon to upper sky
+    sun.style.transform = 'translateY(' + sunY + 'vh)';
+  }
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+
+// ---- background sky phase via IntersectionObserver ----
+const scenes = document.querySelectorAll('.scene');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      document.body.setAttribute('data-sky', entry.target.dataset.sky);
+    }
+  });
+}, { threshold: 0.5 });
+scenes.forEach(s => io.observe(s));
+
+// ---- reveal on scroll ----
+const revealEls = document.querySelectorAll('.reveal:not(.in-view)');
+const revealIO = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('in-view');
+      revealIO.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealIO.observe(el));
+</script>
+</body>
+</html>

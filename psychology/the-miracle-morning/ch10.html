@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miracle Morning — 30-Day Life Transformation Challenge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Sky palette — travels from night to full daylight as the page scrolls */
+    --night-top:#171334;
+    --night-bot:#2c2456;
+    --dawn-top:#3a2d63;
+    --dawn-bot:#8a5478;
+    --sunrise-top:#a9558b;
+    --sunrise-bot:#e8734a;
+    --morning-top:#e8a24a;
+    --morning-bot:#f4c869;
+    --day-top:#6fb7d9;
+    --day-bot:#fbe4a8;
+
+    --ink:#221a33;
+    --paper:#fdf6ec;
+    --paper-dim:#f2e6d4;
+    --gold:#f0a63f;
+    --coral:#e8734a;
+    --plum:#4a3f6b;
+    --card:rgba(253,246,236,0.94);
+
+    --serif:"Fraunces", serif;
+    --sans:"Inter", sans-serif;
+    --mono:"JetBrains Mono", monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:var(--sans);
+    color:var(--paper);
+    background: linear-gradient(180deg, var(--night-top), var(--night-bot));
+    min-height:100vh;
+    overflow-x:hidden;
+    transition:background 0.4s linear;
+  }
+
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(180deg, var(--night-top), var(--night-bot));
+    transition:background 0.6s ease-out;
+  }
+
+  #sun{
+    position:fixed;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    left:50%;
+    top:-160px;
+    transform:translateX(-50%);
+    background:radial-gradient(circle at 35% 35%, #fff8e0, var(--gold) 60%, transparent 75%);
+    box-shadow:0 0 80px 30px rgba(240,166,63,0.35);
+    z-index:-1;
+    opacity:0.85;
+    transition:top 0.1s linear, opacity 0.4s ease;
+    pointer-events:none;
+  }
+
+  #stars{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    transition:opacity 0.6s ease;
+  }
+  #stars span{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:#fff;
+    border-radius:50%;
+    opacity:0.7;
+    animation:twinkle 3.5s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:0.15;}
+    50%{opacity:0.9;}
+  }
+
+  .progress-track{
+    position:fixed;
+    top:0; left:0;
+    height:4px;
+    width:100%;
+    z-index:50;
+    background:rgba(255,255,255,0.08);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--plum), var(--coral), var(--gold));
+    transition:width 0.05s linear;
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 1.5rem;
+  }
+
+  header.hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding:6rem 1.5rem 4rem;
+    max-width:760px;
+    margin:0 auto;
+    position:relative;
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:0.75rem;
+    color:var(--gold);
+    margin-bottom:1.25rem;
+    opacity:0;
+    animation:riseIn 0.9s ease forwards 0.1s;
+  }
+
+  h1.title{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(2.4rem, 7vw, 4.4rem);
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    color:var(--paper);
+    opacity:0;
+    animation:riseIn 1s ease forwards 0.25s;
+  }
+
+  .title em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--gold);
+  }
+
+  .thesis{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(1.15rem, 2.6vw, 1.55rem);
+    color:var(--morning-bot, #f4c869);
+    margin-top:1.6rem;
+    max-width:32ch;
+    line-height:1.4;
+    opacity:0;
+    animation:riseIn 1s ease forwards 0.45s;
+  }
+
+  .hero-body{
+    margin-top:2.2rem;
+    font-size:1.05rem;
+    line-height:1.75;
+    max-width:56ch;
+    color:var(--paper-dim);
+    opacity:0;
+    animation:riseIn 1s ease forwards 0.65s;
+  }
+
+  .hero-body strong{color:var(--paper); font-weight:600;}
+
+  .scroll-cue{
+    margin-top:3rem;
+    font-family:var(--mono);
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    opacity:0;
+    animation:riseIn 1s ease forwards 0.9s, bob 2.2s ease-in-out infinite 1.9s;
+  }
+
+  @keyframes riseIn{
+    from{opacity:0; transform:translateY(24px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(6px);}
+  }
+
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:2rem 1.5rem 6rem;
+  }
+
+  section{
+    padding:4.5rem 0;
+    border-top:1px solid rgba(255,255,255,0.12);
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .sec-label{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:0.9rem;
+    display:flex;
+    align-items:center;
+    gap:0.6rem;
+  }
+  .sec-label::before{
+    content:"";
+    width:26px;
+    height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(1.6rem, 4vw, 2.3rem);
+    line-height:1.15;
+    color:var(--paper);
+    margin-bottom:1.2rem;
+  }
+
+  h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.25rem;
+    color:var(--paper);
+    margin:1.6rem 0 0.6rem;
+  }
+
+  p{
+    font-size:1.02rem;
+    line-height:1.75;
+    color:var(--paper-dim);
+    margin-bottom:1rem;
+  }
+
+  .note{
+    font-size:0.95rem;
+    font-style:italic;
+    color:var(--gold);
+    border-left:2px solid var(--gold);
+    padding-left:1rem;
+    margin-top:1.4rem;
+  }
+
+  /* S.A.V.E.R.S. sequence */
+  .savers{
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+    margin:1.8rem 0;
+  }
+  .savers-item{
+    display:grid;
+    grid-template-columns:52px 1fr;
+    gap:1rem;
+    align-items:flex-start;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    padding:1rem 1.15rem;
+    transition:transform 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  }
+  .savers-item:hover{
+    transform:translateX(6px);
+    background:rgba(255,255,255,0.09);
+    border-color:var(--gold);
+  }
+  .savers-letter{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:1.8rem;
+    color:var(--gold);
+    line-height:1;
+  }
+  .savers-text strong{
+    color:var(--paper);
+    font-weight:600;
+    display:block;
+    margin-bottom:0.15rem;
+    font-family:var(--sans);
+  }
+  .savers-text span{
+    color:var(--paper-dim);
+    font-size:0.96rem;
+  }
+
+  .goal-line{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:1.2rem;
+    color:var(--morning-bot,#f4c869);
+    margin-top:1.6rem;
+  }
+
+  /* benefits grid */
+  .develop-list{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1rem;
+    margin:1.6rem 0;
+  }
+  .develop-card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    padding:1.3rem 1rem;
+    text-align:left;
+  }
+  .develop-card h4{
+    font-family:var(--serif);
+    font-size:1.1rem;
+    color:var(--gold);
+    margin-bottom:0.4rem;
+  }
+  .develop-card p{
+    font-size:0.92rem;
+    margin:0;
+    color:var(--paper-dim);
+  }
+
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.5rem;
+    margin-top:1.4rem;
+  }
+  .tag{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    padding:0.35rem 0.8rem;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.25);
+    color:var(--paper);
+  }
+
+  /* stories */
+  .stories{
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+    margin:1.6rem 0;
+  }
+  .story{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:0.3rem;
+    background:rgba(255,255,255,0.05);
+    border-left:3px solid var(--coral);
+    border-radius:0 10px 10px 0;
+    padding:1.1rem 1.3rem;
+  }
+  .story .name{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.05rem;
+    color:var(--paper);
+  }
+  .story .detail{
+    font-size:0.95rem;
+    color:var(--paper-dim);
+    line-height:1.6;
+  }
+
+  /* how to start steps */
+  .steps{
+    counter-reset:step;
+    margin:1.8rem 0;
+  }
+  .step{
+    position:relative;
+    padding:1.2rem 0 1.2rem 3.2rem;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .step:last-child{border-bottom:none;}
+  .step::before{
+    counter-increment:step;
+    content:counter(step);
+    position:absolute;
+    left:0;
+    top:1.2rem;
+    width:2.1rem;
+    height:2.1rem;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-family:var(--mono);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.9rem;
+  }
+  .step h4{
+    font-family:var(--serif);
+    font-size:1.15rem;
+    color:var(--paper);
+    margin-bottom:0.4rem;
+  }
+  .step p{margin-bottom:0.4rem;}
+
+  /* RMS callout */
+  .rms-box{
+    background:linear-gradient(135deg, rgba(232,115,74,0.18), rgba(74,63,107,0.25));
+    border:1px solid rgba(232,115,74,0.4);
+    border-radius:14px;
+    padding:1.8rem;
+    margin-top:1.6rem;
+  }
+  .rms-quote{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--paper);
+    padding:0.9rem 1.2rem;
+    border-left:2px solid var(--gold);
+    margin:1rem 0;
+  }
+
+  /* chain */
+  .chain{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:0.5rem;
+    margin:1.8rem 0;
+    font-family:var(--mono);
+    font-size:0.95rem;
+  }
+  .chain span.node{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    padding:0.5rem 0.9rem;
+    border-radius:8px;
+    color:var(--paper);
+  }
+  .chain .arrow{color:var(--gold);}
+
+  .you-first{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(1.5rem, 4vw, 2rem);
+    text-align:center;
+    color:var(--gold);
+    margin:2rem 0;
+    line-height:1.3;
+  }
+
+  footer.conclusion{
+    text-align:center;
+    padding:5rem 1.5rem 6rem;
+    max-width:680px;
+    margin:0 auto;
+  }
+  footer.conclusion .sec-label{justify-content:center;}
+  footer.conclusion .sec-label::before{display:none;}
+  footer.conclusion p.final{
+    font-family:var(--serif);
+    font-size:clamp(1.3rem, 3.4vw, 1.8rem);
+    line-height:1.5;
+    color:var(--paper);
+    font-style:italic;
+  }
+
+  @media (max-width:640px){
+    .develop-list{grid-template-columns:1fr;}
+    header.hero{padding-top:4.5rem;}
+    .savers-item{grid-template-columns:40px 1fr;}
+    .savers-letter{font-size:1.4rem;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+<div id="sun"></div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<header class="hero">
+  <div class="eyebrow">Book summary · Chapter digest</div>
+  <h1 class="title">🌅 Miracle Morning<br><em>30-Day Life Transformation Challenge</em></h1>
+  <p class="thesis">Extraordinary results come from small improvements repeated every day.</p>
+  <p class="hero-body">
+    The author asks: <strong>can 30 days really transform your life?</strong> He says it transformed his own life and describes thousands of others who reported benefits. But the chapter mainly provides <strong>personal success stories, not scientific proof.</strong>
+  </p>
+  <div class="scroll-cue">↓ scroll to begin the 30 days</div>
+</header>
+
+<main>
+
+  <section class="reveal">
+    <div class="sec-label">01 · The Challenge</div>
+    <h2>What is the 30-day challenge?</h2>
+    <p>For 30 days, practice the <strong>Life S.A.V.E.R.S.</strong> every morning:</p>
+
+    <div class="savers">
+      <div class="savers-item">
+        <div class="savers-letter">S</div>
+        <div class="savers-text"><strong>Silence</strong><span>meditation, prayer, reflection</span></div>
+      </div>
+      <div class="savers-item">
+        <div class="savers-letter">A</div>
+        <div class="savers-text"><strong>Affirmations</strong><span>strengthen useful beliefs and commitments</span></div>
+      </div>
+      <div class="savers-item">
+        <div class="savers-letter">V</div>
+        <div class="savers-text"><strong>Visualization</strong><span>mentally picture your goals and actions</span></div>
+      </div>
+      <div class="savers-item">
+        <div class="savers-letter">E</div>
+        <div class="savers-text"><strong>Exercise</strong><span>move your body</span></div>
+      </div>
+      <div class="savers-item">
+        <div class="savers-letter">R</div>
+        <div class="savers-text"><strong>Reading</strong><span>learn something useful</span></div>
+      </div>
+      <div class="savers-item">
+        <div class="savers-letter">S</div>
+        <div class="savers-text"><strong>Scribing</strong><span>write/journal your thoughts and progress</span></div>
+      </div>
+    </div>
+
+    <p class="goal-line">The goal isn't simply waking up early. The goal is to develop yourself every day.</p>
+  </section>
+
+  <section class="reveal">
+    <div class="sec-label">02 · The Payoff</div>
+    <h2>What can this develop?</h2>
+    <p>The author says the routine helps build:</p>
+
+    <div class="develop-list">
+      <div class="develop-card">
+        <h4>Discipline</h4>
+        <p>doing what you committed to do</p>
+      </div>
+      <div class="develop-card">
+        <h4>Clarity</h4>
+        <p>focusing on what matters</p>
+      </div>
+      <div class="develop-card">
+        <h4>Personal development</h4>
+        <p>becoming more capable of achieving your goals</p>
+      </div>
+    </div>
+
+    <p>He also says people may feel less stressed, more focused, happier, energetic, motivated, and clear about their goals.</p>
+
+    <div class="tags">
+      <span class="tag">less stressed</span>
+      <span class="tag">more focused</span>
+      <span class="tag">happier</span>
+      <span class="tag">energetic</span>
+      <span class="tag">motivated</span>
+      <span class="tag">clear about goals</span>
+    </div>
+
+    <p class="note">These are the author's claimed benefits, not guarantees.</p>
+  </section>
+
+  <section class="reveal">
+    <div class="sec-label">03 · Evidence</div>
+    <h2>Success stories mentioned</h2>
+    <p>The chapter gives several examples:</p>
+
+    <div class="stories">
+      <div class="story">
+        <div class="name">Melanie Deppen</div>
+        <div class="detail">Day 79, without missing a day; said it changed her life.</div>
+      </div>
+      <div class="story">
+        <div class="name">Michael Reeves</div>
+        <div class="detail">College student taking 19 units and working full-time; went from waking around 7–9 AM to consistently waking at 5 AM.</div>
+      </div>
+      <div class="story">
+        <div class="name">Natanya Green</div>
+        <div class="detail">Began in December 2009 at UC Davis; reported major changes in less than two months, including better grades and multiple income streams.</div>
+      </div>
+      <div class="story">
+        <div class="name">Ray Ciafardini</div>
+        <div class="detail">Reported being on his 83rd consecutive day, with greater clarity, energy, and focus.</div>
+      </div>
+      <div class="story">
+        <div class="name">Rob Leroy</div>
+        <div class="detail">Said working on himself daily helped turn around his struggling business.</div>
+      </div>
+    </div>
+
+    <p class="note">Important: These are testimonials, so they show what individuals reported — not controlled evidence that Miracle Morning caused all those outcomes.</p>
+  </section>
+
+  <section class="reveal">
+    <div class="sec-label">04 · Getting Started</div>
+    <h2>How to start</h2>
+
+    <div class="steps">
+      <div class="step">
+        <h4>Get prepared</h4>
+        <p>The author recommends using the <strong>30-Day Life Transformation Challenge Fast Start Kit</strong>, containing exercises, affirmations, checklists, and tracking sheets.</p>
+      </div>
+      <div class="step">
+        <h4>Schedule tomorrow's Miracle Morning</h4>
+        <p>Don't merely say "I'll start tomorrow." Actually decide: when, where, what you'll do.</p>
+        <p>He recommends leaving your bedroom so you're less tempted to return to bed.</p>
+      </div>
+      <div class="step">
+        <h4>Prepare the night before</h4>
+        <p>Your Miracle Morning begins before you go to sleep. Prepare yourself mentally, emotionally, and practically.</p>
+      </div>
+      <div class="step">
+        <h4>Get an accountability partner</h4>
+        <p>A friend, family member, classmate, or coworker can help you stay consistent. But don't wait for one — start tomorrow even if you're doing it alone.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="sec-label">05 · The Obstacle</div>
+    <h2>RMS — Rearview Mirror Syndrome</h2>
+    <p>The author says we often let our past control our expectations for the future.</p>
+
+    <div class="rms-box">
+      <p style="margin-bottom:0;">For example:</p>
+      <div class="rms-quote">"I've never been disciplined, so I can't become disciplined."</div>
+      <p style="margin-bottom:0;">The challenge asks you to stop letting your past define what you believe is possible.</p>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="sec-label">06 · The Core Idea</div>
+    <h2>The deepest idea</h2>
+    <p>Your circumstances may not change first.</p>
+    <p><strong style="color:var(--paper);">You change first.</strong></p>
+    <p>You develop:</p>
+
+    <div class="chain">
+      <span class="node">better habits</span><span class="arrow">→</span>
+      <span class="node">better discipline</span><span class="arrow">→</span>
+      <span class="node">better decisions</span><span class="arrow">→</span>
+      <span class="node">better actions</span><span class="arrow">→</span>
+      <span class="node">different direction</span><span class="arrow">→</span>
+      <span class="node">different results</span>
+    </div>
+
+    <p>So the 30 days aren't about magically fixing your life.</p>
+    <p class="you-first">They're about becoming the person who is better prepared to improve it.</p>
+  </section>
+
+</main>
+
+<footer class="conclusion reveal">
+  <div class="sec-label">In one sentence</div>
+  <p class="final">Use 30 days of daily S.A.V.E.R.S. practice to build the discipline, clarity, mindset, and personal-development habits needed to move your life toward your goals.</p>
+</footer>
+
+<script>
+  // Build a scattered star field
+  (function(){
+    const starsEl = document.getElementById('stars');
+    const count = window.innerWidth < 640 ? 40 : 80;
+    const frag = document.createDocumentFragment();
+    for(let i=0;i<count;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + '%';
+      s.style.top = Math.random()*70 + '%';
+      s.style.animationDelay = (Math.random()*3.5) + 's';
+      s.style.width = s.style.height = (Math.random()<0.15 ? '3px' : '2px');
+      frag.appendChild(s);
+    }
+    starsEl.appendChild(frag);
+  })();
+
+  // Scroll-driven sky: night -> dawn -> sunrise -> morning -> daylight
+  const sky = document.getElementById('sky');
+  const stars = document.getElementById('stars');
+  const sun = document.getElementById('sun');
+  const fill = document.getElementById('progressFill');
+
+  const stops = [
+    {top:'#171334', bot:'#2c2456'}, // night
+    {top:'#3a2d63', bot:'#8a5478'}, // dawn
+    {top:'#a9558b', bot:'#e8734a'}, // sunrise
+    {top:'#e8a24a', bot:'#f4c869'}, // morning
+    {top:'#6fb7d9', bot:'#fbe4a8'}  // full daylight
+  ];
+
+  function hexToRgb(hex){
+    const v = parseInt(hex.slice(1),16);
+    return [(v>>16)&255, (v>>8)&255, v&255];
+  }
+  function lerp(a,b,t){ return Math.round(a + (b-a)*t); }
+  function mixHex(h1,h2,t){
+    const c1 = hexToRgb(h1), c2 = hexToRgb(h2);
+    return `rgb(${lerp(c1[0],c2[0],t)}, ${lerp(c1[1],c2[1],t)}, ${lerp(c1[2],c2[2],t)})`;
+  }
+
+  function updateSky(){
+    const doc = document.documentElement;
+    const scrollTop = window.scrollY || doc.scrollTop;
+    const maxScroll = (doc.scrollHeight - window.innerHeight) || 1;
+    const p = Math.min(Math.max(scrollTop / maxScroll, 0), 1);
+
+    fill.style.width = (p*100) + '%';
+
+    const seg = p * (stops.length - 1);
+    const idx = Math.min(Math.floor(seg), stops.length - 2);
+    const t = seg - idx;
+
+    const topColor = mixHex(stops[idx].top, stops[idx+1].top, t);
+    const botColor = mixHex(stops[idx].bot, stops[idx+1].bot, t);
+    sky.style.background = `linear-gradient(180deg, ${topColor}, ${botColor})`;
+
+    // sun rises from top:-160px to about 18vh, then drifts slightly higher as day progresses
+    const sunTop = -160 + p * (window.innerHeight*0.55);
+    sun.style.top = sunTop + 'px';
+    sun.style.opacity = 0.5 + p*0.5;
+
+    stars.style.opacity = Math.max(0, 1 - p*1.8);
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      window.requestAnimationFrame(() => { updateSky(); ticking = false; });
+      ticking = true;
+    }
+  });
+  window.addEventListener('resize', updateSky);
+  updateSky();
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

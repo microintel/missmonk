@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Miracle Morning — The 95% Reality Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1229;
+    --indigo:#1B2A4A;
+    --coral:#FF6B4A;
+    --gold:#F4A94A;
+    --cream:#F5EDE1;
+    --slate:#8A93A8;
+    --progress:0;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    background:var(--navy);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  @media (prefers-reduced-motion:no-preference){
+    html{scroll-behavior:smooth;}
+  }
+
+  /* ---------- Fixed sunrise background ---------- */
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 60%)), var(--indigo) calc(var(--progress) * 60%)) 0%,
+      color-mix(in srgb, var(--indigo) calc(100% - (var(--progress) * 80%)), var(--coral) calc(var(--progress) * 80%)) 55%,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 90%)), var(--gold) calc(var(--progress) * 90%)) 100%
+    );
+    transition:background 0.15s linear;
+  }
+
+  .horizon-wrap{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    overflow:hidden;
+    pointer-events:none;
+  }
+
+  .sun{
+    position:absolute;
+    left:50%;
+    width:min(46vw,420px);
+    height:min(46vw,420px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE3B0, var(--gold) 55%, var(--coral) 100%);
+    box-shadow:0 0 120px 40px rgba(244,169,74,0.35);
+    transform:translate(-50%, 40vh);
+    top:calc(78vh - (var(--progress) * 92vh));
+    opacity:calc(0.35 + var(--progress) * 0.65);
+    filter:blur(0.5px);
+  }
+
+  .ridge{
+    position:absolute;
+    bottom:-2px;
+    left:0;
+    width:100%;
+    height:14vh;
+    background:linear-gradient(to bottom, transparent, var(--navy) 65%);
+    z-index:1;
+  }
+
+  .stars{
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(245,237,225,0.6) 50%, transparent),
+      radial-gradient(1px 1px at 70% 15%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 85% 45%, rgba(245,237,225,0.7) 50%, transparent),
+      radial-gradient(1px 1px at 45% 60%, rgba(245,237,225,0.4) 50%, transparent),
+      radial-gradient(1px 1px at 10% 75%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 60% 80%, rgba(245,237,225,0.6) 50%, transparent);
+    opacity:calc(1 - var(--progress) * 1.4);
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  section{
+    padding:16vh 0;
+  }
+
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    line-height:1.08;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:0;
+    padding-bottom:0;
+  }
+
+  .hero h1{
+    font-size:clamp(44px,9vw,88px);
+    font-weight:700;
+    font-optical-sizing:auto;
+  }
+
+  .hero .accent{
+    color:var(--coral);
+    font-style:italic;
+    font-weight:500;
+  }
+
+  .hero p{
+    max-width:52ch;
+    font-size:clamp(16px,2.2vw,19px);
+    color:var(--cream);
+    opacity:0.85;
+    margin-top:24px;
+  }
+
+  .hero .quote-line{
+    margin-top:22px;
+  }
+
+  .scroll-cue{
+    margin-top:48px;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .scroll-cue::after{
+    content:"";
+    width:1px;
+    height:32px;
+    background:linear-gradient(to bottom, var(--gold), transparent);
+    animation:drip 1.8s ease-in-out infinite;
+  }
+  @keyframes drip{
+    0%,100%{transform:scaleY(0.4);opacity:0.4;}
+    50%{transform:scaleY(1);opacity:1;}
+  }
+
+  /* ---------- Reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- Body copy blocks ---------- */
+  .kicker-num{
+    font-family:'Fraunces',serif;
+    font-size:15px;
+    color:var(--slate);
+    margin-bottom:10px;
+  }
+
+  h2{
+    font-size:clamp(30px,5vw,46px);
+    max-width:16ch;
+  }
+
+  .lede{
+    font-size:clamp(17px,2.4vw,20px);
+    margin-top:20px;
+    max-width:56ch;
+    color:var(--cream);
+    opacity:0.92;
+  }
+
+  .quote-line{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(20px,3vw,26px);
+    color:var(--gold);
+    margin-top:26px;
+    border-left:2px solid var(--gold);
+    padding-left:20px;
+    max-width:44ch;
+  }
+
+  .equation{
+    margin-top:34px;
+    font-family:'Fraunces',serif;
+    font-size:clamp(19px,3vw,24px);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .equation span.tag{
+    padding:6px 16px;
+    border:1px solid rgba(245,237,225,0.25);
+    border-radius:999px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+  }
+  .equation .arrow{color:var(--coral);}
+
+  /* ---------- Struggle grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:44px;
+  }
+  .card{
+    background:rgba(245,237,225,0.05);
+    border:1px solid rgba(245,237,225,0.12);
+    border-radius:14px;
+    padding:26px 22px;
+    backdrop-filter:blur(6px);
+    transition:border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  }
+  .card:hover{
+    border-color:var(--gold);
+    background:rgba(245,237,225,0.08);
+    transform:translateY(-4px);
+  }
+  .card .label{
+    font-family:'Fraunces',serif;
+    font-size:19px;
+    color:var(--gold);
+    margin-bottom:8px;
+  }
+  .card p{
+    font-size:14.5px;
+    color:var(--cream);
+    opacity:0.8;
+  }
+
+  /* ---------- Causes list ---------- */
+  .cause{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:22px;
+    padding:34px 0;
+    border-top:1px solid rgba(245,237,225,0.12);
+  }
+  .cause:last-of-type{border-bottom:1px solid rgba(245,237,225,0.12);}
+  .cause .n{
+    font-family:'Fraunces',serif;
+    font-size:34px;
+    color:rgba(245,237,225,0.28);
+    font-weight:300;
+  }
+  .cause h3{
+    font-size:clamp(19px,2.6vw,23px);
+    margin-bottom:10px;
+    color:var(--cream);
+  }
+  .cause p{
+    font-size:15px;
+    color:var(--cream);
+    opacity:0.78;
+    max-width:56ch;
+  }
+  .cause .flip{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--coral);
+    margin-top:10px;
+    font-size:15px;
+  }
+
+  /* ---------- Line in the sand ---------- */
+  .line-sand{
+    text-align:left;
+  }
+  .commitment{
+    margin-top:32px;
+    padding:30px 28px;
+    border:1px solid var(--gold);
+    border-radius:16px;
+    background:rgba(244,169,74,0.06);
+    font-family:'Fraunces',serif;
+    font-size:clamp(19px,2.8vw,24px);
+    font-style:italic;
+    color:var(--cream);
+  }
+
+  /* ---------- Takeaways ---------- */
+  .takeaways{
+    list-style:none;
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .takeaways li{
+    padding:18px 0;
+    border-top:1px solid rgba(245,237,225,0.12);
+    display:flex;
+    gap:16px;
+    font-size:16px;
+    color:var(--cream);
+    opacity:0.9;
+  }
+  .takeaways li:last-child{border-bottom:1px solid rgba(245,237,225,0.12);}
+  .takeaways li::before{
+    content:"✦";
+    color:var(--gold);
+    flex-shrink:0;
+  }
+
+  footer{
+    padding:10vh 0 14vh;
+    text-align:left;
+  }
+  footer .signoff{
+    font-family:'Fraunces',serif;
+    font-size:clamp(26px,4vw,36px);
+    max-width:20ch;
+  }
+  footer .source{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--slate);
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- Progress rail ---------- */
+  .rail{
+    position:fixed;
+    right:24px;
+    top:50%;
+    transform:translateY(-50%);
+    width:2px;
+    height:160px;
+    background:rgba(245,237,225,0.15);
+    z-index:5;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .rail-fill{
+    width:100%;
+    background:linear-gradient(to bottom, var(--gold), var(--coral));
+    height:calc(var(--progress) * 100%);
+    transition:height 0.15s linear;
+  }
+  @media (max-width:760px){
+    .rail{display:none;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:640px){
+    section{padding:10vh 0;}
+    .grid{grid-template-columns:1fr;}
+    .cause{grid-template-columns:44px 1fr;gap:14px;}
+    .cause .n{font-size:26px;}
+    .wrap{padding:0 20px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .reveal{transition:none;opacity:1;transform:none;}
+    .scroll-cue::after{animation:none;}
+    .sky,.sun{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="horizon-wrap">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="ridge"></div>
+</div>
+<div class="rail"><div class="rail-fill"></div></div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">The 95% Reality Check (Simple Explanation)</div>
+    <h1>Most people never<br>reach their <span class="accent">true potential.</span></h1>
+    <p>They settle for an average life — not because they planned to, but because they slowly accepted it. The book claims that many people end up struggling financially, emotionally, physically, or mentally. The message is not to criticize people, but to make readers ask:</p>
+    <div class="quote-line">"What can I do differently so I don't end up living with regret?"</div>
+    <div class="scroll-cue">Scroll toward sunrise</div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">Step 1</div>
+      <h2>Accept the reality first.</h2>
+      <p class="lede">The first step is to realize that if you keep living exactly like everyone else, you'll probably get similar results. To create an extraordinary life, you must think and act differently.</p>
+      <div class="equation">
+        <span class="tag">Average habits</span>
+        <span class="arrow">→</span>
+        <span class="tag">Average results</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">Where it shows up</div>
+      <h2>The areas people commonly struggle.</h2>
+      <p class="lede">The author says many people struggle in several parts of life:</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Physical</div>
+          <p>Poor health, low energy, unhealthy habits.</p>
+        </div>
+        <div class="card">
+          <div class="label">Mental &amp; Emotional</div>
+          <p>Stress, anxiety, negative thinking.</p>
+        </div>
+        <div class="card">
+          <div class="label">Relationships</div>
+          <p>Broken relationships and poor communication.</p>
+        </div>
+        <div class="card">
+          <div class="label">Financial</div>
+          <p>Debt, overspending, little savings.</p>
+        </div>
+      </div>
+      <div class="quote-line">The main idea is: Most people are living below what they are actually capable of.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">Step 2</div>
+      <h2>Find the causes of mediocrity.</h2>
+      <p class="lede">The author explains several reasons why people don't reach their potential.</p>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">01</div>
+      <div>
+        <h3>Rearview Mirror Syndrome</h3>
+        <p>Many people let their past control their future. They think: "I've always failed." "I'm not smart enough." "I've never done that before." Because they keep repeating old thoughts, they keep getting old results.</p>
+        <div class="flip">Better mindset: Your past does not decide your future. Instead of asking, "What have I always been?" Ask, "Who do I choose to become?"</div>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">02</div>
+      <div>
+        <h3>Lack of Purpose</h3>
+        <p>Many people wake up simply because they have to. Very few wake up because they have a mission. Purpose gives you energy even when motivation disappears. Your purpose doesn't have to be huge. Examples: Become healthier. Learn programming. Help your family. Become the best version of yourself.</p>
+        <div class="flip">Purpose creates direction.</div>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">03</div>
+      <div>
+        <h3>Isolating Incidents</h3>
+        <p>People think: "Skipping today's workout doesn't matter." "Sleeping late once doesn't matter." "I'll study tomorrow." But every small action shapes your identity. Each decision is like casting a vote for the kind of person you're becoming.</p>
+        <div class="flip">Good habits build discipline. Bad habits build laziness.</div>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">04</div>
+      <div>
+        <h3>Lack of Accountability</h3>
+        <p>It's easier to quit when nobody knows your goals.</p>
+        <div class="flip">Having someone check your progress — a friend, mentor, coach, or accountability partner — makes you much more likely to stay consistent.</div>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">05</div>
+      <div>
+        <h3>Mediocre Circle of Influence</h3>
+        <p>You slowly become like the people you spend the most time with. If your friends constantly complain, avoid learning, and make excuses, those habits influence you. If your friends build projects, read books, exercise, and work toward goals, those habits influence you too.</p>
+        <div class="flip">Choose your environment carefully.</div>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">06</div>
+      <div>
+        <h3>Lack of Personal Development</h3>
+        <p>Success usually doesn't grow faster than you grow. If you want a better career, income, health, or relationships, you must become a better version of yourself by learning new skills, improving your habits, and expanding your knowledge.</p>
+      </div>
+    </div>
+
+    <div class="cause reveal">
+      <div class="n">07</div>
+      <div>
+        <h3>Lack of Urgency</h3>
+        <p>Many people say: "I'll start tomorrow." "Next month." "Next year." Tomorrow keeps moving further away.</p>
+        <div class="flip">The author says: The best time to change is now. Today's actions shape tomorrow's life.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal line-sand">
+      <div class="kicker-num">Step 3</div>
+      <h2>Draw your line in the sand.</h2>
+      <p class="lede">Finally, make a decision:</p>
+      <div class="commitment">"I will no longer accept an average version of myself."</div>
+      <p class="lede">Real change begins when you stop waiting and commit to improving yourself a little every day. Being extraordinary doesn't mean becoming rich or famous. It means living your own best life, without unnecessary regret, by continuously learning, growing, and acting on your goals.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">Key takeaways</div>
+      <h2>What to carry forward.</h2>
+      <ul class="takeaways">
+        <li>Most people never reach their full potential because they keep repeating the same habits.</li>
+        <li>Your past does not determine your future.</li>
+        <li>A clear purpose gives direction and motivation.</li>
+        <li>Small daily actions shape who you become.</li>
+        <li>Accountability and supportive people help you stay consistent.</li>
+        <li>Personal growth comes before lasting success.</li>
+        <li>Stop waiting for "someday" — start today.</li>
+        <li>Decide to improve a little every day instead of settling for mediocrity.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="reveal">
+      <div class="signoff">Decide to improve a little every day, instead of settling for mediocrity.</div>
+      <div class="source">Summary based on <em>The Miracle Morning</em></div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Scroll progress drives the sunrise: 0 at top, 1 at bottom.
+  const root = document.documentElement;
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+    root.style.setProperty('--progress', progress.toFixed(4));
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+
+  // Reveal-on-scroll for content blocks.
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -8% 0px' });
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

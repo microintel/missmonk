@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silence & Affirmations — The Miracle Morning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1229;
+    --indigo:#1B2A4A;
+    --coral:#FF6B4A;
+    --gold:#F4A94A;
+    --cream:#F5EDE1;
+    --slate:#8A93A8;
+    --progress:0;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    background:var(--navy);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  /* ---------- Fixed sunrise background (reused from source) ---------- */
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 60%)), var(--indigo) calc(var(--progress) * 60%)) 0%,
+      color-mix(in srgb, var(--indigo) calc(100% - (var(--progress) * 80%)), var(--coral) calc(var(--progress) * 80%)) 55%,
+      color-mix(in srgb, var(--navy) calc(100% - (var(--progress) * 90%)), var(--gold) calc(var(--progress) * 90%)) 100%
+    );
+    transition:background 0.15s linear;
+  }
+
+  .horizon-wrap{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    overflow:hidden;
+    pointer-events:none;
+  }
+
+  .sun{
+    position:absolute;
+    left:50%;
+    width:min(46vw,420px);
+    height:min(46vw,420px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE3B0, var(--gold) 55%, var(--coral) 100%);
+    box-shadow:0 0 120px 40px rgba(244,169,74,0.35);
+    transform:translate(-50%, 40vh);
+    top:calc(78vh - (var(--progress) * 92vh));
+    opacity:calc(0.35 + var(--progress) * 0.65);
+    filter:blur(0.5px);
+  }
+
+  .ridge{
+    position:absolute;
+    bottom:-2px;
+    left:0;
+    width:100%;
+    height:14vh;
+    background:linear-gradient(to bottom, transparent, var(--navy) 65%);
+    z-index:1;
+  }
+
+  .stars{
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(245,237,225,0.6) 50%, transparent),
+      radial-gradient(1px 1px at 70% 15%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 85% 45%, rgba(245,237,225,0.7) 50%, transparent),
+      radial-gradient(1px 1px at 45% 60%, rgba(245,237,225,0.4) 50%, transparent),
+      radial-gradient(1px 1px at 10% 75%, rgba(245,237,225,0.5) 50%, transparent),
+      radial-gradient(1.5px 1.5px at 60% 80%, rgba(245,237,225,0.6) 50%, transparent);
+    opacity:calc(1 - var(--progress) * 1.4);
+  }
+
+  /* ---------- Twinkle animation added for this piece ---------- */
+  .stars{ animation:twinkle 6s ease-in-out infinite; }
+  @keyframes twinkle{
+    0%,100%{opacity:calc(1 - var(--progress) * 1.4);}
+    50%{opacity:calc(0.65 - var(--progress) * 1.1);}
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  section{ padding:16vh 0; }
+
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    line-height:1.08;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .hero h1{
+    font-size:clamp(40px,8.4vw,80px);
+    font-weight:700;
+    font-optical-sizing:auto;
+  }
+  .hero .accent{
+    color:var(--coral);
+    font-style:italic;
+    font-weight:500;
+  }
+  .hero p{
+    max-width:52ch;
+    font-size:clamp(16px,2.2vw,19px);
+    color:var(--cream);
+    opacity:0.85;
+    margin-top:24px;
+  }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .scroll-cue::after{
+    content:"";
+    width:1px;
+    height:32px;
+    background:linear-gradient(to bottom, var(--gold), transparent);
+    animation:drip 1.8s ease-in-out infinite;
+  }
+  @keyframes drip{
+    0%,100%{transform:scaleY(0.4);opacity:0.4;}
+    50%{transform:scaleY(1);opacity:1;}
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  .kicker-num{
+    font-family:'Fraunces',serif;
+    font-size:15px;
+    color:var(--slate);
+    margin-bottom:10px;
+  }
+  h2{ font-size:clamp(28px,5vw,44px); max-width:20ch; }
+  .lede{
+    font-size:clamp(17px,2.4vw,20px);
+    margin-top:20px;
+    max-width:58ch;
+    color:var(--cream);
+    opacity:0.92;
+  }
+
+  .quote-card{
+    margin-top:26px;
+    border-left:2px solid var(--gold);
+    padding-left:20px;
+  }
+  .quote-card p.q{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(19px,2.8vw,24px);
+    color:var(--gold);
+    max-width:48ch;
+  }
+  .quote-card .attr{
+    font-size:13px;
+    color:var(--slate);
+    margin-top:8px;
+    letter-spacing:0.04em;
+  }
+  .quote-card .meaning{
+    font-size:15px;
+    color:var(--cream);
+    opacity:0.78;
+    margin-top:12px;
+    max-width:54ch;
+  }
+
+  /* ---------- Life vs Life Situation ---------- */
+  .flip-strip{
+    display:flex;
+    gap:16px;
+    margin-top:36px;
+    flex-wrap:wrap;
+  }
+  .flip-strip .box{
+    flex:1 1 220px;
+    background:rgba(245,237,225,0.05);
+    border:1px solid rgba(245,237,225,0.12);
+    border-radius:14px;
+    padding:20px 22px;
+    transition:transform 0.4s ease, border-color 0.4s ease;
+  }
+  .flip-strip .box:hover{ transform:translateY(-4px); border-color:var(--gold); }
+  .flip-strip .box .tag{
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--slate);
+  }
+  .flip-strip .box p{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:17px;
+    color:var(--cream);
+    margin-top:10px;
+  }
+  .flip-strip .box ul{ margin-top:10px; padding-left:18px; font-size:14px; opacity:0.85; }
+
+  /* ---------- PIES grid ---------- */
+  .pies-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:40px;
+  }
+  .pies-card{
+    background:rgba(245,237,225,0.05);
+    border:1px solid rgba(245,237,225,0.12);
+    border-radius:14px;
+    padding:24px 22px;
+    backdrop-filter:blur(6px);
+    transition:border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  }
+  .pies-card:hover{
+    border-color:var(--gold);
+    background:rgba(245,237,225,0.08);
+    transform:translateY(-4px);
+  }
+  .pies-card .letter{
+    font-family:'Fraunces',serif;
+    font-size:30px;
+    color:var(--gold);
+  }
+  .pies-card .label{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    margin-top:4px;
+    color:var(--cream);
+  }
+  .pies-card p{
+    font-size:14px;
+    color:var(--cream);
+    opacity:0.75;
+    margin-top:10px;
+  }
+
+  /* ---------- SAVERS chip row ---------- */
+  .savers-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:36px;
+  }
+  .savers-chip{
+    padding:10px 18px;
+    border-radius:999px;
+    border:1px solid rgba(245,237,225,0.18);
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:all 0.4s ease;
+  }
+  .savers-chip .l{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--gold);
+  }
+  .savers-chip.active{
+    border-color:var(--gold);
+    background:rgba(244,169,74,0.1);
+    transform:translateY(-2px);
+  }
+
+  /* ---------- Steps (cause-style, reused pattern) ---------- */
+  .step{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:22px;
+    padding:34px 0;
+    border-top:1px solid rgba(245,237,225,0.12);
+  }
+  .step:last-of-type{ border-bottom:1px solid rgba(245,237,225,0.12); }
+  .step .n{
+    font-family:'Fraunces',serif;
+    font-size:34px;
+    color:rgba(245,237,225,0.28);
+    font-weight:300;
+  }
+  .step h3{
+    font-size:clamp(19px,2.6vw,23px);
+    margin-bottom:10px;
+    color:var(--cream);
+  }
+  .step p{
+    font-size:15px;
+    color:var(--cream);
+    opacity:0.82;
+    max-width:56ch;
+    margin-top:8px;
+  }
+
+  /* ---------- Benefit / bonus tips grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:36px;
+  }
+  .card{
+    background:rgba(245,237,225,0.05);
+    border:1px solid rgba(245,237,225,0.12);
+    border-radius:14px;
+    padding:20px 20px;
+    backdrop-filter:blur(6px);
+    transition:border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+    font-size:14.5px;
+  }
+  .card:hover{
+    border-color:var(--gold);
+    background:rgba(245,237,225,0.08);
+    transform:translateY(-4px);
+  }
+
+  /* ---------- Names strip ---------- */
+  .names-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:24px;
+  }
+  .names-strip span{
+    padding:8px 16px;
+    border:1px solid rgba(245,237,225,0.14);
+    border-radius:999px;
+    font-size:13.5px;
+    color:var(--cream);
+    opacity:0.85;
+  }
+
+  /* ---------- Meditation steps list ---------- */
+  .med-steps{
+    counter-reset:med;
+    margin-top:30px;
+  }
+  .med-steps li{
+    list-style:none;
+    counter-increment:med;
+    display:flex;
+    gap:16px;
+    padding:14px 0;
+    border-top:1px solid rgba(245,237,225,0.12);
+    font-size:15px;
+    opacity:0.9;
+  }
+  .med-steps li:last-child{ border-bottom:1px solid rgba(245,237,225,0.12); }
+  .med-steps li::before{
+    content:counter(med);
+    font-family:'Fraunces',serif;
+    color:var(--gold);
+    flex-shrink:0;
+    width:22px;
+  }
+
+  /* ---------- Stat callout ---------- */
+  .stat-box{
+    margin-top:32px;
+    padding:30px 28px;
+    border:1px solid var(--coral);
+    border-radius:16px;
+    background:rgba(255,107,74,0.07);
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .stat-box .num{
+    font-family:'Fraunces',serif;
+    font-size:clamp(40px,8vw,58px);
+    color:var(--coral);
+    font-weight:700;
+  }
+  .stat-box p{
+    font-size:14.5px;
+    max-width:40ch;
+    opacity:0.85;
+  }
+
+  /* ---------- Commitment box (reused) ---------- */
+  .commitment{
+    margin-top:32px;
+    padding:30px 28px;
+    border:1px solid var(--gold);
+    border-radius:16px;
+    background:rgba(244,169,74,0.06);
+    font-family:'Fraunces',serif;
+    font-size:clamp(19px,2.8vw,24px);
+    font-style:italic;
+    color:var(--cream);
+  }
+
+  /* ---------- Takeaways ---------- */
+  .takeaways{
+    list-style:none;
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .takeaways li{
+    padding:18px 0;
+    border-top:1px solid rgba(245,237,225,0.12);
+    display:flex;
+    gap:16px;
+    font-size:16px;
+    color:var(--cream);
+    opacity:0.9;
+  }
+  .takeaways li:last-child{ border-bottom:1px solid rgba(245,237,225,0.12); }
+  .takeaways li::before{ content:"✦"; color:var(--gold); flex-shrink:0; }
+
+  footer{ padding:10vh 0 14vh; }
+  footer .signoff{
+    font-family:'Fraunces',serif;
+    font-size:clamp(26px,4vw,36px);
+    max-width:22ch;
+  }
+  footer .source{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--slate);
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- Progress rail ---------- */
+  .rail{
+    position:fixed;
+    right:24px;
+    top:50%;
+    transform:translateY(-50%);
+    width:2px;
+    height:160px;
+    background:rgba(245,237,225,0.15);
+    z-index:5;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .rail-fill{
+    width:100%;
+    background:linear-gradient(to bottom, var(--gold), var(--coral));
+    height:calc(var(--progress) * 100%);
+    transition:height 0.15s linear;
+  }
+  @media (max-width:760px){ .rail{ display:none; } }
+
+  /* ---------- Signature element: SAVERS gauge ---------- */
+  .savers-gauge{
+    position:fixed;
+    left:24px;
+    bottom:24px;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 18px 12px 14px;
+    border:1px solid rgba(245,237,225,0.18);
+    border-radius:999px;
+    background:rgba(11,18,41,0.55);
+    backdrop-filter:blur(10px);
+    transition:border-color 0.5s ease;
+  }
+  .savers-gauge .dial{
+    position:relative;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:conic-gradient(var(--gold) calc(var(--step, 1) / 2 * 360deg), rgba(245,237,225,0.12) 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.6s ease;
+    flex-shrink:0;
+  }
+  .savers-gauge .dial::before{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border-radius:50%;
+    background:var(--navy);
+  }
+  .savers-gauge .dial span{
+    position:relative;
+    font-family:'Fraunces',serif;
+    font-size:15px;
+    color:var(--cream);
+  }
+  .savers-gauge .txt{ display:flex; flex-direction:column; line-height:1.25; }
+  .savers-gauge .txt .label-top{
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+  }
+  .savers-gauge .txt .label-main{
+    font-size:13px;
+    color:var(--cream);
+    font-weight:600;
+    transition:opacity 0.3s ease;
+  }
+  @media (max-width:640px){
+    .savers-gauge{ left:14px; bottom:14px; padding:10px 14px 10px 10px; }
+    .savers-gauge .dial{ width:34px; height:34px; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:640px){
+    section{ padding:10vh 0; }
+    .grid{ grid-template-columns:1fr; }
+    .pies-grid{ grid-template-columns:1fr; }
+    .step{ grid-template-columns:44px 1fr; gap:14px; }
+    .step .n{ font-size:26px; }
+    .flip-strip{ flex-direction:column; }
+    .wrap{ padding:0 20px; }
+    .stat-box{ flex-direction:column; gap:8px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .scroll-cue::after{ animation:none; }
+    .sky,.sun,.dial,.stars{ transition:none; animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="horizon-wrap">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="ridge"></div>
+</div>
+<div class="rail"><div class="rail-fill"></div></div>
+
+<div class="savers-gauge" aria-live="polite">
+  <div class="dial" id="dial"><span id="dial-num">S</span></div>
+  <div class="txt">
+    <span class="label-top">Life S.A.V.E.R.S.</span>
+    <span class="label-main" id="dial-label">Silence</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">The Miracle Morning · Chapter Summary</div>
+    <h1>Change yourself <span class="accent">first.</span><br>Your circumstances follow.</h1>
+    <p>This chapter introduces the first two habits of the Life S.A.V.E.R.S. method — Silence and Affirmations — and makes the case that lasting success starts on the inside, not with your external situation.</p>
+    <div class="scroll-cue">Scroll toward sunrise</div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">The problem</div>
+      <h2>The Potential Gap</h2>
+      <p class="lede">Many people live far below what they're truly capable of. The author calls this distance the Potential Gap — the space between who you are today and who you're capable of becoming.</p>
+      <div class="quote-card">
+        <p class="q">Know what to do. Think about it. Plan for it. Still don't do it.</p>
+        <div class="meaning">That's the pattern behind the gap — and it leaves people feeling stressed, overwhelmed, frustrated, unfulfilled, and average instead of extraordinary.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">The key distinction</div>
+      <h2>Your Life vs. Your Life Situation</h2>
+      <p class="lede">One of the chapter's central ideas: don't confuse the two. Your Life Situation is what's happening around you. Your Life is what's happening inside you — and only one of them is fully within your control.</p>
+      <div class="flip-strip">
+        <div class="box">
+          <div class="tag">Life Situation — external</div>
+          <ul>
+            <li>Money</li>
+            <li>Job</li>
+            <li>College</li>
+            <li>Family</li>
+            <li>Relationships</li>
+            <li>Environment</li>
+          </ul>
+        </div>
+        <div class="box">
+          <div class="tag">Life — internal</div>
+          <p>Your P.I.E.S. — always shaping how you experience everything else.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">The four inner areas</div>
+      <h2>P.I.E.S.</h2>
+      <p class="lede">Improve your inner world across these four areas, and the author's central claim is that your outer world naturally improves over time.</p>
+      <div class="pies-grid">
+        <div class="pies-card">
+          <div class="letter">P</div>
+          <div class="label">Physical</div>
+          <p>Your body, health, and energy.</p>
+        </div>
+        <div class="pies-card">
+          <div class="letter">I</div>
+          <div class="label">Intellectual</div>
+          <p>Your knowledge, thinking, and learning.</p>
+        </div>
+        <div class="pies-card">
+          <div class="letter">E</div>
+          <div class="label">Emotional</div>
+          <p>Your feelings, attitude, and emotional control.</p>
+        </div>
+        <div class="pies-card">
+          <div class="letter">S</div>
+          <div class="label">Spiritual</div>
+          <p>Your purpose, values, faith, and inner peace.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">The daily system</div>
+      <h2>The Life S.A.V.E.R.S.</h2>
+      <p class="lede">Six habits, practiced daily, designed to grow your inner world. This chapter covers only the first two — Silence and Affirmations.</p>
+      <div class="savers-row">
+        <div class="savers-chip active"><span class="l">S</span> Silence</div>
+        <div class="savers-chip active"><span class="l">A</span> Affirmations</div>
+        <div class="savers-chip"><span class="l">V</span> Visualization</div>
+        <div class="savers-chip"><span class="l">E</span> Exercise</div>
+        <div class="savers-chip"><span class="l">R</span> Reading</div>
+        <div class="savers-chip"><span class="l">S</span> Scribing</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-step="1" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">01 · S = Silence</div>
+      <h2>Purposeful Silence</h2>
+      <p class="lede">Silence isn't just sitting without noise — it's intentional quiet time meant to calm the mind, reduce stress, improve clarity, increase focus, and mentally prepare you before the day begins.</p>
+    </div>
+  </section>
+
+  <section data-step="1" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">Why it matters</div>
+      <h2>Most mornings are rushed or lazy. Neither prepares you.</h2>
+      <div class="flip-strip">
+        <div class="box">
+          <div class="tag">Type 1 — Rushed</div>
+          <ul>
+            <li>Running late</li>
+            <li>Thinking about work</li>
+            <li>Notifications, pressure, stress</li>
+          </ul>
+        </div>
+        <div class="box">
+          <div class="tag">Type 2 — Lazy</div>
+          <ul>
+            <li>Feeling sleepy</li>
+            <li>No motivation</li>
+            <li>Low energy</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:28px;">Purposeful silence, by contrast, creates calm, focus, self-awareness, and better decisions from the first minutes of the day.</p>
+    </div>
+  </section>
+
+  <section data-step="1" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">How to practice it</div>
+      <h2>Choose one or more.</h2>
+      <div class="grid">
+        <div class="card">Meditation</div>
+        <div class="card">Prayer</div>
+        <div class="card">Reflection</div>
+        <div class="card">Deep breathing</div>
+        <div class="card">Gratitude</div>
+        <div class="card">— relax mind and body</div>
+      </div>
+      <div class="quote-card" style="margin-top:34px;">
+        <p class="q">Don't stay in bed.</p>
+        <div class="meaning">Practicing silence in bed raises the odds you'll just fall back asleep. Move to another spot with your morning materials ready first.</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-step="1" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">Meditation, specifically</div>
+      <h2>Focusing or quieting the mind for a period of time.</h2>
+      <p class="lede">Just a few minutes a day is enough to start. The chapter cites research linking regular meditation with:</p>
+      <div class="grid">
+        <div class="card">Changes in metabolism</div>
+        <div class="card">Lower blood pressure</div>
+        <div class="card">Brain activation changes</div>
+        <div class="card">Stress reduction</div>
+        <div class="card">Pain relief</div>
+        <div class="card">Better sleep</div>
+        <div class="card">Better focus & concentration</div>
+        <div class="card">Increased lifespan</div>
+      </div>
+      <p class="lede" style="margin-top:30px;">Public figures cited as advocates of meditation:</p>
+      <div class="names-strip">
+        <span>Jerry Seinfeld</span>
+        <span>Sting</span>
+        <span>Russell Simmons</span>
+        <span>Oprah Winfrey</span>
+        <span>Rick Goings, Tupperware CEO</span>
+      </div>
+    </div>
+  </section>
+
+  <section data-step="1" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">Try it</div>
+      <h2>Miracle Morning Meditation Steps</h2>
+      <ul class="med-steps">
+        <li>Sit somewhere quiet.</li>
+        <li>Sit upright, comfortably.</li>
+        <li>Close your eyes or look downward.</li>
+        <li>Breathe slowly.</li>
+        <li>Focus only on breathing.</li>
+        <li>If thoughts appear, notice them and return to your breath.</li>
+        <li>Stay fully present.</li>
+        <li>Optionally repeat a calming phrase — "I breathe in peace," "I breathe out love."</li>
+      </ul>
+      <p class="lede" style="margin-top:24px;">The goal isn't to eliminate thoughts — it's to avoid getting carried away by them. The author needed 3–4 weeks of daily practice before it felt comfortable. Beginners can start with 5 minutes.</p>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">02 · A = Affirmations</div>
+      <h2>Statements that shape your mindset and behavior.</h2>
+      <p class="lede">Affirmations aren't magic — they work by consistently reinforcing constructive beliefs and actions until you become the kind of person who can achieve your goals.</p>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">The starting problem</div>
+      <h2>Everyone runs an internal dialogue.</h2>
+      <p class="lede">Often it's automatic, based on past experience, negative, and limiting. Rather than let old thoughts run on autopilot, the author recommends deliberately writing affirmations that match the person you want to become.</p>
+      <div class="stat-box">
+        <div class="num">80%</div>
+        <p>of women report self-deprecating thoughts during the day — about body image, job performance, or others' opinions. The author notes men likely experience this too, though perhaps less.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">The author's story</div>
+      <h2>"My brain could heal."</h2>
+      <p class="lede">After a serious brain injury, the author believed for years he had a terrible memory. He wrote a daily affirmation: his brain could heal, his memory could improve, and it was getting better every day. After about two months of repeating it, he noticed a real change in his confidence and behavior around remembering things — evidence, he argues, of belief shaping action.</p>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">The underlying idea</div>
+      <h2>Beliefs are mental programming.</h2>
+      <p class="lede">That programming comes from parents, teachers, friends, society, personal experience, and self-talk. Negative programming limits potential; positive programming is built through consistent affirmations paired with repeated action.</p>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">How to write one</div>
+      <h2>Five Steps to Effective Affirmations</h2>
+      <div class="step">
+        <div class="n">01</div>
+        <div><h3>What you want</h3><p>Clearly define your ideal outcome.</p></div>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <div><h3>Why you want it</h3><p>Identify the deeper purpose that motivates you.</p></div>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <div><h3>Who you need to become</h3><p>Describe the qualities and character required.</p></div>
+      </div>
+      <div class="step">
+        <div class="n">04</div>
+        <div><h3>What actions you will take</h3><p>Specify measurable, consistent behaviors — frequency and timing — starting with manageable goals.</p></div>
+      </div>
+      <div class="step">
+        <div class="n">05</div>
+        <div><h3>Inspirational quotes or philosophies</h3><p>Add ideas that reinforce your desired mindset.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-step="2" class="savers-section">
+    <div class="reveal">
+      <div class="kicker-num">Making it stick</div>
+      <h2>Occasional affirmations work like occasional workouts.</h2>
+      <p class="lede">They work best when you read them daily, feel genuine emotion while saying them, use confident body language if it helps, update them as your goals change, and treat them as a long-term habit rather than a one-time exercise.</p>
+      <div class="commitment">Consistency — not intensity — is what produces meaningful results.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <div class="kicker-num">Key takeaways</div>
+      <h2>What to carry forward.</h2>
+      <ul class="takeaways">
+        <li>The biggest obstacle to success is often the gap between your current self and your potential.</li>
+        <li>Improving your P.I.E.S. (Physical, Intellectual, Emotional, Spiritual) helps improve your life situation.</li>
+        <li>Silence develops calm, clarity, focus, and self-awareness.</li>
+        <li>Meditation is a practical form of purposeful silence, linked to several research-backed benefits.</li>
+        <li>Affirmations reshape habitual thinking by replacing limiting beliefs with purposeful, action-oriented ones.</li>
+        <li>Both should become consistent daily habits as part of the broader Life S.A.V.E.R.S. routine.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="reveal">
+      <div class="signoff">Change your inner world first. The outer one follows.</div>
+      <div class="source">Summary based on <em>The Miracle Morning</em> by Hal Elrod</div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Scroll progress drives the sunrise: 0 at top, 1 at bottom.
+  const root = document.documentElement;
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+    root.style.setProperty('--progress', progress.toFixed(4));
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+
+  // Reveal-on-scroll for content blocks.
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -8% 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  // S.A.V.E.R.S. gauge: tracks whether Silence or Affirmations section is in view.
+  const stepLabels = { 1: "Silence", 2: "Affirmations" };
+  const stepLetters = { 1: "S", 2: "A" };
+  const dial = document.getElementById('dial');
+  const dialNum = document.getElementById('dial-num');
+  const dialLabel = document.getElementById('dial-label');
+  const stepSections = document.querySelectorAll('.savers-section');
+
+  const stepIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const step = entry.target.getAttribute('data-step');
+        dial.style.setProperty('--step', step);
+        dialNum.textContent = stepLetters[step] || '';
+        dialLabel.textContent = stepLabels[step] || '';
+      }
+    });
+  }, { threshold:0.5 });
+  stepSections.forEach(el=>stepIO.observe(el));
+
+  // Highlight the active S.A.V.E.R.S. chip to match the gauge.
+  const chips = document.querySelectorAll('.savers-chip');
+  const chipIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const step = entry.target.getAttribute('data-step');
+        chips.forEach((c,i)=>{
+          c.classList.toggle('active', (step === "1" && i === 0) || (step === "2" && i === 1));
+        });
+      }
+    });
+  }, { threshold:0.5 });
+  stepSections.forEach(el=>chipIO.observe(el));
+</script>
+
+</body>
+</html>
