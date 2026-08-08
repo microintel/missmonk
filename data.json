@@ -48,6 +48,9 @@
     },
     "The Happiness Hypothesis": {
       "author": "Jonathan Haidt"
+    },
+    "The Miracle Morning": {
+      "author": "HAL ELROD"
     }
   },
   "diploma": {
@@ -604,6 +607,19 @@
         "HARMONY AND PURPOSE": "",
         "THE MEANING OF LIFE": ""
       }
+    },
+    "The Miracle Morning": {
+      "Chapter 1 : It’s Time To Wake Up To Your FULL Potential": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch1.html",
+      "Chapter 2 : The Miracle Morning Origin: Born Out of Desperation": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch2.html",
+      "Chapter 3 :  The 95% Reality Check": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch3.html",
+      "Chapter 4 : Why Did YOU Wake Up This Morning?": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch4.html",
+      "Chapter 5 : The 5-Step Snooze-Proof Wake Up Strategy": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch5.html",
+      "Chapter 6.1 : The Life S.A.V.E.R.S. - Six Practices Guaranteed To Save You\rFrom a Life of Unfulfilled Potential": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch6-1.html",
+      "Chapter 6.2 : The Life S.A.V.E.R.S. - Six Practices Guaranteed To Save You\rFrom a Life of Unfulfilled Potential": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch6-2.html",
+      "Chapter 7 : The 6-Minute Miracle": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch7.html",
+      "Chapter 8 : Customizing Your Miracle Morning To Fit Your Lifestyle and\rAchieve Your Highest Goals & Dreams": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch8.html",
+      "Chapter 9 : From Unbearable To Unstoppable": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch9.html",
+      "Chapter 10 : The Miracle Morning 30-Day Life Transformation Challenge": "https://microintel.github.io/missmonk/psychology/the-miracle-morning/ch10.html"
     }
   },
   "Ancient Literature": {
@@ -633,126 +649,125 @@
     "2025-2028 (Reference Syllabus )": {
       "CSE": {
         "Sem 3": {
-        "A PROBABILITY AND INTEGRAL TRANSFORMS": {
-        "Unit 1": {
-        "Probability and Random Variables": {
-        "Probability": {
-        "Definition, Axioms of Probability, Addition Rule, Conditional Probability, Multiplication Rule": ""
-        },
-        "Random Variables": {
-        "Probability Distribution - Discrete and Continuous, Probability Density Function (PDF), Cumulative Distribution Function (CDF), Mean, Variance, Expectation": ""
-        },
-        "Joint Distribution": {
-        "Discrete Joint Probability Distribution, Marginal Distribution, Expectation, Covariance, Rank Correlation": ""
-        }
-        }
-        },
-        "Unit 2": {
-        "Sampling Distribution": {
-        "Probability Distributions": {
-        "Binomial Distribution, Poisson Distribution, Normal Distribution": ""
-        },
-        "Sampling and Testing of Hypothesis": {
-        "Sampling with Replacement, Sampling without Replacement, Sampling Distribution of Means, Estimation, Confidence Intervals for Mean, Statistical Hypothesis, One-tailed Test, Two-tailed Test, Significance Level, Testing of Hypothesis for Large Samples, t-test, Chi-square Test": ""
-        }
-        }
-        },
-        "Unit 3": {
-        "Markov Process": {
-        "Markov Process Concepts": {
-        "Definition, Examples, Transition Probability Matrix (TPM), n-step Transitional Probabilities, Regular Matrices, Ergodic Matrices, Stationary Distribution, States of Markov Process": ""
-        }
-        },
-        "Correlation and Regression": {
-        "Correlation and Regression Concepts": {
-        "Karl Pearson's Coefficient, Regression Lines, Multiple Linear Regression, Rank Correlation": ""
-        }
-        },
-        "Continuous Optimization": {
-        "Unconstrained Optimization": {
-        "Single Variable Function, Fibonacci Search Method": ""
-        }
-        }
-        },
-        "Unit 4": {
-        "Continuous Optimization": {
-        "Optimization Concepts": {
-        "Condition for Local Minima and Maxima, Multivariable Function, Constrained Optimization, Lagrange Multipliers": ""
-        }
-        }
-        },
-        "Unit 5": {
-        "Fourier Series": {
-        "Fourier Series Concepts": {
-        "Euler's Formulae, Dirichlet's Conditions for Fourier Series Expansion, Even and Odd Functions": ""
-        }
-        },
-        "Fourier Transforms": {
-        "Fourier Transform Concepts": {
-        "Complex Fourier Transform, Cosine Transform, Sine Transform, Inverse Fourier Transform": ""
-        }
-        },
-        "Laplace Transforms": {
-        "Laplace Transform Concepts": {
-        "Definition, Transforms of Standard Functions, Laplace Transforms of Periodic Functions, Inverse Laplace Transforms": ""
-        }
-        }
-        }
-        }
-        ,
+          "A PROBABILITY AND INTEGRAL TRANSFORMS": {
+            "Unit 1": {
+              "Probability and Random Variables": {
+                "Probability": {
+                  "Definition, Axioms of Probability, Addition Rule, Conditional Probability, Multiplication Rule": ""
+                },
+                "Random Variables": {
+                  "Probability Distribution - Discrete and Continuous, Probability Density Function (PDF), Cumulative Distribution Function (CDF), Mean, Variance, Expectation": ""
+                },
+                "Joint Distribution": {
+                  "Discrete Joint Probability Distribution, Marginal Distribution, Expectation, Covariance, Rank Correlation": ""
+                }
+              }
+            },
+            "Unit 2": {
+              "Sampling Distribution": {
+                "Probability Distributions": {
+                  "Binomial Distribution, Poisson Distribution, Normal Distribution": ""
+                },
+                "Sampling and Testing of Hypothesis": {
+                  "Sampling with Replacement, Sampling without Replacement, Sampling Distribution of Means, Estimation, Confidence Intervals for Mean, Statistical Hypothesis, One-tailed Test, Two-tailed Test, Significance Level, Testing of Hypothesis for Large Samples, t-test, Chi-square Test": ""
+                }
+              }
+            },
+            "Unit 3": {
+              "Markov Process": {
+                "Markov Process Concepts": {
+                  "Definition, Examples, Transition Probability Matrix (TPM), n-step Transitional Probabilities, Regular Matrices, Ergodic Matrices, Stationary Distribution, States of Markov Process": ""
+                }
+              },
+              "Correlation and Regression": {
+                "Correlation and Regression Concepts": {
+                  "Karl Pearson's Coefficient, Regression Lines, Multiple Linear Regression, Rank Correlation": ""
+                }
+              },
+              "Continuous Optimization": {
+                "Unconstrained Optimization": {
+                  "Single Variable Function, Fibonacci Search Method": ""
+                }
+              }
+            },
+            "Unit 4": {
+              "Continuous Optimization": {
+                "Optimization Concepts": {
+                  "Condition for Local Minima and Maxima, Multivariable Function, Constrained Optimization, Lagrange Multipliers": ""
+                }
+              }
+            },
+            "Unit 5": {
+              "Fourier Series": {
+                "Fourier Series Concepts": {
+                  "Euler's Formulae, Dirichlet's Conditions for Fourier Series Expansion, Even and Odd Functions": ""
+                }
+              },
+              "Fourier Transforms": {
+                "Fourier Transform Concepts": {
+                  "Complex Fourier Transform, Cosine Transform, Sine Transform, Inverse Fourier Transform": ""
+                }
+              },
+              "Laplace Transforms": {
+                "Laplace Transform Concepts": {
+                  "Definition, Transforms of Standard Functions, Laplace Transforms of Periodic Functions, Inverse Laplace Transforms": ""
+                }
+              }
+            }
+          },
           "DESIGN OF ANALOG AND DIGITAL CIRCUITS": {},
           "DATA STRUCTURES USING C": {},
           "COMPUTER ORGANIZATION AND MICROPROCESSORS": {
-          "Unit 1": {
-          "Basic Structure of Computers": {
-          "Computer Fundamentals": {
-          "Computer Types, Functional Units, Basic Operational Concepts, Bus Structures": ""
-          },
-          "Performance": {
-          "Processor Clock, Basic Performance Equation, Pipelining and Superscalar Operation, Clock Rate": ""
-          },
-          "Instructions": {
-          "CISC and RISC, Compiler, Performance Measurement, Multiprocessors and Multi Computers, Historical Perspective": ""
-          },
-          "Machine Instructions and Programs": {
-          "Basic Input/Output Operation, Input/Output Organization, Accessing I/O Devices, Interrupts – Interrupt Hardware, Enabling and Disabling Interrupts, Handling Multiple Devices, Controlling Device Requests, Exceptions": ""
-          }
-          }
-          },
-          "Unit 2": {
-          "Memory and Interfaces": {
-          "Memory Organization": {
-          "Direct Memory Access (DMA), Buses, Interface Circuits, Standard I/O Interfaces (Introduction)": ""
-          },
-          "Memory System": {
-          "Speed-Size-Cost, Cache Memories, Performance Consideration, Virtual Memories": ""
-          }
-          }
-          },
-          "Unit 3": {
-          "Arithmetic": {
-          "Arithmetic Operations": {
-          "Addition and Subtraction of Signed Numbers, Design of Fast Adders, Multiplication of Positive Numbers, Signed Operand Multiplication, Fast Multiplication, Integer Division, Floating-Point Numbers and Operations": ""
-          }
-          }
-          },
-          "Unit 4": {
-          "Basic Processing Unit": {
-          "Processing Unit Concepts": {
-          "Some Fundamental Concepts, Execution of a Complete Instruction, Multiple Bus Organization, Hard-wired Control, Microprogrammed Control": ""
-          },
-          "Pipelining": {
-          "Basic Concepts, Data Hazards, Instruction Hazard": ""
-          }
-          }
-          },
-          "Unit 5": {
-          "Microprocessors and Microcontroller": {
-          "Overview": {
-          "Overview of Microprocessors and Microcontrollers, Processor Chips for Embedded Applications, A Simple Microcontroller, Programming Considerations, I/O Device Timing Constraints, Reaction Timer – An Example": ""
-          }
-          }
-          }
+            "Unit 1": {
+              "Basic Structure of Computers": {
+                "Computer Fundamentals": {
+                  "Computer Types, Functional Units, Basic Operational Concepts, Bus Structures": ""
+                },
+                "Performance": {
+                  "Processor Clock, Basic Performance Equation, Pipelining and Superscalar Operation, Clock Rate": ""
+                },
+                "Instructions": {
+                  "CISC and RISC, Compiler, Performance Measurement, Multiprocessors and Multi Computers, Historical Perspective": ""
+                },
+                "Machine Instructions and Programs": {
+                  "Basic Input/Output Operation, Input/Output Organization, Accessing I/O Devices, Interrupts – Interrupt Hardware, Enabling and Disabling Interrupts, Handling Multiple Devices, Controlling Device Requests, Exceptions": ""
+                }
+              }
+            },
+            "Unit 2": {
+              "Memory and Interfaces": {
+                "Memory Organization": {
+                  "Direct Memory Access (DMA), Buses, Interface Circuits, Standard I/O Interfaces (Introduction)": ""
+                },
+                "Memory System": {
+                  "Speed-Size-Cost, Cache Memories, Performance Consideration, Virtual Memories": ""
+                }
+              }
+            },
+            "Unit 3": {
+              "Arithmetic": {
+                "Arithmetic Operations": {
+                  "Addition and Subtraction of Signed Numbers, Design of Fast Adders, Multiplication of Positive Numbers, Signed Operand Multiplication, Fast Multiplication, Integer Division, Floating-Point Numbers and Operations": ""
+                }
+              }
+            },
+            "Unit 4": {
+              "Basic Processing Unit": {
+                "Processing Unit Concepts": {
+                  "Some Fundamental Concepts, Execution of a Complete Instruction, Multiple Bus Organization, Hard-wired Control, Microprogrammed Control": ""
+                },
+                "Pipelining": {
+                  "Basic Concepts, Data Hazards, Instruction Hazard": ""
+                }
+              }
+            },
+            "Unit 5": {
+              "Microprocessors and Microcontroller": {
+                "Overview": {
+                  "Overview of Microprocessors and Microcontrollers, Processor Chips for Embedded Applications, A Simple Microcontroller, Programming Considerations, I/O Device Timing Constraints, Reaction Timer – An Example": ""
+                }
+              }
+            }
           },
           "DATA STRUCTURES LAB USING C": {},
           "OOP WITH JAVA": {},
