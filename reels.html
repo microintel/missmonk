@@ -495,9 +495,114 @@ a { color:inherit; text-decoration:none; }
   .reel-follow:hover { opacity:.88; }
   .rt-back:hover { opacity:.85; }
 }
+
+/* ══════════════════════════════
+   DESKTOP APP SHELL
+   Below 1024px nothing here applies — mobile and tablet keep the exact
+   phone-frame look/behavior as before. From 1024px up, real desktop
+   chrome (a nav sidebar, and eventually an info panel) frames the reel
+   column instead of leaving it floating alone in empty space. The reel
+   frame keeps its existing centering math (left:50%), and the sidebar
+   widths are chosen so they never come close to overlapping it.
+══════════════════════════════ */
+.desktop-sidebar, .desktop-info-panel { display:none; }
+
+@media (min-width:1024px) {
+  .desktop-sidebar {
+    display:flex; flex-direction:column;
+    position:fixed; top:0; left:0; bottom:0; width:264px;
+    padding:1.8rem 1.3rem 1.5rem;
+    background:linear-gradient(180deg, #0a0a0a, #030303);
+    border-right:1px solid var(--border);
+    z-index:40; overflow-y:auto; scrollbar-width:none;
+  }
+  .desktop-sidebar::-webkit-scrollbar { display:none; }
+  .ds-logo {
+    display:flex; align-items:center; gap:.55rem;
+    font-family:'Clash Display',sans-serif; font-weight:700; font-size:1.25rem;
+    color:#fff; margin-bottom:1.7rem;
+  }
+  .ds-logo span:first-child { font-size:1.4rem; }
+  .ds-nav { display:flex; flex-direction:column; gap:.3rem; margin-bottom:1.8rem; }
+  .ds-nav-btn {
+    display:flex; align-items:center; gap:.65rem;
+    padding:.65rem .75rem; border-radius:12px;
+    font-size:.88rem; font-weight:600; color:var(--text2);
+    transition:background .15s, color .15s;
+  }
+  .ds-nav-btn i { font-size:1.02rem; width:1.1rem; text-align:center; }
+  .ds-nav-btn:hover { background:var(--surface2); color:var(--text); }
+  .ds-section-title {
+    font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text3); margin:0 .1rem .6rem;
+  }
+  .ds-books { display:flex; flex-direction:column; gap:.15rem; }
+  .ds-book-btn {
+    display:flex; align-items:center; gap:.6rem; width:100%;
+    padding:.55rem .7rem; border-radius:10px;
+    font-size:.84rem; font-weight:500; color:var(--text2);
+    text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    transition:background .15s, color .15s;
+  }
+  .ds-book-btn i { color:var(--text3); font-size:.8rem; flex-shrink:0; }
+  .ds-book-btn:hover { background:var(--surface2); color:var(--text); }
+}
+
+@media (min-width:1440px) {
+  :root { --frame-w:480px; }
+  .desktop-info-panel {
+    display:flex; flex-direction:column;
+    position:fixed; top:0; right:0; bottom:0; width:340px;
+    padding:2.2rem 1.7rem;
+    background:linear-gradient(180deg, #0a0a0a, #030303);
+    border-left:1px solid var(--border);
+    z-index:40; overflow-y:auto; scrollbar-width:none;
+  }
+  .desktop-info-panel::-webkit-scrollbar { display:none; }
+  .dip-eyebrow {
+    font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text3); margin-bottom:1rem;
+  }
+  .dip-title {
+    font-family:'Clash Display',sans-serif; font-weight:700; font-size:1.5rem;
+    line-height:1.25; margin-bottom:1rem; color:var(--text);
+  }
+  .dip-meaning { font-size:.92rem; line-height:1.65; color:var(--text2); margin-bottom:1.6rem; }
+  .dip-divider { height:1px; background:var(--border); margin:0 0 1.4rem; }
+  .dip-author-row { display:flex; align-items:center; gap:.7rem; margin-bottom:.5rem; }
+  .dip-avatar {
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:var(--dip-a, var(--blue)); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Clash Display',sans-serif; font-weight:700;
+  }
+  .dip-author { font-weight:700; font-size:.92rem; color:var(--text); }
+  .dip-book { font-size:.78rem; color:var(--text2); margin-bottom:1.5rem; }
+  .dip-follow {
+    padding:.7rem 1rem; border-radius:12px;
+    background:var(--dip-a, var(--blue)); color:#fff;
+    font-size:.85rem; font-weight:700; text-align:center;
+    display:flex; align-items:center; justify-content:center; gap:.5rem;
+    transition:opacity .15s;
+  }
+  .dip-follow:hover { opacity:.88; }
+}
 </style>
 </head>
 <body>
+
+<aside class="desktop-sidebar" id="desktopSidebar">
+  <div class="ds-logo"><span>🥜</span><span>Nuts</span></div>
+  <nav class="ds-nav">
+    <button class="ds-nav-btn" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i>Back to library</button>
+    <button class="ds-nav-btn" onclick="switchMode('sequential')"><i class="bi bi-shuffle"></i>All nuts</button>
+    <button class="ds-nav-btn" onclick="jumpToLastRead()"><i class="bi bi-bookmark-check"></i>Last read</button>
+  </nav>
+  <div class="ds-section-title">Browse by book</div>
+  <div class="ds-books" id="dsBooks"></div>
+</aside>
+
+<aside class="desktop-info-panel" id="desktopInfoPanel"></aside>
 
 <div class="reels-topbar">
   <button class="rt-back" onclick="location.href='index.html'"><i class="bi bi-arrow-left"></i></button>
@@ -735,6 +840,7 @@ async function loadReels() {
     likedIndices = new Set(await withTimeout(dbLoadLikes(), 1500, []));
     await initLastRead();
     computeBookNames();
+    populateDesktopSidebar();
 
     const shared = findSharedLink();
     if (shared && shared.idx !== -1) {
@@ -758,6 +864,41 @@ function computeBookNames() {
   allItems.forEach(it => {
     if (!seen.has(it.book)) { seen.add(it.book); bookNames.push(it.book); }
   });
+}
+
+/* ══════════════════════════════
+   DESKTOP SHELL — sidebar book list + "now viewing" info panel.
+   Both are no-ops on mobile/tablet since their containers only render
+   (via CSS) at 1024px+ / 1440px+; on smaller screens these functions
+   just write into elements nobody sees, at negligible cost. */
+function populateDesktopSidebar() {
+  const box = document.getElementById('dsBooks');
+  if (!box) return;
+  box.innerHTML = bookNames.map(name => `
+    <button class="ds-book-btn" onclick="selectSearchBook('${name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" title="${escapeHtml(name)}">
+      <i class="bi bi-journal-bookmark"></i>${escapeHtml(name)}
+    </button>`).join('');
+}
+
+function updateDesktopInfoPanel(idx) {
+  const panel = document.getElementById('desktopInfoPanel');
+  if (!panel) return;
+  const it = allItems[idx];
+  if (!it) { panel.innerHTML = ''; return; }
+  const color = ACCENTS[idx % ACCENTS.length];
+  const initial = (it.title || '?').trim().charAt(0).toUpperCase();
+  panel.style.setProperty('--dip-a', color);
+  panel.innerHTML = `
+    <div class="dip-eyebrow">Now viewing</div>
+    <div class="dip-title">${escapeHtml(it.title)}</div>
+    <div class="dip-meaning">${escapeHtml(it.meaning)}</div>
+    <div class="dip-divider"></div>
+    <div class="dip-author-row">
+      <div class="dip-avatar">${initial}</div>
+      <div class="dip-author">${escapeHtml(it.author)}</div>
+    </div>
+    <div class="dip-book">${escapeHtml(it.book)}</div>
+    <button class="dip-follow" onclick="goToChapter('${encodeURI(it.link)}')"><i class="bi bi-arrow-right-circle-fill"></i>Read full chapter</button>`;
 }
 
 /* Reads ?book=...&title=... from the URL (set by the share feature).
@@ -965,10 +1106,12 @@ function renderFull(order, initialIndex) {
     on: {
       slideChangeTransitionEnd(sw) {
         const itemIdx = feedOrder[sw.activeIndex];
-        if (itemIdx !== undefined) saveLastRead(itemIdx);
+        if (itemIdx !== undefined) { saveLastRead(itemIdx); updateDesktopInfoPanel(itemIdx); }
       }
     }
   });
+
+  updateDesktopInfoPanel(feedOrder[initialIndex || 0]);
 
   /* Swiper's `initialSlide` option doesn't reliably combine with the
      Virtual module (a known upstream limitation), so instead of setting
