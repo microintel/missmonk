@@ -943,6 +943,10 @@ a { color:inherit; text-decoration:none; }
 .modal-btn.complete-modal-btn { color:var(--text2); }
 .modal-btn.complete-modal-btn.done { background:rgba(76,175,125,.15); color:var(--green); }
 .modal-btn.complete-modal-btn:hover { background:rgba(76,175,125,.15); color:var(--green); }
+.modal-btn.chapter-nav-btn { padding:.32rem .55rem; }
+.modal-btn.chapter-nav-btn:disabled {
+  opacity:.35; cursor:not-allowed; pointer-events:none;
+}
 
 /* ── Completion badges on lesson / book cards ── */
 .link-card { position:relative; }
@@ -1399,6 +1403,8 @@ a { color:inherit; text-decoration:none; }
 <div class="modal-backdrop" id="modalBg">
   <div class="modal-box">
     <div class="modal-head">
+      <button class="modal-btn chapter-nav-btn" id="modalPrevBtn" onclick="prevChapter()" title="Previous chapter"><i class="bi bi-chevron-left"></i></button>
+      <button class="modal-btn chapter-nav-btn" id="modalNextBtn" onclick="nextChapter()" title="Next chapter"><i class="bi bi-chevron-right"></i></button>
       <span class="modal-head-title" id="modalTitle">Loading…</span>
       <button class="modal-btn complete-modal-btn" id="modalCompleteBtn" onclick="toggleLessonComplete(modalLessonKey)">
         <i class="bi bi-check-circle" id="modalCompleteIcon"></i> <span id="modalCompleteLabel">Mark Complete</span>
@@ -1589,6 +1595,8 @@ let currentCourse = null;
 let modalLessonKey   = null;
 let modalLessonHref  = null;
 let modalLessonLabel = null;
+let modalSiblings      = [];  // ordered lesson items sharing the current chapter's parent folder
+let modalSiblingIndex  = -1;  // index of the currently open lesson within modalSiblings
 let allLessons    = [];
 let completedLessons = new Set();   // set of lesson-lids the signed-in user has completed
 let progressChart     = null;       // Chart.js pie instance on the Progress page
@@ -3301,7 +3309,61 @@ function openLesson(href, label, lid) {
   document.getElementById('modalFrame').src = href;
   document.getElementById('modalBg').classList.add('open');
   updateModalCompleteBtn(lid);
+
+  const sib = getLessonSiblings(lid);
+  modalSiblings     = sib.list;
+  modalSiblingIndex = sib.index;
+  updateModalNavButtons();
 }
+
+// Finds every lesson that lives in the same folder as the chapter identified
+// by `lid` (same parent path in the curriculum tree), in curriculum order,
+// plus the index of `lid` within that list. Powers the prev/next buttons.
+function getLessonSiblings(lid) {
+  const current = allSearchItems.find(it =>
+    it.type === 'lesson' && lessonId(it.stack.map(s => s.key), it.key) === lid
+  );
+  if (!current) return { list: [], index: -1 };
+
+  const parentPath = current.stack.map(s => s.key).join(' › ');
+  const list = allSearchItems.filter(it =>
+    it.type === 'lesson' && it.stack.map(s => s.key).join(' › ') === parentPath
+  );
+  const index = list.findIndex(it => lessonId(it.stack.map(s => s.key), it.key) === lid);
+  return { list, index };
+}
+
+// Enables/disables the prev/next chapter buttons based on where the
+// currently open lesson sits within its sibling list.
+function updateModalNavButtons() {
+  const prevBtn = document.getElementById('modalPrevBtn');
+  const nextBtn = document.getElementById('modalNextBtn');
+  if (!prevBtn || !nextBtn) return;
+  prevBtn.disabled = !(modalSiblingIndex > 0);
+  nextBtn.disabled = !(modalSiblingIndex >= 0 && modalSiblingIndex < modalSiblings.length - 1);
+}
+
+// Moves to the sibling lesson at `offset` from the current one (-1 = previous,
+// +1 = next). If the current chapter isn't marked complete yet, this first
+// shows the same completion prompt used when closing the modal, then
+// proceeds to open the target chapter once the user confirms/skips.
+function goToSiblingLesson(offset) {
+  const targetIndex = modalSiblingIndex + offset;
+  if (targetIndex < 0 || targetIndex >= modalSiblings.length) return;
+  const item = modalSiblings[targetIndex];
+  const lid  = lessonId(item.stack.map(s => s.key), item.key);
+
+  const openTarget = () => openLesson(item.href, item.label, lid);
+
+  if (modalLessonKey && !isLessonComplete(modalLessonKey)) {
+    maybePromptCompletion(modalLessonKey, openTarget);
+  } else {
+    openTarget();
+  }
+}
+
+function prevChapter() { goToSiblingLesson(-1); }
+function nextChapter() { goToSiblingLesson(1); }
 
 // Opens the currently-open chapter's URL directly in a new browser tab.
 function openLessonInNewTab() {
