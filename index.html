@@ -1211,12 +1211,15 @@ a { color:inherit; text-decoration:none; }
   .card-grid .book-cover-wrap { width:64px; height:96px; }
   .card-grid .card.book-card { grid-column:1/-1; }
   .card-grid .card.book-card { grid-column:span 2; }
+  /* Lesson/chapter cards take the full row on phones so titles don't get squeezed */
+  .card-grid .card.link-card { grid-column:1/-1; }
   /* Books page keeps bigger covers, just a tighter grid */
   .book-list { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:1.1rem; }
 }
 @media (max-width:480px) {
   .topnav { padding:0 .75rem; gap:.5rem; }
   .card-grid { grid-template-columns:1fr 1fr; gap:.55rem; }
+  .card-grid .card.link-card { grid-column:1/-1; }
   .card-title { font-size:.88rem; }
   .card { padding:1rem .9rem .9rem; }
   .hero-stats { gap:.7rem; }
@@ -1361,6 +1364,8 @@ a { color:inherit; text-decoration:none; }
       <div class="search-results" id="searchResults"></div>
     </div>
 
+    <button class="nav-icon-btn nav-account-btn" id="navBooksBtn" title="Books" onclick="showBooksPage()"><i class="bi bi-collection-fill"></i></button>
+    <button class="nav-icon-btn nav-account-btn" id="navProgressBtn" title="Progress" onclick="showProgressPage()"><i class="bi bi-graph-up-arrow"></i></button>
     <button class="nav-icon-btn" id="navNutsBtn" title="Nuts" onclick="location.href='reels.html'">🥜</button>
     <button class="nav-icon-btn notif-btn-wrap" id="notifBellBtn" title="Notifications" onclick="openNotifPanel()">
       <i class="bi bi-bell-fill"></i>
