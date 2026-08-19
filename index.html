@@ -1019,6 +1019,25 @@ a { color:inherit; text-decoration:none; }
 }
 .modal-iframe { flex:1; border:none; background:#fff; }
 
+/* ── Lesson language selector ── */
+.lesson-lang-controls {
+  display:flex; align-items:center; gap:.25rem; margin-left:auto;
+  padding:.18rem; background:var(--surface2); border:1px solid var(--border);
+  border-radius:9px; flex-shrink:0;
+}
+.lesson-lang-btn {
+  border:0; background:transparent; color:var(--text2); cursor:pointer;
+  border-radius:7px; padding:.34rem .48rem; font-size:.7rem; font-weight:700;
+  line-height:1; transition:background .15s,color .15s;
+}
+.lesson-lang-btn:hover { background:var(--surface3); color:var(--text); }
+.lesson-lang-btn.active { background:var(--blue); color:#fff; }
+.lesson-lang-status { display:none; }
+@media (max-width:600px) {
+  .lesson-lang-controls { margin-left:.15rem; }
+  .lesson-lang-btn { padding:.34rem .4rem; font-size:.62rem; }
+}
+
 /* ── SEARCH RESULTS ── */
 .search-results {
   display:none; position:absolute; top:calc(100% + 6px); left:0; right:0;
@@ -1417,6 +1436,8 @@ a { color:inherit; text-decoration:none; }
       <button class="modal-btn chapter-nav-btn" id="modalPrevBtn" onclick="prevChapter()" title="Previous chapter"><i class="bi bi-chevron-left"></i></button>
       <button class="modal-btn chapter-nav-btn" id="modalNextBtn" onclick="nextChapter()" title="Next chapter"><i class="bi bi-chevron-right"></i></button>
       <span class="modal-head-title" id="modalTitle">Loading…</span>
+      <div class="lesson-lang-controls" id="lessonLanguageControls" aria-label="Lesson language"></div>
+      <span class="lesson-lang-status" id="lessonLanguageStatus"></span>
       <button class="modal-btn complete-modal-btn" id="modalCompleteBtn" onclick="toggleLessonComplete(modalLessonKey)">
         <i class="bi bi-check-circle" id="modalCompleteIcon"></i> <span id="modalCompleteLabel">Mark Complete</span>
       </button>
@@ -1603,8 +1624,19 @@ let BOOK_META     = {};
 let currentView   = 'home'; // 'home' | 'books' | 'account'
 let pathStack     = [];
 let currentCourse = null;
+// Multilingual lesson content: the curriculum stays common; only the lesson URL
+// changes by language. English keeps the existing URLs unchanged.
+const SUPPORTED_LANGUAGES = {
+  en: { label: 'English', native: 'English', short: 'EN' },
+  kn: { label: 'Kannada',  native: 'ಕನ್ನಡ',  short: 'ಕನ್ನಡ' },
+  ta: { label: 'Tamil',    native: 'தமிழ்',   short: 'தமிழ்' }
+};
+let currentLanguage = localStorage.getItem('missmonk_language') || 'en';
+if (!SUPPORTED_LANGUAGES[currentLanguage]) currentLanguage = 'en';
+
 let modalLessonKey   = null;
-let modalLessonHref  = null;
+let modalLessonHref  = null;       // Effective URL currently shown in the iframe.
+let modalLessonBaseHref = null;    // Original English/curriculum URL.
 let modalLessonLabel = null;
 let modalSiblings      = [];  // ordered lesson items sharing the current chapter's parent folder
 let modalSiblingIndex  = -1;  // index of the currently open lesson within modalSiblings
@@ -2500,23 +2532,32 @@ function buildShareUrl() {
     params.set('course', currentCourse);
     const segments = pathStack.slice(1).map(p => p.key);
     if (segments.length) params.set('path', segments.join('|'));
+    // English keeps the old share URL format for backward compatibility.
+    // Non-English links remember the selected content language.
+    if (currentLanguage !== 'en') params.set('lang', currentLanguage);
   }
   const base = window.location.origin + window.location.pathname;
   const qs = params.toString();
   return qs ? `${base}?${qs}` : base;
 }
 
-// Pushes the current course/path into the address bar (mirrors buildShareUrl)
+// Pushes the current course/path/language into the address bar (mirrors buildShareUrl)
 // so the URL always reflects where the user is, not just when they hit Share.
 function syncUrl(replace = false) {
   const url = buildShareUrl();
   const fn  = replace ? 'replaceState' : 'pushState';
-  history[fn]({ course: currentCourse, path: pathStack.slice(1).map(p => p.key) }, '', url);
+  history[fn]({
+    course: currentCourse,
+    path: pathStack.slice(1).map(p => p.key),
+    lang: currentLanguage
+  }, '', url);
 }
 
 async function handleSharedUrl() {
   const params = new URLSearchParams(window.location.search);
   const course = params.get('course');
+  const sharedLanguage = params.get('lang');
+  if (sharedLanguage && SUPPORTED_LANGUAGES[sharedLanguage]) setCurrentLanguage(sharedLanguage);
   if (!course) return; // nothing shared, normal home view
 
   if (!CURRICULUM[course]) { showWrongPath(); return; }
@@ -3310,14 +3351,112 @@ function goHome() {
 }
 
 /* ══════════════════════════════
+   MULTILINGUAL LESSON CONTENT
+   Folder convention:
+   book/ch1/...                         = English (existing)
+   book/kn/ch1/...                     = Kannada
+   book/ta/ch1/...                     = Tamil
+
+   The curriculum/API is deliberately unchanged. The original lesson href
+   remains the canonical lesson identity; only the displayed content URL is
+   localized at open/share time.
+══════════════════════════════ */
+function getLanguageLabel(code = currentLanguage) {
+  return SUPPORTED_LANGUAGES[code]?.native || SUPPORTED_LANGUAGES.en.native;
+}
+
+function setCurrentLanguage(lang, persist = true) {
+  if (!SUPPORTED_LANGUAGES[lang]) lang = 'en';
+  currentLanguage = lang;
+  if (persist) localStorage.setItem('missmonk_language', lang);
+  updateLanguageButtons();
+}
+
+function localizedLessonHref(baseHref, lang = currentLanguage) {
+  if (!baseHref || lang === 'en') return baseHref;
+
+  try {
+    const isAbsolute = /^https?:\/\//i.test(baseHref);
+    const u = new URL(baseHref, window.location.href);
+    const parts = u.pathname.split('/');
+
+    // If a language segment is already present immediately before the chapter,
+    // replace it instead of creating /kn/kn/ or /ta/kn/.
+    const chapterIndex = parts.findIndex(part => /^ch\d+$/i.test(part));
+    if (chapterIndex > 0) {
+      const previous = parts[chapterIndex - 1].toLowerCase();
+      if (SUPPORTED_LANGUAGES[previous]) parts[chapterIndex - 1] = lang;
+      else parts.splice(chapterIndex, 0, lang);
+      u.pathname = parts.join('/');
+      return isAbsolute ? u.toString() : u.pathname + u.search + u.hash;
+    }
+
+    // Fallback for a lesson whose path doesn't use ch1/ch2/...: insert the
+    // language before the final file/directory component. This keeps the
+    // feature useful without changing any existing English URL.
+    const last = parts.length - 1;
+    if (last > 0 && SUPPORTED_LANGUAGES[parts[last - 1]?.toLowerCase()]) {
+      parts[last - 1] = lang;
+    } else {
+      parts.splice(last, 0, lang);
+    }
+    u.pathname = parts.join('/');
+    return isAbsolute ? u.toString() : u.pathname + u.search + u.hash;
+  } catch (e) {
+    return baseHref;
+  }
+}
+
+function setLessonLanguage(lang) {
+  setCurrentLanguage(lang);
+  if (!modalLessonBaseHref) return;
+
+  const localized = localizedLessonHref(modalLessonBaseHref, currentLanguage);
+  modalLessonHref = localized;
+  document.getElementById('modalFrame').src = localized;
+  updateLessonLanguageStatus();
+}
+
+function updateLanguageButtons() {
+  document.querySelectorAll('[data-lesson-lang]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lessonLang === currentLanguage);
+  });
+  updateLessonLanguageStatus();
+}
+
+function updateLessonLanguageStatus() {
+  const el = document.getElementById('lessonLanguageStatus');
+  if (!el) return;
+  el.textContent = getLanguageLabel();
+}
+
+function renderLessonLanguageControls() {
+  const host = document.getElementById('lessonLanguageControls');
+  if (!host) return;
+  host.innerHTML = Object.entries(SUPPORTED_LANGUAGES).map(([code, info]) =>
+    `<button type=\"button\" class=\"lesson-lang-btn${code === currentLanguage ? ' active' : ''}\" data-lesson-lang=\"${code}\" onclick=\"setLessonLanguage('${code}')\" title=\"${info.label}\">${info.short}</button>`
+  ).join('');
+}
+
+function buildLessonShareUrl() {
+  // Lesson sharing intentionally uses the actual localized lesson URL.
+  // Therefore a shared Kannada/Tamil lesson stays Kannada/Tamil without
+  // requiring the recipient to have the same saved language preference.
+  return modalLessonHref || '';
+}
+
+/* ══════════════════════════════
    LESSON MODAL
 ══════════════════════════════ */
 function openLesson(href, label, lid) {
-  modalLessonKey   = lid;
-  modalLessonHref  = href;
-  modalLessonLabel = label;
+  modalLessonKey      = lid;
+  modalLessonBaseHref = href;
+  modalLessonHref     = localizedLessonHref(href, currentLanguage);
+  modalLessonLabel    = label;
   document.getElementById('modalTitle').textContent = label;
-  document.getElementById('modalFrame').src = href;
+  document.getElementById('modalFrame').src = modalLessonHref;
+  renderLessonLanguageControls();
+  updateLessonLanguageStatus();
   document.getElementById('modalBg').classList.add('open');
   updateModalCompleteBtn(lid);
 
@@ -3398,6 +3537,8 @@ function actuallyCloseModal() {
   document.getElementById('modalBg').classList.remove('open');
   document.getElementById('modalFrame').src = 'about:blank';
   modalLessonKey = null;
+  modalLessonHref = null;
+  modalLessonBaseHref = null;
 }
 
 // Looks up the chapter's display details (title + breadcrumb path + course)
@@ -3460,8 +3601,9 @@ function maybePromptCompletion(lid, onProceed) {
 }
 
 function shareLesson() {
-  if (!modalLessonLabel || !modalLessonHref) return;
-  openSharePopup(modalLessonLabel, modalLessonHref, true);
+  const url = buildLessonShareUrl();
+  if (!modalLessonLabel || !url) return;
+  openSharePopup(`${modalLessonLabel} · ${getLanguageLabel()}`, url, true);
 }
 
 document.getElementById('modalBg').addEventListener('click', function(e) {
@@ -3471,6 +3613,12 @@ document.getElementById('modalBg').addEventListener('click', function(e) {
 // Covers the chapter being "hidden" (e.g. the user switches tabs/apps or
 // minimizes the browser) while an incomplete chapter is still open — prompt
 // them about marking it complete as soon as they come back to the tab.
+// Initialize the language preference once the lesson modal DOM exists.
+window.addEventListener('DOMContentLoaded', () => {
+  renderLessonLanguageControls();
+  updateLanguageButtons();
+});
+
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState !== 'visible') return;
   const modalOpen = document.getElementById('modalBg').classList.contains('open');
