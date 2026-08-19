@@ -1021,9 +1021,13 @@ a { color:inherit; text-decoration:none; }
 
 /* ── Lesson language selector ── */
 .lesson-lang-controls {
-  display:flex; align-items:center; gap:.25rem; margin-left:auto;
+  display:flex; align-items:center; margin-left:auto;
+  flex-shrink:0;
+}
+.lesson-lang-buttons {
+  display:flex; align-items:center; gap:.25rem;
   padding:.18rem; background:var(--surface2); border:1px solid var(--border);
-  border-radius:9px; flex-shrink:0;
+  border-radius:9px;
 }
 .lesson-lang-btn {
   border:0; background:transparent; color:var(--text2); cursor:pointer;
@@ -1032,10 +1036,28 @@ a { color:inherit; text-decoration:none; }
 }
 .lesson-lang-btn:hover { background:var(--surface3); color:var(--text); }
 .lesson-lang-btn.active { background:var(--blue); color:#fff; }
+.lesson-lang-select { display:none; }
 .lesson-lang-status { display:none; }
+
 @media (max-width:600px) {
   .lesson-lang-controls { margin-left:.15rem; }
-  .lesson-lang-btn { padding:.34rem .4rem; font-size:.62rem; }
+  .lesson-lang-buttons { display:none; }
+  .lesson-lang-select {
+    display:block;
+    appearance:auto;
+    min-width:76px;
+    max-width:88px;
+    height:32px;
+    padding:.2rem .35rem;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface2);
+    color:var(--text);
+    font-size:.7rem;
+    font-weight:700;
+    outline:none;
+  }
+  .lesson-lang-select:focus { border-color:var(--blue); }
 }
 
 /* ── SEARCH RESULTS ── */
@@ -1204,7 +1226,14 @@ a { color:inherit; text-decoration:none; }
   .card-grid { grid-template-columns:repeat(2,1fr); gap:.65rem; }
   .page-title { font-size:1.3rem; }
   .hero-title { font-size:1.55rem; }
-  .modal-box { height:92vh; max-height:none; border-radius:16px; }
+  /* Keep the lesson viewer slightly smaller than the full phone screen. */
+  .modal-backdrop { padding:.7rem; align-items:center; }
+  .modal-box {
+    width:100%;
+    height:82vh;
+    max-height:82vh;
+    border-radius:18px;
+  }
   .toast { bottom:calc(64px + .8rem); right:.8rem; left:.8rem; max-width:none; }
   .share-btn span { display:none; }
   .theme-panel { width:92vw; max-width:340px; }
@@ -1244,8 +1273,11 @@ a { color:inherit; text-decoration:none; }
   .hero-stats { gap:.7rem; }
   .hero-stat { padding:.55rem .8rem; min-width:78px; }
   .share-methods { grid-template-columns:1fr; }
-  .modal-head { padding:.6rem .6rem; gap:.32rem; }
-  .modal-btn { padding:.32rem .5rem; }
+  .modal-head { padding:.55rem .5rem; gap:.28rem; }
+  .modal-btn { padding:.3rem .45rem; }
+  .modal-btn.chapter-nav-btn { padding:.3rem .42rem; }
+  .modal-head-title { font-size:.76rem; }
+  .lesson-lang-select { min-width:70px; max-width:78px; font-size:.66rem; }
   .modal-head-title { font-size:.8rem; min-width:0; }
   .modal-btn.complete-modal-btn span,
   .modal-btn.share-modal-btn span { display:none; }
@@ -3433,9 +3465,20 @@ function updateLessonLanguageStatus() {
 function renderLessonLanguageControls() {
   const host = document.getElementById('lessonLanguageControls');
   if (!host) return;
-  host.innerHTML = Object.entries(SUPPORTED_LANGUAGES).map(([code, info]) =>
+
+  // Desktop/tablet: compact language buttons.
+  const buttons = Object.entries(SUPPORTED_LANGUAGES).map(([code, info]) =>
     `<button type=\"button\" class=\"lesson-lang-btn${code === currentLanguage ? ' active' : ''}\" data-lesson-lang=\"${code}\" onclick=\"setLessonLanguage('${code}')\" title=\"${info.label}\">${info.short}</button>`
   ).join('');
+
+  // Mobile: use a single native dropdown so the modal header stays compact.
+  const options = Object.entries(SUPPORTED_LANGUAGES).map(([code, info]) =>
+    `<option value=\"${code}\"${code === currentLanguage ? ' selected' : ''}>${info.native}</option>`
+  ).join('');
+
+  host.innerHTML = `
+    <div class=\"lesson-lang-buttons\">${buttons}</div>
+    <select class=\"lesson-lang-select\" aria-label=\"Lesson language\" onchange=\"setLessonLanguage(this.value)\">${options}</select>`;
 }
 
 function buildLessonShareUrl() {
