@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ನಿಮ್ಮ ಪ್ರೀತಿಯ ಶೈಲಿ ಹೀಗೇಕೆ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a0f22;
+    --bg-mid:#2c1938;
+    --bg-soft:#3a2148;
+    --cream:#f6ecdf;
+    --muted:#c6b3cf;
+    --secure:#ffb199;
+    --secure-soft:#3a2a2c;
+    --anxious:#9ecbff;
+    --anxious-soft:#20293a;
+    --avoidant:#9bc9a3;
+    --avoidant-soft:#1f2e26;
+    --line: rgba(246,236,223,0.14);
+    --shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg-mid) 0%, var(--bg-deep) 55%, #0f0815 100%);
+    color:var(--cream);
+    font-family:'Noto Sans Kannada', 'Manrope', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Baloo 2', 'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  ::selection{ background: var(--secure); color:#1a0f22; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0;
+    font-size:20px;
+    color: var(--rose, #f2a6b0);
+    filter: drop-shadow(0 0 6px rgba(242,166,176,0.35));
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
+    8%{ opacity: var(--op, 0.5); }
+    92%{ opacity: var(--op, 0.5); }
+    100%{ transform: translateY(110vh) rotate(360deg); opacity:0; }
+  }
+  @keyframes sway{
+    0%, 100%{ margin-left:0px; }
+    50%{ margin-left: 30px; }
+  }
+
+  .wrap{ max-width:920px; margin:0 auto; padding: 0 24px; position:relative; z-index:1; }
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    min-height: 92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding: 80px 24px 40px;
+    position:relative;
+    z-index:1;
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--secure);
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.05;
+    max-width:14ch;
+    background: linear-gradient(180deg, #fff, var(--cream) 60%, var(--secure));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.sub{
+    margin-top:26px;
+    max-width:46ch;
+    font-size:1.08rem;
+    line-height:1.65;
+    color: var(--muted);
+  }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue .line{
+    width:1px; height:40px;
+    background:linear-gradient(var(--secure), transparent);
+    animation: pulseLine 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseLine{ 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+  /* ---------- Sections general ---------- */
+  section{
+    position:relative;
+    z-index:1;
+    padding: 90px 0;
+  }
+  section.tight{ padding: 60px 0; }
+  .kicker{
+    font-size:0.75rem;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--secure);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h2.section-title{
+    font-size: clamp(1.7rem, 4.4vw, 2.6rem);
+    margin-bottom:22px;
+    max-width:16ch;
+  }
+  p.lead{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:16px;
+  }
+  .reveal{
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:none;
+  }
+
+  /* ---------- Origin story mini reactions ---------- */
+  .mini-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-top:34px;
+  }
+  .mini{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 16px;
+    background: rgba(255,255,255,0.02);
+  }
+  .mini b{ display:block; font-family:'Baloo 2','Fraunces',serif; font-size:1.05rem; margin-bottom:6px; }
+  .mini.secure b{ color:var(--secure); }
+  .mini.anxious b{ color:var(--anxious); }
+  .mini.avoidant b{ color:var(--avoidant); }
+  .mini span{ font-size:0.92rem; color:var(--muted); line-height:1.5; }
+
+  /* ---------- Cards ---------- */
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:40px;
+  }
+  .card-slot{ perspective: 1400px; height:400px; }
+  .card{
+    position:relative;
+    width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .card-slot.flipped .card{ transform: rotateY(180deg); }
+  .face{
+    position:absolute; inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    border-radius:20px;
+    padding:26px 22px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .face.front{
+    justify-content:space-between;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+  }
+  .face.back{
+    transform: rotateY(180deg);
+    overflow-y:auto;
+  }
+  .card-slot.secure .face.front{ border-top:4px solid var(--secure); }
+  .card-slot.anxious .face.front{ border-top:4px solid var(--anxious); }
+  .card-slot.avoidant .face.front{ border-top:4px solid var(--avoidant); }
+  .card-slot.secure .face.back{ background: var(--secure-soft); }
+  .card-slot.anxious .face.back{ background: var(--anxious-soft); }
+  .card-slot.avoidant .face.back{ background: var(--avoidant-soft); }
+
+  .pct{ font-family:'Baloo 2','Fraunces',serif; font-size:3.4rem; font-weight:700; line-height:1; }
+  .card-slot.secure .pct{ color:var(--secure); }
+  .card-slot.anxious .pct{ color:var(--anxious); }
+  .card-slot.avoidant .pct{ color:var(--avoidant); }
+  .style-name{ font-family:'Baloo 2','Fraunces', serif; font-size:1.5rem; margin:10px 0 6px; }
+  .style-tag{ font-size:0.85rem; color:var(--muted); font-style:italic; }
+  .flip-hint{ font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:auto; padding-top:14px; opacity:0.8; }
+
+  .back h4{ font-family:'Baloo 2','Fraunces',serif; font-size:1.15rem; margin-bottom:12px; }
+  .back .belief{ font-style:italic; color:var(--cream); font-size:0.98rem; margin-bottom:16px; line-height:1.5; }
+  .back ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .back li{ font-size:0.88rem; color:var(--muted); line-height:1.45; padding-left:16px; position:relative; }
+  .back li::before{ content:"·"; position:absolute; left:0; font-size:1.3rem; line-height:0.8; top:2px; }
+  .card-slot.secure .back li::before{ color:var(--secure); }
+  .card-slot.anxious .back li::before{ color:var(--anxious); }
+  .card-slot.avoidant .back li::before{ color:var(--avoidant); }
+
+  /* ---------- Stats ---------- */
+  .stat-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:44px;
+  }
+  .stat{
+    text-align:center;
+  }
+  .ring-wrap{
+    width:150px; height:150px;
+    margin:0 auto 14px;
+    position:relative;
+  }
+  .ring-wrap svg{ transform: rotate(-90deg); width:100%; height:100%; }
+  .ring-bg{ fill:none; stroke: rgba(255,255,255,0.08); stroke-width:8; }
+  .ring-fg{ fill:none; stroke-width:8; stroke-linecap:round; stroke-dasharray:326.7; stroke-dashoffset:326.7; transition: stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1); }
+  .ring-num{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Baloo 2','Fraunces',serif; font-size:1.7rem; font-weight:700;
+  }
+  .stat-label{ font-size:0.92rem; color:var(--muted); }
+  .stat-label b{ display:block; color:var(--cream); font-family:'Baloo 2','Fraunces',serif; font-size:1.05rem; margin-bottom:2px;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-list{ display:flex; flex-direction:column; gap:14px; margin-top:30px; }
+  .quiz-item{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    background: rgba(255,255,255,0.02);
+    cursor:pointer;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .quiz-item:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+  .quiz-item p{ font-size:0.98rem; line-height:1.55; color:var(--cream); }
+  .quiz-item .result{
+    display:none;
+    margin-top:12px;
+    font-size:0.85rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .quiz-item.picked .result{ display:block; }
+  .quiz-item[data-style="secure"].picked{ border-color:var(--secure); }
+  .quiz-item[data-style="anxious"].picked{ border-color:var(--anxious); }
+  .quiz-item[data-style="avoidant"].picked{ border-color:var(--avoidant); }
+  .quiz-item[data-style="secure"] .result{ color:var(--secure); }
+  .quiz-item[data-style="anxious"] .result{ color:var(--anxious); }
+  .quiz-item[data-style="avoidant"] .result{ color:var(--avoidant); }
+
+  /* ---------- Combos ---------- */
+  .combo-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+    margin-top:34px;
+  }
+  .combo{
+    border-radius:16px;
+    padding:20px 20px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+  }
+  .combo .who{ font-family:'Baloo 2','Fraunces',serif; font-size:1.05rem; margin-bottom:8px; }
+  .combo p{ font-size:0.9rem; color:var(--muted); line-height:1.5; }
+  .combo.good{ border-left:3px solid var(--secure); }
+  .combo.hard{ border-left:3px solid #e0857a; grid-column: 1 / -1; }
+  .combo.hard .who{ color:#e0857a; }
+
+  /* ---------- Footer note ---------- */
+  .note-box{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:30px 28px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    margin-top:20px;
+  }
+  .note-box h3{ font-size:1.2rem; margin-bottom:10px; }
+  .note-box p{ font-size:0.95rem; line-height:1.65; color:var(--muted); }
+
+  footer{
+    text-align:center;
+    padding: 50px 24px 70px;
+    font-size:0.8rem;
+    color: var(--muted);
+    position:relative; z-index:1;
+  }
+  footer .heart-mark{ color:var(--secure); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 780px){
+    .cards{ grid-template-columns:1fr; }
+    .card-slot{ height:auto; min-height:340px; }
+    .mini-row{ grid-template-columns:1fr; }
+    .stat-row{ grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .ring-wrap{ width:100px; height:100px; }
+    .ring-num{ font-size:1.15rem; }
+    .combo-grid{ grid-template-columns:1fr; }
+    .combo.hard{ grid-column:auto; }
+    section{ padding:64px 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .heart{ animation:none !important; display:none; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<header class="hero">
+  <div class="eyebrow">ಪ್ರೀತಿಯ ಹಿಂದಿನ ವಿಜ್ಞಾನ</div>
+  <h1>ನೀವು ಪ್ರೀತಿಸೋ<br>ರೀತಿ ಹೀಗೇಕೆ?</h1>
+  <p class="sub">ನೀವು ಚಿಕ್ಕವರಿದ್ದಾಗ ಮನೆಯಲ್ಲಿ ಸಿಕ್ಕ ಪ್ರೀತಿ, ಆರೈಕೆ ಇವತ್ತಿಗೂ ನಿಮ್ಮ ಸಂಬಂಧಗಳ ಮೇಲೆ ಮೆಲ್ಲಗೆ ಪ್ರಭಾವ ಬೀರುತ್ತಿದೆ ಅಂದ್ರೆ ನಂಬ್ತೀರಾ? ಮನಶ್ಶಾಸ್ತ್ರಜ್ಞರು ಇದನ್ನ <em>attachment style</em> ಅಂತ ಕರೀತಾರೆ. ನಿಮ್ಮದು ಯಾವ ಶೈಲಿ ಅಂತ ಗೊತ್ತಾದ ಕೂಡ್ಲೇ, ಪ್ರೀತಿಯ ಬಗ್ಗೆ ತುಂಬಾ ವಿಷ್ಯ ಫಕ್ಕನೆ ಅರ್ಥ ಆಗುತ್ತೆ.</p>
+  <div class="scroll-cue"><span class="line"></span>ಸ್ಕ್ರಾಲ್ ಮಾಡಿ, ನಿಮ್ಮದ್ಯಾವ ಶೈಲಿ ನೋಡಿ</div>
+</header>
+
+<div class="wrap">
+
+  <section class="tight reveal">
+    <div class="kicker">ಇದೆಲ್ಲ ಶುರುವಾಗಿದ್ದೇ ಹೀಗೆ</div>
+    <h2 class="section-title">ಒಂದು ಸಣ್ಣ ಪ್ರಯೋಗ, ಇಡೀ ಕಥೆನೇ ಬದಲಿಸ್ತು</h2>
+    <p class="lead">ಎರಡನೇ ಮಹಾಯುದ್ಧ ಮುಗಿದ ಮೇಲೆ, ಜಾನ್ ಬೌಲ್ಬಿ ಅನ್ನೋ ಮನೋವೈದ್ಯರೊಬ್ಬರು ಒಂದು ಸಿಂಪಲ್ ವಿಷ್ಯ ಗಮನಿಸಿದ್ರು — ಪೋಷಕರ ಜೊತೆ ಸೇಫ್ ಆಗಿ, ನಿರಾಳವಾಗಿ ಬೆಳೆದ ಮಕ್ಕಳು, ದೊಡ್ಡವರಾದ ಮೇಲೂ ಪ್ರೀತಿಯ ವಿಷಯದಲ್ಲಿ ಅಷ್ಟೇ ನಿರಾಳವಾಗಿರ್ತಾರೆ ಅಂತ. ಇದಕ್ಕೇ ಅವರು <strong>attachment theory</strong> ಅಂತ ಹೆಸರಿಟ್ರು.</p>
+    <p class="lead">ಆಮೇಲೆ ಅವರ ಶಿಷ್ಯೆ ಮೇರಿ ಐನ್ಸ್‌ವರ್ತ್ ಇದನ್ನ ಪ್ರಯೋಗ ಮಾಡಿ ನೋಡಿದ್ರು. ಒಂದು ಚಿಕ್ಕ ಮಗುನ ಮತ್ತು ಅಮ್ಮನ ಒಂದು ರೂಮಲ್ಲಿ ಕೂರಿಸಿ, ಸ್ವಲ್ಪ ಹೊತ್ತು ಅಮ್ಮ ಆಚೆ ಹೋಗಿಬಿಡ್ತಿದ್ರು. ಆಮೇಲೆ ಆ ಮಗು ಏನ್ ಮಾಡ್ತೈತೆ ಅನ್ನೋದ್ರ ಮೇಲೆ — ಅಳ್ತದೋ, ಸುಮ್ಮನಿರುತ್ತೋ ಅಥವಾ ಶಾಂತವಾಗಿ ಸಂಭಾಳಿಸುತ್ತೋ — ಆ ಮಗು ಈ ಪ್ರಪಂಚ ತನ್ನ ಜೊತೆ ಹೇಗಿರುತ್ತೆ ಅಂತ ಏನ್ ನಿರೀಕ್ಷೆ ಮಾಡ್ತೈತೆ ಅನ್ನೋದ್ ಗೊತ್ತಾಗ್ತಿತ್ತು.</p>
+    <div class="mini-row">
+      <div class="mini secure"><b>ಸೆಕ್ಯೂರ್ ಮಕ್ಕಳು</b><span>ಖುಷಿಯಾಗಿ ಆಟ ಆಡ್ತಿದ್ರು, ಅಮ್ಮ ಹೋದಾಗ ಬೇಜಾರಾಗ್ತಿತ್ತು, ಆದ್ರೆ ವಾಪಸ್ ಬಂದ ತಕ್ಷಣ ಬೇಗ ಸಮಾಧಾನ ಆಗ್ತಿದ್ರು.</span></div>
+      <div class="mini anxious"><b>ಆಂಕ್ಷಿಯಸ್ ಮಕ್ಕಳು</b><span>ಸುಮ್ಮನೆ ಒಂದ್ ಕಡೆ ಕೂತಿರ್ತಿದ್ರು, ಜೋರಾಗಿ ಅಳ್ತಿದ್ರು, ಸಮಾಧಾನ ಆಗಕ್ಕೇ ಬಹಳ ಟೈಂ ತಗೊಳ್ತಿತ್ತು.</span></div>
+      <div class="mini avoidant"><b>ಅವಾಯ್ಡೆಂಟ್ ಮಕ್ಕಳು</b><span>ಹೊರಗಡೆ ನೋಡಕ್ಕೆ ಎಲ್ಲಾ ಸರಿ ಇದ್ದಂಗೇ ಕಾಣ್ತಿದ್ರು — ಆದ್ರೆ ಒಳಗೆ ಹೃದಯ ಜೋರಾಗಿ ಬಡ್ಕೊಳ್ತಿತ್ತು.</span></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">ನಿಮ್ಮ ಶೈಲಿ ಕಂಡುಹಿಡಿಯಿರಿ</div>
+    <h2 class="section-title">ಪ್ರೀತಿಸೋ ಮೂರು ರೀತಿಗಳು. ಕಾರ್ಡ್ ಮೇಲೆ ಟ್ಯಾಪ್ ಮಾಡಿ, ಒಳಗೇನಿದೆ ನೋಡಿ.</h2>
+    <p class="lead">ಯಾರೂ ಒಂದೇ ಬಾಕ್ಸ್‌ಗೆ ಪರ್ಫೆಕ್ಟ್ ಆಗಿ ಫಿಟ್ ಆಗಲ್ಲ — ಇವನ್ನ ಲೇಬಲ್ ಅಂತ ಅಲ್ಲ, ಒಂದು ಒಲವು (leaning) ಅಂತ ತಗೊಳ್ಳಿ. ಪ್ರತಿ ಕಾರ್ಡ್ ಫ್ಲಿಪ್ ಮಾಡಿ ಒಳಗಿನ ಬದಿ ನೋಡಿ.</p>
+
+    <div class="cards">
+      <div class="card-slot secure" tabindex="0" role="button" aria-label="ಸೆಕ್ಯೂರ್ ಕಾರ್ಡ್ ಫ್ಲಿಪ್ ಮಾಡಿ">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">50%</div>
+              <div class="style-name">ಸ್ಥಿರ ಮನಸ್ಸಿನವರು</div>
+              <div class="style-tag">ಸೆಕ್ಯೂರ್</div>
+            </div>
+            <div class="flip-hint">ಒಳಗೆ ಏನಿದೆ ನೋಡಕ್ಕೆ ಟ್ಯಾಪ್ ಮಾಡಿ ↻</div>
+          </div>
+          <div class="face back">
+            <h4>ಸೆಕ್ಯೂರ್</h4>
+            <p class="belief">"ನನಗೆ ಬೇಕಾಗಿದ್ದೆಲ್ಲ ಸಿಗುತ್ತೆ ಅನ್ನೋ ನಂಬಿಕೆ."</p>
+            <ul>
+              <li>ಪ್ರೀತಿಯಿಂದ, ಬೇಗ ಸ್ಪಂದಿಸೋ ಪೋಷಕರ ಮನೇಲಿ ಬೆಳೆದವ್ರು</li>
+              <li>ಸಹಜವಾಗೇ ಖುಷಿಯಾಗಿ, ಕುತೂಹಲದಿಂದ, ಆತ್ಮವಿಶ್ವಾಸದಿಂದ ಇರ್ತಾರೆ</li>
+              <li>ಟೆನ್ಷನ್ ಆದಾಗ ಬಾಗಿಲು ಮುಚ್ಕೊಳ್ಳದೆ, ಮಾತಾಡಿ ಬಗೆಹರಿಸ್ಕೊಳ್ತಾರೆ</li>
+              <li>ಬ್ರೇಕಪ್ ಆದ್ರೆ: ಪೂರ್ತಿ ದುಃಖಿಸಿ, ಆಮೇಲೆ ಮತ್ತೆ ಪ್ರೀತಿಗೆ ಮನಸ್ಸು ತೆರೀತಾರೆ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot anxious" tabindex="0" role="button" aria-label="ಆಂಕ್ಷಿಯಸ್ ಕಾರ್ಡ್ ಫ್ಲಿಪ್ ಮಾಡಿ">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">20%</div>
+              <div class="style-name">ಚಿಂತೆ ಮಾಡೋರು</div>
+              <div class="style-tag">ಆಂಕ್ಷಿಯಸ್</div>
+            </div>
+            <div class="flip-hint">ಒಳಗೆ ಏನಿದೆ ನೋಡಕ್ಕೆ ಟ್ಯಾಪ್ ಮಾಡಿ ↻</div>
+          </div>
+          <div class="face back">
+            <h4>ಆಂಕ್ಷಿಯಸ್</h4>
+            <p class="belief">"ನಾನ್ ಸರಿಯಾಗಿ ಇದ್ರೆ ಮಾತ್ರ ಅವ್ರ ಪ್ರೀತಿ ಸಿಗುತ್ತೆ ಅನ್ನೋ ಭಯ."</p>
+            <ul>
+              <li>ಪ್ರೀತಿ ಯಾವಾಗ ಬರುತ್ತೋ, ಯಾವಾಗ ಹೋಗುತ್ತೋ ಗೊತ್ತಿಲ್ಲದ ವಾತಾವರಣದಲ್ಲಿ ಬೆಳೆದವ್ರು</li>
+              <li>ಹತ್ರ ಇರಬೇಕು ಅಂತ ತೀವ್ರ ಆಸೆ, ಬಿಟ್ಟುಹೋಗ್ತಾರೇನೋ ಅನ್ನೋ ಭಯ</li>
+              <li>ಟೆನ್ಷನ್ ಆದಾಗ ಪದೇಪದೇ "ನೀನು ನನ್ ಜೊತೆನೇ ಇರ್ತೀಯ" ಅಂತ ಕೇಳಿಸ್ಕೊಬೇಕು ಅನಿಸುತ್ತೆ</li>
+              <li>ಬ್ರೇಕಪ್ ಆದ್ರೆ: ಪೂರ್ತಿ ಬಿಟ್ಟುಬಿಡಕ್ಕೆ ತುಂಬಾ ಕಷ್ಟ ಆಗುತ್ತೆ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot avoidant" tabindex="0" role="button" aria-label="ಅವಾಯ್ಡೆಂಟ್ ಕಾರ್ಡ್ ಫ್ಲಿಪ್ ಮಾಡಿ">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">25%</div>
+              <div class="style-name">ಗೋಡೆ ಕಟ್ಕೊಂಡವ್ರು</div>
+              <div class="style-tag">ಅವಾಯ್ಡೆಂಟ್</div>
+            </div>
+            <div class="flip-hint">ಒಳಗೆ ಏನಿದೆ ನೋಡಕ್ಕೆ ಟ್ಯಾಪ್ ಮಾಡಿ ↻</div>
+          </div>
+          <div class="face back">
+            <h4>ಅವಾಯ್ಡೆಂಟ್</h4>
+            <p class="belief">"ನನ್ನ ಕೈಲೇ ನಾನ್ ನಿಭಾಯಿಸ್ಕೊಬೇಕು, ಬೇರೆಯವ್ರ ಮೇಲೆ ಆಧಾರ ಆಗಕ್ಕಾಗಲ್ಲ."</p>
+            <ul>
+              <li>ದೂರ ಇರೋ ಅಥವಾ ತುಂಬಾ ಟೀಕೆ ಮಾಡೋ ಪೋಷಕರ ಜೊತೆ ಬೆಳೆದವ್ರು</li>
+              <li>ಹೊರಗಿನಿಂದ ನೋಡಿದ್ರೆ ಪೂರ್ತಿ ಶಾಂತ — ಆದ್ರೆ ಒಳಗಡೆ ಹೃದಯ ಬಡ್ಕೊಳ್ತಿರುತ್ತೆ</li>
+              <li>ಟೆನ್ಷನ್ ಆದಾಗ ಸದ್ದಿಲ್ಲದೆ ದೂರ ಸರೀತಾರೆ, ಬಾಗಿಲು ಮೆಲ್ಲಗೆ ಮುಚ್ಚಿಬಿಡ್ತಾರೆ</li>
+              <li>ಬ್ರೇಕಪ್ ಆದ್ರೆ: ಏನೂ ಆಗೇ ಇಲ್ಲ ಅನ್ನೋ ಹಂಗೆ ಕಾಣ್ತಾರೆ... ಆದ್ರೆ ಒಳಗೆ ಹಂಗಿರಲ್ಲ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">ಸಂಖ್ಯೆಗಳಲ್ಲಿ ನೋಡಿದ್ರೆ</div>
+    <h2 class="section-title">ನಿಮ್ಮ ಜೊತೆ ಇರೋರು ಯಾರೆಲ್ಲ</h2>
+    <p class="lead">ಸ್ಟಡಿಯಿಂದ ಸ್ಟಡಿಗೆ ಸಂಖ್ಯೆ ಸ್ವಲ್ಪ ಬದಲಾಗುತ್ತೆ, ಆದ್ರೆ ಒಟ್ಟಾರೆ ಟ್ರೆಂಡ್ ಒಂದೇ — ಸುಮಾರು ಅರ್ಧ ಜನಕ್ಕೆ ಪ್ರೀತಿಯಲ್ಲಿ ಸೆಕ್ಯೂರ್ ಅನಿಸುತ್ತೆ, ಉಳಿದವ್ರು ಇನ್ನೂ ಅದನ್ನ ಕಲೀತಾ ಇದಾರೆ.</p>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--secure)" data-pct="50"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>ಸೆಕ್ಯೂರ್</b>ಸಹಜವಾಗೇ ಸೇಫ್ ಅನಿಸೋರು</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--anxious)" data-pct="20"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>ಆಂಕ್ಷಿಯಸ್</b>ಹತ್ರ ಇರೋಕ್ಕೆ ಹಂಬಲಿಸೋರು</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--avoidant)" data-pct="25"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>ಅವಾಯ್ಡೆಂಟ್</b>ಗೋಡೆ ಕಟ್ಕೊಂಡಿರೋರು</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">ಬೇಗ ಚೆಕ್ ಮಾಡ್ಕೊಳ್ಳಿ</div>
+    <h2 class="section-title">ಇವುಗಳಲ್ಲಿ ಯಾವುದು ನಿಮ್ಗೆ ಹೊಂದುತ್ತೆ?</h2>
+    <p class="lead">ಇದು 1985ರ ಫೇಮಸ್ "ಲವ್ ಕ್ವಿಜ್"ನ ಸಿಂಪಲ್ ವರ್ಷನ್. ನಿಮ್ಗೆ ಸರಿ ಅನಿಸೋ ಸಾಲಿನ ಮೇಲೆ ಟ್ಯಾಪ್ ಮಾಡಿ.</p>
+    <div class="quiz-list">
+      <div class="quiz-item" data-style="secure">
+        <p>"ಜನರ ಜೊತೆ ಹತ್ತಿರ ಆಗೋದು ನನಗೆ ಸಹಜವಾಗೇ ಬರುತ್ತೆ. ಅವ್ರು ಬಿಟ್ಟುಹೋಗ್ತಾರೇನೋ ಅಂತ ನಾನು ಜಾಸ್ತಿ ಚಿಂತೆ ಮಾಡಲ್ಲ."</p>
+        <div class="result">→ ಇದು ಸೆಕ್ಯೂರ್ ಒಲವು</div>
+      </div>
+      <div class="quiz-item" data-style="anxious">
+        <p>"ನನ್ ಪಾರ್ಟ್ನರ್‌ಗಿಂತ ನಾನೇ ಹೆಚ್ಚು ಹತ್ತಿರ ಆಗಬೇಕು ಅಂತ ಬಯಸ್ತೀನಿ. ಅವ್ರು ನನ್ನ ಅಷ್ಟೇ ಪ್ರೀತಿಸ್ತಾರೋ ಇಲ್ವೋ ಅಂತ ಪದೇಪದೇ ಚಿಂತೆ ಆಗುತ್ತೆ."</p>
+        <div class="result">→ ಇದು ಆಂಕ್ಷಿಯಸ್ ಒಲವು</div>
+      </div>
+      <div class="quiz-item" data-style="avoidant">
+        <p>"ಯಾರಾದ್ರೂ ತುಂಬಾ ಹತ್ತಿರ ಆಗೋಕ್ ಬಂದ್ರೆ ನನಗೆ ಅಸ್ವಸ್ಥ ಅನಿಸುತ್ತೆ. ಬೇರೆಯವ್ರ ಮೇಲೆ ಆಧಾರ ಆಗೋದು ನನಗೆ ಸಹಜವಾಗೇ ಬರಲ್ಲ."</p>
+        <div class="result">→ ಇದು ಅವಾಯ್ಡೆಂಟ್ ಒಲವು</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">ಎರಡು ಜೊತೆ ಸೇರಿದಾಗ</div>
+    <h2 class="section-title">ಎರಡು ಹೃದಯ ಸೇರಿದಾಗ ಏನಾಗುತ್ತೆ</h2>
+    <div class="combo-grid">
+      <div class="combo good">
+        <div class="who">ಸೆಕ್ಯೂರ್ + ಆಂಕ್ಷಿಯಸ್</div>
+        <p>ಸೆಕ್ಯೂರ್ ಪಾರ್ಟ್ನರ್‌ನ ಸ್ಥಿರತೆ ನೋಡಿ, ಆಂಕ್ಷಿಯಸ್ ಪಾರ್ಟ್ನರ್ ಕೊನೀಗೆ ನಿರಾಳ ಆಗ್ತಾರೆ.</p>
+      </div>
+      <div class="combo good">
+        <div class="who">ಸೆಕ್ಯೂರ್ + ಅವಾಯ್ಡೆಂಟ್</div>
+        <p>ಯಾವುದೇ ಜಡ್ಜ್ ಮಾಡ್ದೆ ಸ್ಪೇಸ್ ಕೊಟ್ರೆ, ಅವಾಯ್ಡೆಂಟ್ ಪಾರ್ಟ್ನರ್ ನಿಧಾನವಾಗಿ ಓಡೋದ್ ನಿಲ್ಲಿಸ್ತಾರೆ.</p>
+      </div>
+      <div class="combo hard">
+        <div class="who">ಆಂಕ್ಷಿಯಸ್ + ಅವಾಯ್ಡೆಂಟ್</div>
+        <p>ಒಬ್ರು ಹತ್ರ ಬರೋಕ್ಕೆ ಓಡ್ತಾರೆ, ಇನ್ನೊಬ್ರು ಅಷ್ಟೇ ವೇಗವಾಗಿ ದೂರ ಓಡ್ತಾರೆ — ಇವ್ರ ಈ ಓಡಾಟ ಪರಿಸ್ಥಿತಿ ಇನ್ನೂ ಹದಗೆಡಿಸುತ್ತೆ. ಇದೇ ಅತಿ ಸಾಮಾನ್ಯ, ಮತ್ತು ಅಷ್ಟೇ ಸುಸ್ತು ಮಾಡಿಸೋ ಜೋಡಿ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="note-box">
+      <h3>ಒಂದು ಪ್ರೀತಿಯ ಮಾತು 💛</h3>
+      <p>ಕೆಲವರಿಗೆ ಆಂಕ್ಷಿಯಸ್ ಮತ್ತು ಅವಾಯ್ಡೆಂಟ್ ಎರಡೂ ಗುಣಗಳೂ ಒಟ್ಟಿಗೆ ಇರುತ್ತೆ, ಸಾಮಾನ್ಯವಾಗಿ ಇದು ಕಷ್ಟದ ಬಾಲ್ಯದಿಂದ ಬಂದಿರುತ್ತೆ. ಇದು ನೀವೇ ಆಗಿದ್ರೆ, ನಿಮ್ಮ ಮೇಲೆ ನೀವು ಪ್ರೀತಿ ತೋರಿಸಿ — ಇದನ್ನ ಒಬ್ಬರೇ ಹೊತ್ಕೊಂಡ್ ಹೋಗೋದು ಕಷ್ಟ, ಒಳ್ಳೆ ಥೆರಪಿಸ್ಟ್ ಜೊತೆ ಮಾತಾಡಿದ್ರೆ ನಿಜವಾಗ್ಲೂ ವ್ಯತ್ಯಾಸ ಆಗುತ್ತೆ.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  ಪ್ರೀತಿಯನ್ನ ಇನ್ನೂ ಸ್ವಲ್ಪ ಚೆನ್ನಾಗಿ ಅರ್ಥ ಮಾಡ್ಕೊಳ್ಳೋಕೆ ಸಹಾಯ ಮಾಡೋಕೆ ಮಾಡಿದ್ದು <span class="heart-mark">♥</span>
+</footer>
+
+<script>
+  // ---------- Falling hearts background ----------
+  (function(){
+    const field = document.getElementById('heart-field');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+    const colors = ['#f2a6b0', '#ffb199', '#9ecbff', '#c9a6f2'];
+    const count = window.innerWidth < 700 ? 14 : 24;
+    for(let i=0;i<count;i++){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = '♥';
+      const left = Math.random()*100;
+      const size = 10 + Math.random()*20;
+      const duration = 10 + Math.random()*14;
+      const delay = Math.random()*-20;
+      const swayDur = 3 + Math.random()*3;
+      const op = 0.15 + Math.random()*0.35;
+      h.style.left = left + 'vw';
+      h.style.fontSize = size + 'px';
+      h.style.color = colors[Math.floor(Math.random()*colors.length)];
+      h.style.setProperty('--op', op);
+      h.style.animationDuration = duration + 's, ' + swayDur + 's';
+      h.style.animationDelay = delay + 's, 0s';
+      field.appendChild(h);
+    }
+  })();
+
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---------- Card flip ----------
+  document.querySelectorAll('.card-slot').forEach(slot=>{
+    slot.addEventListener('click', ()=> slot.classList.toggle('flipped'));
+    slot.addEventListener('keypress', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        slot.classList.toggle('flipped');
+      }
+    });
+  });
+
+  // ---------- Stat rings count up ----------
+  const ringObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const stat = entry.target;
+        const circle = stat.querySelector('.ring-fg');
+        const numEl = stat.querySelector('.ring-num');
+        const pct = parseInt(circle.getAttribute('data-pct'), 10);
+        const circumference = 326.7;
+        const offset = circumference - (pct/100)*circumference;
+        circle.style.strokeDashoffset = offset;
+        let current = 0;
+        const step = ()=>{
+          current += 1;
+          if(current <= pct){
+            numEl.textContent = current + '%';
+            requestAnimationFrame(()=> setTimeout(step, 16));
+          } else {
+            numEl.textContent = pct + '%';
+          }
+        };
+        step();
+        ringObserver.unobserve(stat);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.stat').forEach(s=>ringObserver.observe(s));
+
+  // ---------- Quiz picks ----------
+  document.querySelectorAll('.quiz-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.quiz-item').forEach(i=>i.classList.remove('picked'));
+      item.classList.add('picked');
+      const style = item.getAttribute('data-style');
+      const cardSlot = document.querySelector('.card-slot.' + style);
+      if(cardSlot){
+        cardSlot.scrollIntoView({ behavior:'smooth', block:'center' });
+        cardSlot.classList.add('flipped');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
