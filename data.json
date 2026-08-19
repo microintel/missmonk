@@ -54,7 +54,7 @@
     }
   },
   "diploma": {
-    "CSE": {
+    "CSE C20": {
       "sem1": {
         "engineering mathematics": {
           "matrix and determinants ": {
@@ -108,6 +108,17 @@
       "sem4": {},
       "sem5": {},
       "sem6": {}
+    },
+    "CSE 25": {
+      "CSE": {
+        "SEM 1": {
+          "Basics of Digital Logic and Computer \rOrganization": {
+            "week 1": "",
+            "week2": "",
+            "week3": "https://microintel.github.io/missmonk/diploma/sem1/bldco/3.html"
+          }
+        }
+      }
     }
   },
   "Financial": {
