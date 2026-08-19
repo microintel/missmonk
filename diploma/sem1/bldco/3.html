@@ -1,1 +1,708 @@
-bldco/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Gates — Interactive Field Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1420;
+    --panel:#101d2b;
+    --panel-2:#0d1826;
+    --ink:#e9eff4;
+    --muted:#7c93a8;
+    --border:#1c3247;
+    --high:#ffb020;
+    --low:#3a4a5c;
+    --accent:#4fd1c5;
+    --accent-dim:#2c4a48;
+    --danger:#ff7a7a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{max-width:100%;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0 0 8px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--accent);}
+
+  /* layout */
+  .app{display:flex;min-height:100vh;}
+  .sidebar{
+    width:252px;flex-shrink:0;
+    background:var(--panel-2);
+    border-right:1px solid var(--border);
+    position:fixed;top:0;left:0;bottom:0;
+    overflow-y:auto;
+    padding:22px 14px 30px;
+  }
+  .brand{padding:4px 10px 18px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+  .brand .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;}
+  .brand h1{font-size:20px;line-height:1.25;margin-top:6px;}
+  .brand p{font-size:12px;color:var(--muted);margin:6px 0 0;}
+
+  nav.navlist{display:flex;flex-direction:column;gap:2px;}
+  .navgroup-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin:14px 10px 6px;}
+  .navlist button{
+    all:unset;cursor:pointer;
+    display:flex;align-items:baseline;gap:10px;
+    padding:9px 10px;border-radius:6px;
+    font-size:13.5px;color:var(--muted);
+  }
+  .navlist button .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:20px;flex-shrink:0;}
+  .navlist button:hover{background:var(--panel);color:var(--ink);}
+  .navlist button.active{background:var(--accent-dim);color:var(--ink);}
+  .navlist button.active .num{color:var(--accent);}
+
+  .main{margin-left:252px;flex:1;min-width:0;padding:38px 46px 90px;max-width:980px;}
+  section.page{display:none;}
+  section.page.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .page-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+  .page h2{font-size:30px;}
+  .page .lede{color:var(--muted);font-size:15.5px;max-width:66ch;margin-bottom:26px;}
+  .note{color:var(--muted);font-size:14px;line-height:1.6;max-width:70ch;}
+  .note strong{color:var(--ink);}
+  ul.facts{margin:0 0 22px;padding-left:20px;color:var(--muted);font-size:14.5px;line-height:1.75;max-width:68ch;}
+  ul.facts li strong{color:var(--ink);}
+
+  /* panel / card */
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+  .panel h3{font-size:15px;color:var(--ink);}
+
+  table.datatable{border-collapse:collapse;width:100%;max-width:420px;font-family:'JetBrains Mono',monospace;font-size:13.5px;margin-top:10px;display:block;overflow-x:auto;white-space:nowrap;}
+  table.datatable th,table.datatable td{border:1px solid var(--border);padding:7px 14px;text-align:center;}
+  table.datatable th{background:var(--panel-2);color:var(--accent);font-weight:600;}
+  table.datatable td{color:var(--muted);}
+
+  /* gate widget */
+  .gate-card{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;}
+  .gate-svg-wrap{flex:1 1 280px;min-width:0;width:100%;max-width:420px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:10px;}
+  .gate-svg{width:100%;height:auto;display:block;}
+  .gate-body{fill:var(--panel);stroke:var(--ink);stroke-width:2.2;}
+  .gate-line{fill:none;stroke:var(--ink);stroke-width:2.2;}
+  .bubble{fill:var(--panel);stroke:var(--ink);stroke-width:2.2;}
+  .wire{fill:none;stroke-width:4;stroke-linecap:round;}
+  .wire.lo{stroke:var(--low);}
+  .wire.hi{stroke:var(--high);stroke-dasharray:7 7;animation:flow .55s linear infinite;}
+  @keyframes flow{to{stroke-dashoffset:-28;}}
+  .wlabel{font-family:'JetBrains Mono',monospace;font-size:13px;fill:var(--muted);}
+  .wlabel.hi{fill:var(--high);}
+
+  .side-panel{flex:1 1 220px;min-width:0;width:100%;display:flex;flex-direction:column;gap:16px;}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  button.toggle{
+    all:unset;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;
+    background:var(--panel-2);border:1px solid var(--border);color:var(--ink);
+    padding:9px 14px;border-radius:7px;transition:border-color .15s;
+  }
+  button.toggle:hover{border-color:var(--accent);}
+  button.toggle span{color:var(--low);margin-left:6px;padding:1px 7px;border-radius:4px;background:rgba(0,0,0,.25);}
+  button.toggle span.on{color:#111;background:var(--high);}
+  button.toggle .hint{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:2px;}
+
+  .readout{
+    font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--muted);
+    background:var(--panel-2);border:1px solid var(--border);border-radius:7px;padding:12px 14px;
+  }
+  .readout .zval{font-size:22px;font-weight:700;color:var(--low);margin-left:8px;}
+  .readout .zval.on{color:var(--high);}
+  .readout .expr{display:block;margin-top:4px;font-size:12px;color:var(--accent);}
+
+  table.truth{border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:13px;width:100%;}
+  table.truth th,table.truth td{border:1px solid var(--border);padding:6px 0;text-align:center;color:var(--muted);}
+  table.truth th{background:var(--panel-2);color:var(--accent);}
+  table.truth tr.match td{color:var(--ink);background:rgba(255,176,32,.09);}
+  table.truth tr.match td.z1{color:var(--high);font-weight:700;}
+
+  .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);background:rgba(79,209,197,.08);padding:3px 9px;border-radius:20px;margin-bottom:12px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr;}}
+
+  .hero-demo{display:flex;gap:26px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin:22px 0 30px;}
+
+  .legend{display:flex;gap:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap;}
+  .legend .dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle;}
+  .legend .dot.hi{background:var(--high);}
+  .legend .dot.lo{background:var(--low);}
+
+  footer.pagefoot{margin-top:50px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;}
+
+  /* mobile */
+  @media (max-width:860px){
+    .app{flex-direction:column;}
+    .sidebar{position:sticky;top:0;z-index:20;width:100%;height:auto;padding:12px 14px;border-right:none;border-bottom:1px solid var(--border);}
+    .brand{padding:2px 4px 12px;margin-bottom:8px;}
+    .brand h1{font-size:17px;}
+    .brand p{display:none;}
+    nav.navlist{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+    .navgroup-label{display:none;}
+    .navlist button{white-space:nowrap;padding:8px 10px;}
+    .main{margin-left:0;padding:22px 16px 60px;max-width:100%;}
+    .page h2{font-size:24px;}
+  }
+  @media (max-width:640px){
+    .page h2{font-size:21px;}
+    .page-eyebrow{font-size:11px;}
+    .page .lede{font-size:14.5px;}
+    .panel{padding:16px;margin:14px 0;}
+    .hero-demo{padding:16px;gap:18px;}
+    .gate-card{gap:18px;}
+    .controls{gap:8px;}
+    button.toggle{padding:8px 12px;font-size:12.5px;}
+    .readout .zval{font-size:19px;}
+    table.truth{font-size:12px;}
+    ul.facts{font-size:14px;padding-left:18px;}
+  }
+  @media (max-width:420px){
+    .main{padding:18px 12px 50px;}
+    .navlist button .num{width:16px;font-size:10px;}
+    .navlist button span:last-child{font-size:12.5px;}
+    .brand .eyebrow{font-size:10px;}
+    .brand h1{font-size:16px;}
+    .gate-svg-wrap{padding:6px;}
+  }
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">BDL · CO · Week 3</div>
+      <h1>Logic Gates</h1>
+      <p>Toggle the inputs. Watch the current move.</p>
+    </div>
+    <nav class="navlist" id="navlist"></nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- 01 INTRO -->
+    <section class="page" id="page-intro" data-title="Introduction">
+      <div class="page-eyebrow">01 · Foundations</div>
+      <h2>The building blocks of every digital circuit</h2>
+      <p class="lede">A logic gate is an electronic circuit that performs a single logical operation — NOT, AND, OR — on one or more inputs and produces exactly one output. Wire enough of them together and you get everything from a calculator to a computer.</p>
+
+      <div class="hero-demo" id="hero-demo"></div>
+
+      <ul class="facts">
+        <li>Most logic gates have <strong>one or more inputs</strong> and only <strong>one output</strong>.</li>
+        <li>Gates process signals that represent <strong>true</strong> or <strong>false</strong>. The positive supply <strong>+5V</strong> normally represents true, and <strong>0V</strong> represents false.</li>
+        <li>Electronic gates <strong>require a power supply</strong> to operate.</li>
+        <li>Gate <strong>inputs</strong> are driven by two nominal voltages (e.g. 0V / 5V) representing logic 0 and logic 1.</li>
+        <li>The <strong>output</strong> of a gate also settles to one of two nominal voltages — logic 0 or logic 1.</li>
+      </ul>
+
+      <div class="panel">
+        <h3>Logic states</h3>
+        <p class="note">The same two states go by different names depending on context — they all mean the same thing electrically.</p>
+        <table class="datatable">
+          <tr><th>True</th><th>False</th></tr>
+          <tr><td>1</td><td>0</td></tr>
+          <tr><td>High</td><td>Low</td></tr>
+          <tr><td>On</td><td>Off</td></tr>
+          <tr><td>+5V</td><td>0V</td></tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Types of logic gates</h3>
+        <div class="grid2">
+          <div><span class="tag">Basic</span><p class="note">NOT, AND, OR — the three gates every other gate is built from.</p></div>
+          <div><span class="tag">Derived</span><p class="note">NAND, NOR — an AND/OR immediately followed by a NOT. Both are <strong>universal gates.</strong></p></div>
+          <div><span class="tag">Exclusive</span><p class="note">EX-OR (XOR), EX-NOR (XNOR) — gates sensitive to whether the number of 1s at the input is odd or even.</p></div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot hi"></i>logic 1 — current flowing</span>
+        <span><i class="dot lo"></i>logic 0 — no current</span>
+      </div>
+    </section>
+
+    <!-- BASIC GATES -->
+    <section class="page" id="page-not" data-title="NOT Gate"></section>
+    <section class="page" id="page-and" data-title="AND Gate"></section>
+    <section class="page" id="page-or" data-title="OR Gate"></section>
+
+    <!-- 06 universal concept -->
+    <section class="page" id="page-universal" data-title="Universal Gates">
+      <div class="page-eyebrow">06 · Derived Gates</div>
+      <h2>Universal gates</h2>
+      <p class="lede">A universal gate is a gate that can implement <strong>any</strong> Boolean function — AND, OR, NOT, and everything built from them — without needing any other gate type.</p>
+      <div class="panel">
+        <p class="note">The <strong>NAND</strong> gate and the <strong>NOR</strong> gate are both universal gates. Each is simply a basic gate (AND or OR) with the output inverted — but that single inversion is enough to rebuild every other gate from just one part type. Sections 11 and 12 show exactly how.</p>
+      </div>
+    </section>
+
+    <section class="page" id="page-nand" data-title="NAND Gate"></section>
+    <section class="page" id="page-nor" data-title="NOR Gate"></section>
+    <section class="page" id="page-xor" data-title="EX-OR Gate"></section>
+    <section class="page" id="page-xnor" data-title="EX-NOR Gate"></section>
+
+    <section class="page" id="page-nandreal" data-title="NAND Realisations">
+      <div class="page-eyebrow">11 · Realisation of Other Gates Using NAND</div>
+      <h2>Rebuilding NOT, AND and OR from NAND alone</h2>
+      <p class="lede">A NAND gate is an AND gate followed by a NOT gate. It needs a minimum of two inputs and always has exactly one output. Wired cleverly, NAND gates alone can reproduce every basic gate — which is why NAND is called a universal gate.</p>
+      <div id="nand-real-slots"></div>
+    </section>
+
+    <section class="page" id="page-norreal" data-title="NOR Realisations">
+      <div class="page-eyebrow">12 · Realisation of Other Gates Using NOR</div>
+      <h2>Rebuilding NOT, AND and OR from NOR alone</h2>
+      <p class="lede">A NOR gate is an OR gate followed by a NOT gate. The same trick works here: with only NOR gates you can realise AND, OR, NOT — and NAND too, which makes NOR the second universal gate.</p>
+      <div id="nor-real-slots"></div>
+    </section>
+
+    <footer class="pagefoot">Interactive notes built from BDL · CO · Week 3 — Logic Gates.</footer>
+  </main>
+</div>
+
+<script>
+/* ============================= GEOMETRY ============================= */
+const AND_D = "M0,0 H25 A30,30 0 0 1 25,60 H0 Z";
+const OR_D  = "M0,0 C20,0 40,10 55,30 C40,50 20,60 0,60 C10,45 10,15 0,0 Z";
+const NOT_D = "M0,0 L0,60 L55,30 Z";
+const XOR_EXTRA_D = "M-12,0 C0,15 0,45 -12,60";
+
+const SHAPE_OF = {NOT:'NOT',AND:'AND',OR:'OR',NAND:'AND',NOR:'OR',XOR:'OR',XNOR:'OR'};
+const HAS_BUBBLE = {NOT:true,AND:false,OR:false,NAND:true,NOR:true,XOR:false,XNOR:true};
+const HAS_XLINE = {XOR:true,XNOR:true};
+
+function bodyMarkup(type,x,y){
+  const shape = SHAPE_OF[type];
+  const d = shape==='NOT' ? NOT_D : shape==='AND' ? AND_D : OR_D;
+  let s = '';
+  if(HAS_XLINE[type]) s += `<path class="gate-line" d="${XOR_EXTRA_D}" transform="translate(${x},${y})"/>`;
+  s += `<path class="gate-body" d="${d}" transform="translate(${x},${y})"/>`;
+  return s;
+}
+
+const LOGIC = {
+  NOT:  a => a?0:1,
+  AND:  (a,b) => (a&&b)?1:0,
+  OR:   (a,b) => (a||b)?1:0,
+  NAND: (a,b) => (a&&b)?0:1,
+  NOR:  (a,b) => (a||b)?0:1,
+  XOR:  (a,b) => (a^b),
+  XNOR: (a,b) => (a^b)?0:1,
+};
+const EXPR = {
+  NOT:"Z = A\u0304", AND:"Z = A·B", OR:"Z = A+B",
+  NAND:"Z = A·B\u0305\u0305\u0305\u0305\u0305", NOR:"Z = A+B\u0305\u0305\u0305\u0305\u0305",
+  XOR:"Z = A ⊕ B", XNOR:"Z = A ⊕ B\u0305\u0305\u0305\u0305\u0305\u0305\u0305"
+};
+const TRUTH = {
+  NOT:  {cols:['A','Z'], rows:[[0,1],[1,0]]},
+  AND:  {cols:['A','B','Z'], rows:[[0,0,0],[0,1,0],[1,0,0],[1,1,1]]},
+  OR:   {cols:['A','B','Z'], rows:[[0,0,0],[0,1,1],[1,0,1],[1,1,1]]},
+  NAND: {cols:['A','B','Z'], rows:[[0,0,1],[0,1,1],[1,0,1],[1,1,0]]},
+  NOR:  {cols:['A','B','Z'], rows:[[0,0,1],[0,1,0],[1,0,0],[1,1,0]]},
+  XOR:  {cols:['A','B','Z'], rows:[[0,0,0],[0,1,1],[1,0,1],[1,1,0]]},
+  XNOR: {cols:['A','B','Z'], rows:[[0,0,1],[0,1,0],[1,0,0],[1,1,1]]},
+};
+const DESC = {
+  NOT:"The NOT gate — also called an inverter or inverting buffer — produces the opposite of its input. If A is 1, the output is 0, and vice versa.",
+  AND:"The AND gate performs logical multiplication. The output is High only when every input is High; if any single input is Low, the output is always Low.",
+  OR:"The OR gate performs logical addition. The output is High if any one input is High. The output is Low only when every input is Low.",
+  NAND:"NAND — \u201cNot AND\u201d — is an AND gate immediately followed by a NOT gate. Its output is Low only when every input is High.",
+  NOR:"NOR — \u201cNot OR\u201d — is an OR gate immediately followed by a NOT gate. Its output is High only when every input is Low.",
+  XOR:"The Exclusive-OR gate outputs 1 when an odd number of its inputs are 1 — for two inputs, that means the output is High only when A and B differ.",
+  XNOR:"The Exclusive-NOR gate is XOR followed by NOT. It outputs 1 when an even number of inputs are 1 — for two inputs, only when A and B match.",
+};
+
+/* ============================= SINGLE GATE WIDGET ============================= */
+function singleGateSVG(type){
+  const twoInput = type!=='NOT';
+  let s = '';
+  if(twoInput){
+    s += `<path id="wireA" class="wire lo" d="M10,35 H60"/>`;
+    s += `<path id="wireB" class="wire lo" d="M10,65 H60"/>`;
+    s += `<text id="lblA" class="wlabel" x="16" y="28">0</text>`;
+    s += `<text id="lblB" class="wlabel" x="16" y="82">0</text>`;
+  } else {
+    s += `<path id="wireA" class="wire lo" d="M10,50 H60"/>`;
+    s += `<text id="lblA" class="wlabel" x="16" y="43">0</text>`;
+  }
+  s += bodyMarkup(type,60,20);
+  if(HAS_BUBBLE[type]){
+    s += `<circle id="bubble" class="bubble" cx="123" cy="50" r="7"/>`;
+    s += `<path id="wireOut" class="wire lo" d="M131,50 H210"/>`;
+  } else {
+    s += `<path id="wireOut" class="wire lo" d="M115,50 H210"/>`;
+  }
+  s += `<text id="lblOut" class="wlabel" x="160" y="43">0</text>`;
+  return `<svg viewBox="0 0 220 100" class="gate-svg">${s}</svg>`;
+}
+
+function setWire(el,val){
+  if(!el) return;
+  el.classList.toggle('hi', !!val);
+  el.classList.toggle('lo', !val);
+}
+function setLabel(el,val){
+  if(!el) return;
+  el.textContent = val?'1':'0';
+  el.classList.toggle('hi', !!val);
+}
+
+class GateWidget{
+  constructor(container, type, opts={}){
+    this.container = container;
+    this.type = type;
+    this.tied = !!opts.tied;      // both inputs driven by the same toggle (used for NOT-via-NAND/NOR)
+    this.twoInput = type!=='NOT';
+    this.a = 0; this.b = 0;
+    this.render();
+  }
+  render(){
+    const t = this.type;
+    const rows = this.tied ? TRUTH.NOT.rows : TRUTH[t].rows;
+    const cols = this.tied ? ['A','Z'] : TRUTH[t].cols;
+    const showB = this.twoInput && !this.tied;
+
+    this.container.innerHTML = `
+      <div class="gate-card">
+        <div class="gate-svg-wrap">${singleGateSVG(t)}</div>
+        <div class="side-panel">
+          <div class="controls">
+            <button class="toggle" data-in="a">A<span class="val">0</span><span class="hint">tap to flip</span></button>
+            ${showB ? `<button class="toggle" data-in="b">B<span class="val">0</span><span class="hint">tap to flip</span></button>` : ''}
+          </div>
+          <div class="readout">Output<span class="zval">0</span><span class="expr">${EXPR[t]}</span></div>
+          <table class="truth"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>${rows.map(r=>`<tr>${r.map((v,i)=>`<td class="${i===r.length-1&&v?'z1':''}">${v}</td>`).join('')}</tr>`).join('')}</tbody></table>
+        </div>
+      </div>`;
+
+    this.el = {
+      wireA: this.container.querySelector('#wireA'),
+      wireB: this.container.querySelector('#wireB'),
+      wireOut: this.container.querySelector('#wireOut'),
+      lblA: this.container.querySelector('#lblA'),
+      lblB: this.container.querySelector('#lblB'),
+      lblOut: this.container.querySelector('#lblOut'),
+      zval: this.container.querySelector('.zval'),
+      btnA: this.container.querySelector('[data-in="a"]'),
+      btnB: this.container.querySelector('[data-in="b"]'),
+      rows: this.container.querySelectorAll('table.truth tbody tr'),
+    };
+    this.el.btnA.addEventListener('click', ()=>{ this.a = this.a?0:1; this.update(); });
+    if(this.el.btnB) this.el.btnB.addEventListener('click', ()=>{ this.b = this.b?0:1; this.update(); });
+    this.update();
+  }
+  update(){
+    const a = this.a;
+    const b = this.tied ? this.a : this.b;
+    const z = this.twoInput ? LOGIC[this.type](a,b) : LOGIC[this.type](a);
+
+    setWire(this.el.wireA, a); setLabel(this.el.lblA, a);
+    if(this.el.wireB) { setWire(this.el.wireB, this.twoInput ? b : a); setLabel(this.el.lblB, this.twoInput ? b : a); }
+    setWire(this.el.wireOut, z); setLabel(this.el.lblOut, z);
+
+    this.el.zval.textContent = z;
+    this.el.zval.classList.toggle('on', !!z);
+
+    this.el.btnA.querySelector('.val').textContent = a;
+    this.el.btnA.querySelector('.val').classList.toggle('on', !!a);
+    if(this.el.btnB){
+      this.el.btnB.querySelector('.val').textContent = b;
+      this.el.btnB.querySelector('.val').classList.toggle('on', !!b);
+    }
+    const matchKey = this.twoInput ? `${a}${b}` : `${a}`;
+    this.el.rows.forEach(row=>{
+      const cells = row.querySelectorAll('td');
+      const key = this.twoInput ? `${cells[0].textContent}${cells[1].textContent}` : `${cells[0].textContent}`;
+      row.classList.toggle('match', key===matchKey);
+    });
+  }
+}
+
+/* ============================= GATE PAGE BUILDER ============================= */
+const PAGE_META = {
+  NOT:{num:'03',group:'Basic Gates',title:'NOT gate'},
+  AND:{num:'04',group:'Basic Gates',title:'AND gate'},
+  OR:{num:'05',group:'Basic Gates',title:'OR gate'},
+  NAND:{num:'07',group:'Derived Gates',title:'NAND gate'},
+  NOR:{num:'08',group:'Derived Gates',title:'NOR gate'},
+  XOR:{num:'09',group:'Exclusive Gates',title:'EX-OR (XOR) gate'},
+  XNOR:{num:'10',group:'Exclusive Gates',title:'EX-NOR (XNOR) gate'},
+};
+function buildGatePage(type){
+  const page = document.getElementById('page-'+type.toLowerCase());
+  const meta = PAGE_META[type];
+  page.innerHTML = `
+    <div class="page-eyebrow">${meta.num} · ${meta.group}</div>
+    <h2>${meta.title}</h2>
+    <p class="lede">${DESC[type]}</p>
+    <div class="panel"><div id="widget-${type}"></div></div>
+    <div class="legend">
+      <span><i class="dot hi"></i>logic 1 — current flowing</span>
+      <span><i class="dot lo"></i>logic 0 — no current</span>
+    </div>
+    ${type==='AND' ? `<div class="panel"><h3>Properties</h3><p class="note">Symmetric: A·B = B·A &nbsp;&nbsp;·&nbsp;&nbsp; Associative: A(B·C) = (A·B)C</p></div>` : ''}
+    ${type==='OR' ? `<div class="panel"><h3>Properties</h3><p class="note">Symmetric: A+B = B+A &nbsp;&nbsp;·&nbsp;&nbsp; Associative: A+(B+C) = (A+B)+C</p></div>` : ''}
+    ${(type==='NAND'||type==='NOR') ? `<div class="panel"><h3>Why it matters</h3><p class="note">${type} is a <strong>universal gate</strong> — see section 06, and sections ${type==='NAND'?'11':'12'} for how every other gate is built from it alone.</p></div>` : ''}
+  `;
+  new GateWidget(document.getElementById('widget-'+type), type);
+}
+['NOT','AND','OR','NAND','NOR','XOR','XNOR'].forEach(buildGatePage);
+
+/* ============================= HERO TEASER (intro) ============================= */
+(function(){
+  const wrap = document.getElementById('hero-demo');
+  wrap.innerHTML = `
+    <div class="gate-svg-wrap" style="max-width:260px;">${singleGateSVG('NOT')}</div>
+    <div class="side-panel" style="min-width:200px;">
+      <p class="note" style="margin:0;">This is a <strong>NOT gate</strong>. Flip the input and watch the output invert instantly.</p>
+      <div class="controls"><button class="toggle" id="hero-btn">A<span class="val">0</span><span class="hint">tap to flip</span></button></div>
+      <div class="readout">Output<span class="zval" id="hero-z">1</span></div>
+    </div>`;
+  let a = 0;
+  const wireA = wrap.querySelector('#wireA'), wireOut = wrap.querySelector('#wireOut');
+  const lblA = wrap.querySelector('#lblA'), lblOut = wrap.querySelector('#lblOut');
+  const zval = wrap.querySelector('#hero-z');
+  const btn = wrap.querySelector('#hero-btn');
+  function upd(){
+    const z = a?0:1;
+    setWire(wireA,a); setLabel(lblA,a);
+    setWire(wireOut,z); setLabel(lblOut,z);
+    zval.textContent = z; zval.classList.toggle('on', !!z);
+    btn.querySelector('.val').textContent = a;
+    btn.querySelector('.val').classList.toggle('on', !!a);
+  }
+  btn.addEventListener('click', ()=>{ a = a?0:1; upd(); });
+  upd();
+})();
+
+/* ============================= REALISATION CIRCUITS ============================= */
+/* Generic helpers to lay out multi-gate circuits sharing one gate-shape (NAND or NOR) */
+
+function tiedWidgetMarkup(gateType){ // NOT via NAND/NOR — one control, both inputs tied
+  return singleGateSVG(gateType);
+}
+
+function dualStageSVG(gateType){ // AND-via-NAND or OR-via-NOR : G2( G1(a,b), G1(a,b) )
+  let s = '';
+  s += `<path id="wireA" class="wire lo" d="M10,35 H60"/>`;
+  s += `<path id="wireB" class="wire lo" d="M10,65 H60"/>`;
+  s += `<text id="lblA" class="wlabel" x="16" y="28">0</text>`;
+  s += `<text id="lblB" class="wlabel" x="16" y="82">0</text>`;
+  s += bodyMarkup(gateType,60,20);
+  s += `<circle id="bubble1" class="bubble" cx="123" cy="50" r="7"/>`;
+  s += `<path id="wireN1a" class="wire lo" d="M131,50 H160 V35 H220"/>`;
+  s += `<path id="wireN1b" class="wire lo" d="M131,50 H160 V65 H220"/>`;
+  s += `<text id="lblN1" class="wlabel" x="140" y="47">0</text>`;
+  s += bodyMarkup(gateType,220,20);
+  s += `<circle id="bubble2" class="bubble" cx="283" cy="50" r="7"/>`;
+  s += `<path id="wireOut" class="wire lo" d="M291,50 H360"/>`;
+  s += `<text id="lblOut" class="wlabel" x="315" y="43">0</text>`;
+  return `<svg viewBox="0 0 380 100" class="gate-svg">${s}</svg>`;
+}
+
+function tripleStageSVG(gateType){ // OR-via-NAND or AND-via-NOR : G3( G1(a,a), G2(b,b) )
+  let s = '';
+  s += `<path id="wireA" class="wire lo" d="M10,40 H40 V25 H60 M10,40 H40 V55 H60" />`;
+  s += `<text id="lblA" class="wlabel" x="14" y="33">0</text>`;
+  s += bodyMarkup(gateType,60,10);
+  s += `<circle id="bubble1" class="bubble" cx="123" cy="40" r="7"/>`;
+  s += `<text id="lblN1" class="wlabel" x="132" y="33">0</text>`;
+
+  s += `<path id="wireB" class="wire lo" d="M10,120 H40 V105 H60 M10,120 H40 V135 H60" />`;
+  s += `<text id="lblB" class="wlabel" x="14" y="153">0</text>`;
+  s += bodyMarkup(gateType,60,90);
+  s += `<circle id="bubble2" class="bubble" cx="123" cy="120" r="7"/>`;
+  s += `<text id="lblN2" class="wlabel" x="132" y="150">0</text>`;
+
+  s += `<path id="wireN1" class="wire lo" d="M131,40 H175 V70 H220"/>`;
+  s += `<path id="wireN2" class="wire lo" d="M131,120 H175 V100 H220"/>`;
+  s += bodyMarkup(gateType,220,55);
+  s += `<circle id="bubble3" class="bubble" cx="283" cy="85" r="7"/>`;
+  s += `<path id="wireOut" class="wire lo" d="M291,85 H360"/>`;
+  s += `<text id="lblOut" class="wlabel" x="315" y="78">0</text>`;
+  return `<svg viewBox="0 0 380 160" class="gate-svg">${s}</svg>`;
+}
+
+class TiedNotWidget{
+  constructor(container, gateType){
+    this.gateType = gateType; this.a = 0;
+    container.innerHTML = `
+      <div class="gate-card">
+        <div class="gate-svg-wrap">${tiedWidgetMarkup(gateType)}</div>
+        <div class="side-panel">
+          <div class="controls"><button class="toggle" id="t-a">A<span class="val">0</span><span class="hint">tap to flip</span></button></div>
+          <div class="readout">Output<span class="zval" id="t-z">1</span><span class="expr">Both inputs tied to A → Z = A\u0304</span></div>
+          <p class="note" style="margin:0;">Tie every input of a ${gateType} gate to the same signal and it collapses into a plain inverter.</p>
+        </div>
+      </div>`;
+    this.wireA=container.querySelector('#wireA'); this.wireB=container.querySelector('#wireB');
+    this.wireOut=container.querySelector('#wireOut');
+    this.lblA=container.querySelector('#lblA'); this.lblB=container.querySelector('#lblB'); this.lblOut=container.querySelector('#lblOut');
+    this.zval=container.querySelector('#t-z');
+    this.btn=container.querySelector('#t-a');
+    this.btn.addEventListener('click', ()=>{ this.a = this.a?0:1; this.update(); });
+    this.update();
+  }
+  update(){
+    const a=this.a, z = LOGIC[this.gateType](a,a);
+    setWire(this.wireA,a); setWire(this.wireB,a);
+    setLabel(this.lblA,a); setLabel(this.lblB,a);
+    setWire(this.wireOut,z); setLabel(this.lblOut,z);
+    this.zval.textContent=z; this.zval.classList.toggle('on', !!z);
+    this.btn.querySelector('.val').textContent=a;
+    this.btn.querySelector('.val').classList.toggle('on', !!a);
+  }
+}
+
+class DualStageWidget{
+  constructor(container, gateType, targetName){
+    this.gateType=gateType; this.a=0; this.b=0;
+    container.innerHTML = `
+      <div class="gate-card">
+        <div class="gate-svg-wrap">${dualStageSVG(gateType)}</div>
+        <div class="side-panel">
+          <div class="controls">
+            <button class="toggle" id="d-a">A<span class="val">0</span><span class="hint">tap to flip</span></button>
+            <button class="toggle" id="d-b">B<span class="val">0</span><span class="hint">tap to flip</span></button>
+          </div>
+          <div class="readout">Output<span class="zval" id="d-z">0</span><span class="expr">Z = ${targetName==='AND'?'A·B':'A+B'}</span></div>
+          <p class="note" style="margin:0;">First ${gateType} produces N1 = ${gateType}(A,B). Feeding N1 into a second, tied ${gateType} inverts it again — cancelling the first inversion and leaving plain ${targetName}.</p>
+        </div>
+      </div>`;
+    this.el = {
+      wireA:container.querySelector('#wireA'), wireB:container.querySelector('#wireB'),
+      wireN1a:container.querySelector('#wireN1a'), wireN1b:container.querySelector('#wireN1b'),
+      wireOut:container.querySelector('#wireOut'),
+      lblA:container.querySelector('#lblA'), lblB:container.querySelector('#lblB'),
+      lblN1:container.querySelector('#lblN1'), lblOut:container.querySelector('#lblOut'),
+      zval:container.querySelector('#d-z'),
+      btnA:container.querySelector('#d-a'), btnB:container.querySelector('#d-b'),
+    };
+    this.el.btnA.addEventListener('click', ()=>{ this.a=this.a?0:1; this.update(); });
+    this.el.btnB.addEventListener('click', ()=>{ this.b=this.b?0:1; this.update(); });
+    this.update();
+  }
+  update(){
+    const a=this.a,b=this.b;
+    const n1 = LOGIC[this.gateType](a,b);
+    const z = LOGIC[this.gateType](n1,n1);
+    setWire(this.el.wireA,a); setLabel(this.el.lblA,a);
+    setWire(this.el.wireB,b); setLabel(this.el.lblB,b);
+    setWire(this.el.wireN1a,n1); setWire(this.el.wireN1b,n1); setLabel(this.el.lblN1,n1);
+    setWire(this.el.wireOut,z); setLabel(this.el.lblOut,z);
+    this.el.zval.textContent=z; this.el.zval.classList.toggle('on', !!z);
+    this.el.btnA.querySelector('.val').textContent=a; this.el.btnA.querySelector('.val').classList.toggle('on', !!a);
+    this.el.btnB.querySelector('.val').textContent=b; this.el.btnB.querySelector('.val').classList.toggle('on', !!b);
+  }
+}
+
+class TripleStageWidget{
+  constructor(container, gateType, targetName){
+    this.gateType=gateType; this.a=0; this.b=0;
+    container.innerHTML = `
+      <div class="gate-card">
+        <div class="gate-svg-wrap">${tripleStageSVG(gateType)}</div>
+        <div class="side-panel">
+          <div class="controls">
+            <button class="toggle" id="tr-a">A<span class="val">0</span><span class="hint">tap to flip</span></button>
+            <button class="toggle" id="tr-b">B<span class="val">0</span><span class="hint">tap to flip</span></button>
+          </div>
+          <div class="readout">Output<span class="zval" id="tr-z">0</span><span class="expr">Z = ${targetName==='OR'?'A+B':'A·B'}</span></div>
+          <p class="note" style="margin:0;">Two ${gateType} gates, each with its inputs tied together, act as inverters producing N1 = A\u0304 and N2 = B\u0305. A third ${gateType} combines N1 and N2, landing on plain ${targetName}.</p>
+        </div>
+      </div>`;
+    this.el = {
+      wireA:container.querySelector('#wireA'), wireB:container.querySelector('#wireB'),
+      wireN1:container.querySelector('#wireN1'), wireN2:container.querySelector('#wireN2'),
+      wireOut:container.querySelector('#wireOut'),
+      lblA:container.querySelector('#lblA'), lblB:container.querySelector('#lblB'),
+      lblN1:container.querySelector('#lblN1'), lblN2:container.querySelector('#lblN2'), lblOut:container.querySelector('#lblOut'),
+      zval:container.querySelector('#tr-z'),
+      btnA:container.querySelector('#tr-a'), btnB:container.querySelector('#tr-b'),
+    };
+    this.el.btnA.addEventListener('click', ()=>{ this.a=this.a?0:1; this.update(); });
+    this.el.btnB.addEventListener('click', ()=>{ this.b=this.b?0:1; this.update(); });
+    this.update();
+  }
+  update(){
+    const a=this.a,b=this.b;
+    const n1 = LOGIC[this.gateType](a,a);
+    const n2 = LOGIC[this.gateType](b,b);
+    const z = LOGIC[this.gateType](n1,n2);
+    setWire(this.el.wireA,a); setLabel(this.el.lblA,a);
+    setWire(this.el.wireB,b); setLabel(this.el.lblB,b);
+    setWire(this.el.wireN1,n1); setLabel(this.el.lblN1,n1);
+    setWire(this.el.wireN2,n2); setLabel(this.el.lblN2,n2);
+    setWire(this.el.wireOut,z); setLabel(this.el.lblOut,z);
+    this.el.zval.textContent=z; this.el.zval.classList.toggle('on', !!z);
+    this.el.btnA.querySelector('.val').textContent=a; this.el.btnA.querySelector('.val').classList.toggle('on', !!a);
+    this.el.btnB.querySelector('.val').textContent=b; this.el.btnB.querySelector('.val').classList.toggle('on', !!b);
+  }
+}
+
+function buildRealisationSlots(hostId, gateType, order){
+  // order: array like ['NOT','AND','OR'] describing which realisation to render, in reading order
+  const host = document.getElementById(hostId);
+  order.forEach(target=>{
+    const block = document.createElement('div');
+    block.className = 'panel';
+    const heading = target==='NOT' ? `Realisation of NOT gate using ${gateType} gate`
+                  : target==='AND' ? `Realisation of AND gate using ${gateType} gate`
+                  : `Realisation of OR gate using ${gateType} gate`;
+    block.innerHTML = `<h3>${heading}</h3><div class="widget-slot"></div>`;
+    host.appendChild(block);
+    const slot = block.querySelector('.widget-slot');
+    if(target==='NOT') new TiedNotWidget(slot, gateType);
+    else if((gateType==='NAND' && target==='AND') || (gateType==='NOR' && target==='OR')) new DualStageWidget(slot, gateType, target);
+    else new TripleStageWidget(slot, gateType, target);
+  });
+}
+buildRealisationSlots('nand-real-slots','NAND',['NOT','AND','OR']);
+buildRealisationSlots('nor-real-slots','NOR',['NOT','AND','OR']);
+
+/* ============================= NAV / ROUTING ============================= */
+const NAV_ITEMS = [
+  {id:'intro', num:'01', label:'Introduction'},
+  {id:'not', num:'03', label:'NOT gate'},
+  {id:'and', num:'04', label:'AND gate'},
+  {id:'or', num:'05', label:'OR gate'},
+  {id:'universal', num:'06', label:'Universal gates'},
+  {id:'nand', num:'07', label:'NAND gate'},
+  {id:'nor', num:'08', label:'NOR gate'},
+  {id:'xor', num:'09', label:'EX-OR gate'},
+  {id:'xnor', num:'10', label:'EX-NOR gate'},
+  {id:'nandreal', num:'11', label:'NAND realisations'},
+  {id:'norreal', num:'12', label:'NOR realisations'},
+];
+const navlist = document.getElementById('navlist');
+NAV_ITEMS.forEach(item=>{
+  const btn = document.createElement('button');
+  btn.innerHTML = `<span class="num">${item.num}</span><span>${item.label}</span>`;
+  btn.dataset.target = 'page-'+item.id;
+  btn.addEventListener('click', ()=>go(item.id));
+  navlist.appendChild(btn);
+});
+function go(id){
+  document.querySelectorAll('section.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.navlist button').forEach(b=>b.classList.toggle('active', b.dataset.target==='page-'+id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  history.replaceState(null,'','#'+id);
+}
+const startId = (location.hash||'#intro').slice(1);
+go(NAV_ITEMS.some(i=>i.id===startId) ? startId : 'intro');
+</script>
+</body>
+</html>
