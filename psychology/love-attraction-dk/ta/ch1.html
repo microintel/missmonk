@@ -1,1 +1,709 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>காதலுக்கான வடிவமைப்பு — நாம் ஏன் காதலிக்கிறோம்</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#170b12;
+    --bg-mid:#2a1220;
+    --bg-warm:#3a1728;
+    --ember:#ff7a5c;
+    --gold:#e8ac4e;
+    --blush:#f2a6c4;
+    --cream:#f6ede4;
+    --cream-dim:#cdbdb2;
+    --line:rgba(246,237,228,0.14);
+  }
 
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg-deep);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    font-weight:400;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ---------- Background canvas (embers) ---------- */
+  #ember-canvas{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .grain{
+    position:fixed;
+    top:0;left:0;width:100%;height:100%;
+    z-index:1;
+    pointer-events:none;
+    opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .bg-glow{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255,122,92,0.14), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 30%, rgba(232,172,78,0.10), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 90%, rgba(242,166,196,0.08), transparent 60%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 45%, var(--bg-warm) 100%);
+    pointer-events:none;
+  }
+
+  main{position:relative; z-index:2;}
+
+  /* ---------- Signature thread ---------- */
+  .thread-wrap{
+    position:absolute;
+    left:50%;
+    top:0;
+    transform:translateX(-50%);
+    width:2px;
+    height:100%;
+    z-index:1;
+    pointer-events:none;
+  }
+  .thread-line{
+    width:100%;
+    height:100%;
+    background:linear-gradient(180deg, transparent 0%, var(--ember) 8%, var(--gold) 50%, var(--blush) 92%, transparent 100%);
+    opacity:0.28;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:50;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px 6vw;
+    backdrop-filter:blur(10px);
+    background:linear-gradient(180deg, rgba(23,11,18,0.75), transparent);
+  }
+  .logo{
+    font-family:'Fraunces', serif;
+    font-size:1.05rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 12px 3px rgba(255,122,92,0.7);
+    animation:pulse-dot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%,100%{transform:scale(1); opacity:1;}
+    50%{transform:scale(1.5); opacity:0.6;}
+  }
+  .nav-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.12em;
+    color:var(--cream-dim);
+    text-transform:uppercase;
+  }
+
+  /* ---------- Sections generic ---------- */
+  section{
+    position:relative;
+    padding:min(18vh,140px) 6vw 6vh;
+    max-width:900px;
+    margin:0 auto;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--ember);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;height:1px;
+    background:var(--ember);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:100px;
+    text-align:left;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 7.5vw, 5.6rem);
+    line-height:1.02;
+    background:linear-gradient(100deg, var(--cream) 30%, var(--blush) 60%, var(--gold) 90%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:26px;
+  }
+  .hero .lede{
+    font-size:clamp(1.05rem, 2vw, 1.35rem);
+    max-width:620px;
+    color:var(--cream-dim);
+    font-weight:300;
+  }
+  .hero .lede strong{color:var(--cream); font-weight:500;}
+
+  .scroll-hint{
+    margin-top:60px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    color:var(--cream-dim);
+    text-transform:uppercase;
+  }
+  .scroll-line{
+    width:32px; height:1px; background:var(--cream-dim);
+    position:relative;
+    overflow:hidden;
+  }
+  .scroll-line::after{
+    content:'';
+    position:absolute; left:-100%; top:0;
+    width:100%; height:100%;
+    background:var(--gold);
+    animation:travel 2s ease-in-out infinite;
+  }
+  @keyframes travel{
+    0%{left:-100%;}
+    50%{left:100%;}
+    100%{left:100%;}
+  }
+
+  /* Two-head connection motif */
+  .heads{
+    position:absolute;
+    right:6vw;
+    top:14%;
+    width:min(30vw, 260px);
+    opacity:0.9;
+  }
+  @media (max-width:820px){ .heads{display:none;} }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- Stat grid ---------- */
+  .stats-intro{
+    font-size:clamp(1.6rem,3.4vw,2.4rem);
+    font-weight:500;
+    max-width:680px;
+    margin-bottom:56px;
+  }
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:640px){ .stat-grid{grid-template-columns:1fr;} }
+  .stat-card{
+    background:var(--bg-deep);
+    padding:36px 28px;
+    transition:background 0.4s ease;
+  }
+  .stat-card:hover{ background:rgba(255,122,92,0.06); }
+  .stat-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:clamp(2.1rem, 5vw, 3rem);
+    font-weight:500;
+    color:var(--ember);
+    display:block;
+    margin-bottom:10px;
+    letter-spacing:-0.02em;
+  }
+  .stat-card:nth-child(2) .stat-num{color:var(--gold);}
+  .stat-card:nth-child(3) .stat-num{color:var(--blush);}
+  .stat-card:nth-child(4) .stat-num{color:var(--ember);}
+  .stat-label{
+    color:var(--cream-dim);
+    font-size:0.95rem;
+    max-width:24ch;
+  }
+
+  /* ---------- Story blocks ---------- */
+  .story h2{
+    font-size:clamp(1.9rem, 4.5vw, 3rem);
+    margin-bottom:26px;
+    max-width:720px;
+  }
+  .story p{
+    font-size:1.08rem;
+    color:var(--cream-dim);
+    max-width:640px;
+    margin-bottom:20px;
+  }
+  .story p strong{ color:var(--cream); font-weight:500; }
+  .story .highlight{
+    color:var(--cream);
+    font-size:1.2rem;
+    font-weight:400;
+    border-left:2px solid var(--ember);
+    padding-left:20px;
+    margin:32px 0;
+    max-width:560px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:300;
+  }
+
+  /* ---------- Word bank (agape, eros, philia, storge) ---------- */
+  .word-bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin:30px 0 10px;
+  }
+  .word-chip{
+    border:1px solid var(--line);
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:0.9rem;
+    display:flex;
+    gap:8px;
+    align-items:baseline;
+    transition:border-color 0.3s ease, transform 0.3s ease;
+  }
+  .word-chip:hover{ border-color:var(--ember); transform:translateY(-3px); }
+  .word-chip .greek{ font-family:'Fraunces', serif; font-style:italic; color:var(--gold); }
+  .word-chip .meaning{ color:var(--cream-dim); font-size:0.82rem; }
+
+  /* ---------- Timeline (Born to connect / brain growth) ---------- */
+  .timeline{
+    position:relative;
+    padding-left:34px;
+    margin-top:20px;
+  }
+  .timeline::before{
+    content:'';
+    position:absolute;
+    left:6px; top:6px; bottom:6px;
+    width:1px;
+    background:var(--line);
+  }
+  .tl-item{
+    position:relative;
+    margin-bottom:44px;
+  }
+  .tl-item::before{
+    content:'';
+    position:absolute;
+    left:-34px; top:4px;
+    width:11px; height:11px;
+    border-radius:50%;
+    background:var(--bg-deep);
+    border:2px solid var(--gold);
+  }
+  .tl-item h3{
+    font-size:1.25rem;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .tl-item p{
+    color:var(--cream-dim);
+    max-width:600px;
+    font-size:1rem;
+  }
+
+  /* ---------- Quote cards ---------- */
+  .quote-card{
+    background:linear-gradient(135deg, rgba(255,122,92,0.08), rgba(242,166,196,0.05));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:44px clamp(24px,5vw,56px);
+    margin:26px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .quote-card::before{
+    content:'“';
+    position:absolute;
+    top:-10px; left:20px;
+    font-family:'Fraunces', serif;
+    font-size:7rem;
+    color:rgba(255,122,92,0.18);
+    line-height:1;
+  }
+  .quote-card p{
+    font-family:'Fraunces', serif;
+    font-weight:400;
+    font-style:italic;
+    font-size:clamp(1.2rem, 2.6vw, 1.6rem);
+    color:var(--cream);
+    max-width:640px;
+    position:relative;
+    z-index:1;
+  }
+  .quote-card .attrib{
+    margin-top:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+  .quote-card .attrib span{ color:var(--cream-dim); text-transform:none; letter-spacing:0; display:block; margin-top:2px; font-family:'Work Sans', sans-serif;}
+
+  /* ---------- Close section ---------- */
+  .closer{
+    text-align:center;
+    padding-top:80px;
+    padding-bottom:160px;
+  }
+  .closer h2{
+    font-size:clamp(2.1rem, 5.5vw, 3.4rem);
+    max-width:700px;
+    margin:0 auto 22px;
+  }
+  .closer p{
+    color:var(--cream-dim);
+    max-width:520px;
+    margin:0 auto;
+    font-size:1.05rem;
+  }
+  .closer .heart-pulse{
+    width:52px; height:52px;
+    margin:0 auto 34px;
+    position:relative;
+  }
+  .closer .heart-pulse::before,
+  .closer .heart-pulse::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid var(--ember);
+    animation:ripple 2.6s ease-out infinite;
+  }
+  .closer .heart-pulse::after{ animation-delay:1.3s; }
+  .closer .heart-dot{
+    position:absolute;
+    inset:0;
+    margin:auto;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 20px 6px rgba(255,122,92,0.5);
+  }
+  @keyframes ripple{
+    0%{ transform:scale(0.4); opacity:0.9; }
+    100%{ transform:scale(2.4); opacity:0; }
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 6vw 50px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    color:var(--cream-dim);
+    text-transform:uppercase;
+    position:relative;
+    z-index:2;
+  }
+
+  ::selection{ background:var(--ember); color:var(--bg-deep); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<canvas id="ember-canvas"></canvas>
+<div class="grain"></div>
+
+<nav>
+  <div class="logo"><span class="logo-dot"></span> Evolution Calling</div>
+  <div class="nav-tag">நாம் ஏன் காதலில் விழுகிறோம்</div>
+</nav>
+
+<main>
+  <div class="thread-wrap"><div class="thread-line"></div></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">ஒரு பெரிய உணர்வுக்கான எளிய வழிகாட்டி</div>
+    <h1>நாம் காதலிக்கவே<br>பிறந்தவர்கள்.</h1>
+    <p class="lede">ஒரு துணையை விரும்புவது சில நேரங்களில் காரணமே இல்லாத, வினோதமான இழுப்பு போல தோன்றலாம். ஆனால் மனிதன் எப்படி பரிணமித்தான் என்று பார்த்தால், இந்த வினோதம் முழுவதுமாக மறைந்துவிடும். <strong>காதல் என்பது ஒரு தவறு அல்ல — நம் இனத்தை உயிரோடு வைத்திருந்த மிக முக்கிய அம்சம் அது.</strong></p>
+
+    <svg class="heads" viewBox="0 0 200 160" fill="none">
+      <path id="face1" d="M60 40 C30 40 15 65 15 95 C15 120 30 140 55 145 L55 130 L45 130 L45 115 L60 115 L60 80 C60 60 70 40 60 40 Z" fill="#ff7a5c" opacity="0.85"/>
+      <path id="face2" d="M140 40 C170 40 185 65 185 95 C185 120 170 140 145 145 L145 130 L155 130 L155 115 L140 115 L140 80 C140 60 130 40 140 40 Z" fill="#e8ac4e" opacity="0.85"/>
+      <circle cx="100" cy="90" r="10" fill="#f2a6c4" id="pulse-heart"/>
+      <line x1="60" y1="90" x2="140" y2="90" stroke="#f6ede4" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+    </svg>
+
+    <div class="scroll-hint"><span>மேலும் அறிய கீழே ஸ்க்ரோல் செய்யுங்கள்</span><span class="scroll-line"></span></div>
+  </section>
+
+  <!-- STATS -->
+  <section class="reveal">
+    <div class="eyebrow">இந்த உணர்வுக்குப் பின்னால் இருக்கும் எண்கள்</div>
+    <p class="stats-intro">நமது நீண்ட வரலாற்றிலிருந்து வரும் நான்கு உண்மைகள், இன்றும் காதல் ஏன் இவ்வளவு தீவிரமாக உணரப்படுகிறது என்பதை விளக்குகின்றன.</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <span class="stat-num">5%</span>
+        <span class="stat-label">100 பாலூட்டி இனங்களில் வெறும் 5 இனங்கள் மட்டுமே — நாமும் அதில் ஒன்று — ஒரே நேரத்தில் ஒரே துணையுடன் நிலைத்திருக்கின்றன. இது நம்மை அரிதான இனமாக ஆக்குகிறது.</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">2,500</span>
+        <span class="stat-label">ஆண்டுகளுக்கு முன்பே, கண்டறியப்பட்ட மிகப் பழமையான திருமண ஆவணம் பதிவாகியுள்ளது. காதல் என்பது, அதைப் பதிவு செய்யும் காகிதங்களை விட மிகவும் பழமையானது என்பது இதிலிருந்து தெரிகிறது.</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">2.5M</span>
+        <span class="stat-label">ஆண்டுகால மனித பரிணாம வளர்ச்சி, நம்மை இன்னொருவரை நோக்கி இழுக்கும் ஒவ்வொரு உள்ளுணர்விற்கும் பின்னால் இருக்கிறது.</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">x3</span>
+        <span class="stat-label">நமது ஆரம்பகால மூதாதையர்களை விட நம் மூளையின் அளவு மூன்று மடங்காக வளர்ந்துள்ளது — முக்கியமாக பேசவும், ஒத்துழைக்கவும், காதலிக்கவும் உதவுவதற்காக.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOVE VS MARRIAGE -->
+  <section class="story reveal">
+    <div class="eyebrow">01 — பழைய கதை, புதிய உணர்வுகள்</div>
+    <h2>காதலும் திருமணமும் எப்போதுமே ஒன்றாக இருந்ததில்லை.</h2>
+    <p>வரலாற்றின் பெரும்பகுதியில், காதலும் திருமணமும் முற்றிலும் வேறு வேறான கருத்துக்களாகவே இருந்தன. நாம் கண்டறிந்த மிகப் பழமையான திருமண ஒப்பந்தத்திற்கு 2,500 ஆண்டுகள் ஆகின்றன — அதில் 14 வயது சிறுமி ஆறு மாடுகளுக்கு ஈடாக மாற்றப்பட்டதாகக் குறிப்பிடப்பட்டுள்ளது. இது ஒரு காதல் கதையாக இல்லை என்பது தெளிவு.</p>
+    <p>பண்டைய கிரேக்கர்களும் இதையே நம்பினர். அவர்களிடம் காதலைக் குறிக்க நான்கு வெவ்வேறு சொற்கள் இருந்தன, ஆனால் <strong>அவற்றில் எதுவும் "காதல் உறவு" என்ற பொருளைத் தரவில்லை.</strong></p>
+    <div class="word-bank">
+      <div class="word-chip"><span class="greek">Agápe</span><span class="meaning">ஆன்மீக அன்பு</span></div>
+      <div class="word-chip"><span class="greek">Éros</span><span class="meaning">உடல் ஆசை</span></div>
+      <div class="word-chip"><span class="greek">Philía</span><span class="meaning">அன்பான நட்பு</span></div>
+      <div class="word-chip"><span class="greek">Storgē</span><span class="meaning">குடும்ப பாசம்</span></div>
+    </div>
+    <p>முழுமையாக காதலில் விழும் கருத்து பிற்காலத்தில், இடைக்கால வீரர்கள் மற்றும் அரண்மனை காதல் கதைகளில்தான் முதலில் தோன்றியது — இந்தக் கதைகளே பின்னாளில் நவீன நாவலாக வளர்ந்தன. குழந்தையாக இருந்தபோது நாம் அனுபவித்த அன்பு, வளர்ந்த பிறகு நாம் ஏங்கும் காதலின் தன்மையை வடிவமைக்கிறது என்பதை உளவியலாளர்கள் புரிந்துகொள்ள இன்னும் நீண்ட காலம் ஆனது.</p>
+  </section>
+
+  <!-- BORN TO CONNECT -->
+  <section class="story reveal">
+    <div class="eyebrow">02 — எல்லாம் தொடங்கும் இடம்</div>
+    <h2>காதலுக்கு வெகு காலத்திற்கு முன்பே, உயிர்வாழவே நமக்குப் பிணைப்பு தேவைப்பட்டது.</h2>
+    <p>சில குட்டி விலங்குகள் பிறந்த சில நிமிடங்களிலேயே நடக்க ஆரம்பித்துவிடும். ஆனால் மனிதக் குழந்தைகளால் தன் தலையைக் கூட நிமிர்த்திப் பிடிக்க முடியாது. நாம் முற்றிலும் உதவியற்ற நிலையில்தான் பிறக்கிறோம் — அதாவது, நமது முதல் உயிர்வாழும் திறமை ஓடுவதோ ஒளிந்துகொள்வதோ அல்ல. <strong>யாரோ ஒருவர் நம்மை கவனித்துக் கொள்ளும்படி செய்வதே அது.</strong></p>
+    <div class="timeline">
+      <div class="tl-item">
+        <h3>நம்மை உயிரோடு வைத்திருக்கும் புன்னகை</h3>
+        <p>புதிதாகப் பிறந்த குழந்தையின் புன்னகை வெறும் அழகுக்காக மட்டும் அல்ல — அது ஒரு உயிர்வாழும் உத்தி. களைப்படைந்த பெற்றோரையும் மீண்டும் மீண்டும் தன்னிடம் இழுத்து வருகிறது. 1957ஆம் ஆண்டு இந்தப் பிணைப்பை முதன்முதலில் ஆய்வு செய்த உளவியலாளர் ஜான் போல்பி, அதிகமாக புன்னகைக்கும் குழந்தைகளுக்கே அதிகமான அன்பும் கவனிப்பும் கிடைக்கிறது என வாதிட்டார்.</p>
+      </div>
+      <div class="tl-item">
+        <h3>அது இல்லாவிட்டால் என்ன நடக்கும்</h3>
+        <p>1940களில் நடத்தப்பட்ட ஒரு அதிர்ச்சிகரமான ஆய்வில், அனாதை இல்லத்தில் வளர்ந்த குழந்தைகளில் மூன்றில் ஒரு பங்குக்கும் மேற்பட்டோர் இரண்டு வயது நிறைவடையும் முன்பே இறந்துவிட்டனர் — பசியாலோ நோயாலோ அல்ல, மாறாக அரவணைப்பு, விளையாட்டு, கவனிப்பு இல்லாததால். அன்பு என்பது உணவைப் போலவே அத்தியாவசியமானது என்பதை இது காட்டுகிறது.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FROM CHILDHOOD TO ROMANCE -->
+  <section class="story reveal">
+    <div class="eyebrow">03 — பெரியவர்களின் காதலுக்கு மாறுவது</div>
+    <h2>பிணைப்பு தேவை நமக்கு ஒருபோதும் தீர்ந்துவிடாது — அதன் திசையை மட்டும் நாம் மாற்றுகிறோம்.</h2>
+    <p>இதுதான் எளிய உண்மை: <strong>நாம் பெரியவர்களாக ஆனதும் பிணைப்புத் தேவை மறைந்துவிடுவதில்லை — அதன் இடத்தை மட்டும் மாற்றுகிறோம்.</strong> ஒரு காலத்தில் பெற்றோருடன் நமக்கு இருந்த பிணைப்பு, இப்போது ஒரு புதிய நபருக்கு — காதல் துணைவருக்கு — மாற்றப்படுகிறது.</p>
+    <p class="highlight">காதலில் விழுவதும் பெற்றோராக மாறுவதும், ஒரு மனிதனின் வாழ்க்கையில் மூளையை மிகப்பெரிய அளவில் மாற்றியமைக்கும் இரண்டு நிகழ்வுகள்.</p>
+    <p>அன்பான பெற்றோர் ஒரு குழந்தைக்குப் பாதுகாப்பு உணர்வைத் தருவதைப் போலவே, ஆரோக்கியமான காதல் உறவும் ஒரு பெரியவரை அமைதியாகவும் தன்னம்பிக்கையுடனும் இருக்க வைக்கும் — ஆச்சரியப்படும் விதமாக, அவரை இன்னும் சார்பற்றவராகவே ஆக்கும், சார்பானவராக அல்ல.</p>
+  </section>
+
+  <!-- THE EVOLUTION OF LOVE -->
+  <section class="story reveal">
+    <div class="eyebrow">04 — நம் மூளை ஏன் இதற்காக வளர்ந்தது</div>
+    <h2>பெரிய குழந்தைகள், பெரிய மூளை, பெரிய காதல்.</h2>
+    <p>இயற்கையில், பெரும்பாலான பாலூட்டி விலங்குகள் ஒரே துணையுடன் நம்பிக்கையாக இருப்பதில்லை — அவை தங்கள் மரபணுக்களை முடிந்தவரை பரவலாகப் பரப்ப முயற்சிக்கின்றன. நமக்கு மிக நெருங்கிய உறவினர்களான சிம்பான்சிகள் கூட, குழந்தை வளர்ப்பு முழுவதையும் பெண் இனங்களிடமே விட்டுவிடுகின்றன.</p>
+    <p>மனிதர்கள் வேறு வழியில் சென்றனர். 25 லட்சம் ஆண்டுகளில், சிக்கலான சமூக வாழ்க்கை, கருவிகள், மொழி — மற்றும் காதலை நிலைநிறுத்தும் கடினமான வேலையை சமாளிக்க நம் மூளை மூன்று மடங்காக வளர்ந்தது. ஆனால் பெரிய மூளை என்றால் பெரிய தலை, பெரிய தலை என்றால் குழந்தைகள் உலகத்திற்குத் தயாராகும் முன்பே, முன்கூட்டியே பிறக்க வேண்டியிருந்தது.</p>
+    <p>இதன் விளைவு? <strong>மனிதக் குழந்தைகளுக்கு மிக அதிகமான கவனிப்பு தேவைப்படுகிறது</strong> — இதனால் ஒன்றாக இணைந்திருந்த பெற்றோர்களுக்கே உயிர்வாழும் வாய்ப்பு அதிகமாக இருந்தது. மனிதர்கள் இரு கால்களில் நடக்கத் தொடங்கியதற்கே இதுவே காரணம் என்று சில விஞ்ஞானிகள் கருதுகின்றனர் — கைகளைச் சுதந்திரமாக்கி, உதவியற்ற குழந்தையைத் தூக்கிச் செல்ல. நாம் காதலிக்கவே பரிணமிக்கவில்லை. <strong>நாம் காதலித்ததால்தான் பரிணமித்தோம்.</strong></p>
+  </section>
+
+  <!-- QUOTES -->
+  <section class="reveal">
+    <div class="eyebrow">அவர்களின் சொந்த வார்த்தைகளில்</div>
+    <div class="quote-card">
+      <p>மற்றவர்களை கவனித்துக்கொள்வதும், நாமும் கவனிக்கப்பட வேண்டும் என்று விரும்புவதும் நமது இயல்பிலேயே இருக்கிறது.</p>
+      <div class="attrib">புரூஸ் பெர்ரி<span>மனநல மருத்துவர்</span></div>
+    </div>
+    <div class="quote-card">
+      <p>நாம் தனியாக வாழும்படி ஒருபோதும் உருவாக்கப்படவில்லை. நமது உடல்கூறும் பரிணாம வளர்ச்சியும் ஒரே திசையைத்தான் காட்டுகின்றன — ஒருவரோடு ஒருவர் ஆழமாகப் பிணைந்திருப்பதை.</p>
+      <div class="attrib">மார்கோ இயாகோபோனி<span>மனநலவியல் &amp; நடத்தை அறிவியல் பேராசிரியர், UCLA</span></div>
+    </div>
+  </section>
+
+  <!-- CLOSER -->
+  <section class="closer reveal">
+    <div class="heart-pulse"><span class="heart-dot"></span></div>
+    <h2>காதலை விரும்புவது ஒரு தர்க்கமற்ற செயல் அல்ல.<br>அதுவே உன்னில் இருக்கும் மிக மனிதத்தன்மையான குணம்.</h2>
+    <p>நீங்கள் தனியாகவே முழுமையாகவும் உறுதியாகவும் இருக்க முடியும் — தனியாக சமாளிக்கும் திறன் ஒரு மனிதனிடம் இருக்கக்கூடிய மிக ஆரோக்கியமான பண்புகளில் ஒன்று. ஆனால் ஒரு துணையை விரும்புவதிலும் தவறேதும் இல்லை. உடல்நிலவியல் ரீதியாகப் பார்த்தால், நாம் இதற்காகவே உருவாக்கப்பட்டவர்கள்.</p>
+  </section>
+</main>
+
+<footer>தழுவல் &amp; எளிமைப்படுத்தப்பட்டது · Evolution Calling — நாம் ஏன் காதலில் விழுகிறோம்</footer>
+
+<script>
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---------- Heartbeat pulse on hero heads ----------
+  const pulseHeart = document.getElementById('pulse-heart');
+  if(pulseHeart){
+    let t = 0;
+    function beat(){
+      t += 0.05;
+      const s = 1 + Math.sin(t*3) * 0.15;
+      pulseHeart.setAttribute('r', (10*s).toFixed(2));
+      requestAnimationFrame(beat);
+    }
+    beat();
+  }
+
+  // ---------- Falling hearts background ----------
+  const canvas = document.getElementById('ember-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, hearts = [];
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = document.documentElement.scrollHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const colors = ['255,122,92', '232,172,78', '242,166,196', '255,94,120', '255,180,205', '224,74,105'];
+
+  // draws a heart centered at (0,0) with given size, filled with current fillStyle
+  function heartPath(size){
+    ctx.beginPath();
+    const s = size;
+    ctx.moveTo(0, s*0.32);
+    ctx.bezierCurveTo(0, -s*0.15, -s*0.7, -s*0.15, -s*0.7, s*0.28);
+    ctx.bezierCurveTo(-s*0.7, s*0.62, -s*0.3, s*0.85, 0, s*1.1);
+    ctx.bezierCurveTo(s*0.3, s*0.85, s*0.7, s*0.62, s*0.7, s*0.28);
+    ctx.bezierCurveTo(s*0.7, -s*0.15, 0, -s*0.15, 0, s*0.32);
+    ctx.closePath();
+  }
+
+  function makeHeart(){
+    const big = Math.random() < 0.22;
+    return {
+      x: Math.random()*W,
+      y: Math.random()*H,
+      size: big ? (Math.random()*14 + 16) : (Math.random()*9 + 6),
+      speedY: big ? (Math.random()*0.35 + 0.25) : (Math.random()*0.6 + 0.35),
+      driftX: (Math.random()-0.5)*0.5,
+      alpha: big ? (Math.random()*0.18 + 0.10) : (Math.random()*0.45 + 0.25),
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rot: (Math.random()-0.5)*0.6,
+      spin: (Math.random()-0.5)*0.008,
+      sway: Math.random()*Math.PI*2,
+      swaySpeed: Math.random()*0.018 + 0.006,
+      pulse: Math.random()*Math.PI*2,
+      pulseSpeed: Math.random()*0.02 + 0.01
+    };
+  }
+
+  const HEART_COUNT = prefersReduced ? 0 : Math.min(90, Math.floor(W/14));
+  for(let i=0;i<HEART_COUNT;i++) hearts.push(makeHeart());
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // falling hearts
+    hearts.forEach(p=>{
+      p.y += p.speedY;
+      p.sway += p.swaySpeed;
+      p.pulse += p.pulseSpeed;
+      p.x += p.driftX + Math.sin(p.sway)*0.3;
+      p.rot += p.spin;
+      if(p.y > H + 30){ p.y = -30; p.x = Math.random()*W; }
+      if(p.x > W + 20) p.x = -20;
+      if(p.x < -20) p.x = W + 20;
+
+      const pulseScale = 1 + Math.sin(p.pulse)*0.06;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.scale(pulseScale, pulseScale);
+      ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(3)})`;
+      ctx.shadowColor = `rgba(${p.color}, 0.85)`;
+      ctx.shadowBlur = p.size * 0.9;
+      heartPath(p.size);
+      ctx.fill();
+
+      // soft inner highlight for a glassy, beautiful glow
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `rgba(255,255,255,${(p.alpha*0.35).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.ellipse(-p.size*0.22, -p.size*0.05, p.size*0.16, p.size*0.1, -0.6, 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.restore();
+    });
+
+    if(!prefersReduced) requestAnimationFrame(draw);
+  }
+  draw();
+
+  // Recalculate canvas height after content settles
+  window.addEventListener('load', ()=> setTimeout(resize, 300));
+</script>
+
+</body>
+</html>
