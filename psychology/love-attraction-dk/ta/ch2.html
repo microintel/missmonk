@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>நீங்கள் ஏன் இப்படி காதலிக்கிறீர்கள்?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a0f22;
+    --bg-mid:#2c1938;
+    --bg-soft:#3a2148;
+    --cream:#f6ecdf;
+    --muted:#c6b3cf;
+    --secure:#ffb199;
+    --secure-soft:#3a2a2c;
+    --anxious:#9ecbff;
+    --anxious-soft:#20293a;
+    --avoidant:#9bc9a3;
+    --avoidant-soft:#1f2e26;
+    --line: rgba(246,236,223,0.14);
+    --shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg-mid) 0%, var(--bg-deep) 55%, #0f0815 100%);
+    color:var(--cream);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  ::selection{ background: var(--secure); color:#1a0f22; }
+
+  /* ---------- Falling hearts background ---------- */
+  #heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    top:-10%;
+    opacity:0;
+    font-size:20px;
+    color: var(--rose, #f2a6b0);
+    filter: drop-shadow(0 0 6px rgba(242,166,176,0.35));
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
+    8%{ opacity: var(--op, 0.5); }
+    92%{ opacity: var(--op, 0.5); }
+    100%{ transform: translateY(110vh) rotate(360deg); opacity:0; }
+  }
+  @keyframes sway{
+    0%, 100%{ margin-left:0px; }
+    50%{ margin-left: 30px; }
+  }
+
+  .wrap{ max-width:920px; margin:0 auto; padding: 0 24px; position:relative; z-index:1; }
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    min-height: 92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding: 80px 24px 40px;
+    position:relative;
+    z-index:1;
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--secure);
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.05;
+    max-width:14ch;
+    background: linear-gradient(180deg, #fff, var(--cream) 60%, var(--secure));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.sub{
+    margin-top:26px;
+    max-width:46ch;
+    font-size:1.08rem;
+    line-height:1.65;
+    color: var(--muted);
+  }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue .line{
+    width:1px; height:40px;
+    background:linear-gradient(var(--secure), transparent);
+    animation: pulseLine 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseLine{ 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+  /* ---------- Sections general ---------- */
+  section{
+    position:relative;
+    z-index:1;
+    padding: 90px 0;
+  }
+  section.tight{ padding: 60px 0; }
+  .kicker{
+    font-size:0.75rem;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--secure);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h2.section-title{
+    font-size: clamp(1.7rem, 4.4vw, 2.6rem);
+    margin-bottom:22px;
+    max-width:16ch;
+  }
+  p.lead{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:var(--muted);
+    max-width:60ch;
+    margin-bottom:16px;
+  }
+  .reveal{
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:none;
+  }
+
+  /* ---------- Origin story mini reactions ---------- */
+  .mini-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-top:34px;
+  }
+  .mini{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 16px;
+    background: rgba(255,255,255,0.02);
+  }
+  .mini b{ display:block; font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:6px; }
+  .mini.secure b{ color:var(--secure); }
+  .mini.anxious b{ color:var(--anxious); }
+  .mini.avoidant b{ color:var(--avoidant); }
+  .mini span{ font-size:0.92rem; color:var(--muted); line-height:1.5; }
+
+  /* ---------- Cards ---------- */
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:40px;
+  }
+  .card-slot{ perspective: 1400px; height:400px; }
+  .card{
+    position:relative;
+    width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .card-slot.flipped .card{ transform: rotateY(180deg); }
+  .face{
+    position:absolute; inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    border-radius:20px;
+    padding:26px 22px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .face.front{
+    justify-content:space-between;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+  }
+  .face.back{
+    transform: rotateY(180deg);
+    overflow-y:auto;
+  }
+  .card-slot.secure .face.front{ border-top:4px solid var(--secure); }
+  .card-slot.anxious .face.front{ border-top:4px solid var(--anxious); }
+  .card-slot.avoidant .face.front{ border-top:4px solid var(--avoidant); }
+  .card-slot.secure .face.back{ background: var(--secure-soft); }
+  .card-slot.anxious .face.back{ background: var(--anxious-soft); }
+  .card-slot.avoidant .face.back{ background: var(--avoidant-soft); }
+
+  .pct{ font-family:'Fraunces',serif; font-size:3.4rem; font-weight:700; line-height:1; }
+  .card-slot.secure .pct{ color:var(--secure); }
+  .card-slot.anxious .pct{ color:var(--anxious); }
+  .card-slot.avoidant .pct{ color:var(--avoidant); }
+  .style-name{ font-family:'Fraunces', serif; font-size:1.5rem; margin:10px 0 6px; }
+  .style-tag{ font-size:0.85rem; color:var(--muted); font-style:italic; }
+  .flip-hint{ font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:auto; padding-top:14px; opacity:0.8; }
+
+  .back h4{ font-family:'Fraunces',serif; font-size:1.15rem; margin-bottom:12px; }
+  .back .belief{ font-style:italic; color:var(--cream); font-size:0.98rem; margin-bottom:16px; line-height:1.5; }
+  .back ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .back li{ font-size:0.88rem; color:var(--muted); line-height:1.45; padding-left:16px; position:relative; }
+  .back li::before{ content:"·"; position:absolute; left:0; font-size:1.3rem; line-height:0.8; top:2px; }
+  .card-slot.secure .back li::before{ color:var(--secure); }
+  .card-slot.anxious .back li::before{ color:var(--anxious); }
+  .card-slot.avoidant .back li::before{ color:var(--avoidant); }
+
+  /* ---------- Stats ---------- */
+  .stat-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+    margin-top:44px;
+  }
+  .stat{
+    text-align:center;
+  }
+  .ring-wrap{
+    width:150px; height:150px;
+    margin:0 auto 14px;
+    position:relative;
+  }
+  .ring-wrap svg{ transform: rotate(-90deg); width:100%; height:100%; }
+  .ring-bg{ fill:none; stroke: rgba(255,255,255,0.08); stroke-width:8; }
+  .ring-fg{ fill:none; stroke-width:8; stroke-linecap:round; stroke-dasharray:326.7; stroke-dashoffset:326.7; transition: stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1); }
+  .ring-num{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+  }
+  .stat-label{ font-size:0.92rem; color:var(--muted); }
+  .stat-label b{ display:block; color:var(--cream); font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:2px;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-list{ display:flex; flex-direction:column; gap:14px; margin-top:30px; }
+  .quiz-item{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    background: rgba(255,255,255,0.02);
+    cursor:pointer;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .quiz-item:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+  .quiz-item p{ font-size:0.98rem; line-height:1.55; color:var(--cream); }
+  .quiz-item .result{
+    display:none;
+    margin-top:12px;
+    font-size:0.85rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .quiz-item.picked .result{ display:block; }
+  .quiz-item[data-style="secure"].picked{ border-color:var(--secure); }
+  .quiz-item[data-style="anxious"].picked{ border-color:var(--anxious); }
+  .quiz-item[data-style="avoidant"].picked{ border-color:var(--avoidant); }
+  .quiz-item[data-style="secure"] .result{ color:var(--secure); }
+  .quiz-item[data-style="anxious"] .result{ color:var(--anxious); }
+  .quiz-item[data-style="avoidant"] .result{ color:var(--avoidant); }
+
+  /* ---------- Combos ---------- */
+  .combo-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+    margin-top:34px;
+  }
+  .combo{
+    border-radius:16px;
+    padding:20px 20px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+  }
+  .combo .who{ font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:8px; }
+  .combo p{ font-size:0.9rem; color:var(--muted); line-height:1.5; }
+  .combo.good{ border-left:3px solid var(--secure); }
+  .combo.hard{ border-left:3px solid #e0857a; grid-column: 1 / -1; }
+  .combo.hard .who{ color:#e0857a; }
+
+  /* ---------- Footer note ---------- */
+  .note-box{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:30px 28px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    margin-top:20px;
+  }
+  .note-box h3{ font-size:1.2rem; margin-bottom:10px; }
+  .note-box p{ font-size:0.95rem; line-height:1.65; color:var(--muted); }
+
+  footer{
+    text-align:center;
+    padding: 50px 24px 70px;
+    font-size:0.8rem;
+    color: var(--muted);
+    position:relative; z-index:1;
+  }
+  footer .heart-mark{ color:var(--secure); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 780px){
+    .cards{ grid-template-columns:1fr; }
+    .card-slot{ height:auto; min-height:340px; }
+    .mini-row{ grid-template-columns:1fr; }
+    .stat-row{ grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .ring-wrap{ width:100px; height:100px; }
+    .ring-num{ font-size:1.15rem; }
+    .combo-grid{ grid-template-columns:1fr; }
+    .combo.hard{ grid-column:auto; }
+    section{ padding:64px 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .heart{ animation:none !important; display:none; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="heart-field"></div>
+
+<header class="hero">
+  <div class="eyebrow">காதலின் அறிவியல்</div>
+  <h1>நீங்கள் ஏன் இப்படி<br>காதலிக்கிறீர்கள்?</h1>
+  <p class="sub">குழந்தையாக இருந்தபோது உங்களை யார் எப்படி அரவணைத்தார்கள் என்பது, இன்று உங்கள் காதல் வாழ்க்கையை அமைதியாக வழிநடத்திக்கொண்டிருக்கிறது. உளவியலாளர்கள் இதை உங்கள் <em>பிணைப்பு பாணி (attachment style)</em> என்கிறார்கள் — உங்களுடையது எது என்று தெரிந்துகொண்டால், காதல் இன்னும் நன்றாகப் புரியும்.</p>
+  <div class="scroll-cue"><span class="line"></span>உங்களுடையதைக் கண்டறிய கீழே ஸ்க்ரோல் செய்யுங்கள்</div>
+</header>
+
+<div class="wrap">
+
+  <section class="tight reveal">
+    <div class="kicker">இது எங்கு தொடங்கியது</div>
+    <h2 class="section-title">ஒரு அமைதியான ஆய்வு எல்லாவற்றையும் மாற்றியது</h2>
+    <p class="lead">இரண்டாம் உலகப் போருக்குப் பிறகு, ஜான் போல்பி என்ற மனநல மருத்துவர் ஒரு எளிய உண்மையைக் கவனித்தார்: பெற்றோருடன் பாதுகாப்பாக உணர்ந்த குழந்தைகள், காதலிலும் பாதுகாப்பாக உணரும் பெரியவர்களாக வளர்கிறார்கள். இதற்கு அவர் <strong>பிணைப்புக் கோட்பாடு</strong> (attachment theory) என்று பெயரிட்டார்.</p>
+    <p class="lead">பல ஆண்டுகளுக்குப் பிறகு, அவரது மாணவி மேரி எயின்ஸ்வொர்த் இதை ஒரு பரிசோதனையின் மூலம் நிரூபித்தார். ஒரு சிறு குழந்தையையும் அதன் அம்மாவையும் ஒரு விளையாட்டு அறையில் வைத்து, சிறிது நேரம் அம்மாவை வெளியே அனுப்பினார். அதன் பிறகு குழந்தை என்ன செய்தது — அழுததா, கவனிக்காமல் இருந்ததா, அல்லது அமைதியாக சமாளித்ததா — என்பதே, அந்தக் குழந்தை உலகம் தன்னிடம் எப்படி நடந்துகொள்ளும் என்று எதிர்பார்க்கிறது என்பதைக் காட்டியது.</p>
+    <div class="mini-row">
+      <div class="mini secure"><b>பாதுகாப்பான குழந்தைகள்</b><span>மகிழ்ச்சியாக விளையாடினர், அம்மாவை நினைத்து ஏங்கினர், அவர் திரும்பியதும் விரைவில் அமைதியானார்கள்.</span></div>
+      <div class="mini anxious"><b>பதற்றமுள்ள குழந்தைகள்</b><span>ஏறத்தாழ ஆராயவே இல்லை, கடுமையாக அழுதனர், மீண்டும் அமைதியாக ஆக நேரம் எடுத்துக்கொண்டனர்.</span></div>
+      <div class="mini avoidant"><b>தவிர்க்கும் குழந்தைகள்</b><span>வெளியில் முற்றிலும் சரியாகத் தெரிந்தனர் — ஆனால் உள்ளே இதயம் வேகமாக துடித்தது.</span></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">உங்கள் பாணியைக் கண்டறியுங்கள்</div>
+    <h2 class="section-title">காதலிக்கும் மூன்று வழிகள். உள்ளே என்ன இருக்கிறது எனப் பார்க்க அட்டையைத் தட்டுங்கள்.</h2>
+    <p class="lead">யாரும் முழுமையாக ஒரு வகைக்குள் பொருந்த மாட்டார்கள் — இவற்றை பட்டங்களாக அல்ல, சாய்வுகளாகக் கருதுங்கள். மறைந்திருக்கும் பக்கத்தைப் பார்க்க ஒவ்வொரு அட்டையையும் புரட்டுங்கள்.</p>
+
+    <div class="cards">
+      <div class="card-slot secure" tabindex="0" role="button" aria-label="Flip secure attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">50%</div>
+              <div class="style-name">நிலைத்தவர்</div>
+              <div class="style-tag">பாதுகாப்பானவர்</div>
+            </div>
+            <div class="flip-hint">உள்ளே பார்க்க தட்டுங்கள் ↻</div>
+          </div>
+          <div class="face back">
+            <h4>பாதுகாப்பானவர்</h4>
+            <p class="belief">"என் தேவைகள் நிறைவேறும்."</p>
+            <ul>
+              <li>அன்பாகவும் விரைவாகவும் பதிலளிக்கும் பெற்றோருடன் வளர்ந்தவர்</li>
+              <li>இயல்பாகவே மகிழ்ச்சியாகவும், ஆர்வமாகவும், தன்னம்பிக்கையுடனும் இருப்பார்</li>
+              <li>மன அழுத்தத்தில் இருக்கும்போது, மூடிக்கொள்வதற்குப் பதிலாக பேசித் தீர்ப்பார்</li>
+              <li>பிரிவுக்குப் பிறகு: முழுமையாக வருந்தி, பின்னர் மீண்டும் காதலுக்குத் தன்னைத் திறந்துகொள்வார்</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot anxious" tabindex="0" role="button" aria-label="Flip anxious attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">20%</div>
+              <div class="style-name">கவலைப்படுபவர்</div>
+              <div class="style-tag">பதற்றமானவர்</div>
+            </div>
+            <div class="flip-hint">உள்ளே பார்க்க தட்டுங்கள் ↻</div>
+          </div>
+          <div class="face back">
+            <h4>பதற்றமானவர்</h4>
+            <p class="belief">"நான் சரியாகச் செய்தால், அவர்களின் அன்பைப் பெறலாம்."</p>
+            <ul>
+              <li>எப்போது கிடைக்கும், எப்போது இல்லை என்று தெரியாத அன்புடன் வளர்ந்தவர்</li>
+              <li>நெருக்கத்தை ஏங்குவார், கைவிடப்படுவதற்கு பயப்படுவார்</li>
+              <li>மன அழுத்தத்தில் இருக்கும்போது, தொடர்ந்து உறுதிமொழி தேவைப்படும்</li>
+              <li>பிரிவுக்குப் பிறகு: முழுமையாக விட்டுவிட முடியாமல் சிரமப்படுவார்</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-slot avoidant" tabindex="0" role="button" aria-label="Flip avoidant attachment card">
+        <div class="card">
+          <div class="face front">
+            <div>
+              <div class="pct">25%</div>
+              <div class="style-name">எச்சரிக்கையானவர்</div>
+              <div class="style-tag">தவிர்க்கிறவர்</div>
+            </div>
+            <div class="flip-hint">உள்ளே பார்க்க தட்டுங்கள் ↻</div>
+          </div>
+          <div class="face back">
+            <h4>தவிர்க்கிறவர்</h4>
+            <p class="belief">"என்னைத் தவிர வேறு யாரையும் நம்பி சாய முடியாது."</p>
+            <ul>
+              <li>தூரமாகவோ, அளவுக்கு அதிகமாக விமர்சிக்கும் விதமாகவோ இருந்த பெற்றோருடன் வளர்ந்தவர்</li>
+              <li>வெளியில் முற்றிலும் அமைதியாகத் தெரிவார் — ஆனால் இதயத் துடிப்பு வேறு கதை சொல்லும்</li>
+              <li>மன அழுத்தத்தில் இருக்கும்போது, விலகிச் சென்று அமைதியாகக் கதவை மூடிக்கொள்வார்</li>
+              <li>பிரிவுக்குப் பிறகு: எதுவும் பாதிக்கவில்லை போலத் தெரிவார்... ஆனால் உண்மையில் அப்படி இருப்பது அரிது</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">எண்களில் பார்த்தால்</div>
+    <h2 class="section-title">உங்களுடன் அறையில் இருப்பவர்கள் யார்</h2>
+    <p class="lead">ஆய்வுக்கு ஆய்வு துல்லியமான எண்கள் மாறுபடலாம், ஆனால் முறை மட்டும் மாறாமல் இருக்கிறது: நம்மில் கிட்டத்தட்ட பாதிப் பேர் காதலில் பாதுகாப்பாக உணர்கிறோம், மீதமுள்ளவர்கள் அதைக் கற்றுக்கொண்டிருக்கிறார்கள்.</p>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--secure)" data-pct="50"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>பாதுகாப்பானவர்கள்</b>இயல்பாகவே பாதுகாப்பாக உணர்பவர்கள்</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--anxious)" data-pct="20"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>பதற்றமானவர்கள்</b>நெருக்கத்தை ஏங்குபவர்கள்</div>
+      </div>
+      <div class="stat">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" cx="60" cy="60" r="52" stroke="var(--avoidant)" data-pct="25"></circle>
+          </svg>
+          <div class="ring-num">0%</div>
+        </div>
+        <div class="stat-label"><b>தவிர்க்கிறவர்கள்</b>தங்கள் காவலைத் தளர்த்தாதவர்கள்</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker">விரைவு சோதனை</div>
+    <h2 class="section-title">எது உங்களைப் போல தெரிகிறது?</h2>
+    <p class="lead">இது 1985ஆம் ஆண்டு பிரபலமான "காதல் வினாடி வினா"வின் எளிமைப்படுத்தப்பட்ட வடிவம். உங்களுக்கு மிகவும் பொருந்தும் வரியைத் தட்டுங்கள்.</p>
+    <div class="quiz-list">
+      <div class="quiz-item" data-style="secure">
+        <p>"மக்களுடன் நெருக்கமாக இருப்பது எனக்கு இயல்பாகவே வருகிறது. யாராவது என்னை விட்டு விலகிவிடுவார்களோ என்று நான் அதிகம் கவலைப்படுவதில்லை."</p>
+        <div class="result">→ இது பாதுகாப்பான சாய்வு</div>
+      </div>
+      <div class="quiz-item" data-style="anxious">
+        <p>"என் துணை விரும்புவதை விட நான் அவர்களுக்கு நெருக்கமாக இருக்க விரும்புகிறேன். நான் அவர்களை நேசிப்பது போல் அவர்கள் என்னை நேசிக்கிறார்களா என்று அடிக்கடி கவலைப்படுகிறேன்."</p>
+        <div class="result">→ இது பதற்றமான சாய்வு</div>
+      </div>
+      <div class="quiz-item" data-style="avoidant">
+        <p>"மக்கள் என்னிடம் மிக நெருக்கமாக வர முயலும்போது எனக்கு அசௌகரியமாக இருக்கும். வேறு ஒருவரை நம்பிச் சாய்வது எனக்கு இயல்பாக வராது."</p>
+        <div class="result">→ இது தவிர்க்கும் சாய்வு</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="kicker">இரண்டைச் சேர்த்து வைத்தால்</div>
+    <h2 class="section-title">இரு இதயங்கள் சந்திக்கும்போது</h2>
+    <div class="combo-grid">
+      <div class="combo good">
+        <div class="who">பாதுகாப்பானவர் + பதற்றமானவர்</div>
+        <p>பாதுகாப்பான துணையின் நிலைத்தன்மை, பதற்றமான துணையை இறுதியில் தளர்வடையச் செய்கிறது.</p>
+      </div>
+      <div class="combo good">
+        <div class="who">பாதுகாப்பானவர் + தவிர்க்கிறவர்</div>
+        <p>விமர்சனமின்றி இடைவெளி கொடுக்கப்படும்போது, தவிர்க்கும் துணை மெதுவாக ஓடுவதை நிறுத்துகிறார்.</p>
+      </div>
+      <div class="combo hard">
+        <div class="who">பதற்றமானவர் + தவிர்க்கிறவர்</div>
+        <p>ஒருவர் நெருக்கத்தைத் துரத்துகிறார், மற்றவர் அதிலிருந்து விலகுகிறார் — இந்தத் துரத்தல், விலகலை இன்னும் மோசமாக்குகிறது. இது எல்லாவற்றிலும் மிகவும் பொதுவான, மிகவும் சோர்வூட்டும் இணைவு.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight reveal">
+    <div class="note-box">
+      <h3>ஒரு மென்மையான குறிப்பு 💛</h3>
+      <p>சிலர் பதற்றமும் தவிர்த்தலும் ஆகிய இரண்டு குணங்களையும் ஒரே நேரத்தில் சுமந்திருப்பார்கள், பெரும்பாலும் உண்மையிலேயே கடினமான கடந்த காலத்தால். இது உங்களுக்குப் பொருந்தினால், உங்களிடம் இரக்கமாக இருங்கள் — இதைத் தனியாக சுமப்பது கடினம்தான், ஒரு நல்ல மனநல ஆலோசகர் உண்மையிலேயே பெரிய மாற்றத்தைத் தரமுடியும்.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  காதலை இன்னும் கொஞ்சம் நன்றாகப் புரிந்துகொள்ள உதவும் வகையில் உருவாக்கப்பட்டது <span class="heart-mark">♥</span>
+</footer>
+
+<script>
+  // ---------- Falling hearts background ----------
+  (function(){
+    const field = document.getElementById('heart-field');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+    const colors = ['#f2a6b0', '#ffb199', '#9ecbff', '#c9a6f2'];
+    const count = window.innerWidth < 700 ? 14 : 24;
+    for(let i=0;i<count;i++){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = '♥';
+      const left = Math.random()*100;
+      const size = 10 + Math.random()*20;
+      const duration = 10 + Math.random()*14;
+      const delay = Math.random()*-20;
+      const swayDur = 3 + Math.random()*3;
+      const op = 0.15 + Math.random()*0.35;
+      h.style.left = left + 'vw';
+      h.style.fontSize = size + 'px';
+      h.style.color = colors[Math.floor(Math.random()*colors.length)];
+      h.style.setProperty('--op', op);
+      h.style.animationDuration = duration + 's, ' + swayDur + 's';
+      h.style.animationDelay = delay + 's, 0s';
+      field.appendChild(h);
+    }
+  })();
+
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---------- Card flip ----------
+  document.querySelectorAll('.card-slot').forEach(slot=>{
+    slot.addEventListener('click', ()=> slot.classList.toggle('flipped'));
+    slot.addEventListener('keypress', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        slot.classList.toggle('flipped');
+      }
+    });
+  });
+
+  // ---------- Stat rings count up ----------
+  const ringObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const stat = entry.target;
+        const circle = stat.querySelector('.ring-fg');
+        const numEl = stat.querySelector('.ring-num');
+        const pct = parseInt(circle.getAttribute('data-pct'), 10);
+        const circumference = 326.7;
+        const offset = circumference - (pct/100)*circumference;
+        circle.style.strokeDashoffset = offset;
+        let current = 0;
+        const step = ()=>{
+          current += 1;
+          if(current <= pct){
+            numEl.textContent = current + '%';
+            requestAnimationFrame(()=> setTimeout(step, 16));
+          } else {
+            numEl.textContent = pct + '%';
+          }
+        };
+        step();
+        ringObserver.unobserve(stat);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.stat').forEach(s=>ringObserver.observe(s));
+
+  // ---------- Quiz picks ----------
+  document.querySelectorAll('.quiz-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.quiz-item').forEach(i=>i.classList.remove('picked'));
+      item.classList.add('picked');
+      const style = item.getAttribute('data-style');
+      const cardSlot = document.querySelector('.card-slot.' + style);
+      if(cardSlot){
+        cardSlot.scrollIntoView({ behavior:'smooth', block:'center' });
+        cardSlot.classList.add('flipped');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
