@@ -1,1 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಎಂದೂ ತುಂಬದ ಪರ್ಸ್ — ಬ್ಯಾಬಿಲೋನ್ ಕಥೆ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mukta:wght@400;500;600&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #241109;
+    --bg2: #2f160c;
+    --bg3: #1a0c06;
+    --cream: #F4E9D8;
+    --muted: #C7A98A;
+    --gold: #E4A94A;
+    --gold-dim: #a9793a;
+    --brick: #C1502E;
+    --indigo: #4E6E9E;
+    --line: rgba(244,233,216,0.14);
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 55%, var(--bg3) 100%);
+    color: var(--cream);
+    font-family: 'Mukta', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:700; letter-spacing:0.01em; }
+  .label{ font-family:'Baloo 2', sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem; color:var(--gold); }
+  section{ padding: 5.5rem 1.5rem; position:relative; }
+  .wrap{ max-width: var(--maxw); margin: 0 auto; }
+  a{color:var(--gold);}
 
+  /* ---------- decorative background coins ---------- */
+  .bg-coins{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .bg-coins span{
+    position:absolute; width:10px; height:10px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim));
+    animation: drift 14s linear infinite;
+    opacity:0.35;
+  }
+
+  @keyframes drift{
+    0%{ transform: translateY(-5vh) rotate(0deg); }
+    100%{ transform: translateY(110vh) rotate(360deg); }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 92vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding-top: 4rem;
+    position:relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .label{ margin-bottom:1rem; }
+  .hero h1{
+    font-size: clamp(2.4rem, 7vw, 4.4rem);
+    line-height:1.05;
+    background: linear-gradient(180deg, #fff5e0, var(--gold) 70%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    max-width: 15ch;
+  }
+  .hero p.sub{
+    margin-top:1.3rem; max-width:46ch; color:var(--muted); font-size:1.05rem;
+  }
+  .hero .towers{
+    margin-top:3rem; display:flex; gap:0.5rem; align-items:flex-end; height:90px;
+  }
+  .tower{ width:14px; background: linear-gradient(180deg, var(--brick), var(--bg3)); border-radius:3px 3px 0 0; opacity:0.8; }
+  .scrolldown{
+    position:absolute; bottom:1.8rem; left:50%; transform:translateX(-50%);
+    font-size:0.75rem; color:var(--muted); font-family:'Baloo 2',sans-serif;
+    display:flex; flex-direction:column; align-items:center; gap:0.4rem;
+  }
+  .scrolldown .chevron{ width:10px; height:10px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ---------- story cards ---------- */
+  .eyebrow{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.1rem;}
+  .eyebrow .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold);}
+  h2.title{ font-size: clamp(1.7rem, 4.5vw, 2.4rem); margin-bottom:1.1rem; color:var(--cream); }
+  p{ margin-bottom:1rem; color: #e7d9c4; }
+  .lede{ font-size:1.1rem; color:var(--cream); }
+
+  .character-card{
+    background: linear-gradient(160deg, rgba(228,169,74,0.08), rgba(228,169,74,0.02));
+    border:1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    margin: 1.6rem 0;
+    display:flex; gap:1rem; align-items:flex-start;
+  }
+  .avatar{
+    flex:none; width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.3rem;
+    background: conic-gradient(from 180deg, var(--gold), var(--brick), var(--gold));
+    color: var(--bg3);
+  }
+  .character-card h3{ font-size:1.15rem; color:var(--gold); margin-bottom:0.2rem;}
+  .character-card .role{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;}
+
+  blockquote{
+    border-left:3px solid var(--brick);
+    padding: 0.3rem 0 0.3rem 1.1rem;
+    margin: 1.4rem 0;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  blockquote cite{ display:block; margin-top:0.4rem; font-style:normal; font-family:'Baloo 2',sans-serif; font-size:0.75rem; color:var(--gold-dim); }
+
+  /* ---------- PURSE DEMO ---------- */
+  .demo-section{
+    background: var(--bg3);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .demo-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 1.6rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 640px){ .demo-grid{ grid-template-columns: 1fr; } }
+
+  .purse-box{
+    background: rgba(244,233,216,0.03);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding: 1.6rem;
+    text-align:center;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .purse-box h4{ font-family:'Baloo 2',sans-serif; font-size:0.95rem; color:var(--cream); margin-bottom:0.2rem;}
+  .purse-box .sub{ font-size:0.78rem; color:var(--muted); margin-bottom:1.1rem; }
+
+  .purse-visual{
+    position:relative; width:110px; height:110px; margin: 0.6rem 0 1.2rem;
+  }
+  .purse-body{
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:90px; height:70px; border-radius: 12px 12px 40px 40px;
+    background: linear-gradient(180deg, var(--brick), #7a2f18);
+    border: 2px solid var(--gold-dim);
+    box-shadow: inset 0 -8px 14px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease;
+  }
+  .purse-tie{
+    position:absolute; top:18px; left:50%; transform:translateX(-50%);
+    width:38px; height:12px; border-radius:8px;
+    background: var(--gold-dim);
+  }
+  .coin-count{
+    position:absolute; top:38px; left:50%; transform:translateX(-50%);
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem;
+    color: #fff2d6;
+  }
+  .stream{
+    position:absolute; top:-38px; left:50%; transform:translateX(-50%);
+    width:5px; height:36px;
+    background: repeating-linear-gradient(180deg, var(--gold) 0 6px, transparent 6px 11px);
+    opacity:0; animation: pour 0.9s linear infinite;
+  }
+  .purse-box.income .stream{ opacity:1; }
+  @keyframes pour{ 0%{ background-position-y:0;} 100%{ background-position-y:22px; } }
+
+  .purse-btn{
+    font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem;
+    background: var(--gold); color:#2a1305; border:none; border-radius:999px;
+    padding: 0.6rem 1.3rem; cursor:pointer; transition: transform 0.12s ease, background 0.2s ease;
+  }
+  .purse-btn:hover{ transform: translateY(-2px); }
+  .purse-btn:active{ transform: scale(0.94); }
+  .purse-btn:disabled{ opacity:0.4; cursor:default; transform:none; }
+  .flash{
+    position:absolute; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:0.85rem;
+    color: var(--brick); pointer-events:none; animation: rise 0.7s ease forwards;
+  }
+  .flash.income{ color: var(--indigo); }
+  @keyframes rise{ 0%{ opacity:1; transform:translateY(0);} 100%{ opacity:0; transform:translateY(-26px);} }
+
+  .demo-caption{ margin-top:2rem; text-align:center; color:var(--muted); font-size:0.92rem; }
+  .demo-caption strong{ color:var(--cream); }
+
+  /* ---------- dialogue ---------- */
+  .dialogue{
+    background: rgba(78,110,158,0.08);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.3rem 1.5rem;
+    margin:1.4rem 0;
+  }
+  .dialogue .who{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; color:var(--indigo); margin-bottom:0.25rem;}
+  .dialogue p{ margin-bottom:0.9rem; color:var(--cream); }
+  .dialogue p:last-child{ margin-bottom:0; }
+
+  /* ---------- CHART ---------- */
+  .chart-card{
+    background: rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px;
+    padding: 1.6rem 1.4rem; margin-top:1.8rem;
+  }
+  .chart-legend{ display:flex; gap:1.4rem; flex-wrap:wrap; margin-bottom:1rem; font-size:0.82rem; font-family:'Baloo 2',sans-serif;}
+  .chart-legend span{ display:flex; align-items:center; gap:0.4rem; color:var(--muted); }
+  .swatch{ width:12px; height:12px; border-radius:3px; }
+  svg text{ font-family:'Baloo 2',sans-serif; fill:var(--muted); font-size:10px; }
+  .line-flat{ stroke:var(--brick); }
+  .line-rise{ stroke:var(--gold); }
+
+  /* ---------- calculator ---------- */
+  .calc{
+    background: rgba(228,169,74,0.06);
+    border:1px solid var(--line); border-radius:16px;
+    padding:1.6rem;
+    margin-top:1.6rem;
+  }
+  .calc label{ font-family:'Baloo 2',sans-serif; font-size:0.82rem; color:var(--muted); display:block; margin-bottom:0.4rem; }
+  .calc input[type=range]{ width:100%; accent-color: var(--gold); }
+  .calc .row{ margin-bottom:1.3rem; }
+  .calc .value{ font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold); font-size:1.2rem; }
+  .calc-result{
+    display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:1.2rem;
+  }
+  @media (max-width:480px){ .calc-result{ grid-template-columns:1fr; } }
+  .calc-result .box{
+    background: var(--bg3); border-radius:12px; padding:1rem; text-align:center; border:1px solid var(--line);
+  }
+  .calc-result .box .amt{ font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--cream); margin-top:0.3rem; }
+  .calc-result .box.highlight{ border-color: var(--gold-dim); background: rgba(228,169,74,0.08); }
+  .calc-result .box.highlight .amt{ color: var(--gold); }
+  .calc-note{ font-size:0.8rem; color:var(--muted); margin-top:0.9rem; }
+
+  /* ---------- takeaway list ---------- */
+  .takeaways{ list-style:none; margin-top:1.4rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .takeaways li{
+    display:flex; gap:0.8rem; align-items:flex-start;
+    background: rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:0.9rem 1.1rem;
+    color:var(--cream); font-size:0.95rem;
+  }
+  .takeaways li::before{ content:"◆"; color:var(--gold); flex:none; margin-top:0.15rem; font-size:0.7rem; }
+
+  footer{
+    text-align:center; padding: 3.5rem 1.5rem 4rem; color:var(--muted); font-size:0.85rem;
+    border-top:1px solid var(--line);
+  }
+  footer .label{ display:block; margin-bottom:0.6rem; }
+
+  ::selection{ background: var(--gold); color:#2a1305; }
+</style>
+</head>
+<body>
+
+<div class="bg-coins" id="bgCoins"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="label">ಬ್ಯಾಬಿಲೋನ್ ಕಥೆ, ಮರುಕಥನ</span>
+  <h1>ಎಂದೂ ತುಂಬದ ಪರ್ಸ್</h1>
+  <p class="sub">ಎಂಜಿನ್ ರಿಪೇರಿ ಮಾಡುವವನೊಬ್ಬ, ಸಂಗೀತ ನುಡಿಸುವವನೊಬ್ಬ — ಎಷ್ಟೇ ದುಡಿದರೂ ಇಬ್ಬರ ಕೈಯಲ್ಲೂ ಹಣ ಉಳಿಯದಿರುವುದೇಕೆ ಎಂಬ ಕಥೆ.</p>
+  <div class="towers" aria-hidden="true">
+    <div class="tower" style="height:40px"></div>
+    <div class="tower" style="height:70px"></div>
+    <div class="tower" style="height:55px"></div>
+    <div class="tower" style="height:90px"></div>
+    <div class="tower" style="height:50px"></div>
+    <div class="tower" style="height:75px"></div>
+    <div class="tower" style="height:35px"></div>
+  </div>
+  <div class="scrolldown"><span>ಸ್ಕ್ರೋಲ್ ಮಾಡಿ</span><span class="chevron"></span></div>
+</section>
+
+<!-- INTRO STORY -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ವಿಘ್ನೇಶ್‌ನ ಪರಿಚಯ</span></div>
+    <h2 class="title">ಊರಿನಲ್ಲೇ ಅತ್ಯುತ್ತಮ ಬೈಕುಗಳನ್ನು ರಿಪೇರಿ ಮಾಡುತ್ತಿದ್ದ. ಆದರೂ ಪರ್ಸ್ ಖಾಲಿಯೇ ಇತ್ತು.</h2>
+    <p class="lede"><em>The Richest Man in Babylon</em> ಎಂಬ ಹಳೆಯ ಪುಸ್ತಕದಲ್ಲಿ, ಬಂಸಿರ್ ಎಂಬ ರಥ ನಿರ್ಮಾಪಕ ತನ್ನ ಅಂಗಡಿಯ ಹೊರಗಿನ ಗೋಡೆಯ ಮೇಲೆ, ಕೆಲಸ ಮಾಡಲೂ ಮನಸ್ಸಿಲ್ಲದೆ ಕುಳಿತಿರುತ್ತಾನೆ. ಅದೇ ಕಥೆಯನ್ನು ನಮ್ಮ ಸುತ್ತಮುತ್ತಲಿನ ಪರಿಸರದಲ್ಲಿ, ಇಂದಿನ ಇಬ್ಬರು ಸ್ನೇಹಿತರ ಮೂಲಕ ನೋಡೋಣ.</p>
+
+    <div class="character-card">
+      <div class="avatar">V</div>
+      <div>
+        <h3>ವಿಘ್ನೇಶ್</h3>
+        <div class="role">ಬೈಕ್ ಮೆಕಾನಿಕ್, ಊರಿನಲ್ಲಿ ಸಣ್ಣ ಗ್ಯಾರೇಜ್ ನಡೆಸುತ್ತಾನೆ</div>
+        <p style="margin:0; color:#e7d9c4;">ವಿಘ್ನೇಶ್ ಹದಿನೈದು ವರ್ಷಗಳಿಂದ ಬೈಕುಗಳನ್ನು ರಿಪೇರಿ ಮಾಡುತ್ತಿದ್ದಾನೆ. ಊರಿನಲ್ಲೇ ಅತ್ಯುತ್ತಮ ಮೆಕಾನಿಕ್ ಎಂದು ಎಲ್ಲರ ಅಭಿಪ್ರಾಯ. ಗ್ರಾಹಕರು ಅಂಗಡಿಯ ಮುಂದೆ ಸಾಲುಗಟ್ಟಿ ನಿಂತಿರುತ್ತಾರೆ. ಆದರೆ ಸಂಬಳದ ದಿನ ಬಂದಾಗ, ಬಾಡಿಗೆ, ದಿನಸಿ, ಮಗನ ಶಾಲಾ ಫೀಸು ಎಲ್ಲ ಕಳೆದ ಮೇಲೆ ಕೈಯಲ್ಲಿ ಬಹುತೇಕ ಏನೂ ಉಳಿಯುವುದಿಲ್ಲ. ಕೆಲಸದಲ್ಲಿ ಪರಿಣತ, ಆದರೆ ಸಂಪಾದಿಸಿದ ಹಣ ಉಳಿಸಿಕೊಳ್ಳುವುದರಲ್ಲಿ ಅಷ್ಟೇ ದುರ್ಬಲ.</p>
+      </div>
+    </div>
+
+    <p>ಒಂದು ಸಂಜೆ, ವಿಘ್ನೇಶ್ ತನ್ನ ಗ್ಯಾರೇಜ್ ಹೊರಗೆ ಕುಳಿತು, ಅರ್ಧ ರಿಪೇರಿಯಾದ ಬೈಕನ್ನೇ ದಿಟ್ಟಿಸುತ್ತಿರುವಾಗ, ಗಿಟಾರ್ ಕೇಸ್ ಹಿಡಿದುಕೊಂಡು ಅವನ ಹಳೆಯ ಸ್ನೇಹಿತ ಮಹಾದೇವಸ್ವಾಮಿ ಬಂದು ನಿಲ್ಲುತ್ತಾನೆ.</p>
+
+    <div class="character-card">
+      <div class="avatar">M</div>
+      <div>
+        <h3>ಮಹಾದೇವಸ್ವಾಮಿ</h3>
+        <div class="role">ಮದುವೆ ಮತ್ತು ಕಾರ್ಯಕ್ರಮಗಳಲ್ಲಿ ಹಾಡುಗಾರ</div>
+        <p style="margin:0; color:#e7d9c4;">ಮಹಾದೇವಸ್ವಾಮಿ ಜನಪ್ರಿಯ ಮದುವೆ ಗಾಯಕ. ಮದುವೆ ಸೀಸನ್ ಚೆನ್ನಾಗಿದ್ದಾಗ ಒಳ್ಳೆಯ ಹಣ ಸಂಪಾದಿಸುತ್ತಾನೆ — ಆದರೆ ಮುಂದಿನ ಸೀಸನ್ ಬರುವ ಮೊದಲೇ ಬಹುತೇಕ ಎಲ್ಲ ಖರ್ಚಾಗಿ ಬಿಡುತ್ತದೆ.</p>
+      </div>
+    </div>
+
+    <blockquote>"ನನ್ನ ಬಳಿ ಎರಡು ಶೆಕೆಲ್ ಇದ್ದಿದ್ದರೂ, ಅದನ್ನು ಯಾರಿಗೂ ಸಾಲ ಕೊಡಲು ಆಗುತ್ತಿರಲಿಲ್ಲ — ಏಕೆಂದರೆ ಅದೇ ನನ್ನ ಇಡೀ ಆಸ್ತಿ. ತನ್ನ ಇಡೀ ಆಸ್ತಿಯನ್ನೇ ಸಾಲ ಕೊಡುವವರು ಯಾರೂ ಇಲ್ಲ, ಒಳ್ಳೆಯ ಸ್ನೇಹಿತನಿಗೂ ಸಹ."<cite>— ಬಂಸಿರ್, ಮೂಲ ಕಥೆಯಲ್ಲಿ</cite></blockquote>
+
+    <p>ಮಹಾದೇವಸ್ವಾಮಿ ತಮಾಷೆಗೆ ಸ್ವಲ್ಪ ಹಣ ಸಾಲ ಕೇಳುತ್ತಾನೆ. ವಿಘ್ನೇಶ್‌ ಬಳಿ ಬಹುತೇಕ ಏನೂ ಇಲ್ಲವೆಂದು ಒಪ್ಪಿಕೊಳ್ಳುತ್ತಾನೆ — ವರ್ಷಗಟ್ಟಲೆ ಸ್ಥಿರ, ಕೌಶಲ್ಯಪೂರ್ಣ ಕೆಲಸ ಮಾಡಿದ್ದರೂ ಸಹ. ಇಬ್ಬರಿಗೂ ಒಂದೇ ಕ್ಷಣ ಒಂದು ಸತ್ಯ ಹೊಳೆಯುತ್ತದೆ: ವರ್ಷಗಳಿಂದ ದುಡಿಯುತ್ತಿದ್ದರೂ, ಇಬ್ಬರಲ್ಲಿ ಯಾರೂ ನಿಜವಾಗಿ ಶ್ರೀಮಂತರಾಗಿಲ್ಲ.</p>
+  </div>
+</section>
+
+<!-- PURSE VS INCOME DEMO -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ನಿಜವಾದ ಪಾಠ</span></div>
+    <h2 class="title">ಪೂರ್ತಿ ತುಂಬಿದ ಪರ್ಸ್ ಎಂದರೆ ಶ್ರೀಮಂತಿಕೆ ಅಲ್ಲ</h2>
+    <p>ಪುಸ್ತಕ ಒಂದು ಮುಖ್ಯ ಅಂಶವನ್ನು ಸ್ಪಷ್ಟಪಡಿಸುತ್ತದೆ: <strong style="color:var(--cream)">ಹಣದಿಂದ ತುಂಬಿದ ಪರ್ಸ್, ಅದನ್ನು ಮತ್ತೆ ತುಂಬಿಸುವ ಮೂಲ ಇಲ್ಲದಿದ್ದರೆ ಬೇಗ ಖಾಲಿಯಾಗುತ್ತದೆ.</strong> ನಿಜವಾಗಿ ಮುಖ್ಯವಾಗುವುದು ಸ್ಥಿರವಾಗಿ ಹರಿದು ಬರುವ ಹಣದ ಮೂಲ — ಅಂದರೆ <em>ಆದಾಯ</em> — ಒಮ್ಮೆ ಸಿಕ್ಕ ಒಟ್ಟುಗೂಡಿದ ಉಳಿತಾಯವಲ್ಲ. ಕೆಳಗೆ ಎರಡನ್ನೂ ಪ್ರಯತ್ನಿಸಿ ನೋಡಿ.</p>
+
+    <div class="demo-grid">
+      <div class="purse-box" id="purseOnly">
+        <h4>ಬರೀ ತುಂಬಿದ ಪರ್ಸ್</h4>
+        <div class="sub">ದೊಡ್ಡ ಮದುವೆ ಸೀಸನ್ ನಂತರದ ಮಹಾದೇವಸ್ವಾಮಿಯಂತೆ</div>
+        <div class="purse-visual">
+          <div class="purse-tie"></div>
+          <div class="purse-body"></div>
+          <div class="coin-count" id="countA">₹8,000</div>
+        </div>
+        <button class="purse-btn" id="spendBtn">₹1,000 ಖರ್ಚು ಮಾಡಿ</button>
+      </div>
+
+      <div class="purse-box income" id="purseIncome">
+        <h4>ನಿಜವಾದ ಆದಾಯದ ಮೂಲ</h4>
+        <div class="sub">ಖರ್ಚು ಮಾಡಿದ ಮೇಲೂ ಹಣ ಮತ್ತೆ ಹರಿದು ಬರುತ್ತಲೇ ಇರುತ್ತದೆ</div>
+        <div class="purse-visual">
+          <div class="stream" aria-hidden="true"></div>
+          <div class="purse-tie"></div>
+          <div class="purse-body"></div>
+          <div class="coin-count" id="countB">₹8,000</div>
+        </div>
+        <button class="purse-btn" id="spendBtn2">₹1,000 ಖರ್ಚು ಮಾಡಿ</button>
+      </div>
+    </div>
+
+    <p class="demo-caption">ಎರಡರ ಮೇಲೂ "ಖರ್ಚು ಮಾಡಿ" ಬಟನ್ ಒತ್ತುತ್ತಿರಿ. <strong>ಎಡಬದಿಯ ಪರ್ಸ್</strong> ಸೊನ್ನೆಗೆ ಬಂದು ಅಲ್ಲೇ ಉಳಿಯುತ್ತದೆ. <strong>ಬಲಬದಿಯದು</strong> ತಾನಾಗಿಯೇ ಮತ್ತೆ ತುಂಬಿಕೊಳ್ಳುತ್ತಲೇ ಇರುತ್ತದೆ — ಏಕೆಂದರೆ ಅದರ ಹಿಂದೆ ಬರೀ ಹಣದ ರಾಶಿಯಲ್ಲ, ಆದಾಯದ ಮೂಲ ಇದೆ.</p>
+  </div>
+</section>
+
+<!-- WORKING HARD VS GETTING RICH -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಬರೀ ಕಷ್ಟಪಟ್ಟು ದುಡಿದರೆ ಸಾಲದೇಕೆ</span></div>
+    <h2 class="title">ಹೆಚ್ಚು ವರ್ಷ ದುಡಿದಷ್ಟೂ ಸಂಪತ್ತು ಹೆಚ್ಚಾಗಲಿಲ್ಲ</h2>
+    <p>ವಿಘ್ನೇಶ್ ಪ್ರತಿ ವರ್ಷವೂ ಹೆಚ್ಚು ಕಷ್ಟಪಟ್ಟ — ಹೆಚ್ಚು ಬೈಕುಗಳು, ಹೆಚ್ಚು ಗ್ರಾಹಕರು, ಹೆಚ್ಚು ಸಮಯ. ಆದರೂ ಅವನ ಉಳಿತಾಯ ಎಂದೂ ಬೆಳೆಯಲಿಲ್ಲ, ಏಕೆಂದರೆ ಸಂಪಾದಿಸಿದ್ದೆಲ್ಲಾ ಮತ್ತೆ ಖರ್ಚಾಗಿ ಹೋಗುತ್ತಿತ್ತು. ಹಣ ಹೇಗೆ ಬೆಳೆಯುತ್ತದೆ ಎಂದು ನಿಜವಾಗಿ ಕಲಿತವರಿಗೆ ಆಗುವುದೇನು ಎಂದು ಹೋಲಿಸಿ ನೋಡಿ.</p>
+
+    <div class="chart-card">
+      <div class="chart-legend">
+        <span><span class="swatch" style="background:var(--brick)"></span>ವಿಘ್ನೇಶ್ — ವರ್ಷಗಟ್ಟಲೆ ಕಷ್ಟಪಡುತ್ತಾನೆ, ಎಲ್ಲವನ್ನೂ ಖರ್ಚು ಮಾಡುತ್ತಾನೆ</span>
+        <span><span class="swatch" style="background:var(--gold)"></span>ಸ್ವಲ್ಪ ಉಳಿಸಿ ಬೆಳೆಸುವ ಗುಟ್ಟು ಕಲಿತ ವ್ಯಕ್ತಿ</span>
+      </div>
+      <svg viewBox="0 0 320 160" width="100%" height="auto" role="img" aria-label="Chart comparing flat savings from working without a plan versus rising savings from someone who learns to keep and grow part of their earnings">
+        <line x1="30" y1="10" x2="30" y2="130" stroke="var(--line)" stroke-width="1"/>
+        <line x1="30" y1="130" x2="310" y2="130" stroke="var(--line)" stroke-width="1"/>
+        <text x="4" y="14">₹</text>
+        <text x="4" y="134">0</text>
+        <text x="20" y="148">ವರ್ಷ 1</text>
+        <text x="140" y="148">ವರ್ಷ 5</text>
+        <text x="270" y="148">ವರ್ಷ 10</text>
+        <polyline class="line-flat" fill="none" stroke-width="3" points="30,122 90,124 150,120 210,123 270,121 300,122" />
+        <polyline class="line-rise" fill="none" stroke-width="3" points="30,122 90,108 150,86 210,58 270,32 300,18" />
+      </svg>
+    </div>
+
+    <p style="margin-top:1.4rem;">ಇದೇ ಗಳಿಗೆಯಲ್ಲಿ ಇಬ್ಬರೂ ಸ್ನೇಹಿತರಿಗೆ ಒಂದು ಸತ್ಯ ಅರಿವಾಗುತ್ತದೆ: ಹಣ <em>ಹೇಗೆ</em> ಬೆಳೆಯುತ್ತದೆ ಎಂದು ಅವರೆಂದೂ ಕೇಳಿಯೇ ಇಲ್ಲ. ಅವರು ಬರೀ ದುಡಿದಿದ್ದಾರೆ, ಸಂಪಾದಿಸಿದ್ದಾರೆ, ಖರ್ಚು ಮಾಡಿದ್ದಾರೆ. ಹಾಗಾಗಿ ಇಬ್ಬರೂ ಮೊದಲ ಬಾರಿಗೆ ಒಂದು ಹೊಸ ಹೆಜ್ಜೆ ಇಡಲು ನಿರ್ಧರಿಸುತ್ತಾರೆ — ಈಗಾಗಲೇ ಗೊತ್ತಿರುವ ಯಾರನ್ನಾದರೂ ಕೇಳುವುದು.</p>
+  </div>
+</section>
+
+<!-- DIALOGUE / TURNING POINT -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ತಿರುವಿನ ಘಳಿಗೆ</span></div>
+    <h2 class="title">ತಮಗೆ ಬೇಕಾದುದನ್ನು ಈಗಾಗಲೇ ಹೊಂದಿರುವ ಒಬ್ಬರನ್ನು ಕೇಳಲು ನಿರ್ಧರಿಸುತ್ತಾರೆ</h2>
+    <p>ವಿಘ್ನೇಶ್‌ಗೆ ಹಳೆಯ ಶಾಲಾ ಸ್ನೇಹಿತ ಅರ್ಜುನ್ ರಾವ್ ನೆನಪಾಗುತ್ತಾನೆ — ಏನೂ ಇಲ್ಲದೆ ಆರಂಭಿಸಿ, ಈಗ ಊರಿನ ಅತಿ ಶ್ರೀಮಂತರಲ್ಲಿ ಒಬ್ಬನಾಗಿರುವವನು, ಬ್ಯಾಂಕುಗಳೂ ಸಲಹೆಗಾಗಿ ಕರೆಯುವಂತಹ ವ್ಯಕ್ತಿ. ಇತ್ತೀಚೆಗೆ ಮಹಾದೇವಸ್ವಾಮಿ ಅವನನ್ನು ಹೊಸ ಕಾರಿನಲ್ಲಿ ಹೋಗುತ್ತಿರುವಾಗ ನೋಡಿದ್ದ, ಅರ್ಜುನ್ ಮುಖ ತಿರುಗಿಸದೆ ಪ್ರೀತಿಯಿಂದ ಕೈ ಬೀಸಿದ್ದ.</p>
+
+    <div class="dialogue">
+      <div class="who">ಮಹಾದೇವಸ್ವಾಮಿ</div>
+      <p>"ಅವನ ಸ್ವಂತ ಮಗ ಕೂಡ ಬೇರೆ ಊರಿಗೆ ಹೋಗಿ, ತಂದೆಯ ಯಾವ ಸಹಾಯವೂ ಇಲ್ಲದೆ ಶ್ರೀಮಂತನಾದ ಎಂದು ಕೇಳಿದ್ದೇನೆ. ಅರ್ಜುನ್‌ಗೆ ನಮಗೆ ಗೊತ್ತಿಲ್ಲದ ಏನೋ ಗೊತ್ತಿರಬೇಕು."</p>
+      <div class="who">ವಿಘ್ನೇಶ್</div>
+      <p>"ಒಳ್ಳೆಯ ಸ್ನೇಹಿತನಿಂದ ಸಲಹೆ ಕೇಳಲು ಏನೂ ಖರ್ಚಿಲ್ಲ. ನಮ್ಮ ಇಡೀ ಜೀವನವನ್ನೇ ನಮ್ಮ ಕೆಲಸದಲ್ಲಿ ಪರಿಣತಿ ಪಡೆಯಲು ಕಳೆದೆವು. ಆದರೆ ಹಣ ನಿಜವಾಗಿ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂದು ಒಂದು ಗಂಟೆಯೂ ಕಲಿಯಲಿಲ್ಲ. ಬಾ, ಅವನನ್ನು ಕೇಳೋಣ."</p>
+    </div>
+
+    <p>ಈ ಒಂದು ನಿರ್ಧಾರ — ಊಹಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ, ಈಗಾಗಲೇ ಯಶಸ್ವಿಯಾದವರಿಂದ ಕಲಿಯಲು ಹೋಗುವುದು — ಇದೇ ಈ ಕಥೆಯ ನಿಜವಾದ ಆರಂಭ. ಹೊಸ ಕೌಶಲ್ಯವಲ್ಲ, ಅದೃಷ್ಟದ ಆಟವೂ ಅಲ್ಲ. ಬರೀ ಕೇಳುವ ಸಿದ್ಧತೆ.</p>
+  </div>
+</section>
+
+<!-- TRY IT YOURSELF CALCULATOR -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ನಿಮ್ಮದೇ ಸಂಖ್ಯೆಗಳಲ್ಲಿ ಪ್ರಯತ್ನಿಸಿ</span></div>
+    <h2 class="title">ನೀವು ಸಂಪಾದಿಸುವ ಪ್ರತಿ ರೂಪಾಯಿಯಲ್ಲಿ ಸ್ವಲ್ಪ ಭಾಗವನ್ನು ಉಳಿಸಿಟ್ಟರೆ?</h2>
+    <p>ಹಳೆಯ ಪುಸ್ತಕದ ಸಲಹೆ ಇಷ್ಟೇ: ಬೇರೆ ಯಾವುದೇ ಖರ್ಚು ಮಾಡುವ ಮೊದಲು, ಸಂಪಾದಿಸಿದ ಹಣದ ಕನಿಷ್ಠ ಹತ್ತನೇ ಒಂದು ಭಾಗವನ್ನು ಪ್ರತ್ಯೇಕವಾಗಿ ಇಟ್ಟುಬಿಡಿ. ಈ ಸಣ್ಣ ಅಭ್ಯಾಸ ಕಾಲಾಂತರದಲ್ಲಿ ಹೇಗೆ ಕಾಣಿಸಬಹುದೆಂದು ಇಲ್ಲಿ ನೋಡಿ.</p>
+
+    <div class="calc">
+      <div class="row">
+        <label>ತಿಂಗಳ ಆದಾಯ: <span class="value" id="incomeVal">₹25,000</span></label>
+        <input type="range" id="incomeSlider" min="5000" max="100000" step="1000" value="25000">
+      </div>
+      <div class="row">
+        <label>ಖರ್ಚಿಗೆ ಮೊದಲೇ ಪ್ರತ್ಯೇಕವಾಗಿ ಇಡುವ ಭಾಗ: <span class="value" id="pctVal">10%</span></label>
+        <input type="range" id="pctSlider" min="5" max="30" step="5" value="10">
+      </div>
+      <div class="row">
+        <label>ವರ್ಷಗಳ ಸಂಖ್ಯೆ: <span class="value" id="yearsVal">10 ವರ್ಷ</span></label>
+        <input type="range" id="yearsSlider" min="1" max="25" step="1" value="10">
+      </div>
+      <div class="calc-result">
+        <div class="box">
+          <div class="label">ಏನೂ ಪ್ರತ್ಯೇಕವಾಗಿ ಇಡದಿದ್ದರೆ</div>
+          <div class="amt">₹0</div>
+        </div>
+        <div class="box highlight">
+          <div class="label">ಈ ಅಭ್ಯಾಸ ಮುಂದುವರಿಸಿದರೆ</div>
+          <div class="amt" id="calcResult">₹0</div>
+        </div>
+      </div>
+      <p class="calc-note">ಇದೊಂದು ಸರಳ ಅಂದಾಜು ಮಾತ್ರ — ಪ್ರತಿ ತಿಂಗಳು ಪ್ರತ್ಯೇಕವಾಗಿಟ್ಟ ಮೊತ್ತವನ್ನು ಒಟ್ಟುಗೂಡಿಸಿದ್ದಷ್ಟೇ, ಬಡ್ಡಿ ಅಥವಾ ಹೂಡಿಕೆಯ ಬೆಳವಣಿಗೆಯನ್ನು ಲೆಕ್ಕಕ್ಕೆ ತೆಗೆದುಕೊಂಡಿಲ್ಲ. ನಿಜವಾದ ಬೆಳವಣಿಗೆ (ಉಳಿತಾಯ ಖಾತೆ, ಮ್ಯೂಚುಯಲ್ ಫಂಡ್, ಚಿನ್ನ ಇತ್ಯಾದಿಗಳ ಮೂಲಕ) ಇದಕ್ಕಿಂತ ಇನ್ನೂ ಹೆಚ್ಚಾಗಬಹುದು.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ವಿಘ್ನೇಶ್ ಮತ್ತು ಮಹಾದೇವಸ್ವಾಮಿ ಅರ್ಜುನ್‌ನನ್ನು ಭೇಟಿಯಾಗುವ ಮೊದಲು</span></div>
+    <h2 class="title">ಈ ಚಾಪ್ಟರ್ ನಿಜವಾಗಿ ಹೇಳುತ್ತಿರುವುದೇನು</h2>
+    <ul class="takeaways">
+      <li>ಕಷ್ಟಪಟ್ಟು ದುಡಿದು ಚೆನ್ನಾಗಿ ಸಂಪಾದಿಸುವುದರಿಂದ ತಾನಾಗಿಯೇ ಶ್ರೀಮಂತಿಕೆ ಬರುವುದಿಲ್ಲ — ಆ ಹಣಕ್ಕೆ ಮುಂದೆ ಏನಾಗುತ್ತದೆ ಎಂಬುದೂ ಅಷ್ಟೇ ಮುಖ್ಯ.</li>
+      <li>ತುಂಬಿದ ಪರ್ಸ್ ಮತ್ತು ಆದಾಯ ಒಂದೇ ಅಲ್ಲ. ಒಂದು ಖಾಲಿಯಾಗುತ್ತದೆ. ಇನ್ನೊಂದು ಮತ್ತೆ ತುಂಬಿಕೊಳ್ಳುತ್ತಲೇ ಇರುತ್ತದೆ.</li>
+      <li>ಬಹುಪಾಲು ಜನರು ತಮ್ಮ ವೃತ್ತಿಯಲ್ಲಿ ಪರಿಣತಿ ಪಡೆಯಲು ಜೀವಮಾನವನ್ನೇ ಕಳೆಯುತ್ತಾರೆ, ಆದರೆ ಹಣ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂದು ಕಲಿಯಲು ಒಂದಿಷ್ಟೂ ಸಮಯ ಕೊಡುವುದಿಲ್ಲ.</li>
+      <li>ಕಲಿಯುವ ಸುಲಭ ಮಾರ್ಗ ಸಾಮಾನ್ಯವಾಗಿ ಅತ್ಯಂತ ಸರಳವಾದದ್ದೇ: ನಿಮಗೆ ಬೇಕಾದುದನ್ನು ಈಗಾಗಲೇ ಸಾಧಿಸಿದ ವ್ಯಕ್ತಿಯನ್ನು ಹುಡುಕಿ, ಅವರನ್ನೇ ಕೇಳಿ.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="label">ಮುಂದೆ</span>
+  ಮುಂದಿನ ಚಾಪ್ಟರ್‌ನಲ್ಲಿ, ವಿಘ್ನೇಶ್ ಮತ್ತು ಮಹಾದೇವಸ್ವಾಮಿ ಅರ್ಜುನ್ ರಾವ್‌ನನ್ನು ಭೇಟಿಯಾಗುತ್ತಾರೆ — ಏನೂ ಇಲ್ಲದೆ ಆರಂಭಿಸಿ ಅವನು ಶ್ರೀಮಂತಿಕೆಯನ್ನು ಹೇಗೆ ಕಟ್ಟಿದ ಎಂದು ಸರಳ ಪದಗಳಲ್ಲಿ ವಿವರಿಸುತ್ತಾನೆ. George S. Clason ಬರೆದ <em>The Richest Man in Babylon</em> ಆಧಾರಿತ.
+</footer>
+
+<script>
+  // decorative floating coins
+  (function(){
+    const container = document.getElementById('bgCoins');
+    const n = window.innerWidth < 600 ? 8 : 16;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (10 + Math.random()*10) + 's';
+      s.style.animationDelay = (Math.random()*14) + 's';
+      s.style.opacity = 0.15 + Math.random()*0.3;
+      container.appendChild(s);
+    }
+  })();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // purse demo
+  function setupPurse(btnId, countId, boxId, refills){
+    const btn = document.getElementById(btnId);
+    const countEl = document.getElementById(countId);
+    const box = document.getElementById(boxId);
+    let amount = 8000;
+    const step = 1000;
+
+    function render(){
+      countEl.textContent = '₹' + amount.toLocaleString('en-IN');
+      const body = box.querySelector('.purse-body');
+      const scale = 0.6 + (amount/8000)*0.5;
+      body.style.transform = 'translateX(-50%) scale(' + scale.toFixed(2) + ')';
+      btn.disabled = amount <= 0 && !refills;
+    }
+
+    btn.addEventListener('click', ()=>{
+      amount = Math.max(0, amount - step);
+      const flash = document.createElement('div');
+      flash.className = 'flash' + (refills ? ' income' : '');
+      flash.textContent = '−₹1,000';
+      flash.style.left = '50%';
+      flash.style.top = '10px';
+      box.querySelector('.purse-visual').appendChild(flash);
+      setTimeout(()=>flash.remove(), 700);
+      render();
+
+      if(refills){
+        setTimeout(()=>{
+          amount = Math.min(8000, amount + step);
+          const gain = document.createElement('div');
+          gain.className = 'flash income';
+          gain.textContent = '+₹1,000';
+          gain.style.left = '50%';
+          gain.style.top = '10px';
+          box.querySelector('.purse-visual').appendChild(gain);
+          setTimeout(()=>gain.remove(), 700);
+          render();
+        }, 850);
+      }
+    });
+    render();
+  }
+  setupPurse('spendBtn', 'countA', 'purseOnly', false);
+  setupPurse('spendBtn2', 'countB', 'purseIncome', true);
+
+  // calculator
+  const incomeSlider = document.getElementById('incomeSlider');
+  const pctSlider = document.getElementById('pctSlider');
+  const yearsSlider = document.getElementById('yearsSlider');
+  const incomeVal = document.getElementById('incomeVal');
+  const pctVal = document.getElementById('pctVal');
+  const yearsVal = document.getElementById('yearsVal');
+  const calcResult = document.getElementById('calcResult');
+
+  function fmt(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  function updateCalc(){
+    const income = +incomeSlider.value;
+    const pct = +pctSlider.value;
+    const years = +yearsSlider.value;
+    incomeVal.textContent = fmt(income);
+    pctVal.textContent = pct + '%';
+    yearsVal.textContent = years + ' ವರ್ಷ';
+    const kept = income * (pct/100) * 12 * years;
+    calcResult.textContent = fmt(kept);
+  }
+  [incomeSlider, pctSlider, yearsSlider].forEach(el=>el.addEventListener('input', updateCalc));
+  updateCalc();
+</script>
+</body>
+</html>
