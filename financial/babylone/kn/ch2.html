@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಮೊದಲು ನಿನಗೇ ಕೊಡು — ಬ್ಯಾಬಿಲೋನ್ ಕಥೆ, ಅಧ್ಯಾಯ ಎರಡು</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mukta:wght@400;500;600&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #241109; --bg2: #2f160c; --bg3: #1a0c06;
+    --cream: #F4E9D8; --muted: #C7A98A;
+    --gold: #E4A94A; --gold-dim: #a9793a;
+    --brick: #C1502E; --indigo: #4E6E9E;
+    --line: rgba(244,233,216,0.14);
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 55%, var(--bg3) 100%);
+    color: var(--cream); font-family:'Mukta',sans-serif; font-size:17px; line-height:1.65; overflow-x:hidden;
+  }
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:700; letter-spacing:0.01em; }
+  .label{ font-family:'Baloo 2', sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem; color:var(--gold); }
+  section{ padding: 5.5rem 1.5rem; position:relative; }
+  .wrap{ max-width: var(--maxw); margin:0 auto; }
+  p{ margin-bottom:1rem; color:#e7d9c4; }
+  a{ color:var(--gold); }
+
+  .bg-coins{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .bg-coins span{ position:absolute; width:10px; height:10px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: drift 14s linear infinite; opacity:0.35; }
+  @keyframes drift{ 0%{ transform: translateY(-5vh) rotate(0deg);} 100%{ transform: translateY(110vh) rotate(360deg);} }
+
+  .hero{ min-height:88vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:4rem; border-bottom:1px solid var(--line);}
+  .hero h1{ font-size:clamp(2.2rem,7vw,4rem); line-height:1.08;
+    background: linear-gradient(180deg,#fff5e0,var(--gold) 70%); -webkit-background-clip:text; background-clip:text; color:transparent; max-width:17ch; }
+  .hero p.sub{ margin-top:1.3rem; max-width:48ch; color:var(--muted); font-size:1.05rem; }
+  .hero .chip{ margin-top:1.6rem; display:inline-flex; gap:0.5rem; align-items:center; background:rgba(228,169,74,0.1); border:1px solid var(--gold-dim); padding:0.5rem 1rem; border-radius:999px; font-family:'Baloo 2',sans-serif; font-size:0.78rem; color:var(--gold);}
+  .scrolldown{ position:absolute; bottom:1.8rem; left:50%; transform:translateX(-50%); font-size:0.75rem; color:var(--muted); font-family:'Baloo 2',sans-serif; display:flex; flex-direction:column; align-items:center; gap:0.4rem;}
+  .scrolldown .chevron{ width:10px; height:10px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .eyebrow{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.1rem;}
+  .eyebrow .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold);}
+  h2.title{ font-size:clamp(1.7rem,4.5vw,2.4rem); margin-bottom:1.1rem; color:var(--cream); }
+  .lede{ font-size:1.1rem; color:var(--cream); }
+
+  .character-card{ background:linear-gradient(160deg, rgba(228,169,74,0.08), rgba(228,169,74,0.02)); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.5rem; margin:1.6rem 0; display:flex; gap:1rem; align-items:flex-start;}
+  .avatar{ flex:none; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.3rem; background:conic-gradient(from 180deg, var(--gold), var(--brick), var(--gold)); color:var(--bg3);}
+  .character-card h3{ font-size:1.15rem; color:var(--gold); margin-bottom:0.2rem;}
+  .character-card .role{ font-family:'Baloo 2',sans-serif; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;}
+
+  blockquote{ border-left:3px solid var(--brick); padding:0.3rem 0 0.3rem 1.1rem; margin:1.4rem 0; font-style:italic; color:var(--muted); font-size:0.95rem;}
+  blockquote cite{ display:block; margin-top:0.4rem; font-style:normal; font-family:'Baloo 2',sans-serif; font-size:0.75rem; color:var(--gold-dim);}
+
+  .dialogue{ background:rgba(78,110,158,0.08); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.5rem; margin:1.4rem 0;}
+  .dialogue .who{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; color:var(--indigo); margin-bottom:0.25rem;}
+  .dialogue p{ margin-bottom:0.9rem; color:var(--cream); }
+  .dialogue p:last-child{ margin-bottom:0; }
+
+  .demo-section{ background:var(--bg3); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  /* ---- stepper: three lessons ---- */
+  .stepper{ margin-top:2rem; }
+  .step-tabs{ display:flex; gap:0.5rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+  .step-tab{
+    font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.82rem;
+    background:rgba(244,233,216,0.04); border:1px solid var(--line); color:var(--muted);
+    padding:0.55rem 1rem; border-radius:999px; cursor:pointer; transition:all 0.2s ease;
+  }
+  .step-tab.active{ background:var(--gold); color:#2a1305; border-color:var(--gold); }
+  .step-panel{ display:none; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; }
+  .step-panel.active{ display:block; }
+  .step-head{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
+  .step-num{ font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--gold); }
+  .step-result{ margin-top:1rem; display:flex; align-items:center; gap:0.8rem; padding:0.9rem 1.1rem; border-radius:10px; font-family:'Baloo 2',sans-serif; font-size:0.85rem; }
+  .step-result.loss{ background:rgba(193,80,46,0.14); color:#f0b39c; }
+  .step-result.leak{ background:rgba(193,80,46,0.1); color:#e8c7a8; }
+  .step-result.win{ background:rgba(228,169,74,0.14); color:var(--gold); }
+  .purse-mini{ display:flex; align-items:center; gap:0.6rem; margin-top:0.6rem; }
+  .purse-mini .bar-track{ flex:1; height:10px; border-radius:6px; background:rgba(244,233,216,0.08); overflow:hidden; }
+  .purse-mini .bar-fill{ height:100%; border-radius:6px; transition:width 0.6s ease; }
+  .purse-mini .bar-fill.gold{ background:var(--gold); }
+  .purse-mini .bar-fill.brick{ background:var(--brick); }
+
+  /* ---- gold slaves compounding ---- */
+  .compound-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .compound-controls{ display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center; }
+  .compound-controls button{
+    font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.85rem;
+    background:var(--gold); color:#2a1305; border:none; border-radius:999px; padding:0.6rem 1.2rem; cursor:pointer;
+  }
+  .compound-controls button.secondary{ background:transparent; border:1px solid var(--line); color:var(--muted); }
+  .compound-controls .yearlabel{ font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); }
+  .coin-grid{ display:flex; flex-wrap:wrap; gap:6px; min-height:60px; align-items:flex-end; margin-bottom:1rem; }
+  .coin-grid .coin{ width:14px; height:14px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #f2cf85, var(--gold-dim)); animation: pop 0.4s ease; }
+  @keyframes pop{ 0%{ transform:scale(0);} 100%{ transform:scale(1);} }
+  .compound-total{ font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--gold); }
+  .compound-note{ font-size:0.82rem; color:var(--muted); margin-top:0.6rem; }
+
+  /* ---- pebble streak ---- */
+  .pebble-card{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:16px; padding:1.6rem; margin-top:1.8rem; }
+  .pebble-grid{ display:grid; grid-template-columns: repeat(10, 1fr); gap:6px; margin:1.2rem 0; }
+  @media (max-width:480px){ .pebble-grid{ grid-template-columns: repeat(7,1fr);} }
+  .pebble{
+    aspect-ratio:1; border-radius:6px; background:rgba(244,233,216,0.06); border:1px solid var(--line);
+    cursor:pointer; transition: all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--muted);
+  }
+  .pebble.done{ background: var(--gold); border-color:var(--gold); color:#2a1305; }
+  .pebble-status{ font-family:'Baloo 2',sans-serif; font-size:0.85rem; color:var(--muted); }
+  .pebble-status strong{ color:var(--gold); }
+  .pebble-reset{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.8rem; background:transparent; border:1px solid var(--line); color:var(--muted); padding:0.5rem 1rem; border-radius:999px; cursor:pointer; margin-top:1rem; }
+
+  /* ---- advice accordion ---- */
+  .accordion{ margin-top:1.6rem; display:flex; flex-direction:column; gap:0.7rem; }
+  .acc-item{ background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .acc-head{ display:flex; align-items:center; gap:0.9rem; padding:1rem 1.2rem; cursor:pointer; }
+  .acc-num{ font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold); font-size:1.2rem; flex:none; width:1.6rem; }
+  .acc-title{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:0.95rem; color:var(--cream); flex:1; }
+  .acc-arrow{ color:var(--gold); transition:transform 0.25s ease; flex:none; }
+  .acc-item.open .acc-arrow{ transform:rotate(180deg); }
+  .acc-body{ max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .acc-body-inner{ padding:0 1.2rem 1.1rem 2.9rem; color:var(--muted); font-size:0.92rem; }
+  .acc-item.open .acc-body{ max-height:220px; }
+
+  .takeaways{ list-style:none; margin-top:1.4rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .takeaways li{ display:flex; gap:0.8rem; align-items:flex-start; background:rgba(244,233,216,0.03); border:1px solid var(--line); border-radius:12px; padding:0.9rem 1.1rem; color:var(--cream); font-size:0.95rem;}
+  .takeaways li::before{ content:"◆"; color:var(--gold); flex:none; margin-top:0.15rem; font-size:0.7rem; }
+
+  footer{ text-align:center; padding:3.5rem 1.5rem 4rem; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--line); }
+  footer .label{ display:block; margin-bottom:0.6rem; }
+
+  ::selection{ background:var(--gold); color:#2a1305; }
+</style>
+</head>
+<body>
+
+<div class="bg-coins" id="bgCoins"></div>
+
+<section class="hero">
+  <span class="label">ಬ್ಯಾಬಿಲೋನ್ ಕಥೆ — ಅಧ್ಯಾಯ ಎರಡು</span>
+  <h1>ಮೊದಲು ನಿನಗೇ ಕೊಡು</h1>
+  <p class="sub">ವಿಘ್ನೇಶ್ ಮತ್ತು ಮಹಾದೇವಸ್ವಾಮಿ ಕೊನೆಗೂ ತಮಗೆ ಗೊತ್ತಿರುವ ಅತ್ಯಂತ ಶ್ರೀಮಂತ ವ್ಯಕ್ತಿ ಅರ್ಜುನ್ ರಾವ್ ಎದುರು ಕುಳಿತಿದ್ದಾರೆ. ಅವನು ಏನೂ ಇಲ್ಲದೆ ಆರಂಭಿಸಿ ಶ್ರೀಮಂತನಾದದ್ದು ಹೇಗೆ ಎಂದು ಸ್ಪಷ್ಟವಾಗಿ ಹೇಳುತ್ತಾನೆ.</p>
+  <div class="chip">🪙 ಅರ್ಜುನ್‌ನದೇ ಕಥೆ, ಅವನ ಮಾತುಗಳಲ್ಲಿ</div>
+  <div class="scrolldown"><span>ಸ್ಕ್ರೋಲ್ ಮಾಡಿ</span><span class="chevron"></span></div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಪ್ರಶ್ನೆ</span></div>
+    <h2 class="title">"ನಾವು ಒಟ್ಟಿಗೆ ಓದಿದೆವು. ಒಟ್ಟಿಗೆ ಆಟವಾಡಿದೆವು. ಆದರೂ ನೀನು ಶ್ರೀಮಂತ, ನಾವಲ್ಲ, ಏಕೆ?"</h2>
+    <p class="lede">ಅರ್ಜುನ್ ರಾವ್ ಬಹಳ ಉದಾರಿ — ಕುಟುಂಬಕ್ಕೆ, ದಾನಕ್ಕೆ, ತನ್ನ ಸೌಕರ್ಯಗಳಿಗೆ. ಆದರೂ ಪ್ರತಿ ವರ್ಷವೂ, ಎಷ್ಟೇ ಖರ್ಚು ಮಾಡಿದರೂ, ಹಿಂದಿನ ವರ್ಷಕ್ಕಿಂತ ಇನ್ನಷ್ಟು ಶ್ರೀಮಂತನಾಗುತ್ತಾನೆ. ವಿಘ್ನೇಶ್‌ನಂತಹ ಹಳೆಯ ಸಹಪಾಠಿಗಳಿಗೆ ಇದು ಅರ್ಥವಾಗುವುದಿಲ್ಲ. ಅವರು ಅವನನ್ನೇ ನೇರವಾಗಿ ಕೇಳುತ್ತಾರೆ.</p>
+
+    <div class="dialogue">
+      <div class="who">ಒಬ್ಬ ಹಳೆಯ ಸಹಪಾಠಿ</div>
+      <p>"ನಾವೆಲ್ಲ ಒಂದೇ ಗುರುವಿನ ಬಳಿ ಓದಿದೆವು. ಪಾಠಗಳಲ್ಲಿ ನಿನಗಿಂತ ಎಂದೂ ಹಿಂದೆ ಇರಲಿಲ್ಲ. ಆ ವರ್ಷಗಳ ನಂತರ, ನೀನು ನಮಗಿಂತ ಹೆಚ್ಚು ಕಷ್ಟಪಟ್ಟಿಲ್ಲ, ಹೆಚ್ಚು ಪ್ರಾಮಾಣಿಕವೂ ಆಗಿಲ್ಲ. ಅದೃಷ್ಟ ನಿನ್ನನ್ನೇ ಏಕೆ ಆರಿಸಿಕೊಂಡಿತು, ನಮ್ಮನ್ನಲ್ಲ?"</p>
+      <div class="who">ಅರ್ಜುನ್ ರಾವ್</div>
+      <p>"ನಾವು ವಿದ್ಯಾರ್ಥಿಗಳಾಗಿದ್ದಾಗಿನಿಂದ ನೀವು ಬರೀ ಜೀವನ ನಡೆಸಲಷ್ಟೇ ಸಾಕಾಗಿದ್ದರೆ, ಅದೃಷ್ಟ ನಿಮ್ಮನ್ನು ಬಿಟ್ಟುಹೋಗಿಲ್ಲ. ಸಂಪತ್ತು ಕಟ್ಟುವ ನಿಯಮಗಳನ್ನು ನೀವು ಎಂದೂ ಕಲಿಯಲಿಲ್ಲ ಎಂಬುದೇ ಕಾರಣ — ಅಥವಾ ಗೊತ್ತಿದ್ದರೂ ಪಾಲಿಸಲಿಲ್ಲ."</p>
+    </div>
+
+    <p>ಬಹುಪಾಲು ಜನರು ಎಂದೂ ಯೋಚಿಸದ ಒಂದು ಸಂಗತಿಯನ್ನು ಅರ್ಜುನ್ ವಿವರಿಸುತ್ತಾನೆ: ಅದೃಷ್ಟದಿಂದ ಬಂದ ಹಣ — ಲಾಟರಿ ಗೆಲುವು, ಅನಿರೀಕ್ಷಿತ ಆಸ್ತಿ — ಸಾಮಾನ್ಯವಾಗಿ ಬೇಗ ಮಾಯವಾಗುತ್ತದೆ. ಜನ ಒಂದೋ ಎಲ್ಲವನ್ನೂ ಗಡಿಬಿಡಿಯಲ್ಲಿ ಖರ್ಚು ಮಾಡುತ್ತಾರೆ, ಇಲ್ಲವೇ ಭಯದಿಂದ ಎಷ್ಟು ಬಿಗಿಯಾಗಿ ಹಿಡಿದುಕೊಳ್ಳುತ್ತಾರೆಂದರೆ ಅದನ್ನು ಅನುಭವಿಸುವುದೇ ಇಲ್ಲ. ಸಂಪಾದಿಸಿದ ಅಥವಾ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಿಕ್ಕ ಹಣವನ್ನು ತೆಗೆದುಕೊಂಡು ಬೆಳೆಸುವುದು ಹೇಗೆಂದು ಕೆಲವೇ ಜನರಿಗೆ ಗೊತ್ತಿದೆ. ಅರ್ಜುನ್ ಅವರಲ್ಲಿ ಒಬ್ಬ. ಅವನಿಗೆ ಅದು ಕಷ್ಟಪಟ್ಟೇ ಕಲಿತದ್ದು.</p>
+  </div>
+</section>
+
+<!-- ORIGIN STORY -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಎಲ್ಲಿ ಆರಂಭವಾಯಿತು</span></div>
+    <h2 class="title">ಉಳಿತಾಯವಿಲ್ಲದ ಗುಮಾಸ್ತ, ಮತ್ತು ಒಂದು ಅಸಾಧ್ಯ ಗಡುವು</h2>
+    <p>ಅರ್ಜುನ್ ಒಬ್ಬ ಸಣ್ಣ ಅಂಗಡಿಯವನ ಮಗ — ಭೂಮಿಯಿಲ್ಲ, ಬಳುವಳಿಯೂ ಇಲ್ಲ. ಅವನು ದಾಖಲೆ ಬರೆಯುವ ಗುಮಾಸ್ತನಾಗಿ ಕೆಲಸಕ್ಕೆ ಸೇರಿದ, ಸಂಬಳ ಬಾಡಿಗೆ ಮತ್ತು ಊಟಕ್ಕೆ ಪ್ರತಿ ತಿಂಗಳೂ ಖಾಲಿಯಾಗುತ್ತಿತ್ತು. ಎಲ್ಲರಂತೆ ಏನೂ ಉಳಿಯುತ್ತಿರಲಿಲ್ಲ.</p>
+
+    <div class="character-card">
+      <div class="avatar">S</div>
+      <div>
+        <h3>ಶಂಕರ್ ಲಾಲ್</h3>
+        <div class="role">ಹಳೆಯ ಸಾಲಗಾರ, ದಾಖಲೆ ಕಚೇರಿಯ ಅತಿ ಶ್ರೀಮಂತ ಗ್ರಾಹಕನೆಂದು ಪ್ರಸಿದ್ಧ</div>
+        <p style="margin:0;color:#e7d9c4;">ಒಂದು ದಿನ ಶಂಕರ್ ಲಾಲ್ ಒಂದು ಉದ್ದದ ಒಪ್ಪಂದ ಪತ್ರವನ್ನು ಎರಡು ದಿನಗಳಲ್ಲಿ, ಎರಡು ನಾಣ್ಯಗಳಿಗೆ ಪ್ರತಿ ಮಾಡಿಸಿಕೊಳ್ಳಲು ಬಂದ. ಅರ್ಜುನ್ ಕಷ್ಟಪಟ್ಟ, ಆದರೆ ದಾಖಲೆ ತುಂಬಾ ಉದ್ದವಾಗಿತ್ತು. ಗಡುವು ತಪ್ಪಿತು.</p>
+      </div>
+    </div>
+
+    <div class="dialogue">
+      <div class="who">ಅರ್ಜುನ್, ಶಂಕರ್ ಲಾಲ್‌ಗೆ (ಗಡುವು ತಪ್ಪಿಸಿಕೊಂಡಾಗ)</div>
+      <p>"ನೀವು ಶ್ರೀಮಂತ ಮನುಷ್ಯ. ಶ್ರೀಮಂತನಾಗುವ ಗುಟ್ಟನ್ನು ಹೇಳಿ, ನಾನು ರಾತ್ರಿಯಿಡೀ ಕೆಲಸ ಮಾಡುತ್ತೇನೆ — ಸೂರ್ಯೋದಯದ ವೇಳೆಗೆ ಇದು ಮುಗಿದಿರುತ್ತದೆ."</p>
+      <div class="who">ಶಂಕರ್ ಲಾಲ್</div>
+      <p>"ನೀನು ಧೈರ್ಯಶಾಲಿ. ಸರಿ — ಒಪ್ಪಂದ."</p>
+    </div>
+
+    <p>ಅರ್ಜುನ್ ರಾತ್ರಿಯಿಡೀ ದುಡಿದ, ದೀಪದ ಹೊಗೆಯಿಂದ ಕಣ್ಣುರಿಯುತ್ತಿತ್ತು, ಆದರೆ ಸೂರ್ಯೋದಯದ ವೇಳೆಗೆ ಮುಗಿಸಿದ. ಶಂಕರ್ ಲಾಲ್ ತನ್ನ ಮಾತಿಗೆ ತಪ್ಪಲಿಲ್ಲ.</p>
+
+    <blockquote>"ನಾನು ಸಂಪಾದಿಸಿದ ಪ್ರತಿಯೊಂದರಲ್ಲೂ ಒಂದು ಭಾಗ ನನ್ನದೇ ಎಂದು ನಿರ್ಧರಿಸಿದ ದಿನವೇ ನನಗೆ ಶ್ರೀಮಂತಿಕೆಯ ದಾರಿ ಸಿಕ್ಕಿತು. ಅದೇ ದಾರಿ ನಿನಗೂ ಸಿಗುತ್ತದೆ."<cite>— ಶಂಕರ್ ಲಾಲ್ (ಮೂಲ ಕಥೆಯಲ್ಲಿ ಅಲ್ಗಮಿಶ್)</cite></blockquote>
+
+    <p>ಅರ್ಜುನ್‌ಗೆ ಗೊಂದಲವಾಯಿತು — ಸಂಪಾದಿಸಿದ್ದೆಲ್ಲಾ ಈಗಾಗಲೇ ತನ್ನದೇ ಅಲ್ಲವೇ? ಶಂಕರ್ ಲಾಲ್ ನಕ್ಕ. ಬಾಡಿಗೆ, ಊಟ, ಬಟ್ಟೆ, ಆಗಾಗ ಸಣ್ಣಪುಟ್ಟ ಖರ್ಚುಗಳು — ತಿಂಗಳ ಕೊನೆಗೆ ಎಲ್ಲವೂ ಮುಗಿದಿರುತ್ತಿತ್ತು. <strong style="color:var(--cream)">ಅರ್ಜುನ್ ಎಲ್ಲರಿಗೂ ಕೊಡುತ್ತಿದ್ದ — ಮನೆ ಮಾಲೀಕ, ಟೈಲರ್, ದಿನಸಿ ಅಂಗಡಿಯವ — ತನಗೆ ಮಾತ್ರ ಕೊಡುತ್ತಿರಲಿಲ್ಲ.</strong> ಶಂಕರ್ ಲಾಲ್‌ನ ಸಲಹೆ ಸರಳವಾಗಿತ್ತು: ಬೇರೆ ಯಾವುದೇ ಖರ್ಚಿಗೆ ಮೊದಲು, ಸಂಪಾದಿಸಿದ್ದರ ಕನಿಷ್ಠ ಹತ್ತನೇ ಒಂದು ಭಾಗವನ್ನು ಪ್ರತ್ಯೇಕವಾಗಿ ಇಡಿ. ಮೊದಲು ನಿನಗೇ ಕೊಡು.</p>
+  </div>
+</section>
+
+<!-- THREE ATTEMPTS INTERACTIVE -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಮೊದಲ ಬಾರಿಗೆ ಕೆಲಸ ಮಾಡಲಿಲ್ಲ</span></div>
+    <h2 class="title">ಅರ್ಜುನ್ ಮೂರು ವರ್ಷ ಪ್ರಯತ್ನಿಸಿದ — ಎರಡು ಬಾರಿ ತಪ್ಪಾಯಿತು</h2>
+    <p>ಸಂಬಳದ ಹತ್ತನೇ ಒಂದು ಭಾಗ ಉಳಿಸುವುದು ಸುಲಭವಾಗಿತ್ತು. ಅರ್ಜುನ್‌ಗೆ ವ್ಯತ್ಯಾಸವೇ ಗೊತ್ತಾಗಲಿಲ್ಲ. ಆದರೆ ಉಳಿಸುವುದು ಗೊತ್ತಿರುವುದು ಮತ್ತು ಉಳಿತಾಯದಿಂದ ಏನು ಮಾಡಬೇಕೆಂದು ಗೊತ್ತಿರುವುದು ಬೇರೆ ಬೇರೆ. ಪ್ರತಿ ವರ್ಷ ನಿಜವಾಗಿ ಏನಾಯಿತು ಎಂದು ಟ್ಯಾಪ್ ಮಾಡಿ ನೋಡಿ.</p>
+
+    <div class="stepper">
+      <div class="step-tabs">
+        <button class="step-tab active" data-step="1">ವರ್ಷ 1</button>
+        <button class="step-tab" data-step="2">ವರ್ಷ 2</button>
+        <button class="step-tab" data-step="3">ವರ್ಷ 3–4</button>
+      </div>
+
+      <div class="step-panel active" data-panel="1">
+        <div class="step-head"><span class="step-num">01</span><h3>ಪರಿಣತನಲ್ಲದ ಸ್ನೇಹಿತನನ್ನು ನಂಬಿದ</h3></div>
+        <p style="margin-bottom:0.6rem;">ಅರ್ಜುನ್ ತನ್ನ ವರ್ಷದ ಉಳಿತಾಯವನ್ನು, ಅಪರೂಪದ ರತ್ನಗಳನ್ನು ಆಮದು ಮಾಡಿ ದೊಡ್ಡ ಲಾಭಕ್ಕೆ ಮಾರಬಲ್ಲೆ ಎಂದು ಹೇಳಿದ ಸ್ನೇಹಿತನಿಗೆ ಕೊಟ್ಟ. ಆ ಸ್ನೇಹಿತ ಇಟ್ಟಿಗೆ ತಯಾರಕ — ಆಭರಣ ವ್ಯಾಪಾರಿಯಲ್ಲ. "ರತ್ನಗಳು" ಕೊನೆಗೆ ಬಣ್ಣದ ಗಾಜು ಎಂದು ತಿಳಿಯಿತು.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill brick" style="width:0%" id="bar1"></div></div><span id="barlabel1">₹0 ಉಳಿದಿದೆ</span></div>
+        <div class="step-result loss">ಪಾಠ: ಹಣದ ಬಗ್ಗೆ ಸಲಹೆಯನ್ನು ಆ ವಿಷಯದಲ್ಲಿ ನಿಜವಾಗಿ ಪರಿಣತಿ ಇಲ್ಲದವರಿಂದ ಎಂದೂ ಪಡೆಯಬೇಡಿ — ರತ್ನದ ಬಗ್ಗೆ ಆಭರಣ ವ್ಯಾಪಾರಿಯನ್ನೇ ಕೇಳಿ, ಇಟ್ಟಿಗೆ ತಯಾರಕನನ್ನಲ್ಲ.</div>
+      </div>
+
+      <div class="step-panel" data-panel="2">
+        <div class="step-head"><span class="step-num">02</span><h3>ಲಾಭ ಬಂತು — ಆದರೆ ಎಲ್ಲವನ್ನೂ ಖರ್ಚು ಮಾಡಿದ</h3></div>
+        <p style="margin-bottom:0.6rem;">ಧೃತಿಗೆಡದೆ, ಅರ್ಜುನ್ ಮತ್ತೆ ಉಳಿಸಿ ಒಬ್ಬ ಲೋಹ ವ್ಯಾಪಾರಿಗೆ ಸಾಲ ಕೊಟ್ಟ, ಕೆಲವು ತಿಂಗಳಿಗೊಮ್ಮೆ ಸ್ಥಿರ ಲಾಭ ಬರುತ್ತಿತ್ತು. ಆದರೆ ಪ್ರತಿ ಬಾರಿ ಲಾಭ ಬಂದಾಗಲೂ, ಅವನದನ್ನು ಖರ್ಚು ಮಾಡುತ್ತಿದ್ದ — ಔತಣಗಳಿಗೆ, ಹೊಸ ಬಟ್ಟೆಗಳಿಗೆ, ಸಣ್ಣಪುಟ್ಟ ಐಷಾರಾಮಗಳಿಗೆ.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill brick" style="width:38%" id="bar2"></div></div><span id="barlabel2">ಉಳಿತಾಯ ನಿಂತಿತು, ಲಾಭ ಖರ್ಚಾಯಿತು</span></div>
+        <div class="step-result leak">ಪಾಠ: ಲಾಭವನ್ನು ಖರ್ಚು ಮಾಡುವುದು ತನ್ನ ಮಕ್ಕಳನ್ನೇ ತಿಂದಂತೆ — ಉಳಿತಾಯ ಎಂದೂ ಗುಣಿಸುವುದಿಲ್ಲ, ಏಕೆಂದರೆ ಗಳಿಸುತ್ತಲೇ ಇರಲು ಏನೂ ಉಳಿಯುವುದಿಲ್ಲ.</div>
+      </div>
+
+      <div class="step-panel" data-panel="3">
+        <div class="step-head"><span class="step-num">03</span><h3>ಕೊನೆಗೂ ಬೆಳೆಯಲು ಬಿಟ್ಟ</h3></div>
+        <p style="margin-bottom:0.6rem;">ಈ ಬಾರಿ, ಅರ್ಜುನ್ ತನ್ನ ಉಳಿತಾಯ <em>ಮತ್ತು</em> ಅದರ ಲಾಭ ಎರಡನ್ನೂ ಹೂಡಿಕೆಯಲ್ಲೇ ಉಳಿಸಿದ. ಅವನ ಹಣ ಹಣ ಗಳಿಸಲು ಶುರುಮಾಡಿತು, ಆ ಹಣ ಇನ್ನಷ್ಟು ಗಳಿಸತೊಡಗಿತು. ಎರಡು ವರ್ಷಗಳ ನಂತರ ಶಂಕರ್ ಲಾಲ್ ಮತ್ತೆ ಬಂದ — ಅರ್ಜುನ್‌ನನ್ನು ತನ್ನ ವ್ಯಾಪಾರ ಪಾಲುದಾರನನ್ನಾಗಿ ಮಾಡಿಕೊಳ್ಳುವಷ್ಟು ಪ್ರಭಾವಿತನಾಗಿ.</p>
+        <div class="purse-mini"><div class="bar-track"><div class="bar-fill gold" style="width:88%" id="bar3"></div></div><span id="barlabel3">ತಾನಾಗಿಯೇ ಬೆಳೆಯುತ್ತಿದೆ</span></div>
+        <div class="step-result win">ಪಾಠ: ನಿಮ್ಮ ಉಳಿತಾಯವೇ ಕೆಲಸಗಾರರು. ಅವರ ಸಂಬಳವನ್ನೂ ಕೆಲಸಕ್ಕೆ ಹಚ್ಚಿ. ಹೀಗೆಯೇ ಒಂದು ಸಣ್ಣ ಬೀಜ ಮರವಾಗುವುದು.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPOUNDING DEMO -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">"ಪ್ರತಿ ಚಿನ್ನದ ನಾಣ್ಯವೂ ನಿಮಗಾಗಿ ದುಡಿಯುವ ಗುಲಾಮ"</span></div>
+    <h2 class="title">ಉಳಿತಾಯವನ್ನು ಬಿಟ್ಟುಬಿಟ್ಟಾಗ ಏನಾಗುತ್ತದೆ ನೋಡಿ</h2>
+    <p>ಒಂದು ಸಣ್ಣ ಉಳಿತಾಯದ ಮೊತ್ತದಿಂದ ಆರಂಭಿಸಿ. ನೀವು ಸೇರಿಸುವ ಪ್ರತಿ "ವರ್ಷ", ಅದು ಸ್ವಲ್ಪ ಗಳಿಸುತ್ತದೆ, ಮುಂದಿನ ವರ್ಷ ಆ ಗಳಿಕೆಯೂ ಗಳಿಸುತ್ತದೆ. ಮುಂದೆ ಕ್ಲಿಕ್ ಮಾಡಿ, ನಾಣ್ಯಗಳು ತಾವಾಗಿಯೇ ಗುಣಿಸುವುದನ್ನು ನೋಡಿ.</p>
+
+    <div class="compound-card">
+      <div class="compound-controls">
+        <button id="addYear">ಒಂದು ವರ್ಷ ಸೇರಿಸಿ →</button>
+        <button class="secondary" id="resetYears">ಮರುಹೊಂದಿಸಿ</button>
+        <span class="yearlabel" id="yearLabel">ವರ್ಷ 0</span>
+      </div>
+      <div class="coin-grid" id="coinGrid"></div>
+      <div class="compound-total">ಒಟ್ಟು ಉಳಿತಾಯ: <span id="compoundTotal">₹1,000</span></div>
+      <p class="compound-note">ಆರಂಭದ ಬೀಜ: ₹1,000, ಸುಮಾರು ವರ್ಷಕ್ಕೆ 8%ರಷ್ಟು ಬೆಳೆಯುತ್ತದೆ, ಅರ್ಜುನ್ ಹೇಳಿದಂತೆಯೇ — "ನೀವು ಉಳಿಸುವ ಮೊದಲ ತಾಮ್ರದ ನಾಣ್ಯವೇ ನಿಮ್ಮ ಸಂಪತ್ತಿನ ಮರ ಬೆಳೆಯುವ ಬೀಜ."</p>
+    </div>
+  </div>
+</section>
+
+<!-- PEBBLE PARABLE -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಇಚ್ಛಾಶಕ್ತಿಯ ಬಗ್ಗೆ</span></div>
+    <h2 class="title">ಇದು ಇಚ್ಛಾಶಕ್ತಿ ಅಲ್ಲ. ಸಣ್ಣ ಕೆಲಸ ತಪ್ಪಿಸದಿರುವುದಷ್ಟೇ.</h2>
+    <p>ವರ್ಷಗಳ ನಂತರ, ಒಬ್ಬ ಸ್ನೇಹಿತ ಅರ್ಜುನ್‌ನನ್ನು ಅದೃಷ್ಟವಂತ ಎನ್ನುತ್ತಾನೆ, ಇನ್ನೊಬ್ಬ ದೃಢ ಇಚ್ಛಾಶಕ್ತಿಯುಳ್ಳವನು ಎನ್ನುತ್ತಾನೆ. ಅರ್ಜುನ್ ಇಬ್ಬರ ಜೊತೆಗೂ ಒಪ್ಪುವುದಿಲ್ಲ.</p>
+
+    <div class="dialogue">
+      <div class="who">ಅರ್ಜುನ್ ರಾವ್</div>
+      <p>"ಇಚ್ಛಾಶಕ್ತಿ ಎಂದರೆ ಏನೂ ದೊಡ್ಡ ಸಂಗತಿಯಲ್ಲ. ನಾನೇ ನಿರ್ಧರಿಸಿದ ಕೆಲಸವನ್ನು ಅರ್ಧಕ್ಕೆ ಬಿಡದಿರುವ ಸರಳ ನಿರಾಕರಣೆಯಷ್ಟೇ. 'ನೂರು ದಿನ, ನಾನು ನನ್ನ ನಡಿಗೆಯಲ್ಲಿ ಒಂದು ಕಲ್ಲನ್ನು ಎತ್ತಿಕೊಂಡು ನದಿಗೆ ಎಸೆಯುತ್ತೇನೆ' ಎಂದು ನನಗೆ ನಾನೇ ಹೇಳಿಕೊಂಡರೆ, ನಾನು ಅದನ್ನೇ ಮಾಡುತ್ತೇನೆ. ಒಂದು ದಿನ ತಪ್ಪಿಸಿ, ನಾಳೆ ಎರಡು ಎಸೆಯುತ್ತೇನೆ ಎಂದು ಎಂದೂ ಹೇಳಿಕೊಳ್ಳುವುದಿಲ್ಲ. ಒಂದೇ ಕಲ್ಲು, ಪ್ರತಿ ದಿನ, ತಪ್ಪದೆ."</p>
+    </div>
+
+    <p>ಕೆಳಗೆ ಪ್ರಯತ್ನಿಸಿ ನೋಡಿ — ಇದೇ ಸಣ್ಣ, ಸಾಧಾರಣ ಅಭ್ಯಾಸ, ಪ್ರತಿದಿನ ಪುನರಾವರ್ತಿಸಿದ್ದೇ ಅರ್ಜುನ್‌ನ ಸಂಪತ್ತನ್ನು ನಿಜವಾಗಿ ಕಟ್ಟಿದ್ದು. ಒಂದು ದೊಡ್ಡ ನಿರ್ಧಾರವಲ್ಲ, ಬದಲಿಗೆ ತಪ್ಪಿಸದ ಒಂದು ಸಣ್ಣ ನಿರ್ಧಾರ, ಮತ್ತೆ ಮತ್ತೆ.</p>
+
+    <div class="pebble-card">
+      <p class="pebble-status">ಪ್ರತಿ ದಿನದ ಕಲ್ಲು ಎಸೆದದ್ದನ್ನು ಗುರುತಿಸಲು ಪ್ರತಿ ಚೌಕವನ್ನೂ ಟ್ಯಾಪ್ ಮಾಡಿ. 30 ದಿನಗಳಲ್ಲಿ <strong id="pebbleCount">0</strong> ಮುಗಿದಿದೆ.</p>
+      <div class="pebble-grid" id="pebbleGrid"></div>
+      <button class="pebble-reset" id="pebbleReset">ಅಭ್ಯಾಸ ಮರುಹೊಂದಿಸಿ</button>
+    </div>
+  </div>
+</section>
+
+<!-- ADVICE ACCORDION -->
+<section class="demo-section">
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಅರ್ಜುನ್ ತನ್ನ ಸ್ನೇಹಿತರಿಗೆ ಹೇಳುವುದೇನು</span></div>
+    <h2 class="title">ಕೇಳಿದವರಿಗೆಲ್ಲ ಹೇಳುವ ಆರು ವಿಷಯಗಳು</h2>
+    <p>ಅರ್ಜುನ್ ನಿಜವಾಗಿ ಹೇಳುವುದನ್ನು ಓದಲು ಪ್ರತಿಯೊಂದನ್ನೂ ಟ್ಯಾಪ್ ಮಾಡಿ.</p>
+
+    <div class="accordion" id="accordion">
+      <div class="acc-item open">
+        <div class="acc-head"><span class="acc-num">1</span><span class="acc-title">ಮೊದಲು ನಿನಗೇ ಕೊಡು</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ಬೇರೆ ಯಾವುದೇ ಖರ್ಚಿಗೆ ಮೊದಲು, ಸಂಪಾದಿಸಿದ್ದರ ಕನಿಷ್ಠ ಹತ್ತನೇ ಒಂದು ಭಾಗವನ್ನು ಪ್ರತ್ಯೇಕವಾಗಿ ಇಡಿ. ಉಳಿದ ಖರ್ಚುಗಳನ್ನು ಅದರ ಸುತ್ತ ಹೊಂದಿಸಿಕೊಳ್ಳಿ, ಇದಕ್ಕೆ ವಿರುದ್ಧವಾಗಿ ಅಲ್ಲ. ಇದು ತಾನಾಗಿಯೇ ಆಗುವವರೆಗೆ ನಿಮಗೆ ನೀವೇ ಹೇಳಿಕೊಳ್ಳಿ: ನಾನು ಸಂಪಾದಿಸಿದ್ದರಲ್ಲಿ ಒಂದು ಭಾಗ ನನ್ನದೇ.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">2</span><span class="acc-title">ನಿಮ್ಮ ಉಳಿತಾಯವನ್ನು ದುಡಿಸಿ</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ಸುಮ್ಮನೆ ಬಿದ್ದಿರುವ ಹಣ ಏನೂ ಗಳಿಸುವುದಿಲ್ಲ. ಅದನ್ನು ಕೆಲಸಕ್ಕೆ ಹಚ್ಚಿ, ಹೆಚ್ಚು ಹಣ ಗಳಿಸಲಿ — ಆ ಹೊಸ ಹಣವನ್ನೂ ಹೂಡಿಕೆಯಲ್ಲೇ ಇಡಿ, ಅದೂ ಇನ್ನಷ್ಟು ಗಳಿಸಲಿ. ಹೀಗೆಯೇ ಒಂದು ಸಣ್ಣ ಬೀಜ ಮರವಾಗುವುದು.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">3</span><span class="acc-title">ಪರಿಣತರ ಸಲಹೆಯಿಂದ ಅದನ್ನು ರಕ್ಷಿಸಿ</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ಹೂಡಿಕೆ ಎಂದೂ ಮಾಡದ ಒಳ್ಳೆಯ ಮನಸ್ಸಿನ ಸ್ನೇಹಿತನಲ್ಲ, ಬದಲಿಗೆ ಹಣದ ಜೊತೆ ನಿಜವಾಗಿ ಕೆಲಸ ಮಾಡುವವರನ್ನೇ ಕೇಳಿ. ಅಪಾಯಕಾರಿ, ರೋಮಾಂಚಕಾರಿ ಲಾಭಕ್ಕಿಂತ ಸುರಕ್ಷಿತ, ಸಾಧಾರಣ ಲಾಭ ಉತ್ತಮ.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">4</span><span class="acc-title">ವೃದ್ಧಾಪ್ಯಕ್ಕೆ ಯೋಜನೆ ಮಾಡಿ</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ನೀವಿನ್ನು ಸಂಪಾದಿಸಲಾಗದ ಒಂದು ದಿನ ಬರುತ್ತದೆ. ಈಗಲೇ ಏನಾದರೂ ಸಿದ್ಧಪಡಿಸಿ — ಸಣ್ಣ, ನಿಯಮಿತ ಕೊಡುಗೆಗಳ ಮೂಲಕ — ಆಗ ನಿಮ್ಮ ಭವಿಷ್ಯ ಸುರಕ್ಷಿತವಾಗಿರುತ್ತದೆ.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">5</span><span class="acc-title">ಕುಟುಂಬವನ್ನು ರಕ್ಷಿಸಿ</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ನಿಮಗೆ ಏನಾದರೂ ಆದರೆ ಕುಟುಂಬ ಕಷ್ಟಪಡದಂತೆ ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಇದನ್ನೂ ಸಣ್ಣ ನಿಯಮಿತ ಪಾವತಿಗಳ ಮೂಲಕ ಜೋಡಿಸಬಹುದು — ದೊಡ್ಡ ಮೊತ್ತ ಸಿಗುವವರೆಗೆ ಕಾಯಬೇಕಿಲ್ಲ.</div></div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-head"><span class="acc-num">6</span><span class="acc-title">ಜೀವನವನ್ನೂ ಆನಂದಿಸಿ</span><span class="acc-arrow">▾</span></div>
+        <div class="acc-body"><div class="acc-body-inner">ಸೌಕರ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚು ಉಳಿಸಲು ಒತ್ತಡ ಹಾಕಿಕೊಳ್ಳಬೇಡಿ. ಹತ್ತನೇ ಒಂದು ಭಾಗ ನಿಮಗೆ ಸರಿಯಾಗಿದ್ದರೆ, ಅಷ್ಟೇ ಸಾಕು. ಉಳಿದದ್ದರಲ್ಲಿ ಚೆನ್ನಾಗಿ ಬದುಕಿ — ಜೀವನ ಅನುಭವಿಸಲಿಕ್ಕೆ, ಬರೀ ಕೂಡಿಡಲಿಕ್ಕಲ್ಲ.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow"><span class="dot"></span><span class="label">ಹೊರಡುವ ಮೊದಲು</span></div>
+    <h2 class="title">ಈ ಚಾಪ್ಟರ್ ನಿಜವಾಗಿ ಹೇಳುತ್ತಿರುವುದೇನು</h2>
+    <ul class="takeaways">
+      <li>ಅರ್ಜುನ್‌ಗೆ ಶ್ರೀಮಂತಿಕೆ ಅದೃಷ್ಟದಿಂದ ಬಂದದ್ದಲ್ಲ — ಸಂಪಾದಿಸಿದ ಪ್ರತಿ ರೂಪಾಯಿಯಲ್ಲೂ ಒಂದು ಭಾಗ ತನ್ನದೇ ಎಂದು ನಿರ್ಧರಿಸಿದ ಕ್ಷಣದಿಂದಲೇ ಆರಂಭವಾಯಿತು.</li>
+      <li>ಆ ಹಣ ಬೆಳೆಸಲು ಅವನ ಮೊದಲ ಎರಡು ಪ್ರಯತ್ನಗಳೂ ವಿಫಲವಾದವು. ವಿಫಲತೆ ಸಮಸ್ಯೆಯಾಗಿರಲಿಲ್ಲ — ವಿಫಲತೆಯ ನಂತರ ಬಿಟ್ಟುಬಿಡುವುದೇ ಸಮಸ್ಯೆಯಾಗುತ್ತಿತ್ತು.</li>
+      <li>ಸಂಪಾದಿಸಿದ ಕೂಡಲೇ ಖರ್ಚಾಗುವ ಹಣ ಎಂದೂ ಗುಣಿಸುವುದಿಲ್ಲ. ಬಿಟ್ಟುಬಿಡಲಾದ ಹಣ ಕಾಲಾಂತರದಲ್ಲಿ ನಿಜವಾದ ಸಂಪತ್ತು ಕಟ್ಟುತ್ತದೆ.</li>
+      <li>"ಇಚ್ಛಾಶಕ್ತಿ" ಎಂದರೆ ಬರೀ ಒಂದು ಸಣ್ಣ, ಸಾಧಾರಣ ಅಭ್ಯಾಸವನ್ನು ತಪ್ಪಿಸದಿರುವುದಷ್ಟೇ — ಪ್ರತಿ ದಿನ, ಯಾವುದೇ ವಿನಾಯಿತಿ ಇಲ್ಲದೆ.</li>
+      <li>ನಿಮ್ಮ ಹಣದ ಬಗ್ಗೆ ಸಲಹೆ ಕೊಡುವ ಯಾರೇ ಆಗಲಿ, ಅವರಿಗೆ ಆ ನಿರ್ದಿಷ್ಟ ವಿಷಯದಲ್ಲಿ ನಿಜವಾದ ಅನುಭವ ಇರಬೇಕು — ಬರೀ ಸಹಾಯ ಮಾಡಲು ಸಿದ್ಧರಿರುವುದು ಸಾಲದು.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="label">ಮುಂದೆ</span>
+  ಮೂರನೇ ಚಾಪ್ಟರ್ ಇನ್ನೂ ಚುರುಕಾದ ಪ್ರಶ್ನೆ ಕೇಳುತ್ತದೆ: ನಿಮ್ಮ ಬಳಿ ಈಗ ಏನೂ ಉಳಿತಾಯ ಇಲ್ಲದಿದ್ದರೆ, ಎಲ್ಲಿಂದ ಆರಂಭಿಸುವುದು? George S. Clason ಬರೆದ <em>The Richest Man in Babylon</em> ಆಧಾರಿತ.
+</footer>
+
+<script>
+  // decorative floating coins
+  (function(){
+    const container = document.getElementById('bgCoins');
+    const n = window.innerWidth < 600 ? 8 : 16;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (10 + Math.random()*10) + 's';
+      s.style.animationDelay = (Math.random()*14) + 's';
+      s.style.opacity = 0.15 + Math.random()*0.3;
+      container.appendChild(s);
+    }
+  })();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // step tabs
+  const tabs = document.querySelectorAll('.step-tab');
+  const panels = document.querySelectorAll('.step-panel');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.step-panel[data-panel="'+tab.dataset.step+'"]').classList.add('active');
+      animateBars();
+    });
+  });
+  function animateBars(){
+    requestAnimationFrame(()=>{
+      document.getElementById('bar1').style.width = '0%';
+      document.getElementById('bar2').style.width = '38%';
+      document.getElementById('bar3').style.width = '88%';
+    });
+  }
+  animateBars();
+
+  // compounding coins
+  let year = 0;
+  let total = 1000;
+  const coinGrid = document.getElementById('coinGrid');
+  const yearLabel = document.getElementById('yearLabel');
+  const compoundTotal = document.getElementById('compoundTotal');
+
+  function renderCoins(){
+    coinGrid.innerHTML = '';
+    const coinCount = Math.min(120, Math.round(total/150));
+    for(let i=0;i<coinCount;i++){
+      const c = document.createElement('div');
+      c.className = 'coin';
+      c.style.animationDelay = (i*0.01)+'s';
+      coinGrid.appendChild(c);
+    }
+    yearLabel.textContent = 'ವರ್ಷ ' + year;
+    compoundTotal.textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+  }
+  document.getElementById('addYear').addEventListener('click', ()=>{
+    if(year >= 20) return;
+    year++;
+    total = total * 1.08 + 200; // growth plus a fresh year of saving added to the pile
+    renderCoins();
+  });
+  document.getElementById('resetYears').addEventListener('click', ()=>{
+    year = 0; total = 1000; renderCoins();
+  });
+  renderCoins();
+
+  // pebble grid
+  const pebbleGrid = document.getElementById('pebbleGrid');
+  const pebbleCount = document.getElementById('pebbleCount');
+  for(let i=1;i<=30;i++){
+    const p = document.createElement('div');
+    p.className = 'pebble';
+    p.textContent = i;
+    p.addEventListener('click', ()=>{
+      p.classList.toggle('done');
+      updatePebbleCount();
+    });
+    pebbleGrid.appendChild(p);
+  }
+  function updatePebbleCount(){
+    pebbleCount.textContent = document.querySelectorAll('.pebble.done').length;
+  }
+  document.getElementById('pebbleReset').addEventListener('click', ()=>{
+    document.querySelectorAll('.pebble').forEach(p=>p.classList.remove('done'));
+    updatePebbleCount();
+  });
+
+  // accordion
+  document.querySelectorAll('.acc-head').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      const item = head.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.acc-item').forEach(i=>i.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
