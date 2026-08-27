@@ -70,9 +70,14 @@ function topLevelSkeleton() {
 
 // Server-side search across the whole tree (keys + book authors), so the
 // client never has to download everything just to search it.
-function searchAll(query) {
+// `lang` mirrors the frontend's content-language filter: English (or no
+// lang) searches everything; any other language skips book results whose
+// _bookMeta entry hasn't listed that language as fully translated. Folders
+// and non-book content are never filtered.
+function searchAll(query, lang) {
   const q = String(query || '').toLowerCase();
   if (!q) return [];
+  const l = lang && String(lang).trim() ? String(lang).trim() : 'en';
   const results = [];
   const bookMeta = data._bookMeta || {};
   const courseKeys = Object.keys(data).filter(k => !k.startsWith('_'));
@@ -99,8 +104,9 @@ function searchAll(query) {
           }
         } else if (val && typeof val === 'object') {
           const meta = bookMeta[key] || bookMeta[cleaned];
+          const available = l === 'en' || !meta || (Array.isArray(meta.languages) && meta.languages.includes(l));
           const authorMatch = meta && meta.author && meta.author.toLowerCase().includes(q);
-          if (cleaned.toLowerCase().includes(q) || pathStr.toLowerCase().includes(q) || authorMatch) {
+          if (available && (cleaned.toLowerCase().includes(q) || pathStr.toLowerCase().includes(q) || authorMatch)) {
             results.push({
               type: meta ? 'book' : 'folder', course, pathSegs: newSegs,
               path: pathStr, label: cleaned,
@@ -108,7 +114,7 @@ function searchAll(query) {
               lcount: countLessons(val), key: cleaned
             });
           }
-          walk(val, newSegs);
+          if (available) walk(val, newSegs);
         }
       }
     };
