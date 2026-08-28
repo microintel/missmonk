@@ -1,1 +1,595 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ದಿ ಪವರ್ ಆಫ್ ನೌ — ಅಧ್ಯಾಯ 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Kannada:wght@300;500;600&family=Noto+Sans+Kannada:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0d12;
+    --ink-2:#12151d;
+    --gold:#c9a24d;
+    --sage:#7c9a8c;
+    --paper:#e9e4d8;
+    --muted:#8a8f9c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(ellipse at 50% 0%, var(--ink-2), var(--ink) 70%);
+    color:var(--paper);
+    font-family:'Noto Sans Kannada', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
 
+  /* ---------- floating / falling particles ---------- */
+  #motes{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    top:-5%;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,162,77,0.9) 0%, rgba(201,162,77,0.15) 60%, transparent 100%);
+    animation-name:fall, drift;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+    filter:blur(0.3px);
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh); opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ transform:translateY(110vh); opacity:0; }
+  }
+  @keyframes drift{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  .glow{
+    position:fixed;
+    top:18%;
+    left:50%;
+    width:520px;
+    height:520px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(201,162,77,0.16) 0%, rgba(201,162,77,0.05) 45%, transparent 70%);
+    border-radius:50%;
+    animation:breathe 6s ease-in-out infinite;
+    z-index:0;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{ opacity:0.55; transform:translate(-50%,-50%) scale(0.92); }
+    50%{ opacity:1; transform:translate(-50%,-50%) scale(1.08); }
+  }
+
+  main{
+    position:relative;
+    z-index:2;
+    max-width:720px;
+    margin:0 auto;
+    padding:14vh 6vw 22vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    margin-bottom:20vh;
+  }
+  .eyebrow{
+    font-family:'Noto Sans Kannada', sans-serif;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--sage);
+    margin-bottom:1.6rem;
+  }
+  h1.title{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:500;
+    font-size:clamp(2.2rem, 7vw, 4rem);
+    line-height:1.2;
+    color:var(--paper);
+  }
+  .title em{
+    font-style:normal;
+    font-weight:300;
+    color:var(--gold);
+  }
+  .subtitle{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:300;
+    font-size:1.15rem;
+    color:var(--muted);
+    margin-top:1.4rem;
+  }
+
+  /* ---------- section scaffolding ---------- */
+  section{
+    margin-bottom:14vh;
+  }
+  .chapter-mark{
+    font-family:'Noto Serif Kannada', serif;
+    color:var(--gold);
+    font-size:0.95rem;
+    letter-spacing:0.03em;
+    margin-bottom:0.6rem;
+  }
+  h2{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:500;
+    font-size:clamp(1.4rem, 4vw, 2rem);
+    line-height:1.35;
+    margin-bottom:2.4rem;
+    color:var(--paper);
+  }
+  h2 .num{
+    color:var(--sage);
+    font-weight:300;
+    margin-right:0.6rem;
+  }
+  h3.sub-label{
+    font-family:'Noto Sans Kannada', sans-serif;
+    letter-spacing:0.06em;
+    font-size:0.85rem;
+    color:var(--sage);
+    margin:2.4rem 0 1.2rem;
+  }
+
+  /* ---------- lines : each line of content, clearly spaced ---------- */
+  .line{
+    font-size:1.08rem;
+    line-height:2;
+    color:var(--paper);
+    margin-bottom:1rem;
+    max-width:620px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .line.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .line.quote{
+    font-family:'Noto Serif Kannada', serif;
+    color:var(--gold);
+    font-size:1.15rem;
+    border-left:2px solid rgba(201,162,77,0.4);
+    padding-left:1rem;
+  }
+  .line.muted{
+    color:var(--muted);
+    font-size:0.98rem;
+  }
+  .line.thought{
+    color:var(--paper);
+    background:rgba(255,255,255,0.03);
+    padding:0.5rem 1rem;
+    border-radius:6px;
+    display:inline-block;
+  }
+  .cite{
+    display:block;
+    font-size:0.75rem;
+    letter-spacing:0.02em;
+    color:rgba(138,143,156,0.55);
+    margin:0.2rem 0 1.4rem;
+  }
+  .arrow{
+    color:var(--sage);
+    margin:0.3rem 0;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .arrow.visible{ opacity:0.7; transform:translateY(0); }
+
+  .divider{
+    width:60px;
+    height:1px;
+    background:linear-gradient(to right, var(--gold), transparent);
+    margin:0 auto 6vh;
+    opacity:0;
+    transition:opacity 1.2s ease;
+  }
+  .divider.visible{ opacity:0.6; }
+
+  .closing{
+    text-align:center;
+    margin-top:8vh;
+  }
+  .closing .line{
+    max-width:100%;
+    font-family:'Noto Serif Kannada', serif;
+    font-size:1.25rem;
+    color:var(--paper);
+  }
+  .closing .final{
+    color:var(--gold);
+    font-size:1.4rem;
+    margin-top:2rem;
+  }
+
+  ::selection{ background:rgba(201,162,77,0.3); }
+
+  @media (prefers-reduced-motion: reduce){
+    .mote{ animation:none; opacity:0.3; }
+    .glow{ animation:none; }
+    .line, .arrow, .divider{ transition:none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="motes"></div>
+<div class="glow"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">ಓದುವ ಟಿಪ್ಪಣಿಗಳು</div>
+    <h1 class="title">ದಿ ಪವರ್<br>ಆಫ್ <em>ನೌ</em></h1>
+    <p class="subtitle">ಅಧ್ಯಾಯ 1 — ನೀವು ನಿಮ್ಮ ಮನಸ್ಸಲ್ಲ</p>
+  </div>
+
+  <section id="intro">
+    <div class="chapter-mark">ಅಧ್ಯಾಯ 1</div>
+    <h2>ನೀವು ನಿಮ್ಮ ಮನಸ್ಸಲ್ಲ</h2>
+    <p class="line">ಕೇಂದ್ರ ವಿಚಾರ ಇದು:</p>
+    <p class="line quote">ನಿಮಗೆ ಆಲೋಚನೆಗಳಿವೆ, ಆದರೆ ನೀವು ಆ ಆಲೋಚನೆಗಳೇ ಅಲ್ಲ.</p>
+    <p class="line">ಈ ಪುಸ್ತಕ ಒಂದು ಕಥೆಯಿಂದ ಆರಂಭವಾಗುತ್ತದೆ — ಹಲವು ವರ್ಷಗಳಿಂದ ಒಂದು ಪೆಟ್ಟಿಗೆಯ ಮೇಲೆ ಕುಳಿತಿರುವ ಭಿಕ್ಷುಕನ ಕಥೆ.</p>
+    <p class="line">ಆ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ ಏನೂ ಇಲ್ಲ ಎಂದು ಅವನು ಭಾವಿಸುತ್ತಾನೆ.</p>
+    <p class="line">ಕೊನೆಗೆ ಯಾರೋ ಒಳಗೆ ನೋಡು ಎಂದು ಹೇಳಿದಾಗ, ಅದು ಚಿನ್ನದಿಂದ ತುಂಬಿದೆ ಎಂದು ಅವನಿಗೆ ತಿಳಿಯುತ್ತದೆ.</p>
+    <p class="line">ಜನರು ತಮ್ಮೊಳಗೆ ಏನು ನಡೆಯುತ್ತಿದೆ ಎಂಬುದನ್ನು ಕಡೆಗಣಿಸಿ, ಶಾಂತಿ ಮತ್ತು ಸಂತೋಷವನ್ನು ಹೊರಗೆ ಹುಡುಕಬಹುದು ಎಂಬುದಕ್ಕೆ ಲೇಖಕರು ಇದನ್ನು ಒಂದು ರೂಪಕವಾಗಿ ಬಳಸುತ್ತಾರೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s1">
+    <h2><span class="num">1</span>"ನೀವು ನಿಮ್ಮ ಮನಸ್ಸಲ್ಲ" ಎಂದರೆ ಏನು?</h2>
+    <p class="line">ನಿಮ್ಮ ಮನಸ್ಸು ಹೀಗೆ ಹೇಳುತ್ತದೆ ಎಂದು ಊಹಿಸಿಕೊಳ್ಳಿ:</p>
+    <p class="line thought">"ನಾನು ಸೋಲುತ್ತೇನೆ."</p>
+    <p class="line thought">"ಎಲ್ಲರೂ ನನಗಿಂತ ಉತ್ತಮರು."</p>
+    <p class="line thought">"ಏನಾದರೂ ತಪ್ಪಾದರೆ?"</p>
+    <p class="line thought">"ನಾನು ಬೇರೆ ರೀತಿ ಮಾಡಬೇಕಿತ್ತು."</p>
+    <p class="line thought">"ನಾಳೆ ಏನಾಗುತ್ತದೆ?"</p>
+    <p class="line">ಇವು ಆಲೋಚನೆಗಳು.</p>
+    <p class="line">ಒಂದು ಮುಖ್ಯ ಸಂಗತಿಯನ್ನು ಗಮನಿಸಲು ಪುಸ್ತಕ ಕೇಳುತ್ತದೆ:</p>
+    <p class="line quote">ನೀವು ಒಂದು ಆಲೋಚನೆಯನ್ನು ಗಮನಿಸಬಲ್ಲಿರಿ ಎಂದರೆ, ಅದನ್ನು ಗಮನಿಸುತ್ತಿರುವ ಒಂದು ಜಾಗೃತಿ ಇರಲೇಬೇಕು.</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line">ಆಲೋಚನೆ: "ನಾಳೆಯ ಬಗ್ಗೆ ನನಗೆ ಆತಂಕವಿದೆ."</p>
+    <p class="line">ಆ ಆಲೋಚನೆಯಾಗಿ ಸಂಪೂರ್ಣವಾಗಿ ಪರಿವರ್ತನೆಗೊಳ್ಳುವ ಬದಲು, ಗಮನಿಸಿ:</p>
+    <p class="line thought">"ನಾಳೆಯ ಬಗ್ಗೆ ಆತಂಕದ ಆಲೋಚನೆ ಬರುತ್ತಿದೆ ಎಂದು ನಾನು ಗಮನಿಸುತ್ತೇನೆ."</p>
+    <p class="line">ಈ ಸಣ್ಣ ವ್ಯತ್ಯಾಸವನ್ನೇ ಪುಸ್ತಕ "ಆಲೋಚಿಸುವವನನ್ನು ವೀಕ್ಷಿಸುವುದು" ಎಂದು ಕರೆಯುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s2">
+    <h2><span class="num">2</span>ಮನಸ್ಸು ಶತ್ರುವಲ್ಲ</h2>
+    <p class="line">ಇದು ಮುಖ್ಯ.</p>
+    <p class="line">ಆಲೋಚಿಸುವುದು ಕೆಟ್ಟದ್ದು ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತಿಲ್ಲ.</p>
+    <p class="line">ಈ ಸಂದರ್ಭಗಳಲ್ಲಿ ಮನಸ್ಸು ಉಪಯುಕ್ತ:</p>
+    <p class="line muted">ಗಣಿತ ಸಮಸ್ಯೆ ಬಿಡಿಸುವುದು</p>
+    <p class="line muted">ಕೋಡ್ ಬರೆಯುವುದು</p>
+    <p class="line muted">ಪ್ರವಾಸ ಯೋಜಿಸುವುದು</p>
+    <p class="line muted">ಪರೀಕ್ಷೆಗೆ ಓದುವುದು</p>
+    <p class="line muted">ನಿರ್ಧಾರ ತೆಗೆದುಕೊಳ್ಳುವುದು</p>
+    <p class="line muted">ಮಾಹಿತಿಯನ್ನು ನೆನಪಿಟ್ಟುಕೊಳ್ಳುವುದು</p>
+    <p class="line muted">ಪ್ರಾಯೋಗಿಕ ಸಮಸ್ಯೆ ಬಗೆಹರಿಸುವುದು</p>
+    <p class="line">ಸಮಸ್ಯೆ ಇರುವುದು ಬಲವಂತದ ಆಲೋಚನೆಯಲ್ಲಿ — ಉಪಯುಕ್ತವಲ್ಲದಿದ್ದರೂ ಮುಂದುವರಿಯುವ ಆಲೋಚನೆ.</p>
+    <p class="line">ಮನಸ್ಸು ಅಗತ್ಯವಿದ್ದಾಗ ಬಳಸಬೇಕಾದ ಒಂದು ಸಾಧನ, ನಿರಂತರವಾಗಿ ಗಮನವನ್ನು ನಿಯಂತ್ರಿಸುವ ಸಂಗತಿಯಲ್ಲ ಎಂದು ಲೇಖಕರು ವಿವರಿಸುತ್ತಾರೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+
+    <h3 class="sub-label">ಸರಳ ಉದಾಹರಣೆ</h3>
+    <p class="line">ನಾಳೆ ನಿಮಗೆ ಪರೀಕ್ಷೆ ಇದೆ.</p>
+    <p class="line">ಉಪಯುಕ್ತ ಆಲೋಚನೆ:</p>
+    <p class="line thought">"ನನ್ನ ಬಳಿ ಮೂರು ಅಧ್ಯಾಯಗಳಿವೆ. 7–8 ಗಂಟೆಗೆ ಅಧ್ಯಾಯ 1, 8–9 ಗಂಟೆಗೆ ಅಧ್ಯಾಯ 2 ಓದುತ್ತೇನೆ."</p>
+    <p class="line">ಇದು ಉದ್ದೇಶಪೂರ್ವಕ.</p>
+    <p class="line">ಬಲವಂತದ ಆಲೋಚನೆ:</p>
+    <p class="line thought">"ನಾನು ಸೋತರೆ? ಎಲ್ಲರೂ ಏನು ಅಂದುಕೊಳ್ಳುತ್ತಾರೆ? ಬಹುಶಃ ನಾನು ಬುದ್ಧಿವಂತನಲ್ಲ. ಪ್ರಶ್ನೆಗಳು ಕಷ್ಟವಾದರೆ? ನಾನೇಕೆ ಮೊದಲೇ ಶುರುಮಾಡಲಿಲ್ಲ? ನನ್ನ ಭವಿಷ್ಯ ಹಾಳಾಯಿತು..."</p>
+    <p class="line">ಈ ಆಲೋಚನೆಗಳಲ್ಲಿ ಯಾವುದೂ ವಾಸ್ತವವಾಗಿ ಅಧ್ಯಾಯವನ್ನು ಓದುತ್ತಿಲ್ಲ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಮೊದಲನೆಯ ಬಗೆ ಸಮಸ್ಯೆಯನ್ನು ಬಗೆಹರಿಸುತ್ತದೆ.</p>
+    <p class="line">ಎರಡನೆಯ ಬಗೆ ಒಂದು ಮಾನಸಿಕ ಸುರುಳಿಯಾಗಬಹುದು.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s3">
+    <h2><span class="num">3</span>"ಆಲೋಚಿಸುವವನನ್ನು ವೀಕ್ಷಿಸುವುದು" ಎಂದರೆ ಏನು?</h2>
+    <p class="line">ನೀವು ಶಾಂತವಾಗಿ ಕುಳಿತಿದ್ದಾಗ ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಈ ಆಲೋಚನೆ ಬರುತ್ತದೆ ಎಂದುಕೊಳ್ಳಿ:</p>
+    <p class="line thought">"ನಾನು ನನ್ನ ಫೋನ್ ನೋಡಬೇಕು."</p>
+    <p class="line">ಆ ಆಲೋಚನೆಯನ್ನು ತಕ್ಷಣ ಅನುಸರಿಸಬೇಡಿ.</p>
+    <p class="line">ಬದಲಿಗೆ, ಗಮನಿಸಿ:</p>
+    <p class="line thought">"ಫೋನ್ ನೋಡುವಂತೆ ಹೇಳುವ ಒಂದು ಆಲೋಚನೆ ಇದೆ."</p>
+    <p class="line">ನಂತರ ನೀವು ಮಾಡುತ್ತಿದ್ದ ಕೆಲಸಕ್ಕೆ ಗಮನವನ್ನು ಹಿಂತಿರುಗಿಸಿ.</p>
+    <p class="line">ನೀವು ಆ ಆಲೋಚನೆಯ ವಿರುದ್ಧ ಹೋರಾಡುತ್ತಿಲ್ಲ.</p>
+    <p class="line">ನೀವು ಹೀಗೆ ಹೇಳುತ್ತಿಲ್ಲ:</p>
+    <p class="line thought">"ನಾನು ಇದನ್ನು ಯೋಚಿಸಬಾರದು!"</p>
+    <p class="line">ನೀವು ಕೇವಲ ಅದನ್ನು ತೀರ್ಪು ಕೊಡದೆ ಗಮನಿಸುತ್ತಿದ್ದೀರಿ.</p>
+    <p class="line">ಮಾನಸಿಕ ಧ್ವನಿಯನ್ನು ಖಂಡಿಸದೆ ಆಲಿಸಬೇಕೆಂದು ಪುಸ್ತಕ ನಿರ್ದಿಷ್ಟವಾಗಿ ಶಿಫಾರಸು ಮಾಡುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+
+    <h3 class="sub-label">ಇನ್ನೊಂದು ಉದಾಹರಣೆ</h3>
+    <p class="line">ಯಾರೋ ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸುತ್ತಾರೆ.</p>
+    <p class="line">ನಿಮ್ಮ ಮನಸ್ಸು ತಕ್ಷಣ ಹೇಳುತ್ತದೆ:</p>
+    <p class="line thought">"ಇವರಿಗೆ ಎಷ್ಟು ಧೈರ್ಯ! ನಾನು ಪ್ರತ್ಯುತ್ತರ ಕೊಡಬೇಕು!"</p>
+    <p class="line">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಬದಲು:</p>
+    <p class="line">ಹಂತ 1: ಆಲೋಚನೆಯನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಹಂತ 2: ಭಾವನೆಯನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಹಂತ 3: ನಿಮ್ಮ ದೇಹವನ್ನು ಗಮನಿಸಿ — ಬಹುಶಃ ಹೃದಯ ಬಡಿತ ಹೆಚ್ಚಾಗಿರಬಹುದು ಅಥವಾ ಸ್ನಾಯುಗಳು ಬಿಗಿಯಾಗಿರಬಹುದು.</p>
+    <p class="line">ಹಂತ 4: ಪ್ರತಿಕ್ರಿಯಿಸುವ ಮೊದಲು ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ನೀವು ನಿಷ್ಕ್ರಿಯರಾಗಿಲ್ಲ. ಏನಾಗುತ್ತದೆ ಮತ್ತು ನೀವು ಹೇಗೆ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತೀರಿ ಎಂಬುದರ ನಡುವೆ ಸ್ಥಳಾವಕಾಶ ಸೃಷ್ಟಿಸುತ್ತಿದ್ದೀರಿ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s4">
+    <h2><span class="num">4</span>"ನೌ" (ಈ ಕ್ಷಣ) ಎಂದರೆ ಏನು?</h2>
+    <p class="line">ವರ್ತಮಾನ ಕ್ಷಣಕ್ಕೆ ಪುಸ್ತಕ ಅಪಾರ ಮಹತ್ವ ನೀಡುತ್ತದೆ.</p>
+    <p class="line">ನಿಮ್ಮ ಸಾಮಾನ್ಯ ದಿನದ ಬಗ್ಗೆ ಯೋಚಿಸಿ.</p>
+    <p class="line">ನೀವು ಬೆಳಗಿನ ತಿಂಡಿ ತಿನ್ನುತ್ತಿದ್ದೀರಿ, ಆದರೆ ಮನಸ್ಸು ನಿನ್ನೆಯ ಬಗ್ಗೆ ಯೋಚಿಸುತ್ತಿದೆ.</p>
+    <p class="line">ನೀವು ಓದುತ್ತಿದ್ದೀರಿ, ಆದರೆ ಮನಸ್ಸು ನಾಳೆಯ ಬಗ್ಗೆ ಯೋಚಿಸುತ್ತಿದೆ.</p>
+    <p class="line">ನೀವು ಯಾರೊಂದಿಗಾದರೂ ಮಾತನಾಡುತ್ತಿದ್ದೀರಿ, ಆದರೆ ನಿಮ್ಮ ಫೋನ್ ಬಗ್ಗೆ ಯೋಚಿಸುತ್ತಿದ್ದೀರಿ.</p>
+    <p class="line">ನಿಮ್ಮ ದೇಹ ವರ್ತಮಾನದಲ್ಲಿದೆ, ಆದರೆ ಗಮನ ಬೇರೆಲ್ಲೋ ಇದೆ.</p>
+    <p class="line">ಈಗ ನಿಜವಾಗಿ ನಡೆಯುತ್ತಿರುವುದಕ್ಕೆ ಗಮನವನ್ನು ಹಿಂತಿರುಗಿಸುವುದೇ ಅಭ್ಯಾಸ.</p>
+    <p class="line">ಮೆಟ್ಟಿಲು ಹತ್ತುವಾಗ, ಕೈ ತೊಳೆಯುವಾಗ, ಅಥವಾ ಕಾರಿನಲ್ಲಿ ಕುಳಿತು ಉಸಿರಾಟ ಗಮನಿಸುವಾಗ ಗಮನ ಕೊಡುವಂತಹ ಅತ್ಯಂತ ಸಾಮಾನ್ಯ ಉದಾಹರಣೆಗಳನ್ನು ಪುಸ್ತಕ ನೀಡುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+
+    <h3 class="sub-label">ಉದಾಹರಣೆ: ಕೈ ತೊಳೆಯುವುದು</h3>
+    <p class="line">ಸಾಮಾನ್ಯವಾಗಿ:</p>
+    <p class="line muted">ನಲ್ಲಿ ತಿರುಗಿಸಿ → ತೊಳೆಯಿರಿ → ಒರೆಸಿ → ಹೊರಡಿ.</p>
+    <p class="line">ಜಾಗೃತಿಯೊಂದಿಗೆ:</p>
+    <p class="line muted">ನೀರನ್ನು ಅನುಭವಿಸಿ.</p>
+    <p class="line muted">ಅದರ ತಾಪಮಾನವನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line muted">ಶಬ್ದವನ್ನು ಆಲಿಸಿ.</p>
+    <p class="line muted">ನಿಮ್ಮ ಕೈಗಳ ಚಲನೆಯನ್ನು ಅನುಭವಿಸಿ.</p>
+    <p class="line muted">ಸೋಪಿನ ಪರಿಮಳವನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಅಸಾಮಾನ್ಯವಾದುದೇನೂ ನಡೆಯಲಿಲ್ಲ.</p>
+    <p class="line">ಆದರೆ ನಿಮ್ಮ ಗಮನ ಬದಲಾಯಿತು.</p>
+    <p class="line">ಇದೇ ಅಭ್ಯಾಸ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s5">
+    <h2><span class="num">5</span>ಗತಕಾಲ ಏಕೆ ಸಮಸ್ಯೆ ಸೃಷ್ಟಿಸುತ್ತದೆ?</h2>
+    <p class="line">ಮನಸ್ಸು ಸಾಮಾನ್ಯವಾಗಿ ಗತಕಾಲದ ಅನುಭವಗಳ ಮೂಲಕ ವರ್ತಮಾನವನ್ನು ನೋಡುತ್ತದೆ ಎಂದು ಪುಸ್ತಕ ವಿವರಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line">ಒಬ್ಬ ವ್ಯಕ್ತಿ ಸಾರ್ವಜನಿಕವಾಗಿ ಮಾತನಾಡುವಾಗ ಮುಜುಗರಕ್ಕೊಳಗಾಗಿದ್ದರು.</p>
+    <p class="line">ನಂತರ, ಅವರು ಇನ್ನೊಂದು ಪ್ರೆಸೆಂಟೇಶನ್ ಕೊಡಬೇಕಾಗುತ್ತದೆ.</p>
+    <p class="line">ವರ್ತಮಾನ ಪರಿಸ್ಥಿತಿ ಇದು:</p>
+    <p class="line thought">"ನನಗೆ ಇನ್ನೊಂದು ಪ್ರೆಸೆಂಟೇಶನ್ ಇದೆ."</p>
+    <p class="line">ಆದರೆ ಮನಸ್ಸು ಗತಕಾಲವನ್ನು ಸೇರಿಸುತ್ತದೆ:</p>
+    <p class="line thought">"ಕಳೆದ ಬಾರಿ ನಾನು ಮುಜುಗರಕ್ಕೊಳಗಾಗಿದ್ದೆ."</p>
+    <p class="line">ನಂತರ ಅದು ಊಹಿಸುತ್ತದೆ:</p>
+    <p class="line thought">"ಅದು ಮತ್ತೆ ಸಂಭವಿಸುತ್ತದೆ."</p>
+    <p class="line">ಈಗ ಆ ವ್ಯಕ್ತಿ ಕೇವಲ ಪ್ರಸಕ್ತ ಪ್ರೆಸೆಂಟೇಶನ್ ಅನ್ನು ಮಾತ್ರ ಅನುಭವಿಸುತ್ತಿಲ್ಲ.</p>
+    <p class="line">ಅವರು ಅನುಭವಿಸುತ್ತಿರುವುದು:</p>
+    <p class="line quote">ವರ್ತಮಾನ ಘಟನೆ + ನೆನಪು + ಊಹೆ + ಭಯ.</p>
+    <p class="line">ಪ್ರತಿ ಆಲೋಚನೆಯನ್ನೂ ತಕ್ಷಣ ನಂಬುವ ಬದಲು ಆ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಗಮನಿಸುವುದೇ ಪುಸ್ತಕದ ಅಭ್ಯಾಸ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s6">
+    <h2><span class="num">6</span>ಭವಿಷ್ಯ ಏಕೆ ಆತಂಕ ಸೃಷ್ಟಿಸುತ್ತದೆ?</h2>
+    <p class="line">ಮನಸ್ಸು ಸಾಮಾನ್ಯವಾಗಿ ಹೇಳುತ್ತದೆ:</p>
+    <p class="line thought">"ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ, ಯಾವಾಗ..."</p>
+    <p class="line muted">ಕೆಲಸ ಸಿಕ್ಕಾಗ</p>
+    <p class="line muted">ಯಶಸ್ವಿಯಾದಾಗ</p>
+    <p class="line muted">ಹಣ ಸಿಕ್ಕಾಗ</p>
+    <p class="line muted">ಕಾಲೇಜು ಮುಗಿಸಿದಾಗ</p>
+    <p class="line muted">ಜನರು ಗೌರವಿಸಿದಾಗ</p>
+    <p class="line muted">ನನ್ನ ಗುರಿ ಸಾಧಿಸಿದಾಗ</p>
+    <p class="line">ಗುರಿಗಳೇ ಕೆಟ್ಟದ್ದಲ್ಲ.</p>
+    <p class="line">ಸಮಸ್ಯೆ ಇರುವುದು ಈ ನಂಬಿಕೆಯಲ್ಲಿ:</p>
+    <p class="line thought">"ಆ ಭವಿಷ್ಯದ ಘಟನೆ ಸಂಭವಿಸಿದ ನಂತರವೇ ನನ್ನ ಜೀವನ ಸರಿಯಾಗಬಲ್ಲದು."</p>
+    <p class="line">ಇದನ್ನು ಪುಸ್ತಕ ಅಹಂ ನಿರಂತರವಾಗಿ ಈಡೇರಿಕೆಯನ್ನು ಭವಿಷ್ಯದ ಮೇಲೆ ಪ್ರಕ್ಷೇಪಿಸುವುದು ಎಂದು ವಿವರಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+
+    <h3 class="sub-label">ಉತ್ತಮ ವಿಧಾನ</h3>
+    <p class="line">ಒಂದು ಗುರಿ ಇಟ್ಟುಕೊಳ್ಳಿ:</p>
+    <p class="line thought">"ನಾನು ಸಾಫ್ಟ್‌ವೇರ್ ಇಂಜಿನಿಯರ್ ಆಗಬೇಕು."</p>
+    <p class="line">ಆದರೆ ಇಂದಿನ ಹೆಜ್ಜೆಯನ್ನು ಬದುಕಿ:</p>
+    <p class="line thought">"ಈಗ, ನಾನು ಒಂದು ಪ್ರೋಗ್ರಾಮಿಂಗ್ ಪರಿಕಲ್ಪನೆಯನ್ನು ಕಲಿಯುತ್ತೇನೆ."</p>
+    <p class="line">ಗುರಿ ಹಾಗೆಯೇ ಉಳಿಯುತ್ತದೆ.</p>
+    <p class="line">ಆದರೆ ನಿಮ್ಮ ಗಮನ ಈಗ ನಡೆಯುತ್ತಿರುವ ಕ್ರಿಯೆಗೆ ಹಿಂತಿರುಗುತ್ತದೆ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s7">
+    <h2><span class="num">7</span>ಭಾವನೆಗಳ ಬಗ್ಗೆ ಏನು?</h2>
+    <p class="line">ಭಾವನೆಗಳು ಮಾನಸಿಕ ಮಾದರಿಗಳು ಮತ್ತು ದೈಹಿಕ ಪ್ರತಿಕ್ರಿಯೆಗಳಿಗೆ ನಿಕಟ ಸಂಬಂಧ ಹೊಂದಿವೆ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ, ಬೆದರಿಕೆಯ ಆಲೋಚನೆ ದೇಹದಲ್ಲಿ ಭಯ ಉಂಟುಮಾಡಬಹುದು, ಶತ್ರುತ್ವದ ಆಲೋಚನೆಗಳು ಕೋಪ ಮತ್ತು ದೈಹಿಕ ಒತ್ತಡ ಉಂಟುಮಾಡಬಹುದು.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+    <p class="line">ಆದ್ದರಿಂದ ತಕ್ಷಣ ಹೀಗೆ ಹೇಳುವ ಬದಲು:</p>
+    <p class="line thought">"ನಾನು ಕೋಪಗೊಂಡಿದ್ದೇನೆ."</p>
+    <p class="line">ಹೀಗೆ ಗಮನಿಸಲು ಪ್ರಯತ್ನಿಸಿ:</p>
+    <p class="line thought">"ಈಗ ನನ್ನಲ್ಲಿ ಕೋಪ ಉಂಟಾಗುತ್ತಿದೆ."</p>
+    <p class="line">ನಂತರ ಗಮನಿಸಿ:</p>
+    <p class="line muted">ಅದನ್ನು ಎಲ್ಲಿ ಅನುಭವಿಸುತ್ತಿದ್ದೇನೆ?</p>
+    <p class="line muted">ಎದೆ ಬಿಗಿಯಾಗಿದೆಯೇ?</p>
+    <p class="line muted">ಮುಖ ಬಿಸಿಯಾಗಿದೆಯೇ?</p>
+    <p class="line muted">ಸ್ನಾಯುಗಳು ಬಿಗಿಯಾಗಿವೆಯೇ?</p>
+    <p class="line muted">ಹೃದಯ ಬಡಿತ ವೇಗವಾಗಿದೆಯೇ?</p>
+    <p class="line muted">ಇದರೊಂದಿಗೆ ಯಾವ ಆಲೋಚನೆಗಳಿವೆ?</p>
+    <p class="line">ಭಾವನೆಯಿಂದ ತಕ್ಷಣ ನಿಯಂತ್ರಿಸಲ್ಪಡುವ ಬದಲು ಅದನ್ನು ಗಮನಿಸಬೇಕೆಂದು ಪುಸ್ತಕ ಶಿಫಾರಸು ಮಾಡುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s8">
+    <h2><span class="num">8</span>ಆಲೋಚನೆ → ಭಾವನೆ → ಆಲೋಚನೆಯ ಚಕ್ರ</h2>
+    <p class="line">ಈ ಭಾಗದ ಅತ್ಯಂತ ಉಪಯುಕ್ತ ವಿಚಾರಗಳಲ್ಲಿ ಇದೂ ಒಂದು.</p>
+    <p class="line">ಊಹಿಸಿಕೊಳ್ಳಿ:</p>
+    <p class="line">ಆಲೋಚನೆ:</p>
+    <p class="line thought">"ಅವರು ನನ್ನನ್ನು ಗೌರವಿಸುವುದಿಲ್ಲ."</p>
+    <p class="arrow">↓</p>
+    <p class="line">ಭಾವನೆ:</p>
+    <p class="line thought">ಕೋಪ.</p>
+    <p class="arrow">↓</p>
+    <p class="line">ಹೆಚ್ಚಿನ ಆಲೋಚನೆ:</p>
+    <p class="line thought">"ಅವರು ಯಾವಾಗಲೂ ನನ್ನನ್ನು ಹೀಗೇ ನಡೆಸಿಕೊಳ್ಳುತ್ತಾರೆ."</p>
+    <p class="arrow">↓</p>
+    <p class="line">ಇನ್ನಷ್ಟು ಕೋಪ</p>
+    <p class="arrow">↓</p>
+    <p class="line">ಇನ್ನಷ್ಟು ಆಲೋಚನೆಗಳು:</p>
+    <p class="line thought">"ನಾನು ಅವರಿಗೆ ತೋರಿಸುತ್ತೇನೆ."</p>
+    <p class="arrow">↓</p>
+    <p class="line">ಇನ್ನೂ ಹೆಚ್ಚಿನ ಭಾವನೆ</p>
+    <p class="line">ಆಲೋಚನೆಗಳು ಮತ್ತು ಭಾವನೆಗಳು ಪರಸ್ಪರ ಪೋಷಿಸುತ್ತವೆ ಎಂದು ಪುಸ್ತಕ ವಿವರಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+    <p class="line">ಈ ಸ್ವಯಂಚಾಲಿತ ಚಕ್ರವನ್ನು ಅದರ ಬಗ್ಗೆ ಜಾಗೃತರಾಗುವ ಮೂಲಕ ಮುರಿಯುವುದೇ ಅಭ್ಯಾಸ.</p>
+    <p class="line">ಹೀಗಲ್ಲ:</p>
+    <p class="line thought">"ನಾನು ಕೋಪ ನಿಲ್ಲಿಸಲೇಬೇಕು!"</p>
+    <p class="line">ಬದಲಿಗೆ:</p>
+    <p class="line thought">"ಕೋಪ ಇಲ್ಲಿದೆ ಎಂದು ನಾನು ಗಮನಿಸುತ್ತೇನೆ."</p>
+    <p class="line">ಆ ಗಮನಿಸುವಿಕೆಯೇ ಸ್ವಲ್ಪ ಅಂತರವನ್ನು ಸೃಷ್ಟಿಸುತ್ತದೆ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s9">
+    <h2><span class="num">9</span>ಆನಂದ ಮತ್ತು ಆಳವಾದ ಸಂತೋಷ</h2>
+    <p class="line">ಆನಂದ (pleasure) ಮತ್ತು ಒಳಗಿನಿಂದ ಹುಟ್ಟುವ ಸಂತೋಷ/ಶಾಂತಿ ಎಂದು ಕರೆಯುವುದರ ನಡುವೆ ಪುಸ್ತಕ ವ್ಯತ್ಯಾಸ ಮಾಡುತ್ತದೆ.</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line">ನೀವು ಹೊಸ ಫೋನ್ ಖರೀದಿಸುತ್ತೀರಿ.</p>
+    <p class="line">ಮೊದಲಿಗೆ:</p>
+    <p class="line thought">"ಅದ್ಭುತ!"</p>
+    <p class="line">ಕೆಲವು ವಾರಗಳ ನಂತರ:</p>
+    <p class="line thought">"ಅದು ಕೇವಲ ನನ್ನ ಫೋನ್."</p>
+    <p class="line">ಆ ಆನಂದ ಬಾಹ್ಯ ವಸ್ತುವಿನ ಮೇಲೆ ಅವಲಂಬಿತವಾಗಿತ್ತು.</p>
+    <p class="line">ಅದೇ ರೀತಿ, ಹೊಗಳಿಕೆ ಸಂತೋಷ ನೀಡಬಹುದು:</p>
+    <p class="line thought">"ಎಲ್ಲರೂ ನನ್ನನ್ನು ಇಷ್ಟಪಡುತ್ತಾರೆ!"</p>
+    <p class="line">ಆದರೆ ಟೀಕೆ ವಿರುದ್ಧ ಪರಿಣಾಮ ಬೀರಬಹುದು:</p>
+    <p class="line thought">"ಎಲ್ಲರೂ ನನ್ನನ್ನು ದ್ವೇಷಿಸುತ್ತಾರೆ!"</p>
+    <p class="line">ಇದು ಒಂದು ಬಾಹ್ಯ ಆನಂದ/ನೋವಿನ ಚಕ್ರವನ್ನು ಸೃಷ್ಟಿಸುತ್ತದೆ ಎಂದು ಪುಸ್ತಕ ವಾದಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+    <p class="line">ಇದನ್ನು ಹೊರಗಿನಿಂದ ನಿರಂತರವಾಗಿ ಏನನ್ನಾದರೂ ಪಡೆಯುವುದರ ಮೇಲೆ ಅವಲಂಬಿತವಾಗಿರದ ಆಳವಾದ ಶಾಂತಿಯ ಭಾವದೊಂದಿಗೆ ಅದು ಹೋಲಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s10">
+    <h2><span class="num">10</span>ಸಾಮಾನ್ಯ ವ್ಯಕ್ತಿ ನಿಜವಾಗಿ ಏನು ಮಾಡಬೇಕು?</h2>
+    <p class="line">ನೀವು ಗುಹೆಯಲ್ಲಿ ಕುಳಿತುಕೊಳ್ಳಬೇಕಿಲ್ಲ ಅಥವಾ ಆಲೋಚಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಈ ಸರಳ ಅಭ್ಯಾಸವನ್ನು ಪ್ರಯತ್ನಿಸಿ:</p>
+
+    <h3 class="sub-label">30-ಸೆಕೆಂಡ್ "ನೌ" ವ್ಯಾಯಾಮ</h3>
+    <p class="line">1. ನಿಲ್ಲಿಸಿ. ಏನನ್ನೂ ಬದಲಾಯಿಸಬೇಡಿ.</p>
+    <p class="line">2. ಉಸಿರಾಟವನ್ನು ಗಮನಿಸಿ. ಅದನ್ನು ನಿಯಂತ್ರಿಸಬೇಡಿ.</p>
+    <p class="line">3. ದೇಹವನ್ನು ಗಮನಿಸಿ. ನಿಮ್ಮ ಕೈ, ಕಾಲು, ಮುಖ, ಭುಜಗಳನ್ನು ಅನುಭವಿಸಿ.</p>
+    <p class="line">4. ಆಲೋಚನೆಗಳನ್ನು ಗಮನಿಸಿ. ಅವುಗಳ ವಿರುದ್ಧ ಹೋರಾಡಬೇಡಿ. ಕೇವಲ ಗಮನಿಸಿ:</p>
+    <p class="line thought">"ಆಲೋಚನೆ ನಡೆಯುತ್ತಿದೆ."</p>
+    <p class="line">5. ಸುತ್ತಮುತ್ತಲಿನ ಪರಿಸರವನ್ನು ಗಮನಿಸಿ. ಶಬ್ದಗಳನ್ನು ಆಲಿಸಿ. ವಸ್ತುಗಳನ್ನು ನೋಡಿ. ಪರಿಸರವನ್ನು ಅನುಭವಿಸಿ.</p>
+    <p class="line">6. ಪ್ರಸಕ್ತ ಚಟುವಟಿಕೆಗೆ ಹಿಂತಿರುಗಿ.</p>
+    <p class="line">ಅಷ್ಟೇ.</p>
+    <p class="line">ಗಮನವನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಅವುಗಳ ಮೇಲೆ ಇಟ್ಟಾಗ ಸಾಮಾನ್ಯ ಚಟುವಟಿಕೆಗಳೂ ಜಾಗೃತಿಯ ಅವಕಾಶಗಳಾಗಬಲ್ಲವು ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="wholechapter">
+    <h2>ಇಡೀ ಅಧ್ಯಾಯ ಒಂದು ಸರಳ ಉದಾಹರಣೆಯಲ್ಲಿ</h2>
+    <p class="line">ಒಬ್ಬ ವಿದ್ಯಾರ್ಥಿ ಕೆಟ್ಟ ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶ ಪಡೆಯುತ್ತಾನೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+
+    <h3 class="sub-label">ಸ್ವಯಂಚಾಲಿತ ಪ್ರತಿಕ್ರಿಯೆ</h3>
+    <p class="line thought">"ನಾನು ಮೂರ್ಖ."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"ನಾನೆಂದೂ ಯಶಸ್ವಿಯಾಗುವುದಿಲ್ಲ."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"ಎಲ್ಲರೂ ನನಗಿಂತ ಮುಂದಿದ್ದಾರೆ."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"ನನ್ನ ಭವಿಷ್ಯ ಮುಗಿದುಹೋಯಿತು."</p>
+    <p class="arrow">↓</p>
+    <p class="line">ದುಃಖ → ಹೆಚ್ಚಿನ ಆಲೋಚನೆ → ಹೆಚ್ಚಿನ ದುಃಖ.</p>
+
+    <h3 class="sub-label">ಪುಸ್ತಕದ ವಿಧಾನವನ್ನು ಅಭ್ಯಾಸ ಮಾಡುವುದು</h3>
+    <p class="line thought">"ನನಗೆ ಕೆಟ್ಟ ಫಲಿತಾಂಶ ಬಂತು."</p>
+    <p class="line thought">"ನಾನೊಬ್ಬ ವಿಫಲ ಎಂದು ಹೇಳುವ ಆಲೋಚನೆಗಳನ್ನು ನಾನು ಗಮನಿಸುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line thought">"ನನ್ನ ದೇಹದಲ್ಲಿ ನಿರಾಶೆಯನ್ನು ಅನುಭವಿಸುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line thought">"ಈಗ ನಾನು ನಿಜವಾಗಿ ಏನು ಮಾಡಬಹುದು?"</p>
+    <p class="line">ನಂತರ:</p>
+    <p class="line thought">"ನಾನು ಎಲ್ಲಿ ಅಂಕ ಕಳೆದುಕೊಂಡೆ ಎಂದು ತಿಳಿದುಕೊಳ್ಳಬೇಕು."</p>
+    <p class="line">ಈಗ ಮನಸ್ಸು ಸಂಪೂರ್ಣ ಅಸ್ಮಿತೆಯ ಬದಲು ಒಂದು ಸಾಧನವಾಗುತ್ತದೆ.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="closing">
+    <h2>ಮುಖ್ಯ ಸಂದೇಶ</h2>
+    <p class="line">ನಿಮ್ಮ ಮನಸ್ಸನ್ನು ನಾಶ ಮಾಡಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಶಾಶ್ವತವಾಗಿ ಆಲೋಚಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಭಾವನೆಗಳನ್ನು ತಪ್ಪಿಸಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಕೇಂದ್ರ ಅಭ್ಯಾಸ ಇದು:</p>
+    <p class="line">ನಿಮ್ಮ ಆಲೋಚನೆಗಳನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ನಿಮ್ಮ ಭಾವನೆಗಳನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅವುಗಳಾಗಿ ಪರಿವರ್ತನೆಗೊಳ್ಳಬೇಡಿ.</p>
+    <p class="line">ಗಮನವನ್ನು ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗಿಸಿ.</p>
+    <p class="line">ಅಗತ್ಯವಿದ್ದಾಗ ಆಲೋಚನೆಯನ್ನು ಬಳಸಿ.</p>
+    <p class="line">ಆಲೋಚನೆಯ ಅಗತ್ಯವಿಲ್ಲದಿದ್ದಾಗ, ಸ್ವಲ್ಪ ಆಂತರಿಕ ಸ್ಥಿರತೆಗೆ ಅವಕಾಶ ಕೊಡಿ.</p>
+    <p class="line">ಮನಸ್ಸಿನೊಂದಿಗಿನ ಗುರುತಿಸುವಿಕೆಯಿಂದ ಆಲೋಚನೆಗಳು ಮತ್ತು ಭಾವನೆಗಳ ವೀಕ್ಷಕರಾಗುವತ್ತ ಸಾಗುವುದು ಎಂದು ಪುಸ್ತಕ ಇದನ್ನು ವಿವರಿಸುತ್ತದೆ.</p>
+    <span class="cite">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್‌ಹಾರ್ಟ್ ಟೊಲ್ಲೆ</span>
+    <p class="line final">ಮತ್ತು ಅದಕ್ಕಾಗಿಯೇ ಶೀರ್ಷಿಕೆ "ದಿ ಪವರ್ ಆಫ್ ನೌ":</p>
+    <p class="line final">ಗತಕಾಲ/ಭವಿಷ್ಯದ ಮಾನಸಿಕ ಕಥೆಗಳಲ್ಲಿ ಸಿಲುಕುವುದರಿಂದ ದೂರ ಸರಿದು ವರ್ತಮಾನ ಕ್ಷಣವನ್ನು ನೇರವಾಗಿ ಅನುಭವಿಸುವತ್ತ ಗಮನವನ್ನು ಪುಸ್ತಕ ಪದೇಪದೇ ತೋರಿಸುತ್ತಿದೆ.</p>
+  </section>
+
+</main>
+
+<script>
+  // ---- generate falling / floating motes ----
+  const motesEl = document.getElementById('motes');
+  const MOTE_COUNT = 46;
+  for(let i=0;i<MOTE_COUNT;i++){
+    const m = document.createElement('div');
+    m.className = 'mote';
+    const size = (Math.random()*4 + 1.5).toFixed(1);
+    const left = (Math.random()*100).toFixed(2);
+    const fallDur = (Math.random()*14 + 14).toFixed(1);
+    const driftDur = (Math.random()*5 + 3).toFixed(1);
+    const delay = (Math.random()*20).toFixed(1);
+    m.style.width = size + 'px';
+    m.style.height = size + 'px';
+    m.style.left = left + 'vw';
+    m.style.animationDuration = fallDur + 's, ' + driftDur + 's';
+    m.style.animationDelay = '-' + delay + 's, -' + (Math.random()*driftDur).toFixed(1) + 's';
+    motesEl.appendChild(m);
+  }
+
+  // ---- scroll reveal for each line ----
+  const revealables = document.querySelectorAll('.line, .arrow, .divider');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+
+  revealables.forEach((el, idx)=>{
+    el.style.transitionDelay = (idx % 6) * 0.04 + 's';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಪ್ರಜ್ಞೆ: ನೋವಿನಿಂದ ಹೊರಬರುವ ದಾರಿ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Kannada:wght@400;500;600&family=Noto+Sans+Kannada:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,500;1,400&family=Jost:wght@300;400&display=swap');
+
+  :root{
+    --ink:#090b10;
+    --panel:#0f131a;
+    --ember:#c9a572;
+    --ember-soft:#8a7250;
+    --witness:#6f93a1;
+    --text-high:#f2ede2;
+    --text-mid:#aab0b8;
+    --text-low:#6b7178;
+    --line:rgba(201,165,114,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text-mid);
+    font-family:'Noto Sans Kannada','Jost', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  #ember-field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(111,147,161,0.10), transparent 60%),
+      radial-gradient(ellipse at 20% 100%, rgba(201,165,114,0.07), transparent 55%),
+      var(--ink);
+  }
+  .mote{
+    position:absolute;
+    bottom:-10%;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,165,114,0.9), rgba(201,165,114,0) 70%);
+    filter:blur(0.5px);
+    opacity:0;
+    animation-name:rise;
+    animation-timing-function:ease-in-out;
+    animation-iteration-count:infinite;
+  }
+  .mote.witness{
+    background:radial-gradient(circle, rgba(111,147,161,0.85), rgba(111,147,161,0) 70%);
+  }
+  @keyframes rise{
+    0%{ transform:translate(0,0) scale(0.6); opacity:0; }
+    8%{ opacity:0.85; }
+    50%{ transform:translate(var(--drift,20px), -55vh) scale(1); }
+    92%{ opacity:0.5; }
+    100%{ transform:translate(calc(var(--drift,20px) * 2), -110vh) scale(0.4); opacity:0; }
+  }
+
+  .thought{
+    position:absolute;
+    top:-5%;
+    color:rgba(168,176,184,0.16);
+    font-family:'Noto Serif Kannada', serif;
+    font-style:normal;
+    font-size:14px;
+    white-space:nowrap;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:1; }
+    90%{ opacity:0.4; }
+    100%{ transform:translateY(115vh) translateX(var(--driftx,-30px)); opacity:0; }
+  }
+
+  main{position:relative; z-index:1;}
+
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 24px;
+    position:relative;
+  }
+  .witness-eye{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin-bottom:44px;
+    background:radial-gradient(circle, rgba(201,165,114,0.55), rgba(201,165,114,0.05) 55%, transparent 75%);
+    animation:breathe 6s ease-in-out infinite;
+    position:relative;
+  }
+  .witness-eye::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid rgba(201,165,114,0.35);
+    animation:breathe-ring 6s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:scale(0.86); opacity:0.65; }
+    50%{ transform:scale(1.05); opacity:1; }
+  }
+  @keyframes breathe-ring{
+    0%,100%{ transform:scale(1); opacity:0.3; }
+    50%{ transform:scale(1.35); opacity:0; }
+  }
+
+  .eyebrow{
+    font-family:'Noto Sans Kannada','Jost', sans-serif;
+    letter-spacing:0.15em;
+    font-size:13px;
+    color:var(--ember);
+    margin-bottom:18px;
+  }
+  h1.title{
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(32px, 6.5vw, 62px);
+    color:var(--text-high);
+    margin:0 0 20px 0;
+    line-height:1.25;
+  }
+  .subtitle{
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-size:clamp(15px,2.2vw,20px);
+    color:var(--text-mid);
+    max-width:600px;
+    line-height:1.8;
+  }
+  .scroll-cue{
+    margin-top:64px;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--text-low);
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); opacity:0.5; }
+    50%{ transform:translateY(8px); opacity:1; }
+  }
+
+  section.block{
+    max-width:680px;
+    margin:0 auto;
+    padding:110px 28px;
+    position:relative;
+  }
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+    margin-bottom:54px;
+  }
+  .divider.visible{ opacity:1; transform:translateY(0); }
+  .divider .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 12px rgba(201,165,114,0.7);
+  }
+  .divider .rule{
+    height:1px; width:64px;
+    background:linear-gradient(90deg, transparent, var(--line), transparent);
+  }
+
+  .section-num{
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-size:15px;
+    letter-spacing:0.15em;
+    color:var(--ember-soft);
+    margin-bottom:10px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .section-title{
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(22px,3.6vw,32px);
+    color:var(--text-high);
+    margin:0 0 34px 0;
+    line-height:1.4;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 0.9s ease 0.05s, transform 0.9s ease 0.05s;
+  }
+  .visible .section-num,
+  .visible .section-title{ opacity:1; transform:translateY(0); }
+
+  .line{
+    font-size:16.5px;
+    line-height:2;
+    color:var(--text-mid);
+    margin:0 0 14px 0;
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .visible .line{ opacity:1; transform:translateY(0); }
+
+  .line.lead{
+    color:var(--text-high);
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-size:19px;
+  }
+  .line.tag{
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    color:var(--ember);
+    margin-top:26px;
+    margin-bottom:10px;
+    font-family:'Noto Sans Kannada', sans-serif;
+  }
+  .line.quote{
+    padding-left:18px;
+    border-left:2px solid var(--line);
+    color:var(--text-high);
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-size:17.5px;
+  }
+  .line.spacer{ height:6px; margin:0; }
+  .line.step{
+    color:var(--witness);
+  }
+  .line.arrow{
+    text-align:center;
+    color:var(--ember-soft);
+    font-size:18px;
+    margin:2px 0;
+  }
+
+  .visible .line:nth-child(1){ transition-delay:0.05s; }
+  .visible .line:nth-child(2){ transition-delay:0.10s; }
+  .visible .line:nth-child(3){ transition-delay:0.15s; }
+  .visible .line:nth-child(4){ transition-delay:0.20s; }
+  .visible .line:nth-child(5){ transition-delay:0.25s; }
+  .visible .line:nth-child(6){ transition-delay:0.30s; }
+  .visible .line:nth-child(7){ transition-delay:0.35s; }
+  .visible .line:nth-child(8){ transition-delay:0.40s; }
+  .visible .line:nth-child(9){ transition-delay:0.45s; }
+  .visible .line:nth-child(10){ transition-delay:0.50s; }
+  .visible .line:nth-child(11){ transition-delay:0.55s; }
+  .visible .line:nth-child(12){ transition-delay:0.60s; }
+  .visible .line:nth-child(13){ transition-delay:0.65s; }
+  .visible .line:nth-child(14){ transition-delay:0.70s; }
+  .visible .line:nth-child(15){ transition-delay:0.75s; }
+  .visible .line:nth-child(16){ transition-delay:0.80s; }
+  .visible .line:nth-child(17){ transition-delay:0.85s; }
+  .visible .line:nth-child(18){ transition-delay:0.90s; }
+  .visible .line:nth-child(19){ transition-delay:0.95s; }
+  .visible .line:nth-child(20){ transition-delay:1.0s; }
+  .visible .line:nth-child(21){ transition-delay:1.05s; }
+  .visible .line:nth-child(22){ transition-delay:1.10s; }
+  .visible .line:nth-child(23){ transition-delay:1.15s; }
+  .visible .line:nth-child(24){ transition-delay:1.20s; }
+  .visible .line:nth-child(25){ transition-delay:1.25s; }
+  .visible .line:nth-child(26){ transition-delay:1.30s; }
+  .visible .line:nth-child(27){ transition-delay:1.35s; }
+  .visible .line:nth-child(28){ transition-delay:1.40s; }
+  .visible .line:nth-child(29){ transition-delay:1.45s; }
+  .visible .line:nth-child(30){ transition-delay:1.50s; }
+
+  .source-tag{
+    display:inline-block;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    color:var(--text-low);
+    margin-top:6px;
+    margin-bottom:20px;
+    opacity:0.75;
+    font-family:'Noto Sans Kannada', sans-serif;
+  }
+
+  footer{
+    text-align:center;
+    padding:100px 24px 140px;
+    font-family:'Noto Serif Kannada','Cormorant Garamond', serif;
+    font-size:19px;
+    color:var(--text-mid);
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+    line-height:2;
+  }
+  footer.visible{ opacity:1; transform:translateY(0); }
+  footer .final{
+    color:var(--ember);
+    font-size:24px;
+    margin-top:18px;
+    display:block;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .mote, .thought, .witness-eye, .witness-eye::before, .scroll-cue{ animation:none !important; }
+    .line, .section-num, .section-title, .divider, footer{ transition:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  ::selection{ background:rgba(201,165,114,0.3); color:var(--text-high); }
+</style>
+</head>
+<body>
+
+<div id="ember-field"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="witness-eye"></div>
+    <div class="eyebrow">ದಿ ಪವರ್ ಆಫ್ ನೌ &nbsp;·&nbsp; ಅಧ್ಯಾಯ 2</div>
+    <h1 class="title">ಪ್ರಜ್ಞೆ:<br>ನೋವಿನಿಂದ ಹೊರಬರುವ ದಾರಿ</h1>
+    <p class="subtitle">ಏನೋ ಒಂದು ಘಟನೆ ನಡೆಯುತ್ತದೆ. ಮನಸ್ಸು ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ.<br>ಆ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನೇ ನಾವು "ನಾನು" ಎಂದು ನಂಬುತ್ತೇವೆ.<br>ಇದರಿಂದ ಇನ್ನಷ್ಟು ನೋವು ಉಂಟಾಗಬಹುದು.</p>
+    <div class="scroll-cue">ಕೆಳಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ ↓</div>
+  </div>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">ಮುಖ್ಯ ವಿಚಾರ</div>
+    <p class="section-title">ಪ್ರಕ್ರಿಯೆಯನ್ನು ಗಮನಿಸಿ, ಅದಕ್ಕೆ ಒಳಗಾಗಬೇಡಿ</p>
+    <p class="line lead">ನಾವು ಈ ಕ್ಷಣವನ್ನು ವಿರೋಧಿಸಿ, ನಮ್ಮ ಆಲೋಚನೆ ಮತ್ತು ಭಾವನೆಗಳೊಂದಿಗೆ ಸಂಪೂರ್ಣವಾಗಿ ಗುರುತಿಸಿಕೊಂಡಾಗ, ಮಾನಸಿಕ ನೋವು ಇನ್ನಷ್ಟು ಹೆಚ್ಚಾಗುತ್ತದೆ.</p>
+    <p class="line tag">ಸರಳವಾಗಿ ಹೇಳುವುದಾದರೆ</p>
+    <p class="line step">ಏನೋ ಒಂದು ಘಟನೆ ನಡೆಯುತ್ತದೆ →</p>
+    <p class="line step">ಮನಸ್ಸು ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ →</p>
+    <p class="line step">ಆ ಪ್ರತಿಕ್ರಿಯೆಯೇ "ನಾನು" ಎಂದು ನಾವು ನಂಬುತ್ತೇವೆ →</p>
+    <p class="line step">ಆ ನಂಬಿಕೆಯಿಂದ ಇನ್ನಷ್ಟು ನೋವು ಉಂಟಾಗಬಹುದು.</p>
+    <p class="line">ಈ ಅಧ್ಯಾಯವು ನಮಗೆ ಈ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಗಮನಿಸುವುದನ್ನು ಕಲಿಸುತ್ತದೆ - ಅದಕ್ಕೆ ತಂತಾನೇ ಒಳಗಾಗುವ ಬದಲು.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">01</div>
+    <p class="section-title">ನೋವು ಮತ್ತು ದುಃಖ ಒಂದೇ ಅಲ್ಲ</p>
+    <p class="line">ಪುಸ್ತಕವು ಇಲ್ಲಿ ಒಂದು ಮುಖ್ಯ ವ್ಯತ್ಯಾಸವನ್ನು ತೋರಿಸುತ್ತದೆ.</p>
+    <p class="line tag">ನೋವು</p>
+    <p class="line">ನೋವು ಜೀವನದ ಒಂದು ಸಹಜ ಭಾಗವಾಗಿರಬಹುದು.</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line">ನೀವು ಪ್ರೀತಿಸುವ ಯಾರಾದರೂ ಮರಣ ಹೊಂದುವುದು.</p>
+    <p class="line">ಪರೀಕ್ಷೆಯಲ್ಲಿ ಫೇಲ್ ಆಗುವುದು.</p>
+    <p class="line">ಒಂದು ಸಂಬಂಧ ಮುರಿದುಬೀಳುವುದು.</p>
+    <p class="line">ಯಾರಾದರೂ ನೋವುಂಟುಮಾಡುವ ಮಾತು ಆಡುವುದು.</p>
+    <p class="line">ಕೆಲಸ ಕಳೆದುಕೊಳ್ಳುವುದು.</p>
+    <p class="line">ಇಂತಹ ಘಟನೆಗಳು ಸಹಜವಾಗಿಯೇ ನೋವು ಕೊಡಬಹುದು.</p>
+    <p class="line tag">ಹೆಚ್ಚುವರಿ ದುಃಖ</p>
+    <p class="line">ಆಮೇಲೆ ಮನಸ್ಸು ಇನ್ನಷ್ಟು ಆಲೋಚನೆಗಳನ್ನು ಸೇರಿಸುತ್ತಾ ಹೋಗುತ್ತದೆ:</p>
+    <p class="line quote">"ನನಗೇ ಯಾಕೆ ಹೀಗಾಯಿತು?"</p>
+    <p class="line quote">"ನನ್ನ ಜೀವನ ಹಾಳಾಯಿತು."</p>
+    <p class="line quote">"ಇದು ಎಂದೂ ನಡೆಯಬಾರದಿತ್ತು."</p>
+    <p class="line quote">"ಎಲ್ಲವೂ ಕೆಟ್ಟದಾಗಿ ಹೋದರೆ ಏನು ಮಾಡಲಿ?"</p>
+    <p class="line quote">"ನನ್ನಿಂದ ಇದನ್ನು ತಡೆದುಕೊಳ್ಳಲು ಆಗುವುದಿಲ್ಲ."</p>
+    <p class="line">ಮೂಲ ಘಟನೆ ಒಂದು ವಿಷಯ.</p>
+    <p class="line">ನಿರಂತರವಾದ ಮಾನಸಿಕ ಪ್ರತಿಕ್ರಿಯೆ ಇನ್ನೊಂದು ಪದರದ ದುಃಖವಾಗಬಹುದು.</p>
+    <p class="line">ಈ ಕ್ಷಣವನ್ನು ವಿರೋಧಿಸುವುದರಿಂದಲೇ ಬಹುಪಾಲು ಮಾನವ ದುಃಖ ಸೃಷ್ಟಿಯಾಗುತ್ತದೆ ಅಥವಾ ಹೆಚ್ಚಾಗುತ್ತದೆ ಎಂದು ಟೋಲ್ ವಾದಿಸುತ್ತಾರೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line tag">ದೈನಂದಿನ ಉದಾಹರಣೆ</p>
+    <p class="line">ಒಬ್ಬ ವ್ಯಕ್ತಿಗೆ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಕಡಿಮೆ ಅಂಕ ಬಂತು ಎಂದು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <p class="line">ಘಟನೆ:</p>
+    <p class="line quote">"ನನಗೆ 45% ಬಂತು."</p>
+    <p class="line">ಇದೊಂದು ವಾಸ್ತವ ಸಂಗತಿ.</p>
+    <p class="line">ಆಮೇಲೆ ಮನಸ್ಸು ಹೇಳುತ್ತದೆ:</p>
+    <p class="line quote">"ನಾನು ದಡ್ಡ."</p>
+    <p class="line quote">"ಎಲ್ಲರೂ ನನಗಿಂತ ಚೆನ್ನಾಗಿದ್ದಾರೆ."</p>
+    <p class="line quote">"ನಾನೆಂದೂ ಯಶಸ್ವಿಯಾಗುವುದಿಲ್ಲ."</p>
+    <p class="line quote">"ನನ್ನ ಭವಿಷ್ಯ ಮುಗಿಯಿತು."</p>
+    <p class="line">ಈಗ ಆ ವ್ಯಕ್ತಿ ಕೇವಲ ಪರೀಕ್ಷೆಯ ಫಲಿತಾಂಶವನ್ನಷ್ಟೇ ಎದುರಿಸುತ್ತಿಲ್ಲ. ಮನಸ್ಸು ಸೃಷ್ಟಿಸಿದ ಇಡೀ ಕಥೆಯನ್ನೂ ಎದುರಿಸುತ್ತಿದ್ದಾರೆ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">02</div>
+    <p class="section-title">"ಈಗಿನ ಕ್ಷಣವನ್ನು ಒಪ್ಪಿಕೊಳ್ಳುವುದು" ಎಂದರೇನು?</p>
+    <p class="line">ಇದು ಈ ಅಧ್ಯಾಯದ ಅತ್ಯಂತ ಮುಖ್ಯ ವಿಚಾರಗಳಲ್ಲಿ ಒಂದು.</p>
+    <p class="line tag">ಒಪ್ಪಿಕೊಳ್ಳುವುದು ಎಂದರೆ ಇದಲ್ಲ</p>
+    <p class="line quote">"ಎಲ್ಲವೂ ಚೆನ್ನಾಗಿದೆ."</p>
+    <p class="line tag">ಅದರ ಅರ್ಥ ಇದು</p>
+    <p class="line quote">"ಈಗ ಏನು ನಡೆಯುತ್ತಿದೆಯೋ ಅದನ್ನು ನಾನು ಮೊದಲು ಗುರುತಿಸುತ್ತೇನೆ - ಅದನ್ನು ಮಾನಸಿಕವಾಗಿ ವಿರೋಧಿಸುವ ಬದಲು."</p>
+    <p class="line">ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ:</p>
+    <p class="line lead">ಒಪ್ಪಿಕೊಳ್ಳಿ → ನಂತರ ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line tag">ಉದಾಹರಣೆ</p>
+    <p class="line">ನಿಮ್ಮ ರೈಲು ಎರಡು ಗಂಟೆ ತಡವಾಗಿದೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ನಿಮ್ಮ ಮುಂದೆ ಎರಡು ಆಯ್ಕೆಗಳಿವೆ.</p>
+    <p class="line tag">ಪ್ರತಿಕ್ರಿಯೆ A</p>
+    <p class="line quote">"ಇದು ಭಯಂಕರ! ಯಾಕೆ ಯಾವಾಗಲೂ ನನಗೇ ಹೀಗಾಗುತ್ತದೆ? ನನಗೆ ಇದು ಇಷ್ಟವಿಲ್ಲ!"</p>
+    <p class="line">ರೈಲು ಇನ್ನೂ ತಡವಾಗಿಯೇ ಇದೆ.</p>
+    <p class="line">ಆದರೆ ಈಗ ಹೆಚ್ಚುವರಿ ಕಿರಿಕಿರಿ ಸೇರಿದೆ.</p>
+    <p class="line tag">ಪ್ರತಿಕ್ರಿಯೆ B</p>
+    <p class="line quote">"ರೈಲು ತಡವಾಗಿದೆ. ಇದು ಈಗಿನ ಪರಿಸ್ಥಿತಿ. ಈಗ ನಾನೇನು ಮಾಡಬಹುದು?"</p>
+    <p class="line">ಆಗ ನೀವು:</p>
+    <p class="line">ಬೇರೆ ರೈಲು ಪರಿಶೀಲಿಸಬಹುದು,</p>
+    <p class="line">ಯಾರಿಗಾದರೂ ಕರೆ ಮಾಡಬಹುದು,</p>
+    <p class="line">ಓದಬಹುದು,</p>
+    <p class="line">ಕೆಲಸ ಮಾಡಬಹುದು,</p>
+    <p class="line">ಕಾಯಬಹುದು,</p>
+    <p class="line">ಯೋಜನೆ ಬದಲಿಸಬಹುದು.</p>
+    <p class="line">ಒಪ್ಪಿಕೊಳ್ಳುವುದು ಕ್ರಿಯೆಯನ್ನು ತಡೆಯುವುದಿಲ್ಲ.</p>
+    <p class="line">ಅದು ವಾಸ್ತವದ ವಿರುದ್ಧ ಮೊದಲು ಶಕ್ತಿ ವ್ಯರ್ಥ ಮಾಡದೆ ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಲು ಅವಕಾಶ ಕೊಡುತ್ತದೆ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">03</div>
+    <p class="section-title">ಭೂತ ಮತ್ತು ಭವಿಷ್ಯ ನಮ್ಮನ್ನು ವರ್ತಮಾನದಿಂದ ದೂರ ಒಯ್ಯಬಹುದು</p>
+    <p class="line">ಮನಸ್ಸು ಆಗಾಗ ಈ ಮೂರರ ನಡುವೆ ಸಂಚರಿಸುತ್ತದೆ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ:</p>
+    <p class="line lead">ಭೂತಕಾಲ → ವರ್ತಮಾನ → ಭವಿಷ್ಯ</p>
+    <p class="line">ಆದರೆ ನಾವು ನಿಜವಾಗಿ ಜೀವನವನ್ನು ಅನುಭವಿಸುವುದು ವರ್ತಮಾನದಲ್ಲಿ ಮಾತ್ರ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line tag">ಉದಾಹರಣೆ: ಭೂತಕಾಲ</p>
+    <p class="line">ಐದು ವರ್ಷಗಳ ಹಿಂದೆ ಯಾರಿಗಾದರೂ ಮುಜುಗರದ ತಪ್ಪು ಆಗಿತ್ತು ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ಇಂದು ಅವರು ಅದನ್ನು ನೆನಪಿಸಿಕೊಳ್ಳುತ್ತಾರೆ:</p>
+    <p class="line quote">"ನಾನ್ಯಾಕೆ ಹಾಗೆ ಮಾಡಿದೆ?"</p>
+    <p class="line quote">"ಎಲ್ಲರೂ ನನ್ನನ್ನು ದಡ್ಡ ಎಂದು ಅಂದುಕೊಳ್ಳಬೇಕು."</p>
+    <p class="line">ಆ ಘಟನೆ ಮುಗಿದುಹೋಗಿದೆ.</p>
+    <p class="line">ಆದರೆ ಮನಸ್ಸು ಆ ಭಾವನಾತ್ಮಕ ಅನುಭವವನ್ನು ಇಂದಿಗೆ ಎಳೆದುತರುತ್ತಿದೆ.</p>
+    <p class="line tag">ಉದಾಹರಣೆ: ಭವಿಷ್ಯ</p>
+    <p class="line">ನಾಳೆ ಯಾರಿಗಾದರೂ ಸಂದರ್ಶನ ಇದೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ಅವರ ಮನಸ್ಸು ಶುರುಮಾಡುತ್ತದೆ:</p>
+    <p class="line quote">"ನಾನು ಸೋತರೆ?"</p>
+    <p class="line quote">"ಅವರು ನನ್ನನ್ನು ತಿರಸ್ಕರಿಸಿದರೆ?"</p>
+    <p class="line quote">"ನನಗೆ ಏನೂ ಉತ್ತರಿಸಲಾಗದಿದ್ದರೆ?"</p>
+    <p class="line">ಸಂದರ್ಶನ ಇನ್ನೂ ನಡೆದಿಲ್ಲ.</p>
+    <p class="line">ದೇಹ ವರ್ತಮಾನದಲ್ಲಿ ಕುಳಿತಿದೆ, ಆದರೆ ಮನಸ್ಸು ಒಂದು ಕಲ್ಪಿತ ಭವಿಷ್ಯವನ್ನು ಅನುಭವಿಸುತ್ತಿದೆ.</p>
+    <p class="line">ಇದನ್ನೇ ಟೋಲ್ ವರ್ತಮಾನ ಮತ್ತು ಮನಸ್ಸು ಕಲ್ಪಿಸುವ ಭವಿಷ್ಯದ ನಡುವಿನ "ಆತಂಕದ ಅಂತರ" ಎಂದು ಕರೆಯುತ್ತಾರೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">04</div>
+    <p class="section-title">ಆದರೆ ಭವಿಷ್ಯದ ಬಗ್ಗೆ ಯೋಚಿಸುವುದು ಉಪಯುಕ್ತವಲ್ಲವೇ?</p>
+    <p class="line lead">ಹೌದು.</p>
+    <p class="line">ಇದು ಮುಖ್ಯ.</p>
+    <p class="line">ಯೋಜನೆ ಮಾಡುವುದು ನಿಷ್ಪ್ರಯೋಜಕ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತಿಲ್ಲ.</p>
+    <p class="line">ಪ್ರಾಯೋಗಿಕ ಜೀವನಕ್ಕೆ ಭೂತ ಮತ್ತು ಭವಿಷ್ಯ ಎರಡೂ ಬೇಕು.</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line quote">"ಮುಂದಿನ ತಿಂಗಳು ನನಗೆ ಪರೀಕ್ಷೆ ಇದೆ, ಹಾಗಾಗಿ ಇಂದೇ ಓದುತ್ತೇನೆ."</p>
+    <p class="line">ಇದು ಉಪಯುಕ್ತವಾದ ಯೋಜನೆ.</p>
+    <p class="line">ಸಮಸ್ಯೆ ಶುರುವಾಗುವುದು ಯೋಜನೆ ಹೀಗಾದಾಗ:</p>
+    <p class="line quote">"ನಾನು ಸೋತರೆ?"</p>
+    <p class="line quote">"ಏನಾದರೂ ತಪ್ಪಾದರೆ?"</p>
+    <p class="line quote">"ಎಲ್ಲರೂ ಏನಂದುಕೊಳ್ಳುತ್ತಾರೋ?"</p>
+    <p class="line quote">"ನನ್ನ ಇಡೀ ಭವಿಷ್ಯ ಹಾಳಾದರೆ?"</p>
+    <p class="line">ಈಗ ಇನ್ನೂ ನಡೆಯದ ಸಂಗತಿಯ ಸುತ್ತ ಮನಸ್ಸು ದುಃಖ ಸೃಷ್ಟಿಸುತ್ತಿದೆ.</p>
+    <p class="line">ಭೂತ ಮತ್ತು ಭವಿಷ್ಯವನ್ನು ಅಗತ್ಯವಿದ್ದಾಗ ಮಾತ್ರ ಬಳಸಬೇಕು, ಸದಾ ಅಲ್ಲೇ ಮಾನಸಿಕವಾಗಿ ಬದುಕಬಾರದು ಎಂಬುದು ಟೋಲ್ ಅವರ ಅಂಶ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">05</div>
+    <p class="section-title">"ಪೇನ್-ಬಾಡಿ" (ಶೇಖರಿತ ನೋವು) ಎಂದರೇನು?</p>
+    <p class="line">ಇದು ಈ ಅಧ್ಯಾಯದ ಪ್ರಮುಖ ಪರಿಕಲ್ಪನೆಗಳಲ್ಲಿ ಒಂದು.</p>
+    <p class="line">ಶೇಖರಣೆಗೊಂಡ ಭಾವನಾತ್ಮಕ ನೋವನ್ನು ವಿವರಿಸಲು ಟೋಲ್ "ಪೇನ್-ಬಾಡಿ" ಎಂಬ ಪದ ಬಳಸುತ್ತಾರೆ - ಇದು ಮಾನಸಿಕವಾಗಿ ಸಕ್ರಿಯವಾಗಿ ಉಳಿದು, ಹಿಂದಿನ ನೋವಿನ ಅನುಭವಗಳನ್ನು ಹೋಲುವ ಸನ್ನಿವೇಶಗಳಿಂದ ಪ್ರಚೋದಿತವಾಗಬಹುದು.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line">ಇದನ್ನು ಒಂದು ಶೇಖರಿತ ಭಾವನಾತ್ಮಕ ನಮೂನೆ ಎಂದು ಭಾವಿಸಿ.</p>
+    <p class="line tag">ಉದಾಹರಣೆ</p>
+    <p class="line">ಬಾಲ್ಯದಲ್ಲಿ ಆಗಾಗ ಟೀಕೆಗೊಳಗಾಗುತ್ತಿದ್ದ ವ್ಯಕ್ತಿಯನ್ನು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <p class="line">ವರ್ಷಗಳ ನಂತರ, ಅವರ ಮ್ಯಾನೇಜರ್ ಹೇಳುತ್ತಾರೆ:</p>
+    <p class="line quote">"ಈ ಕೆಲಸವನ್ನು ಇನ್ನಷ್ಟು ಸುಧಾರಿಸಬೇಕು."</p>
+    <p class="line">ಈ ವಾಕ್ಯ ಸಾಮಾನ್ಯವಾಗಿರಬಹುದು.</p>
+    <p class="line">ಆದರೆ ಆ ವ್ಯಕ್ತಿಗೆ ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಅನಿಸುತ್ತದೆ:</p>
+    <p class="line">ಕೋಪ</p>
+    <p class="line">ನಾಚಿಕೆ</p>
+    <p class="line">ಭಯ</p>
+    <p class="line">ರಕ್ಷಣಾತ್ಮಕ ಮನೋಭಾವ</p>
+    <p class="line">ಇಷ್ಟು ತೀವ್ರವಾದ ಪ್ರತಿಕ್ರಿಯೆ ಯಾಕೆ?</p>
+    <p class="line">ಟೋಲ್ ಅವರ ದೃಷ್ಟಿಕೋನದ ಪ್ರಕಾರ, ಈಗಿನ ಸನ್ನಿವೇಶ ಒಂದು ಹಳೆಯ ಭಾವನಾತ್ಮಕ ನಮೂನೆಯನ್ನು ಪ್ರಚೋದಿಸಿರಬಹುದು.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">06</div>
+    <p class="section-title">ಒಂದು ಸಣ್ಣ ಮಾತು ದೊಡ್ಡ ಪ್ರತಿಕ್ರಿಯೆಗೆ ಕಾರಣವಾಗಬಹುದು</p>
+    <p class="line">ಒಂದು ನಿರುಪದ್ರವಿ ಮಾತು ಕೂಡ ಹಳೆಯ ನೋವಿನ ನಮೂನೆಯನ್ನು ಪ್ರಚೋದಿಸಬಹುದು ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line tag">ಸ್ನೇಹಿತ</p>
+    <p class="line quote">"ಇವತ್ತು ಯಾಕೆ ಇಷ್ಟು ಸುಮ್ಮನಿದ್ದೀಯ?"</p>
+    <p class="line tag">ವ್ಯಕ್ತಿ</p>
+    <p class="line quote">"ನನ್ನನ್ನು ಒಬ್ಬಂಟಿಯಾಗಿ ಬಿಡು!"</p>
+    <p class="line">ಸ್ನೇಹಿತ ಯಾವುದೇ ಹಾನಿ ಉದ್ದೇಶಿಸಿರಲಿಲ್ಲ.</p>
+    <p class="line">ಆದರೆ ಆ ವ್ಯಕ್ತಿಯ ಒಳಗೆ ಈಗಾಗಲೇ ಏನೋ ಸೂಕ್ಷ್ಮವಾಗಿತ್ತು.</p>
+    <p class="line">ಮುಖ್ಯ ಪ್ರಶ್ನೆ ಇದೊಂದೇ ಅಲ್ಲ:</p>
+    <p class="line quote">"ನನ್ನ ಸ್ನೇಹಿತ ಯಾಕೆ ಹಾಗೆ ಹೇಳಿದರು?"</p>
+    <p class="line">ಇದೂ ಆಗಿರಬಹುದು:</p>
+    <p class="line quote">"ಆ ಮಾತು ನನ್ನೊಳಗೆ ಇಷ್ಟು ತೀವ್ರ ಪ್ರತಿಕ್ರಿಯೆ ಯಾಕೆ ಉಂಟುಮಾಡಿತು?"</p>
+    <p class="line">ಆ ಪ್ರಶ್ನೆಯೇ ಜಾಗೃತಿಯನ್ನು ಸೃಷ್ಟಿಸುತ್ತದೆ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">07</div>
+    <p class="section-title">ಕೋಪಗೊಳ್ಳುವುದು vs ಕೋಪವನ್ನು ಗಮನಿಸುವುದು</p>
+    <p class="line">ಇದು ಬಹುಶಃ ಈ ಅಧ್ಯಾಯದ ಅತ್ಯಂತ ಪ್ರಾಯೋಗಿಕ ಪಾಠ.</p>
+    <p class="line">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸಿದರು ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ನಿಮ್ಮ ಮನಸ್ಸು ತಕ್ಷಣ ಸೃಷ್ಟಿಸುತ್ತದೆ:</p>
+    <p class="line quote">"ಇವರಿಗೆ ಎಷ್ಟು ಧೈರ್ಯ!"</p>
+    <p class="line">ನಂತರ ಇನ್ನಷ್ಟು ಆಲೋಚನೆಗಳು:</p>
+    <p class="line quote">"ನಾನು ಅವರಿಗೆ ಪಾಠ ಕಲಿಸುತ್ತೇನೆ."</p>
+    <p class="line quote">"ಇವರು ಯಾವಾಗಲೂ ನನ್ನನ್ನು ಅಗೌರವಿಸುತ್ತಾರೆ."</p>
+    <p class="line quote">"ನಾನೂ ಏನಾದರೂ ಹೇಳಬೇಕು."</p>
+    <p class="line">ಈಗ ನೀವು ಕೋಪದ ಒಳಗೇ ಇದ್ದೀರಿ.</p>
+    <p class="line">ಟೋಲ್ ಬೇರೆಯದೇ ಸಲಹೆ ಕೊಡುತ್ತಾರೆ:</p>
+    <p class="line lead">"ಈಗ ನನ್ನಲ್ಲಿ ಕೋಪ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತಿದೆ."</p>
+    <p class="line">ಗಮನಿಸಿ:</p>
+    <p class="line quote">"ನಾನು ಕೋಪಗೊಂಡಿದ್ದೇನೆ"</p>
+    <p class="line">versus</p>
+    <p class="line quote">"ಕೋಪ ಆಗುತ್ತಿರುವುದನ್ನು ನಾನು ಗಮನಿಸುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line">ಎರಡನೆಯ ಹೇಳಿಕೆ ನಿಮ್ಮ ಮತ್ತು ಆ ಭಾವನೆಯ ನಡುವೆ ಸ್ವಲ್ಪ ಅಂತರ ಸೃಷ್ಟಿಸುತ್ತದೆ.</p>
+    <p class="line">ಇದನ್ನೇ ಪುಸ್ತಕ "ವೀಕ್ಷಕ" ಅಥವಾ "ಸಾಕ್ಷಿ" ಆಗುವುದು ಎಂದು ಕರೆಯುತ್ತದೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">08</div>
+    <p class="section-title">ಭಾವನೆಯ ಜೊತೆ ಹೋರಾಡಬೇಕಾಗಿಲ್ಲ</p>
+    <p class="line">ಇದು ಸೂಕ್ಷ್ಮ ವಿಚಾರ.</p>
+    <p class="line">ಟೋಲ್ ಇದನ್ನು ಸಲಹೆ ಕೊಡುವುದಿಲ್ಲ:</p>
+    <p class="line quote">"ನಾನು ನನ್ನ ಕೋಪವನ್ನು ನಾಶಮಾಡಲೇಬೇಕು."</p>
+    <p class="line">ಬದಲಿಗೆ:</p>
+    <p class="line lead">ಅದನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line">ಕೋಪವನ್ನು ಒಂದು ಅಲೆಯಂತೆ ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <p class="line">ನೀವು ಇವನ್ನು ಮಾಡಬೇಕಿಲ್ಲ:</p>
+    <p class="line">ಅದನ್ನು ಅದುಮಿಡುವುದು,</p>
+    <p class="line">ತಕ್ಷಣ ಅದರ ಮೇಲೆ ವರ್ತಿಸುವುದು,</p>
+    <p class="line">ಅದರ ಸುತ್ತ ಕಥೆ ಕಟ್ಟುವುದು,</p>
+    <p class="line">ಅದರೊಂದಿಗೆ ನಿಮ್ಮನ್ನೇ ಗುರುತಿಸಿಕೊಳ್ಳುವುದು.</p>
+    <p class="line">ನೀವು ಇದನ್ನು ಗಮನಿಸಬಹುದು:</p>
+    <p class="line quote">"ನನ್ನ ದೇಹ ಬಿಗಿದಿದೆ."</p>
+    <p class="line quote">"ನನ್ನ ಹೃದಯ ವೇಗವಾಗಿ ಬಡಿದುಕೊಳ್ಳುತ್ತಿದೆ."</p>
+    <p class="line quote">"ಕೋಪದ ಆಲೋಚನೆಗಳು ಬರುತ್ತಿವೆ."</p>
+    <p class="line quote">"ನನಗೆ ಪ್ರತಿಕ್ರಿಯಿಸಬೇಕೆನಿಸುತ್ತಿದೆ."</p>
+    <p class="line">ನೀವು ಏನು ನಡೆಯುತ್ತಿದೆ ಎಂಬುದನ್ನಷ್ಟೇ ಗಮನಿಸುತ್ತಿದ್ದೀರಿ.</p>
+    <p class="line">ಪೇನ್-ಬಾಡಿ ಜೊತೆ ಹೋರಾಡುವುದರಿಂದ ಇನ್ನಷ್ಟು ಆಂತರಿಕ ಸಂಘರ್ಷ ಉಂಟಾಗಬಹುದು ಎಂದೂ, ಗಮನಿಸುವಿಕೆ ಮತ್ತು ಇರುವಿಕೆಯೇ ಅದರಿಂದ ಬಿಡಿಸಿಕೊಳ್ಳುವ ದಾರಿ ಎಂದೂ ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">09</div>
+    <p class="section-title">"ಅದರ ಬಗ್ಗೆ ಯೋಚಿಸಬೇಡಿ" ಎಂದರೆ ಅದುಮಿಡಿ ಎಂದರ್ಥವಲ್ಲ</p>
+    <p class="line">ಇದನ್ನು ಸುಲಭವಾಗಿ ತಪ್ಪಾಗಿ ಅರ್ಥೈಸಿಕೊಳ್ಳಬಹುದು.</p>
+    <p class="line">ಭಾವನೆಯನ್ನು ಆಲೋಚನೆಯಾಗಿ ಬದಲಾಗಲು ಬಿಡಬೇಡಿ ಎಂದು ಟೋಲ್ ಹೇಳುವಾಗ, ಅವರು ಭಾವನೆಯನ್ನು ಅನುಭವಿಸುವುದಕ್ಕೂ ಅದರ ಸುತ್ತ ಉದ್ದನೆಯ ಕಥೆ ಕಟ್ಟುವುದಕ್ಕೂ ಇರುವ ವ್ಯತ್ಯಾಸವನ್ನು ವಿವರಿಸುತ್ತಿದ್ದಾರೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line tag">ಭಾವನೆ</p>
+    <p class="line quote">"ನನಗೆ ಕೋಪ ಬಂದಿದೆ."</p>
+    <p class="line">ದೈಹಿಕ ಅನುಭವವನ್ನಷ್ಟೇ ಗಮನಿಸಿ.</p>
+    <p class="line tag">ಕಥೆ</p>
+    <p class="line quote">"ಇವರು ಯಾವಾಗಲೂ ಹೀಗೇ ಮಾಡುತ್ತಾರೆ."</p>
+    <p class="line quote">"ಯಾರೂ ನನ್ನನ್ನು ಗೌರವಿಸುವುದಿಲ್ಲ."</p>
+    <p class="line quote">"ಜನರೆಲ್ಲಾ ಕೆಟ್ಟವರು."</p>
+    <p class="line quote">"ನಾನು ಸೇಡು ತೀರಿಸಿಕೊಳ್ಳುತ್ತೇನೆ."</p>
+    <p class="line quote">"ನನಗೆ ಯಾವಾಗಲೂ ಹೀಗೇ ಆಗುತ್ತದೆ."</p>
+    <p class="line">ಎರಡನೆಯ ಪ್ರಕ್ರಿಯೆ ಆ ಭಾವನಾತ್ಮಕ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಜೀವಂತವಾಗಿಡಬಹುದು.</p>
+    <p class="line">ಆದ್ದರಿಂದ ಅಭ್ಯಾಸ ಇದು:</p>
+    <p class="line lead">ಅನುಭವಿಸಿ → ಗಮನಿಸಿ → ಕಥೆಗೆ ಆಹಾರ ಕೊಡಬೇಡಿ → ವರ್ತಮಾನದಲ್ಲೇ ಇರಿ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">10</div>
+    <p class="section-title">ಈ ಪುಸ್ತಕದಲ್ಲಿ "ಅಜ್ಞಾನ" (unconscious) ಎಂದರೆ ಏನು?</p>
+    <p class="line">ಟೋಲ್ "unconscious" ಎಂಬ ಪದವನ್ನು ವಿಶೇಷ ಅರ್ಥದಲ್ಲಿ ಬಳಸುತ್ತಾರೆ.</p>
+    <p class="line">ಅವರ ಅರ್ಥ ಕೇವಲ ಇದಲ್ಲ:</p>
+    <p class="line quote">"ನೀವು ನಿದ್ದೆಯಲ್ಲಿದ್ದೀರಿ."</p>
+    <p class="line">ಒಂದು ಮಾನಸಿಕ ಅಥವಾ ಭಾವನಾತ್ಮಕ ನಮೂನೆಯೊಂದಿಗೆ ಸಂಪೂರ್ಣವಾಗಿ ಗುರುತಿಸಿಕೊಂಡು, ಅದು ನಡೆಯುತ್ತಿದೆ ಎಂಬುದನ್ನೇ ಗಮನಿಸದಿರುವುದು ಎಂದು ಅವರ ಅರ್ಥ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line tag">ಉದಾಹರಣೆ</p>
+    <p class="line">ಒಬ್ಬ ವ್ಯಕ್ತಿಗೆ ಕೋಪ ಬರುತ್ತದೆ.</p>
+    <p class="line">ಅವರು ಇದನ್ನು ಗಮನಿಸುವುದಿಲ್ಲ:</p>
+    <p class="line quote">"ಕೋಪ ಆಗುತ್ತಿದೆ."</p>
+    <p class="line">ಬದಲಿಗೆ:</p>
+    <p class="line quote">"ನಾನೇ ಕೋಪ. ಅವರೇ ಸಮಸ್ಯೆ. ನಾನು ಅವರ ಮೇಲೆ ಎರಗಲೇಬೇಕು."</p>
+    <p class="line">ಭಾವನೆ ಸಂಪೂರ್ಣ ನಿಯಂತ್ರಣ ತೆಗೆದುಕೊಂಡಿದೆ.</p>
+    <p class="line">ಜಾಗೃತರಾಗಿರುವುದು ಎಂದರೆ ಗಮನಿಸುವುದು:</p>
+    <p class="line quote">"ನನ್ನೊಳಗೆ ಕೋಪ ಆಗುತ್ತಿದೆ."</p>
+    <p class="line">ಆ ಚಿಕ್ಕ ಗಮನಿಸುವಿಕೆಯೇ ಆ ಭಾವನೆಯೊಂದಿಗಿನ ಸಂಬಂಧವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">11</div>
+    <p class="section-title">ಭಯ: ನಿಜವಾದ ಅಪಾಯ vs ಮಾನಸಿಕ ಭಯ</p>
+    <p class="line">ಈ ಅಧ್ಯಾಯ ಇನ್ನೊಂದು ಉಪಯುಕ್ತ ವ್ಯತ್ಯಾಸ ತೋರಿಸುತ್ತದೆ.</p>
+    <p class="line tag">ನಿಜವಾದ ಅಪಾಯ</p>
+    <p class="line">ನೀವು ಬೆಂಕಿಯ ಹತ್ತಿರ ನಡೆಯುತ್ತಿದ್ದೀರಿ.</p>
+    <p class="line">ನಿಮಗೆ ಅರ್ಥವಾಗುತ್ತದೆ:</p>
+    <p class="line quote">"ಅದನ್ನು ಮುಟ್ಟಿದರೆ ಸುಟ್ಟುಹೋಗುತ್ತೇನೆ."</p>
+    <p class="line">ನೀವು ದೂರ ಸರಿಯುತ್ತೀರಿ.</p>
+    <p class="line">ಇದು ಪ್ರಾಯೋಗಿಕ ಬುದ್ಧಿವಂತಿಕೆ.</p>
+    <p class="line tag">ಮಾನಸಿಕ ಭಯ</p>
+    <p class="line">ಈಗ ನೀವು ಮನೆಯಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿ ಕುಳಿತು ಯೋಚಿಸುತ್ತಿದ್ದೀರಿ ಎಂದುಕೊಳ್ಳಿ:</p>
+    <p class="line quote">"ನಾಳೆ ಏನಾದರೂ ಭಯಂಕರವಾದದ್ದು ನಡೆದರೆ?"</p>
+    <p class="line">ಈಗ ಯಾವುದೇ ಅಪಾಯ ನಡೆಯುತ್ತಿಲ್ಲ.</p>
+    <p class="line">ಆದರೂ ನಿಮ್ಮ ದೇಹ ಪ್ರತಿಕ್ರಿಯಿಸಬಹುದು:</p>
+    <p class="line">ಬಿಗಿತ,</p>
+    <p class="line">ಆತಂಕ,</p>
+    <p class="line">ಚಡಪಡಿಕೆ,</p>
+    <p class="line">ಚಿಂತೆ.</p>
+    <p class="line">ಇಂತಹ ಭಯ ಮುಖ್ಯವಾಗಿ ಮುಂದೆ ಆಗಬಹುದಾದುದರ ಬಗ್ಗೆ ಇರುತ್ತದೆಯೇ ಹೊರತು, ಈಗ ನಡೆಯುತ್ತಿರುವುದರ ಬಗ್ಗೆ ಅಲ್ಲ ಎಂದು ಟೋಲ್ ವಿವರಿಸುತ್ತಾರೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">12</div>
+    <p class="section-title">ವಾದ-ವಿವಾದ ಯಾಕೆ ಇಷ್ಟು ತೀವ್ರವಾಗುತ್ತದೆ?</p>
+    <p class="line">ಇದೊಂದು ಕುತೂಹಲಕಾರಿ ವಿಚಾರ.</p>
+    <p class="line">ಇಬ್ಬರು ವಾದ ಮಾಡುತ್ತಿದ್ದಾರೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line tag">ವ್ಯಕ್ತಿ A</p>
+    <p class="line quote">"ನಾನೇ ಸರಿ!"</p>
+    <p class="line tag">ವ್ಯಕ್ತಿ B</p>
+    <p class="line quote">"ಇಲ್ಲ, ನಾನೇ ಸರಿ!"</p>
+    <p class="line">ಈಗ ವ್ಯಕ್ತಿ A ತಾನು ತಪ್ಪು ಎಂದು ಕಂಡುಕೊಂಡರು ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ಅದನ್ನು ಒಪ್ಪಿಕೊಳ್ಳುವುದು ಯಾಕೆ ಇಷ್ಟು ಅಹಿತಕರವಾಗಿ ಅನಿಸುತ್ತದೆ?</p>
+    <p class="line">ಯಾಕೆಂದರೆ ಕೆಲವೊಮ್ಮೆ ವ್ಯಕ್ತಿ ಕೇವಲ ಒಂದು ಅಭಿಪ್ರಾಯವನ್ನಷ್ಟೇ ಸಮರ್ಥಿಸಿಕೊಳ್ಳುತ್ತಿರುವುದಿಲ್ಲ.</p>
+    <p class="line">ಅವರು ತಮ್ಮ ಅಸ್ಮಿತೆಯನ್ನೇ ಸಮರ್ಥಿಸಿಕೊಳ್ಳುತ್ತಿರುತ್ತಾರೆ.</p>
+    <p class="line">ಅವರ ಮನಸ್ಸು ಹೇಳುತ್ತದೆ:</p>
+    <p class="line quote">"ನಾನು ತಪ್ಪಾದರೆ, ನನ್ನ ಬೆಲೆ ಕಡಿಮೆ."</p>
+    <p class="line">ಹಾಗಾಗಿ ಒಂದು ಸರಳ ಭಿನ್ನಾಭಿಪ್ರಾಯವೇ ವ್ಯಕ್ತಿಯ ಸ್ವಂತಿಕೆಗೆ ಬೆದರಿಕೆಯಾಗಿಬಿಡುತ್ತದೆ.</p>
+    <p class="line">ಒಬ್ಬ ವ್ಯಕ್ತಿ ತಮ್ಮ ಮಾನಸಿಕ ನಿಲುವುಗಳೊಂದಿಗೆ ಕಡಿಮೆ ಗುರುತಿಸಿಕೊಂಡಾಗ, ಆಕ್ರಮಣಕಾರಿಯಾಗಿ ತಾವೇ ಸರಿ ಎಂದು ಸಾಬೀತುಪಡಿಸದೆಯೇ ಭಿನ್ನಾಭಿಪ್ರಾಯ ವ್ಯಕ್ತಪಡಿಸಬಹುದು ಎಂದು ಟೋಲ್ ವಾದಿಸುತ್ತಾರೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">13</div>
+    <p class="section-title">ಉದಾಹರಣೆ: ಇಬ್ಬರು ಭಿನ್ನಾಭಿಪ್ರಾಯ ಹೊಂದಿರುವುದು</p>
+    <p class="line tag">ವ್ಯಕ್ತಿ A</p>
+    <p class="line quote">"ಈ ಸಿನಿಮಾ ಅದ್ಭುತ ಎಂದು ನನಗನಿಸುತ್ತದೆ."</p>
+    <p class="line tag">ವ್ಯಕ್ತಿ B</p>
+    <p class="line quote">"ನನಗೆ ಇಷ್ಟವಾಗಲಿಲ್ಲ."</p>
+    <p class="line">ಮನಸ್ಸಿನೊಂದಿಗೆ ಗುರುತಿಸಿಕೊಂಡ ಪ್ರತಿಕ್ರಿಯೆ ಹೀಗಿರಬಹುದು:</p>
+    <p class="line quote">"ಏನು? ನೀನು ಇಷ್ಟು ದಡ್ಡನಾಗಿರುವುದು ಹೇಗೆ ಸಾಧ್ಯ?"</p>
+    <p class="line">ಹೆಚ್ಚು ಜಾಗೃತ ಪ್ರತಿಕ್ರಿಯೆ:</p>
+    <p class="line quote">"ಆಸಕ್ತಿಕರ. ನಮ್ಮ ಅಭಿಪ್ರಾಯಗಳು ಬೇರೆಬೇರೆ."</p>
+    <p class="line">ನೀವು ಇನ್ನೂ ನಿಮ್ಮ ಅಭಿಪ್ರಾಯವನ್ನು ಬಲವಾಗಿ ವಿವರಿಸಬಹುದು.</p>
+    <p class="line">ಆದರೆ ಇದನ್ನು:</p>
+    <p class="line quote">"ನಾನು ನಿನ್ನೊಂದಿಗೆ ಒಪ್ಪುವುದಿಲ್ಲ"</p>
+    <p class="line">ಇದಾಗಿ ಬದಲಿಸಬೇಕಿಲ್ಲ:</p>
+    <p class="line quote">"ನೀನೊಬ್ಬ ಕೆಟ್ಟ ವ್ಯಕ್ತಿ."</p>
+    <p class="line">ಇದೇ ಟೋಲ್ ಮಾಡುತ್ತಿರುವ ವ್ಯತ್ಯಾಸ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">14</div>
+    <p class="section-title">"ಇನ್ನಷ್ಟು" ಬೇಕೆಂಬ ಅಹಂಕಾರದ ಹುಡುಕಾಟ</p>
+    <p class="line">ಅಧ್ಯಾಯದ ಕೊನೆಯ ಭಾಗದಲ್ಲಿ, ಟೋಲ್ ಅಹಂಕಾರದ (ego) ಪರಿಪೂರ್ಣತೆಯ ಹುಡುಕಾಟದ ಬಗ್ಗೆ ಚರ್ಚಿಸುತ್ತಾರೆ.</p>
+    <p class="line">ಮೂಲಭೂತ ಆಲೋಚನೆ ಇದು:</p>
+    <p class="line quote">"ನನ್ನಲ್ಲಿ ಏನೋ ಕೊರತೆ ಇದೆ, ಹಾಗಾಗಿ ನನ್ನನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ನನ್ನ ಹೊರಗಿನ ಏನೋ ಬೇಕು."</p>
+    <p class="line">ಆಗ ಮನಸ್ಸು ಇವುಗಳ ಹಿಂದೆ ಓಡಬಹುದು:</p>
+    <p class="line">ಹಣ,</p>
+    <p class="line">ಯಶಸ್ಸು,</p>
+    <p class="line">ಆಸ್ತಿ,</p>
+    <p class="line">ಜನಪ್ರಿಯತೆ,</p>
+    <p class="line">ಮನ್ನಣೆ,</p>
+    <p class="line">ಸಂಬಂಧಗಳು,</p>
+    <p class="line">ಸ್ಥಾನಮಾನ,</p>
+    <p class="line">ಜ್ಞಾನ,</p>
+    <p class="line">ರೂಪ.</p>
+    <p class="line">ಇಂತಹ ವಿಷಯಗಳು ತಾತ್ಕಾಲಿಕ ತೃಪ್ತಿ ಕೊಡಬಹುದು, ಆದರೆ ಒಳಗಿನ ಅಪೂರ್ಣತೆಯ ಭಾವನೆಯನ್ನು ಶಾಶ್ವತವಾಗಿ ಬಗೆಹರಿಸುವುದಿಲ್ಲ ಎಂದು ಪುಸ್ತಕ ವಾದಿಸುತ್ತದೆ.</p>
+    <p class="source-tag">— ದಿ ಪವರ್ ಆಫ್ ನೌ, ಎಕ್ಹಾರ್ಟ್ ಟೋಲ್</p>
+    <p class="line tag">ಉದಾಹರಣೆ</p>
+    <p class="line">ಒಬ್ಬ ವ್ಯಕ್ತಿ ಯೋಚಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ಒಳ್ಳೆಯ ಫೋನ್ ಸಿಕ್ಕರೆ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line">ಅವರು ಅದನ್ನು ಖರೀದಿಸುತ್ತಾರೆ.</p>
+    <p class="line">ಸ್ವಲ್ಪ ಸಮಯ:</p>
+    <p class="line quote">"ಇದು ಅದ್ಭುತ!"</p>
+    <p class="line">ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ:</p>
+    <p class="line quote">"ಇನ್ನೂ ಒಳ್ಳೆಯ ಫೋನ್ ಬೇಕೇನೋ."</p>
+    <p class="line">ಆಮೇಲೆ ಚಕ್ರ ಮತ್ತೆ ಶುರುವಾಗುತ್ತದೆ.</p>
+    <p class="line">ಇದೇ ಮಾದರಿ ಇವುಗಳಲ್ಲಿಯೂ ಸಂಭವಿಸಬಹುದು:</p>
+    <p class="line lead">ಹಣ → ಯಶಸ್ಸು → ಫಾಲೋವರ್ಸ್ → ಸಂಬಂಧಗಳು → ಸ್ಥಾನಮಾನ → ಆಸ್ತಿ.</p>
+    <p class="line">ವಸ್ತು ಬದಲಾಗುತ್ತದೆ, ಆದರೆ ಮಾನಸಿಕ ಹುಡುಕಾಟ ಹಾಗೆಯೇ ಉಳಿಯಬಹುದು.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">15</div>
+    <p class="section-title">ಇಡೀ ಅಧ್ಯಾಯ ಒಂದು ಸರಳ ಕಥೆಯಲ್ಲಿ</p>
+    <p class="line">ರವಿ ಎಂಬ ವ್ಯಕ್ತಿಯನ್ನು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <p class="line">ರವಿಯ ಮ್ಯಾನೇಜರ್ ಅವರ ಕೆಲಸವನ್ನು ಟೀಕಿಸುತ್ತಾರೆ.</p>
+    <p class="line tag">ಹಂತ 1 — ಘಟನೆ</p>
+    <p class="line tag">ಮ್ಯಾನೇಜರ್</p>
+    <p class="line quote">"ಈ ವರದಿಯನ್ನು ಇನ್ನಷ್ಟು ಸುಧಾರಿಸಬೇಕು."</p>
+    <p class="line tag">ಹಂತ 2 — ಮನಸ್ಸು ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ</p>
+    <p class="line">ರವಿ ಯೋಚಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ಇವರಿಗೆ ನನ್ನ ಬಗ್ಗೆ ಗೌರವವಿಲ್ಲ."</p>
+    <p class="line tag">ಹಂತ 3 — ಹಳೆಯ ನೋವು ಪ್ರಚೋದನೆಗೊಳ್ಳುತ್ತದೆ</p>
+    <p class="line">ಹಿಂದೆ ಟೀಕೆಗೊಳಗಾದ ಅನುಭವಗಳು ಅವರಿಗೆ ನೆನಪಾಗುತ್ತವೆ.</p>
+    <p class="line tag">ಹಂತ 4 — ಭಾವನೆ ಬೆಳೆಯುತ್ತದೆ</p>
+    <p class="line">ಅವರಿಗೆ ಕೋಪ ಬರುತ್ತದೆ.</p>
+    <p class="line tag">ಹಂತ 5 — ಇನ್ನಷ್ಟು ಆಲೋಚನೆ</p>
+    <p class="line quote">"ಎಲ್ಲರೂ ನನ್ನನ್ನು ಕೆಟ್ಟದಾಗಿ ನಡೆಸಿಕೊಳ್ಳುತ್ತಾರೆ."</p>
+    <p class="line tag">ಹಂತ 6 — ಪ್ರತಿಕ್ರಿಯೆ</p>
+    <p class="line">ಅವರು ಕೋಪದ ಸಂದೇಶ ಕಳುಹಿಸುತ್ತಾರೆ.</p>
+    <p class="line tag">ಹಂತ 7 — ಇನ್ನಷ್ಟು ಸಮಸ್ಯೆಗಳು</p>
+    <p class="line">ಮ್ಯಾನೇಜರ್‌ಗೆ ಕೋಪ ಬರುತ್ತದೆ.</p>
+    <p class="line">ಈಗ ರವಿ ಯೋಚಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ನೋಡಿ! ಎಲ್ಲರೂ ನನ್ನ ವಿರುದ್ಧ ಇದ್ದಾರೆ."</p>
+    <p class="line">ಚಕ್ರ ಮುಂದುವರಿಯುತ್ತದೆ.</p>
+    <p class="line spacer"></p>
+    <p class="line">ಈಗ ರವಿ ಜಾಗೃತರಾಗುತ್ತಾರೆ ಎಂದು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <p class="line tag">ಮ್ಯಾನೇಜರ್</p>
+    <p class="line quote">"ಈ ವರದಿಯನ್ನು ಇನ್ನಷ್ಟು ಸುಧಾರಿಸಬೇಕು."</p>
+    <p class="line">ರವಿ ಗಮನಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ನನಗೆ ಕೋಪ ಆಗುತ್ತಿದೆ."</p>
+    <p class="line">ಅವರು ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯಿಸುವುದಿಲ್ಲ.</p>
+    <p class="line">ಅವರು ಗಮನಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ನನ್ನ ದೇಹ ಬಿಗಿದಿದೆ."</p>
+    <p class="line quote">"ನನಗೆ ರಕ್ಷಣಾತ್ಮಕ ಆಲೋಚನೆಗಳು ಬರುತ್ತಿವೆ."</p>
+    <p class="line">ಅವರು ಆ ಭಾವನೆ ಇರಲು ಬಿಡುತ್ತಾರೆ.</p>
+    <p class="line">ನಂತರ ಅವರು ಕೇಳಿಕೊಳ್ಳುತ್ತಾರೆ:</p>
+    <p class="line quote">"ವರದಿಯಲ್ಲಿ ನಿಜವಾಗಿ ಏನನ್ನು ಸರಿಪಡಿಸಬೇಕು?"</p>
+    <p class="line">ಈಗ ಅವರು ಸಂಪೂರ್ಣ ಭಾವನಾತ್ಮಕ ನಮೂನೆಯಿಂದ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಬದಲು, ವಾಸ್ತವ ಸನ್ನಿವೇಶಕ್ಕೆ ಸ್ಪಂದಿಸಬಲ್ಲರು.</p>
+    <p class="line">ಇದೇ ಈ ಅಧ್ಯಾಯದ ಪ್ರಾಯೋಗಿಕ ಅನ್ವಯಕ್ಕೆ ಬಹಳ ಹತ್ತಿರ.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">16</div>
+    <p class="section-title">ಟೋಲ್ ಕಲಿಸುತ್ತಿರುವ ಅಭ್ಯಾಸ</p>
+    <p class="line">ಇಡೀ ಅಧ್ಯಾಯವನ್ನು ಈ ಸರಳ ಅನುಕ್ರಮಕ್ಕೆ ಇಳಿಸಬಹುದು:</p>
+    <p class="line step">1. ಏನೋ ಒಂದು ಘಟನೆ ನಡೆಯುತ್ತದೆ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">2. ನಿಮ್ಮ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಗಮನಿಸಿ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">3. ತಕ್ಷಣ ಆ ಪ್ರತಿಕ್ರಿಯೆಯಾಗಬೇಡಿ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">4. ಭಾವನೆಯನ್ನು ಗಮನಿಸಿ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">5. ಆಲೋಚನೆಗಳನ್ನು ತಂತಾನೇ ನಂಬದೆ ಗಮನಿಸಿ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">6. ಈಗ ನಡೆಯುತ್ತಿರುವುದನ್ನು ಒಪ್ಪಿಕೊಳ್ಳಿ</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">7. ನಂತರ ಸೂಕ್ತ ಕ್ರಮ ನಿರ್ಧರಿಸಿ</p>
+    <p class="line">ಇದನ್ನೇ ಪುಸ್ತಕ "ಇರುವಿಕೆ" ಮತ್ತು "ವೀಕ್ಷಕ" ಆಗುವುದು ಎಂದು ಕರೆಯುತ್ತದೆ.</p>
+    <p class="line tag">ಒಂದು ಸರಳ ದೈನಂದಿನ ಉದಾಹರಣೆ</p>
+    <p class="line">ಯಾರೋ ನಿಮಗೆ ಸಂದೇಶ ಕಳುಹಿಸುತ್ತಾರೆ:</p>
+    <p class="line quote">"ನಾವು ಮಾತಾಡಬೇಕು."</p>
+    <p class="line">ತಕ್ಷಣ ನಿಮ್ಮ ಮನಸ್ಸು ಹೇಳುತ್ತದೆ:</p>
+    <p class="line quote">"ಅಯ್ಯೋ. ಏನಾಯಿತು?"</p>
+    <p class="line">ನಂತರ:</p>
+    <p class="line quote">"ಬಹುಶಃ ಅವರಿಗೆ ಕೋಪ ಬಂದಿರಬಹುದು."</p>
+    <p class="line">ನಂತರ:</p>
+    <p class="line quote">"ಬಹುಶಃ ನಾನೇನಾದರೂ ತಪ್ಪು ಮಾಡಿರಬಹುದು."</p>
+    <p class="line">ನಂತರ:</p>
+    <p class="line quote">"ಏನಾದರೂ ಭಯಂಕರವಾದದ್ದು ನಡೆದಿದ್ದರೆ?"</p>
+    <p class="line">ಏನಾಯಿತು ಎಂದು ಗಮನಿಸಿ.</p>
+    <p class="line">ಆ ಸಂದೇಶದಲ್ಲಿ ಕೇವಲ ಕೆಲವೇ ಪದಗಳಿದ್ದವು.</p>
+    <p class="line">ಮನಸ್ಸು ಇಡೀ ಭವಿಷ್ಯವನ್ನೇ ಸೃಷ್ಟಿಸಿತು.</p>
+    <p class="line">ವರ್ತಮಾನ-ಕೇಂದ್ರಿತ ಪ್ರತಿಕ್ರಿಯೆ ಹೀಗಿರುತ್ತದೆ:</p>
+    <p class="line quote">"ಅವರ ಉದ್ದೇಶ ಏನೆಂದು ನನಗಿನ್ನೂ ಗೊತ್ತಿಲ್ಲ."</p>
+    <p class="line">ನಂತರ ಈಗ ನಿಜವಾಗಿ ನಡೆಯುತ್ತಿರುವುದರೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ.</p>
+    <p class="line">ಅವರು ಕರೆ ಮಾಡಿದಾಗ, ನಿಮಗೆ ನಿಜವಾದ ಮಾಹಿತಿ ಸಿಗುತ್ತದೆ.</p>
+  </section>
+
+  <footer data-reveal>
+    <div class="section-num" style="text-align:center;">ಆಳವಾದ ಪಾಠ</div>
+    <p>ಟೋಲ್ ಓದುಗರಿಗೆ ಈ ವ್ಯತ್ಯಾಸವನ್ನು ಕಲಿಸಲು ಬಯಸುತ್ತಾರೆ:</p>
+    <p>❌ "ನಾನೇ ನನ್ನ ಆಲೋಚನೆ ಮತ್ತು ಭಾವನೆಗಳು."</p>
+    <p>versus</p>
+    <p>✅ "ನಾನು ನನ್ನ ಆಲೋಚನೆ ಮತ್ತು ಭಾವನೆಗಳನ್ನು ಗಮನಿಸಬಲ್ಲೆ."</p>
+    <p style="margin-top:22px;">ನಿಮಗೆ ಕೋಪವನ್ನು ಗಮನಿಸಲು ಸಾಧ್ಯವಾದರೆ, ನೀವು ಕೋಪದೊಳಗೆ ಸಂಪೂರ್ಣ ಕಳೆದುಹೋಗಿಲ್ಲ.</p>
+    <p>ಭಯವನ್ನು ಗಮನಿಸಲು ಸಾಧ್ಯವಾದರೆ, ನೀವು ಭಯದೊಳಗೆ ಸಂಪೂರ್ಣ ಕಳೆದುಹೋಗಿಲ್ಲ.</p>
+    <p>ಚಿಂತೆಯ ಆಲೋಚನೆಗಳನ್ನು ಗಮನಿಸಲು ಸಾಧ್ಯವಾದರೆ, ನೀವು ಅವುಗಳೊಳಗೆ ಸಂಪೂರ್ಣ ಕಳೆದುಹೋಗಿಲ್ಲ.</p>
+    <p style="margin-top:22px;">ಆ ಗಮನಿಸುವ ಜಾಗೃತಿಯನ್ನೇ ಟೋಲ್ "ಇರುವಿಕೆ / ಪ್ರಜ್ಞೆ" ಎಂದು ಕರೆಯುತ್ತಾರೆ.</p>
+    <span class="final">ಗಮನಿಸಿ → ಇರಲುಬಿಡಿ → ವರ್ತಮಾನದಲ್ಲಿರಿ → ನಂತರ ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</span>
+  </footer>
+
+</main>
+
+<script>
+  const field = document.getElementById('ember-field');
+  const MOTES = 34;
+  for(let i=0;i<MOTES;i++){
+    const m = document.createElement('div');
+    const isWitness = Math.random() < 0.3;
+    m.className = 'mote' + (isWitness ? ' witness' : '');
+    const size = 3 + Math.random()*7;
+    m.style.width = size+'px';
+    m.style.height = size+'px';
+    m.style.left = (Math.random()*100)+'vw';
+    m.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    const dur = 14 + Math.random()*16;
+    m.style.animationDuration = dur+'s';
+    m.style.animationDelay = (-Math.random()*dur)+'s';
+    field.appendChild(m);
+  }
+
+  const thoughts = ['ಯಾಕೆ ಹೀಗಾಯಿತು','ಏನಾದರೆ','ನಾನು ಹಾಗೆ ಮಾಡಬಾರದಿತ್ತು','ಯಾವಾಗಲೂ ಹೀಗೇ','ಅವರು ಏನಂದುಕೊಳ್ಳುತ್ತಾರೋ'];
+  const THOUGHTS = 8;
+  for(let i=0;i<THOUGHTS;i++){
+    const t = document.createElement('div');
+    t.className = 'thought';
+    t.textContent = thoughts[Math.floor(Math.random()*thoughts.length)];
+    t.style.left = (Math.random()*100)+'vw';
+    t.style.setProperty('--driftx', (Math.random()*60-30)+'px');
+    const dur = 22 + Math.random()*18;
+    t.style.animationDuration = dur+'s';
+    t.style.animationDelay = (-Math.random()*dur)+'s';
+    field.appendChild(t);
+  }
+
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('[data-reveal]').forEach(el=>{
+    const divider = el.querySelector('.divider');
+    if(divider) observer.observe(divider);
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

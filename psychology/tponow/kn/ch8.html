@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಪ್ರಬುದ್ಧ ಸಂಬಂಧಗಳು</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Kannada:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-deep: #0a0e1a;
+    --ink: #0f1526;
+    --moon: #eef1fb;
+    --moon-dim: #a9b1cc;
+    --sage: #8fb9a8;
+    --ember: #dba587;
+    --line: rgba(238,241,251,0.09);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, #131b30 0%, var(--ink) 45%, var(--ink-deep) 100%);
+    color: var(--moon);
+    font-family: 'Noto Sans Kannada', sans-serif;
+    font-weight: 300;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- floating / falling light field ---------- */
+  #field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    top:-5vh;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(238,241,251,0.9) 0%, rgba(238,241,251,0.15) 60%, transparent 75%);
+    filter: blur(0.3px);
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    opacity:0.5;
+  }
+  .mote.sage{ background: radial-gradient(circle, rgba(143,185,168,0.95) 0%, rgba(143,185,168,0.18) 60%, transparent 75%); }
+  .mote.ember{ background: radial-gradient(circle, rgba(219,165,135,0.95) 0%, rgba(219,165,135,0.18) 60%, transparent 75%); }
+
+  @keyframes fall{
+    from{ transform: translateY(-10vh); }
+    to{ transform: translateY(110vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:-18px; }
+    50%{ margin-left:18px; }
+  }
+
+  main{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding: 0 28px 220px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top: 6vh;
+  }
+  .hero .kicker{
+    font-size:13px;
+    letter-spacing:0.16em;
+    color: var(--sage);
+    margin-bottom:26px;
+    opacity:0;
+    animation: riseIn 1.1s 0.2s ease forwards;
+  }
+  .hero h1{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size: clamp(2.3rem, 8vw, 4.1rem);
+    line-height:1.25;
+    color: var(--moon);
+    opacity:0;
+    animation: riseIn 1.2s 0.4s ease forwards;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color: var(--ember);
+    font-weight:500;
+  }
+  .hero .sub{
+    margin-top:26px;
+    max-width:500px;
+    font-size:16px;
+    line-height:1.9;
+    color: var(--moon-dim);
+    opacity:0;
+    animation: riseIn 1.2s 0.7s ease forwards;
+  }
+  .hero .scroll-cue{
+    margin-top:70px;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color: var(--moon-dim);
+    opacity:0;
+    animation: riseIn 1.2s 1s ease forwards, pulse 2.6s 2.2s ease-in-out infinite;
+  }
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:0.4; }
+    50%{ opacity:0.9; }
+  }
+
+  /* ---------- sections ---------- */
+  section.chapter{
+    padding-top: 108px;
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  section.chapter.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+  section.chapter:first-of-type{ padding-top:0; }
+
+  .meta-row{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:22px;
+    border-top: 1px solid var(--line);
+    padding-top:26px;
+  }
+  .num{
+    font-size:14px;
+    color: var(--sage);
+    letter-spacing:0.05em;
+    font-family:'Noto Serif Kannada', serif;
+  }
+  h2{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size: clamp(1.5rem, 4.4vw, 2.05rem);
+    color: var(--moon);
+    line-height:1.35;
+  }
+
+  .lines{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .lines .l{
+    font-size:17px;
+    line-height:1.85;
+    color: var(--moon-dim);
+  }
+  .lines .l.strong{ color: var(--moon); font-weight:500; }
+  .lines .l.quote{
+    font-family:'Noto Serif Kannada', serif;
+    font-size:19px;
+    color: var(--ember);
+    padding-left:18px;
+    border-left: 2px solid rgba(219,165,135,0.4);
+  }
+  .lines .l.label{
+    font-size:13px;
+    letter-spacing:0.05em;
+    color: var(--sage);
+    margin-top:6px;
+    font-weight:500;
+  }
+  .example{
+    margin-top:8px;
+    margin-bottom:4px;
+    padding:20px 22px;
+    background: rgba(238,241,251,0.03);
+    border: 1px solid var(--line);
+    border-radius:2px;
+  }
+  .example .lines{ gap:10px; }
+
+  /* before / after closing panel */
+  .duo{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:18px;
+    margin-top:12px;
+  }
+  @media(min-width:640px){
+    .duo{ grid-template-columns: 1fr 1fr; }
+  }
+  .duo .col{
+    padding:22px;
+    border-radius:2px;
+    border:1px solid var(--line);
+  }
+  .duo .col.without{ background: rgba(219,165,135,0.05); }
+  .duo .col.with{ background: rgba(143,185,168,0.06); }
+  .duo .col .tag{
+    font-size:13px;
+    letter-spacing:0.06em;
+    margin-bottom:14px;
+    display:block;
+    font-weight:500;
+  }
+  .duo .col.without .tag{ color: var(--ember); }
+  .duo .col.with .tag{ color: var(--sage); }
+  .duo .col .l{
+    font-size:16px;
+    line-height:2;
+    color: var(--moon-dim);
+  }
+
+  .closing{
+    margin-top:118px;
+    padding-top:36px;
+    border-top: 1px solid var(--line);
+    text-align:left;
+  }
+  .closing h2{ margin-bottom:20px; }
+  .closing .l.strong{ font-size:18px; }
+  .signoff{
+    margin-top:60px;
+    font-family:'Noto Serif Kannada', serif;
+    font-size:21px;
+    color: var(--moon-dim);
+    opacity:0.85;
+  }
+
+  ::selection{ background: rgba(219,165,135,0.35); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    section.chapter{ opacity:1; transform:none; }
+    .hero .kicker, .hero h1, .hero .sub, .hero .scroll-cue{ opacity:1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="field"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="kicker">ಅಧ್ಯಾಯ ಎಂಟು</div>
+    <h1>ಪ್ರಬುದ್ಧ<br><em>ಸಂಬಂಧಗಳು</em></h1>
+    <p class="sub">ಪ್ರೀತಿ, ಅಂಟಿಕೊಳ್ಳುವಿಕೆ, ನೋವಿನ-ದೇಹ (ಪೈನ್-ಬಾಡಿ), ಮತ್ತು ಇನ್ನೊಬ್ಬರ ಜೊತೆ ಇರುವಾಗ ವರ್ತಮಾನದಲ್ಲಿ ಇರುವುದು ಅಂದ್ರೆ ಏನು ಅನ್ನೋದರ ಬಗ್ಗೆ.</p>
+    <div class="scroll-cue">↓ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ</div>
+  </div>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೧</span><h2>ಭವಿಷ್ಯ ನಿಮ್ಮನ್ನು ಸಂತೋಷಪಡಿಸಲಿ ಅಂತ ಕಾಯ್ಬೇಡಿ</h2></div>
+    <div class="lines">
+      <p class="l">ಸಾಮಾನ್ಯವಾಗಿ ಜನ ಹೀಗೆ ಯೋಚಿಸ್ತಾರೆ:</p>
+      <p class="l quote">"ನನಗೆ ಒಬ್ಬ ಜೊತೆಗಾರ ಸಿಕ್ಕಿದ್ರೆ, ನಾನು ಖುಷಿಯಾಗಿ ಇರ್ತೀನಿ."</p>
+      <p class="l quote">"ಮದುವೆ ಆದ್ಮೇಲೆ ಎಲ್ಲಾ ಸರಿಯಾಗುತ್ತೆ."</p>
+      <p class="l quote">"ಒಳ್ಳೆ ಕೆಲಸ ಸಿಕ್ಕಿದ್ರೆ, ನನಗೆ ಪೂರ್ಣ ತೃಪ್ತಿ ಸಿಗುತ್ತೆ."</p>
+      <p class="l">ಪುಸ್ತಕ ಹೇಳೋ ಪ್ರಕಾರ, ಇದು ಭವಿಷ್ಯದ ಮೇಲೆ ಅವಲಂಬಿತವಾದ ಸಂತೋಷದ ಹುಡುಕಾಟ ಸೃಷ್ಟಿಸುತ್ತೆ.</p>
+      <p class="l label">ಉದಾಹರಣೆಗೆ</p>
+      <div class="example">
+        <div class="lines">
+          <p class="l">ಒಬ್ಬ ವ್ಯಕ್ತಿಗೆ ಒಂಟಿತನ ಅನಿಸುತ್ತೆ, ಅವ್ರು ಯೋಚಿಸ್ತಾರೆ:</p>
+          <p class="l quote">"ಸರಿಯಾದ ವ್ಯಕ್ತಿ ಸಿಕ್ಕಿದ್ರೆ, ನನ್ ಒಂಟಿತನ ಹೋಗುತ್ತೆ."</p>
+          <p class="l">ಅವ್ರಿಗೆ ಒಬ್ಬ ವ್ಯಕ್ತಿ ಸಿಗ್ತಾರೆ, ಸ್ವಲ್ಪ ದಿನ ತುಂಬಾ ಖುಷಿಯಾಗಿ ಇರ್ತಾರೆ. ಆದ್ರೆ ನಂತ್ರ ಭಯ, ಅಸೂಯೆ, ಅಭದ್ರತೆ, ಅಥ್ವಾ ಅತೃಪ್ತಿ ಮತ್ತೆ ವಾಪಸ್ ಬರಬಹುದು.</p>
+        </div>
+      </div>
+      <p class="l">ಸಂತೋಷ ಎಂಬುದು ಹೊರಗಿನ ಯಾವುದೋ ವಸ್ತುವಿನಿಂದ ಶಾಶ್ವತವಾಗಿ ಬರೋಕೆ ಆಗಲ್ಲ ಅನ್ನೋದೇ ಇಲ್ಲಿನ ಮುಖ್ಯ ವಿಚಾರ. ನಿಜವಾದ "ಮುಕ್ತಿ" ಅಂದ್ರೆ ವರ್ತಮಾನದಲ್ಲೇ ಸಿಗೋ ಆಂತರಿಕ ಶಾಂತಿ ಮತ್ತು ಪೂರ್ಣತೆಯ ಸ್ಥಿತಿ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೨</span><h2>ಪ್ರೀತಿ ಅಂಟಿಕೊಳ್ಳುವಿಕೆ ಆಗಿ ಬದಲಾಗಬಹುದು</h2></div>
+    <div class="lines">
+      <p class="l">ಪ್ರೀತಿ ಮತ್ತು ಅಂಟಿಕೊಳ್ಳುವಿಕೆ ನಡುವೆ ಪುಸ್ತಕ ಒಂದು ಮುಖ್ಯ ವ್ಯತ್ಯಾಸ ತೋರಿಸುತ್ತೆ.</p>
+      <p class="l">ಯೋಚ್ಸಿ:</p>
+      <p class="l quote">"ನಾನು ನಿನ್ನನ್ನು ಪ್ರೀತಿಸ್ತೀನಿ."</p>
+      <p class="l">ಆದ್ರೆ ಆ ಭಾವನೆಯ ಒಳಗಡೆ ಇರೋದು:</p>
+      <p class="l quote">"ನನಗೆ ನೀನು ಬೇಕು."</p>
+      <p class="l quote">"ನನ್ನನ್ನ ಬಿಟ್ಟು ಹೋಗ್ಬೇಡ."</p>
+      <p class="l quote">"ನೀನು ಯಾವಾಗಲೂ ನನ್ಗೆ ಗಮನ ಕೊಡ್ಬೇಕು."</p>
+      <p class="l quote">"ನೀನು ಬೇರೆಯವ್ರ ಜೊತೆ ಮಾತಾಡಿದ್ರೆ, ನನಗೆ ಅಸೂಯೆ ಆಗುತ್ತೆ."</p>
+      <p class="l">ಈಗ ಆ ವ್ಯಕ್ತಿಯನ್ನ ಕಳ್ಕೊಳ್ಳೋ ಭಯ ಸಂಬಂಧದ ಒಂದು ಭಾಗ ಆಗಿಬಿಡುತ್ತೆ.</p>
+      <p class="l strong">ಇದನ್ನ ಪುಸ್ತಕ ನಿಜವಾದ ಪ್ರೀತಿ ಅಲ್ಲ, ಚಟದ ತರಹದ ಅಂಟಿಕೊಳ್ಳುವಿಕೆ ಅಂತ ಕರೀತ್ತೆ.</p>
+    </div>
+
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">ಸರಳ ಉದಾಹರಣೆ</p>
+      <div class="lines">
+        <p class="l">ವ್ಯಕ್ತಿ A:</p>
+        <p class="l quote">"ನಿನ್ನಿಲ್ಲದೆ ನಾನು ಬದುಕೋಕೆ ಆಗಲ್ಲ."</p>
+        <p class="l">ಮೊದಲ ಕೇಳುಕ್ಕೆ ಇದು ರೊಮ್ಯಾಂಟಿಕ್ ಆಗಿ ಕಾಣುತ್ತೆ.</p>
+        <p class="l">ಆದ್ರೆ ಮಾನಸಿಕವಾಗಿ ನೋಡಿದ್ರೆ ಇದ್ರ ಅರ್ಥ:</p>
+        <p class="l quote">"ನನ್ ಭದ್ರತೆ ಪೂರ್ತಿಯಾಗಿ ನಿನ್ ಮೇಲೆ ಅವಲಂಬಿತ."</p>
+        <p class="l">ಆಮೇಲೆ ಆ ವ್ಯಕ್ತಿ ಕೆಲವು ಗಂಟೆ ರಿಪ್ಲೈ ಮಾಡ್ದೇ ಇದ್ರೆ:</p>
+        <p class="l strong">ಪ್ರೀತಿ → ಭಯ → ಅತಿಯಾಗಿ ಯೋಚಿಸೋದು → ಕೋಪ → ಆರೋಪ</p>
+        <p class="l">ಈ ಚಕ್ರ ನೋವನ್ನ ಸೃಷ್ಟಿಸಬಹುದು.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೩</span><h2>ಪ್ರೀತಿ ಯಾಕೆ ಇದ್ದಕ್ಕಿದ್ದಂತೆ ದ್ವೇಷಕ್ಕೆ ತಿರುಗುತ್ತೆ</h2></div>
+    <div class="lines">
+      <p class="l">ಇಂತಹ ಸನ್ನಿವೇಶ ನೀವೂ ನೋಡಿರ್ಬೋದು:</p>
+      <p class="l">ಬೆಳಿಗ್ಗೆ:</p>
+      <p class="l quote">"ನಾನು ನಿನ್ ಪ್ರೀತಿಸ್ತೀನಿ ❤️"</p>
+      <p class="l">ಸಂಜೆ:</p>
+      <p class="l quote">"ನಿನ್ ಜೊತೆ ಇನ್ನೆಂದೂ ಮಾತಾಡೋಲ್ಲ!"</p>
+      <p class="l">ಸಂಬಂಧಗಳು ಒಂದೊಂದು ಸಲ ವಿರುದ್ಧ ಭಾವನೆಗಳ ನಡುವೆ ಓಲಾಡ್ತಾವೆ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ:</p>
+      <p class="l strong">ಪ್ರೀತಿ → ಅಂಟಿಕೊಳ್ಳುವಿಕೆ → ಭಯ → ಅಸೂಯೆ → ಕೋಪ → ಜಗಳ → ಸಂಧಾನ → ಪ್ರೀತಿ → ಮತ್ತೆ ಜಗಳ</p>
+      <p class="l">ಕೆಲವು ಜೋಡಿಗಳಿಗೆ ಈ ನಾಟಕದ ಮೇಲೇ ಒಂದು ರೀತಿ ಅಂಟಿಕೊಳ್ಳುವಿಕೆ ಬಂದುಬಿಡುತ್ತೆ, ಯಾಕಂದ್ರೆ ಆ ತೀವ್ರ ಭಾವನೆಗಳು ಜೀವಂತ ಇರೋ ಅನುಭವ ಕೊಡುತ್ತೆ.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">ಉದಾಹರಣೆ</p>
+      <div class="lines">
+        <p class="l">ಇಬ್ಬರು ಜಗಳ ಆಡ್ತಾರೆ.</p>
+        <p class="l">ಒಬ್ರು ಹೇಳ್ತಾರೆ:</p>
+        <p class="l quote">"ನೀನು ನನ್ನ ನಿರ್ಲಕ್ಷ್ಯ ಮಾಡ್ತಿದ್ದೀಯ!"</p>
+        <p class="l">ಇನ್ನೊಬ್ರು:</p>
+        <p class="l quote">"ನೀನು ಯಾವಾಗ್ಲೂ ನನ್ ಮೇಲೆ ದೂರು ಹಾಕ್ತೀಯ!"</p>
+        <p class="l">ಇಬ್ರೂ ಡಿಫೆನ್ಸಿವ್ ಆಗ್ತಾರೆ.</p>
+        <p class="l">ಮೂಲ ಸಮಸ್ಯೆ ಬಗೆಹರಿಸೋ ಬದ್ಲು, ಒಬ್ಬರ ಮೇಲೆ ಒಬ್ರು ಆಕ್ರಮಣ ಮಾಡ್ತಾರೆ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೪</span><h2>ಈಗೋ ಯಾವಾಗ್ಲೂ ಹೊರಗಡೆ ಏನಾದ್ರೂ ಹುಡುಕ್ತಾ ಇರುತ್ತೆ</h2></div>
+    <div class="lines">
+      <p class="l">"ಈಗೋ" ಅಂದ್ರೆ ಮನಸ್ಸು ಸೃಷ್ಟಿ ಮಾಡಿರೋ "ನಾನು" ಅನ್ನೋ ಭಾವನೆ ಅಂತ ಪುಸ್ತಕ ಕರೀತ್ತೆ.</p>
+      <p class="l">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="l quote">"ನಾನು ಯಶಸ್ವಿ."</p>
+      <p class="l quote">"ನಾನು ಆಕರ್ಷಕ."</p>
+      <p class="l quote">"ನಾನು ಇಂಥವ್ರ ಗೆಳೆಯ/ಗೆಳತಿ."</p>
+      <p class="l quote">"ನನಗೆ ಗೌರವ ಇದೆ."</p>
+      <p class="l quote">"ನಾನು ಬೇರೆಯವ್ರಿಗಿಂತ ಚೆನ್ನಾಗಿದ್ದೀನಿ."</p>
+      <p class="l">ಸಮಸ್ಯೆ ಏನಂದ್ರೆ, ನಿಮ್ ಗುರುತು ಇವೆಲ್ಲದ್ರ ಮೇಲೆ ಅವಲಂಬಿತ ಆಗಿದ್ರೆ, ಇವು ಕಳೆದುಹೋದಾಗ ನಿಮ್ಮನ್ನೇ ಕಳ್ಕೊಂಡ ಹಾಗೆ ಅನ್ಸುತ್ತೆ.</p>
+      <p class="l">ಸಂಬಂಧದಲ್ಲಿರೋ ಜೊತೆಗಾರ ಸ್ವಲ್ಪ ಕಾಲ ಈ ಗುರುತಿನ ಕೇಂದ್ರ ಬಿಂದು ಆಗ್ಬೋದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ:</p>
+      <p class="l quote">"ಈ ವ್ಯಕ್ತಿ ನನ್ ಜೀವನಕ್ಕೆ ಅರ್ಥ ಕೊಡ್ತಾರೆ."</p>
+      <p class="l">ಆದ್ರೆ ಆ ವ್ಯಕ್ತಿ ಬದಲಾದ್ರೆ ಅಥ್ವಾ ಬಿಟ್ಟು ಹೋದ್ರೆ, ಒಳಗಡೆ ಇದ್ದ ಅಭದ್ರತೆ ಮತ್ತೆ ಮೇಲೆ ಬರುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೫</span><h2>ಸಂಬಂಧಗಳು ನಿಮ್ ನೋವನ್ನ ಸೃಷ್ಟಿ ಮಾಡಲ್ಲ</h2></div>
+    <div class="lines">
+      <p class="l strong">ಇದು ಈ ಅಧ್ಯಾಯದ ಒಂದು ಮುಖ್ಯ ವಿಚಾರ.</p>
+      <p class="l">ಒಬ್ಬ ವ್ಯಕ್ತಿಗೆ ಮೊದಲೇ ಅಭದ್ರತೆ ಇದೆ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</p>
+      <p class="l">ಅವ್ರ ಜೊತೆಗಾರ ಮೆಸೇಜ್‌ಗೆ ರಿಪ್ಲೈ ಮಾಡಲ್ಲ.</p>
+      <p class="l">ಮನಸ್ಸು ಹೇಳುತ್ತೆ:</p>
+      <p class="l quote">"ಅವ್ರಿಗೆ ನನ್ ಬಗ್ಗೆ ಕೇರ್ ಇಲ್ಲ."</p>
+      <p class="l">ಆಮೇಲೆ:</p>
+      <p class="l strong">ಯೋಚನೆ → ಭಯ → ಕೋಪ → ಆರೋಪ</p>
+      <p class="l">ಆ ವ್ಯಕ್ತಿ ಯೋಚಿಸಬಹುದು:</p>
+      <p class="l quote">"ನನ್ ಜೊತೆಗಾರ್ರೇ ನನ್ ನೋವಿಗೆ ಕಾರಣ."</p>
+      <p class="l">ಆದ್ರೆ ಸಂಬಂಧ ಈ ನೋವನ್ನ ಹೊಸದಾಗಿ ಸೃಷ್ಟಿ ಮಾಡ್ತಿಲ್ಲ, ಈಗಾಗ್ಲೇ ಒಳಗಡೆ ಇದ್ದ ನೋವು ಮತ್ತು ಅಭದ್ರತೆಯನ್ನ ಮೇಲ್ಮೈಗೆ ತರುತ್ತೆ ಅಷ್ಟೇ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">ಸರಳ ಉದಾಹರಣೆ</p>
+      <div class="lines">
+        <p class="l">ಒಬ್ಬ ವ್ಯಕ್ತಿಗೆ ಮೊದಲಿಂದ್ಲೂ ತಿರಸ್ಕಾರ ಆಗುತ್ತೇನೋ ಅನ್ನೋ ಭಯ ಇದೆ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</p>
+        <p class="l">ಅವ್ರ ಫ್ರೆಂಡ್ ಹೇಳ್ತಾರೆ:</p>
+        <p class="l quote">"ಇವತ್ತು ಸಿಗೋಕೆ ಆಗಲ್ಲ."</p>
+        <p class="l">ಘಟನೆ ಚಿಕ್ಕದು.</p>
+        <p class="l">ಆದ್ರೆ ಮನಸ್ಸು ಅದನ್ನ ಹೀಗೆ ಅರ್ಥ ಮಾಡ್ಕೊಳ್ಳುತ್ತೆ:</p>
+        <p class="l quote">"ಯಾರಿಗೂ ನಾನು ಬೇಡ."</p>
+        <p class="l">ಆ ಘಟನೆ ಮೊದಲಿಂದ ಒಳಗಡೆ ಇದ್ದಿದ್ದನ್ನ ಎಬ್ಬಿಸಿತು ಅಷ್ಟೇ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೬</span><h2>"ವರ್ತಮಾನದಲ್ಲಿ ಇರೋದು" ಅಂದ್ರೆ ಏನು?</h2></div>
+    <div class="lines">
+      <p class="l strong">ಇದೇ ಈ ಅಧ್ಯಾಯದ ಮುಖ್ಯ ಅಭ್ಯಾಸ.</p>
+      <p class="l">ವರ್ತಮಾನದಲ್ಲಿ ಇರೋದು ಅಂದ್ರೆ:</p>
+      <p class="l quote">ನಿಮ್ ಒಳಗಡೆ ಏನಾಗ್ತಿದೆ ಅಂತ ಗಮನಿಸೋದು, ತಕ್ಷಣ ಆ ಪ್ರತಿಕ್ರಿಯೆ ಆಗಿಬಿಡೋ ಬದ್ಲು.</p>
+      <p class="l">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="l">ಯಾರೋ ನಿಮ್ಮನ್ನ ಅವಮಾನ ಮಾಡ್ತಾರೆ.</p>
+      <p class="l">ಸಹಜ ಪ್ರತಿಕ್ರಿಯೆ:</p>
+      <p class="l quote">"ಎಷ್ಟು ಧೈರ್ಯ ನಿಂದು!"</p>
+      <p class="l">ಆಮೇಲೆ ತಕ್ಷಣ ವಾಪಸ್ ಆಕ್ರಮಣ ಮಾಡ್ತೀರಿ.</p>
+      <p class="l">ವರ್ತಮಾನದಲ್ಲಿ ಇರೋದು ಅಂದ್ರೆ:</p>
+      <p class="l quote">"ನನಗೆ ಈಗ ಕೋಪ ಬರ್ತಿದೆ."</p>
+      <p class="l">ಗಮನಿಸಿ:</p>
+      <p class="l">ದೇಹದಲ್ಲಿ ಕೋಪ</p>
+      <p class="l">ಬರ್ತಿರೋ ಯೋಚನೆಗಳು</p>
+      <p class="l">ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡ್ಬೇಕು ಅನ್ನೋ ತುಡಿತ</p>
+      <p class="l">ಒತ್ತಡ</p>
+      <p class="l">ಆಕ್ರಮಣ ಮಾಡ್ಬೇಕು ಅನ್ನೋ ಆಸೆ</p>
+      <p class="l">ಕೋಪ ಇಲ್ಲ ಅಂತ ನಟಿಸೋ ಅಗತ್ಯ ಇಲ್ಲ.</p>
+      <p class="l">ಅದ್ರ ಆಧಾರದ ಮೇಲೆ ವರ್ತಿಸೋ ಮೊದ್ಲು, ಅದನ್ನ ಗಮನಿಸಿ ನೋಡಿ ಅಷ್ಟೇ.</p>
+      <p class="l strong">ಇದನ್ನ ಪುಸ್ತಕ ನಿಮ್ ಯೋಚನೆ ಮತ್ತು ಪ್ರತಿಕ್ರಿಯೆಗಳ "ಮೌನ ಸಾಕ್ಷಿ" ಆಗೋದು ಅಂತ ಕರೀತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೭</span><h2>ನಿಮ್ಮನ್ನ ಅಥ್ವಾ ಜೊತೆಗಾರ್ನ ತಕ್ಷಣ ತೀರ್ಪು ಕೊಡ್ಬೇಡಿ</h2></div>
+    <div class="lines">
+      <p class="l">ಜೊತೆಗಾರ್ಗೆ ಕೋಪ ಬಂತು ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನೀನು ಕೆಟ್ಟ ವ್ಯಕ್ತಿ."</p>
+      <p class="l">ಹೀಗೆ ಗುರುತಿಸಿ:</p>
+      <p class="l quote">"ಈಗ ಕೋಪ ಆಗ್ತಿದೆ."</p>
+      <p class="l">ಇದ್ರ ಅರ್ಥ ತಪ್ಪು ವರ್ತನೆಯನ್ನ ಒಪ್ಪಿಕೊಳ್ಳಿ ಅಂತ ಅಲ್ಲ.</p>
+      <p class="l">ಇದ್ರ ಅರ್ಥ, ನಿಮ್ ಸ್ವಂತ ಪ್ರತಿಕ್ರಿಯೆಯಲ್ಲಿ ಮುಳುಗದೇ, ಪರಿಸ್ಥಿತಿಯನ್ನ ಸ್ಪಷ್ಟವಾಗಿ ನೋಡೋದು.</p>
+      <p class="l strong">ಇದನ್ನ ಪುಸ್ತಕ "ಪ್ರತಿಕ್ರಿಯೆಯಿಂದ ಅರಿವಿಗೆ" ಹೋಗೋದು ಅಂತ ಕರೀತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೮</span><h2>ಆಕ್ರಮಣ ಮಾಡ್ದೇ ಮಾತಾಡಿ</h2></div>
+    <div class="lines">
+      <p class="l">ದೂರು ಹಾಕ್ದೆ ನಿಮ್ ಭಾವನೆ ಹೇಳೋಕೆ ಈ ಅಧ್ಯಾಯ ಸಲಹೆ ಕೊಡುತ್ತೆ.</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನೀನು ಎಂದೂ ನನ್ ಮಾತು ಕೇಳಲ್ಲ!"</p>
+      <p class="l">ಹೀಗೆ ಟ್ರೈ ಮಾಡಿ:</p>
+      <p class="l quote">"ನನಗೆ ಈಗ ನಿರ್ಲಕ್ಷ್ಯ ಮಾಡಿದ ಹಾಗೆ ಅನ್ಸ್ತಿದೆ, ದಯವಿಟ್ಟು ಕೇಳು."</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನೀನು ಯಾವಾಗ್ಲೂ ನನ್ಗೆ ಕೋಪ ತರಿಸ್ತೀಯ!"</p>
+      <p class="l">ಹೀಗೆ ಟ್ರೈ ಮಾಡಿ:</p>
+      <p class="l quote">"ನನಗೆ ಕೋಪ ಬರ್ತಿರೋದು ಗಮನಕ್ಕೆ ಬರ್ತಿದೆ. ಏನಾಯ್ತು ಅಂತ ಮಾತಾಡೋಣ್ವಾ?"</p>
+      <p class="l">ವ್ಯತ್ಯಾಸ ಇಷ್ಟೇ:</p>
+      <p class="l">ದೂರು:</p>
+      <p class="l quote">"ನೀನೇ ಸಮಸ್ಯೆ."</p>
+      <p class="l">ಅರಿವು:</p>
+      <p class="l quote">"ಇದೇ ನಾನು ಈಗ ಅನುಭವಿಸ್ತಿರೋದು."</p>
+      <p class="l">ಡಿಫೆನ್ಸಿವ್ ಆಗ್ದೆ ಕೇಳಿಸ್ಕೊಳ್ಳೋದನ್ನೂ ಪುಸ್ತಕ ಒತ್ತಿ ಹೇಳುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೦೯</span><h2>ಸಂಬಂಧದ ಸಮಸ್ಯೆಗಳೇ ಒಂದು ಅವಕಾಶ ಆಗ್ಬೋದು</h2></div>
+    <div class="lines">
+      <p class="l">ಇದೊಂದು ಆಸಕ್ತಿಕರ ವಿಚಾರ.</p>
+      <p class="l">ಸಾಮಾನ್ಯವಾಗಿ ಜನ ಅಂದ್ಕೊಳ್ತಾರೆ:</p>
+      <p class="l quote">"ಒಳ್ಳೆ ಸಂಬಂಧದಲ್ಲಿ ಸಮಸ್ಯೆನೇ ಇರ್ಬಾರ್ದು."</p>
+      <p class="l">ಪುಸ್ತಕ ಬೇರೆ ದೃಷ್ಟಿಕೋನ ಕೊಡುತ್ತೆ:</p>
+      <p class="l strong">ಸಮಸ್ಯೆಗಳು ನಿಮ್ಗೇ ಗೊತ್ತಿಲ್ದೆ ಇರೋ ಮನಸ್ಸಿನ ಮಾದರಿಗಳನ್ನ ಬಯಲಿಗೆ ತರುತ್ತೆ.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">ಉದಾಹರಣೆ</p>
+      <div class="lines">
+        <p class="l">ಯಾರೋ ನಿಮ್ಮನ್ನ ಟೀಕೆ ಮಾಡ್ತಾರೆ.</p>
+        <p class="l">ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಗಮನಕ್ಕೆ ಬರುತ್ತೆ:</p>
+        <p class="l quote">"ಆ ಮಾತು ನನ್ಗೆ ಯಾಕಿಷ್ಟು ಕೋಪ ತರಿಸ್ತು?"</p>
+        <p class="l">ಆಗ ಗೊತ್ತಾಗುತ್ತೆ:</p>
+        <p class="l quote">"ನಾನು ಯಾವಾಗ್ಲೂ ಸರಿ ಇರ್ಬೇಕು ಅಂತ ಬಲವಾದ ಅಗತ್ಯ ನನ್ಗಿದೆ."</p>
+        <p class="l">ಈಗ ಆ ಜಗಳ ನಿಮ್ ಬಗ್ಗೆನೇ ಏನೋ ತೋರಿಸ್ತಿದೆ.</p>
+      </div>
+    </div>
+    <p class="l" style="margin-top:20px;">ಇದನ್ನ ಪುಸ್ತಕ ಸಂಬಂಧವನ್ನ ಒಂದು ಆಧ್ಯಾತ್ಮಿಕ ಅಭ್ಯಾಸವಾಗಿ ಬಳಸೋದು ಅಂತ ಹೇಳುತ್ತೆ - ಕಷ್ಟದ ಕ್ಷಣಗಳನ್ನ ಇನ್ನಷ್ಟು ಜಾಗೃತರಾಗೋಕೆ ಬಳಸೋದು.</p>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೧೦</span><h2>"ನೋವಿನ-ದೇಹ" (ಪೈನ್-ಬಾಡಿ)</h2></div>
+    <div class="lines">
+      <p class="l">ಸಂಗ್ರಹ ಆಗಿರೋ ಭಾವನಾತ್ಮಕ ನೋವನ್ನ ಸೂಚಿಸೋಕೆ ಪುಸ್ತಕ "ಪೈನ್-ಬಾಡಿ" ಅನ್ನೋ ಪದ ಬಳಸುತ್ತೆ, ಇದು ಇದ್ದಕ್ಕಿದ್ದಂತೆ ತೀವ್ರವಾಗಿ ಎಚ್ಚೆತ್ಕೊಳ್ಳಬಹುದು.</p>
+      <p class="l">ಇದನ್ನ ಒಂದು ಭಾವನಾತ್ಮಕ ಟ್ರಿಗ್ಗರ್ ಸಿಸ್ಟಂ ಅಂತ ಅಂದ್ಕೊಳ್ಳಿ.</p>
+      <p class="l">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="l">ಯಾರೋ ಚಿಕ್ಕ ಮಾತು ಹೇಳ್ತಾರೆ:</p>
+      <p class="l quote">"ನೀನು ತಪ್ಪು ಮಾಡಿದೆ."</p>
+      <p class="l">ಆದ್ರೆ ಇದ್ದಕ್ಕಿದ್ದಂತೆ ನಿಮ್ಗೆ ಜಾಸ್ತಿ ಕೋಪ ಬರುತ್ತೆ.</p>
+      <p class="l">ಯಾಕೆ ಇಷ್ಟು ದೊಡ್ಡ ಪ್ರತಿಕ್ರಿಯೆ?</p>
+      <p class="l">ಪ್ರಸ್ತುತ ಘಟನೆ ಹಳೆಯ ಭಾವನಾತ್ಮಕ ನೋವನ್ನ ಎಬ್ಬಿಸಿರ್ಬೋದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</p>
+      <p class="l">ಇದಾದಾಗ, ಹೀಗೆ ಯೋಚಿಸೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನಾನೇ ಕೋಪಗೊಂಡಿದ್ದೀನಿ."</p>
+      <p class="l">ಹೀಗೆ ಟ್ರೈ ಮಾಡಿ:</p>
+      <p class="l quote">"ಈಗ ನನ್ ಒಳಗೆ ಕೋಪ ಆಗ್ತಿದೆ."</p>
+      <p class="l strong">ಈ ಚಿಕ್ಕ ವ್ಯತ್ಯಾಸ ನಿಮ್ ಮತ್ತು ಆ ಭಾವನೆ ನಡುವೆ ಸ್ವಲ್ಪ ಅಂತರ ಸೃಷ್ಟಿ ಮಾಡುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೧೧</span><h2>ನಿಮ್ ಭಾವನೆಗಳೇ ಆಗ್ಬೇಡಿ</h2></div>
+    <div class="lines">
+      <p class="l strong">ಇದು ತುಂಬಾ ಮುಖ್ಯ.</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನಾನು ಕೋಪಗೊಂಡಿದ್ದೀನಿ."</p>
+      <p class="l">ಹೀಗೆ ಗಮನಿಸಿ:</p>
+      <p class="l quote">"ಕೋಪ ಇಲ್ಲಿದೆ."</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನಾನು ವಿಫಲ."</p>
+      <p class="l">ಗಮನಿಸಿ:</p>
+      <p class="l quote">"ನಾನು ವಿಫಲ ಅನ್ನೋ ಯೋಚನೆಯನ್ನ ನನ್ ಮನಸ್ಸು ಸೃಷ್ಟಿ ಮಾಡ್ತಿದೆ."</p>
+      <p class="l">ಹೀಗೆ ಹೇಳೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನಾನು ಆತಂಕದಲ್ಲಿದ್ದೀನಿ."</p>
+      <p class="l">ಗಮನಿಸಿ:</p>
+      <p class="l quote">"ಈಗ ಆತಂಕ ಅನುಭವ ಆಗ್ತಿದೆ."</p>
+      <p class="l">ಭಾವನೆಯನ್ನ ಅದುಮಿಡೋದು ಗುರಿ ಅಲ್ಲ.</p>
+      <p class="l">ಅದಾಗಿ ಬಿಡ್ದೆ, ಅದನ್ನ ಗಮನಿಸೋದೇ ಗುರಿ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೧೨</span><h2>ನಿಜವಾಗ್ಲೂ ಏನ್ ಮಾಡ್ಬೇಕು?</h2></div>
+    <div class="lines">
+      <p class="l">ಒಂದು ತೀವ್ರ ಭಾವನೆ ಬಂದಾಗ:</p>
+      <p class="l label">ಹಂತ 1 — ನಿಲ್ಲಿಸಿ</p>
+      <p class="l">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡ್ಬೇಡಿ.</p>
+      <p class="l label">ಹಂತ 2 — ಗಮನಿಸಿ</p>
+      <p class="l">ಕೇಳ್ಕೊಳ್ಳಿ:</p>
+      <p class="l quote">"ನನಗೆ ಈಗ ಏನ್ ಅನ್ಸ್ತಿದೆ?"</p>
+      <p class="l label">ಹಂತ 3 — ದೇಹವನ್ನ ಗಮನಿಸಿ</p>
+      <p class="l">ಗಮನಿಸಿ:</p>
+      <p class="l">ಎದೆ ಬಿಗಿತ</p>
+      <p class="l">ಹೃದಯ ಬಡಿತ ಜೋರಾಗಿರೋದು</p>
+      <p class="l">ಹೊಟ್ಟೆಯಲ್ಲಿ ಒತ್ತಡ</p>
+      <p class="l">ಬಿಸಿ</p>
+      <p class="l">ನಡುಕ</p>
+      <p class="l label">ಹಂತ 4 — ಯೋಚನೆಗಳನ್ನ ಗಮನಿಸಿ</p>
+      <p class="l">ಮನಸ್ಸು ಏನ್ ಹೇಳ್ತಿದೆ ಅಂತ ಗಮನಿಸಿ.</p>
+      <p class="l">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="l quote">"ಅವ್ರಿಗೆ ನನ್ ಬಗ್ಗೆ ಗೌರವ ಇಲ್ಲ."</p>
+      <p class="l quote">"ಅವ್ರು ಯಾವಾಗ್ಲೂ ಹೀಗೇ ಮಾಡ್ತಾರೆ."</p>
+      <p class="l quote">"ನಾನು ವಾಪಸ್ ಹೋರಾಡ್ಬೇಕು."</p>
+      <p class="l label">ಹಂತ 5 — ಪ್ರತಿಯೊಂದು ಯೋಚನೆಯನ್ನೂ ತಕ್ಷಣ ನಂಬ್ಬೇಡಿ</p>
+      <p class="l">ಯೋಚನೆ ಅನ್ನೋದು ಮನಸ್ಸಲ್ಲಿ ಬರೋ ಒಂದು ವಿಷ್ಯ ಅಷ್ಟೇ.</p>
+      <p class="l">ಪ್ರತಿ ಯೋಚನೆ ಮೇಲೂ ವರ್ತಿಸ್ಬೇಕು ಅಂತ ಇಲ್ಲ.</p>
+      <p class="l label">ಹಂತ 6 — ಜಾಗೃತವಾಗಿ ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡಿ</p>
+      <p class="l">ಭಾವನೆಯ ತೀವ್ರತೆ ಕಡಿಮೆ ಆದ್ಮೇಲೆ, ನಿಜವಾಗ್ಲೂ ಏನ್ ಹೇಳ್ಬೇಕು ಅಥ್ವಾ ಮಾಡ್ಬೇಕು ಅಂತ ನಿರ್ಧಾರ ಮಾಡಿ.</p>
+      <p class="l strong">ಇದೇ ಈ ಅಧ್ಯಾಯದ ಪ್ರಕಾರ ವರ್ತಮಾನಕ್ಕೆ ಬರೋದ್ರ ಪ್ರಾಯೋಗಿಕ ಅರ್ಥ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೧೩</span><h2>ಪ್ರೀತಿ ಅಂದ್ರೆ ಎಲ್ಲಾನೂ ಸಹಿಸ್ಕೊಳ್ಳೋದು ಅಲ್ಲ</h2></div>
+    <div class="lines">
+      <p class="l">ಒಂದು ಮುಖ್ಯ ಪ್ರಾಯೋಗಿಕ ಅಂಶ:</p>
+      <p class="l strong">ವರ್ತಮಾನದಲ್ಲಿ ಇರೋದು ≠ ದೌರ್ಜನ್ಯ ಸಹಿಸ್ಕೊಳ್ಳೋದು.</p>
+      <p class="l">ಶಾಂತವಾಗಿ ಇರೋದು ಅಂದ್ರೆ ಈ ಅರ್ಥ ಅಲ್ಲ:</p>
+      <p class="l quote">"ಯಾರಾದ್ರೂ ನನ್ನ ನೋಯಿಸಬಹುದು, ನಾನು ಏನೂ ಮಾಡ್ಬಾರ್ದು."</p>
+      <p class="l">ನೀವು ಗುರುತಿಸ್ಬೋದು:</p>
+      <p class="l quote">"ಈ ವರ್ತನೆ ಹಾನಿಕಾರಕ."</p>
+      <p class="l">ಆದ್ರೂ ಅನಗತ್ಯ ದ್ವೇಷ, ಸೇಡು, ಅಥ್ವಾ ಅನಿಯಂತ್ರಿತ ಪ್ರತಿಕ್ರಿಯೆ ಇಲ್ದೇ ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡ್ಬಹುದು.</p>
+      <p class="l">ತೀರ್ಪು ಕೊಡ್ದೆ ಇರೋದು ಅಂದ್ರೆ ತಪ್ಪಾದ ವರ್ತನೆಯನ್ನ ಗುರುತಿಸ್ದೇ ಇರೋದು ಅಂತ ಅಲ್ಲ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">೧೪</span><h2>ಇನ್ನೊಬ್ರ ಮೇಲೆ ಪೂರ್ತಿಯಾಗಿ ಅವಲಂಬಿತರಾಗ್ಬೇಡಿ</h2></div>
+    <div class="lines">
+      <p class="l">ಈ ಅಧ್ಯಾಯ ಕೊನೆಗೆ ಇನ್ನೂ ಆಳಕ್ಕೆ ಹೋಗುತ್ತೆ.</p>
+      <p class="l">ಒಂಟಿಯಾಗಿ ಇರೋಕೆ ಕಷ್ಟ ಆಗೋ ವ್ಯಕ್ತಿ, ಆ ಅಸ್ವಸ್ಥತೆಯಿಂದ ತಪ್ಪಿಸ್ಕೊಳ್ಳೋಕೆ ಸಂಬಂಧ ಹುಡುಕ್ಬೋದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</p>
+      <p class="l">ಆದ್ರೆ ಆ ಅಸ್ವಸ್ಥತೆ ಕೊನೆಗೆ ಸಂಬಂಧದ ಒಳಗೂ ಬರ್ಬೋದು.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">ಉದಾಹರಣೆ</p>
+      <div class="lines">
+        <p class="l">ಸಂಬಂಧಕ್ಕೂ ಮೊದ್ಲು:</p>
+        <p class="l quote">"ನಂಗೆ ಒಂಟಿತನ ಅನ್ಸ್ತಿದೆ."</p>
+        <p class="l">ಸಂಬಂಧದ ನಂತ್ರ:</p>
+        <p class="l quote">"ಅವ್ರು ಯಾಕೆ ಟೆಕ್ಸ್ಟ್ ಮಾಡ್ತಿಲ್ಲ?"</p>
+        <p class="l">ಆಮೇಲೆ:</p>
+        <p class="l quote">"ಅವ್ರಿಗೆ ನನ್ ಅರ್ಥ ಆಗ್ತಿಲ್ವಾ?"</p>
+        <p class="l">ಆಮೇಲೆ:</p>
+        <p class="l quote">"ಅವ್ರು ನನ್ನ ಬಿಟ್ಟು ಹೋಗ್ತಾರಾ?"</p>
+        <p class="l">ಹೊರಗಿನ ಪರಿಸ್ಥಿತಿ ಬದಲಾಯ್ತು, ಆದ್ರೆ ಒಳಗಿನ ಅಸ್ವಸ್ಥತೆ ಹಾಗೇ ಉಳ್ಕೊಂಡಿತ್ತು.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter closing">
+    <h2>ಈ ಅಧ್ಯಾಯ ಇಡೀ ಒಂದೇ ಸರಳ ವಿಚಾರದಲ್ಲಿ</h2>
+    <div class="lines">
+      <p class="l">ಈ ಅಧ್ಯಾಯದ ಮುಖ್ಯ ಸಂದೇಶ ಹೀಗಿದೆ:</p>
+      <p class="l strong">ನಿಮ್ ಒಳಗಿನ ಅಸಂತೋಷಕ್ಕೆ ಇನ್ನೊಬ್ಬ ವ್ಯಕ್ತಿಯನ್ನ ಪರಿಹಾರ ಮಾಡ್ಕೊಳ್ಬೇಡಿ.</p>
+      <p class="l">ಬದ್ಲಿಗೆ:</p>
+      <p class="l strong">ಗಮನಿಸಿ → ಅನುಭವಿಸಿ → ವೀಕ್ಷಿಸಿ → ವರ್ತಮಾನಕ್ಕೆ ಬನ್ನಿ → ಜಾಗೃತವಾಗಿ ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡಿ</p>
+      <p class="l">ಸಂಬಂಧ ಇನ್ ಮುಂದೆ ಹೀಗಿರೋ ಬದ್ಲು:</p>
+      <p class="l quote">"ನೀನೇ ನನ್ ಸಂತೋಷಪಡ್ಸಬೇಕು."</p>
+      <p class="l">ಹೀಗಾಗ್ಬೋದು:</p>
+      <p class="l quote">"ನಾವಿಬ್ರೂ ಒಳಗಡೆ ಏನಾಗ್ತಿದೆ ಅಂತ ಅರಿವಿನಲ್ಲಿ ಇಟ್ಕೊಂಡು ಜೊತೆಗಿರ್ಬಹುದು."</p>
+      <p class="l">ಪ್ರೀತಿ ಅನ್ನೋದು ಭಾವನಾತ್ಮಕ ಅಂಟಿಕೊಳ್ಳುವಿಕೆಗಿಂತ ಆಳವಾದದ್ದು — ವರ್ತಮಾನ ಮತ್ತು ಆಂತರಿಕ ಅರಿವಿನ ಜೊತೆ ಸಂಬಂಧ ಇಟ್ಕೊಂಡ ಸ್ಥಿತಿ ಅಂತ ಪುಸ್ತಕ ಕೊನೆಗೆ ಹೇಳುತ್ತೆ.</p>
+    </div>
+  </section>
+
+  <section class="chapter closing">
+    <h2>ಒಂದು ಸುಲಭ ಉದಾಹರಣೆ ನೆನಪಿಡೋಕೆ</h2>
+    <div class="duo">
+      <div class="col without">
+        <span class="tag">ವರ್ತಮಾನ ಇಲ್ದೆ</span>
+        <p class="l">ಜೊತೆಗಾರ ರಿಪ್ಲೈ ಮಾಡಲ್ಲ →</p>
+        <p class="l">"ಅವ್ರಿಗೆ ಕೇರ್ ಇಲ್ಲ!" →</p>
+        <p class="l">ಕೋಪ →</p>
+        <p class="l">ಆರೋಪ →</p>
+        <p class="l">ಜಗಳ →</p>
+        <p class="l">ಇನ್ನಷ್ಟು ನೋವು.</p>
+      </div>
+      <div class="col with">
+        <span class="tag">ವರ್ತಮಾನದ ಜೊತೆ</span>
+        <p class="l">ಜೊತೆಗಾರ ರಿಪ್ಲೈ ಮಾಡಲ್ಲ →</p>
+        <p class="l">"ನಂಗೆ ಆತಂಕ ಆಗ್ತಿದೆ." →</p>
+        <p class="l">ಆ ಭಾವನೆ ಗಮನಿಸಿ →</p>
+        <p class="l">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯೆ ಕೊಡ್ದೆ →</p>
+        <p class="l">ನಿಜವಾಗ್ಲೂ ಏನಾಗ್ತಿದೆ ಅಂತ ಅರ್ಥ ಮಾಡ್ಕೊಂಡು →</p>
+        <p class="l">ಶಾಂತವಾಗಿ ಮಾತಾಡಿ.</p>
+      </div>
+    </div>
+    <p class="signoff">ಇದೇ ಅಧ್ಯಾಯ 8ರ ಪ್ರಾಯೋಗಿಕ ಸಾರಾಂಶ.</p>
+  </section>
+
+</main>
+
+<script>
+  const field = document.getElementById('field');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) {
+    const count = 34;
+    for (let i = 0; i < count; i++) {
+      const mote = document.createElement('div');
+      const size = 2 + Math.random() * 5;
+      const kindRoll = Math.random();
+      mote.className = 'mote' + (kindRoll < 0.33 ? ' sage' : kindRoll < 0.66 ? ' ember' : '');
+      mote.style.width = size + 'px';
+      mote.style.height = size + 'px';
+      mote.style.left = Math.random() * 100 + 'vw';
+      const fallDur = 14 + Math.random() * 16;
+      const swayDur = 4 + Math.random() * 5;
+      const delay = -(Math.random() * fallDur);
+      mote.style.animationDuration = fallDur + 's, ' + swayDur + 's';
+      mote.style.animationDelay = delay + 's, ' + (Math.random() * swayDur) + 's';
+      mote.style.opacity = (0.25 + Math.random() * 0.5).toFixed(2);
+      field.appendChild(mote);
+    }
+  }
+
+  const chapters = document.querySelectorAll('section.chapter');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    chapters.forEach(ch => io.observe(ch));
+  } else {
+    chapters.forEach(ch => ch.classList.add('in-view'));
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಪ್ರಸ್ತುತತೆಯ ಸ್ಥಿತಿ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Kannada:wght@400;500;600&family=Baloo+Tamma+2:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0f13;
+    --ink-2:#0d1a1a;
+    --gold:#d9a65c;
+    --gold-soft:#e8c98f;
+    --sage:#7fa88f;
+    --cream:#ede6d6;
+    --muted:#8fa39a;
+    --line: rgba(237,230,214,0.12);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background: radial-gradient(ellipse at 50% 0%, var(--ink-2) 0%, var(--ink) 55%, #060909 100%);
+    color:var(--cream);
+    font-family:'Baloo Tamma 2', 'Noto Serif Kannada', sans-serif;
+    font-weight:400;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- floating / falling particles ---------- */
+  #particle-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(217,166,92,0.9) 0%, rgba(217,166,92,0.15) 60%, transparent 100%);
+    filter: blur(0.3px);
+    opacity:0;
+  }
+  .mote.sage{
+    background: radial-gradient(circle, rgba(127,168,143,0.85) 0%, rgba(127,168,143,0.12) 60%, transparent 100%);
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    8%{ opacity:.8; }
+    92%{ opacity:.5; }
+    100%{ transform:translateY(-115vh) translateX(var(--drift)); opacity:0; }
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh) translateX(0); opacity:0; }
+    8%{ opacity:.7; }
+    92%{ opacity:.4; }
+    100%{ transform:translateY(115vh) translateX(var(--drift)); opacity:0; }
+  }
+
+  /* ---------- breathing glow, the signature element ---------- */
+  .breath-orb{
+    position:fixed;
+    top:50%; left:50%;
+    width:60vmax; height:60vmax;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(217,166,92,0.06) 0%, rgba(127,168,143,0.04) 40%, transparent 70%);
+    animation: breathe 9s ease-in-out infinite;
+    z-index:0;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:translate(-50%,-50%) scale(0.85); opacity:.55; }
+    50%{ transform:translate(-50%,-50%) scale(1.15); opacity:1; }
+  }
+
+  main{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+    margin:0 auto;
+    padding: 14vh 6vw 24vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding-bottom:6vh;
+  }
+  .eyebrow{
+    letter-spacing:0.35em;
+    font-size:0.78rem;
+    color:var(--sage);
+    margin-bottom:2rem;
+    opacity:0;
+    animation: fadeUp 1.4s ease forwards 0.2s;
+  }
+  h1.title{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size:clamp(2.2rem, 6.4vw, 3.8rem);
+    line-height:1.25;
+    color:var(--gold-soft);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 0.5s;
+  }
+  .title .em{ color:var(--cream); }
+  .hero-sub{
+    margin-top:2.2rem;
+    max-width:50ch;
+    font-size:1.15rem;
+    line-height:2;
+    color:var(--muted);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 0.9s;
+  }
+  .scroll-hint{
+    margin-top:5rem;
+    font-size:0.85rem;
+    letter-spacing:0.1em;
+    color:var(--sage);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 1.3s, pulseHint 3s ease-in-out infinite 2s;
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(22px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulseHint{
+    0%,100%{ opacity:0.4; }
+    50%{ opacity:0.9; }
+  }
+
+  /* ---------- sections ---------- */
+  section.chapter{
+    margin-top: 16vh;
+    position:relative;
+  }
+  .section-number{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:5.5rem;
+    line-height:1;
+    color:transparent;
+    -webkit-text-stroke: 1px rgba(217,166,92,0.4);
+    margin-bottom:0.4rem;
+    display:block;
+  }
+  h2.section-title{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size:clamp(1.5rem, 3.6vw, 2.1rem);
+    line-height:1.4;
+    color:var(--gold-soft);
+    margin-bottom:2.4rem;
+    padding-bottom:1rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  h3.sub-title{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size:1.3rem;
+    color:var(--sage);
+    margin: 2.6rem 0 1rem;
+  }
+
+  /* every line of content gets its own row + reveal transition */
+  .line{
+    font-size:1.08rem;
+    line-height:1.95;
+    color:var(--cream);
+    margin-bottom:0.85rem;
+    opacity:0;
+    transform:translateY(16px);
+    transition: opacity 0.9s cubic-bezier(.22,.68,.36,1), transform 0.9s cubic-bezier(.22,.68,.36,1);
+  }
+  .line.visible{ opacity:1; transform:translateY(0); }
+
+  .line.quote{
+    font-family:'Noto Serif Kannada', serif;
+    font-style:normal;
+    font-size:1.18rem;
+    color:var(--gold-soft);
+    padding-left:1.2rem;
+    border-left:2px solid rgba(217,166,92,0.5);
+    margin:1.2rem 0;
+  }
+  .line.item{
+    padding-left:1.4rem;
+    position:relative;
+    color:var(--muted);
+  }
+  .line.item::before{
+    content:"·";
+    position:absolute;
+    left:0;
+    color:var(--sage);
+  }
+  .line.marker{
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:rgba(143,163,154,0.55);
+    margin: -0.3rem 0 1.2rem;
+    font-family:'Jost', sans-serif;
+  }
+  .line.strong{
+    color:var(--gold-soft);
+    font-weight:500;
+  }
+  .line.cross{
+    color:#c98b7f;
+  }
+  .line.arrow{
+    color:var(--sage);
+    font-size:1.05rem;
+  }
+  .spacer-small{ height:0.6rem; }
+  .spacer{ height:2.2rem; }
+
+  /* closing */
+  .closing{
+    margin-top:20vh;
+    text-align:center;
+    padding: 6vh 0 4vh;
+  }
+  .closing-final{
+    font-family:'Noto Serif Kannada', serif;
+    font-weight:500;
+    font-size:clamp(1.35rem, 3.4vw, 1.8rem);
+    line-height:1.9;
+    color:var(--gold-soft);
+    margin-top:2.5rem;
+    opacity:0;
+    transform:translateY(16px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .closing-final.visible{ opacity:1; transform:translateY(0); }
+
+  footer{
+    text-align:center;
+    padding: 6vh 0 10vh;
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    color:rgba(143,163,154,0.4);
+    position:relative;
+    z-index:2;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+    .line{ opacity:1; transform:none; }
+  }
+
+  @media (max-width:600px){
+    main{ padding: 10vh 6vw 18vh; }
+    .section-number{ font-size:3.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particle-field"></div>
+<div class="breath-orb"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">ಅಧ್ಯಾಯ ಐದು</div>
+    <h1 class="title">ಪ್ರಸ್ತುತತೆಯ <span class="em">ಸ್ಥಿತಿ</span></h1>
+    <p class="hero-sub">ಈ ಅಧ್ಯಾಯವು, ಸತತವಾದ ಆಲೋಚನೆಗಳ ಪ್ರವಾಹಕ್ಕೆ ಸಿಲುಕದೆ, ಈಗಿನ ಕ್ಷಣದಲ್ಲಿ ಸಂಪೂರ್ಣವಾಗಿ ಜಾಗೃತರಾಗಿ ಇರುವುದನ್ನು ಕಲಿಸುತ್ತದೆ.</p>
+    <div class="scroll-hint">ಆರಂಭಿಸಲು ಕೆಳಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ — ಉಸಿರಾಡುತ್ತಾ ಸಾಗಿ ↓</div>
+  </div>
+
+  <!-- 1 -->
+  <section class="chapter">
+    <span class="section-number">೦೧</span>
+    <h2 class="section-title">ಪ್ರಸ್ತುತತೆ ಎಂದರೇನು?</h2>
+    <div class="line">ಪ್ರಸ್ತುತತೆ ಎಂದರೆ, ಈಗ ಈ ಕ್ಷಣದಲ್ಲಿ ಏನು ನಡೆಯುತ್ತಿದೆ ಎಂಬುದರ ಬಗ್ಗೆ ನಿಮಗೆ ಪೂರ್ಣ ಅರಿವು ಇರುವುದು.</div>
+    <div class="line">ಇದರರ್ಥ, ನೀವು ಈ ಕೆಳಗಿನವುಗಳಲ್ಲಿ ಸಿಲುಕಿಲ್ಲ:</div>
+    <div class="line item">ನಿನ್ನೆ ನಡೆದ ಘಟನೆಗಳ ನೆನಪು</div>
+    <div class="line item">ನಾಳೆ ಏನಾಗಬಹುದೆಂಬ ಚಿಂತೆ</div>
+    <div class="line item">ಎಂದೂ ನಿಲ್ಲದ ಆಲೋಚನೆಗಳ ಸರಪಳಿ</div>
+    <div class="line item">ಮನಸ್ಸಿನಲ್ಲೇ ಕಟ್ಟಿಕೊಂಡ ಕಾಲ್ಪನಿಕ ಪ್ರಸಂಗಗಳು</div>
+    <div class="spacer-small"></div>
+    <div class="line">ಪ್ರಸ್ತುತತೆಯನ್ನು ಕೇವಲ ಬುದ್ಧಿಯಿಂದ ಗ್ರಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ — ಅದನ್ನು ಆಚರಣೆಯ ಮೂಲಕ, ನಿಜವಾಗಿ ಪ್ರಸ್ತುತರಾಗುವ ಮೂಲಕವೇ ಅನುಭವಿಸಬೇಕು. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">ಒಂದು ಸರಳ ಉದಾಹರಣೆ</h3>
+    <div class="line">ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ, ನೀವು ಚಹಾ ಕುಡಿಯುತ್ತಿದ್ದೀರಿ.</div>
+    <div class="line">ಸಾಮಾನ್ಯವಾಗಿ ಮನಸ್ಸಿನಲ್ಲಿ ಹೀಗೆ ನಡೆಯುತ್ತಿರುತ್ತದೆ:</div>
+    <div class="line quote">"ನಾಳೆ ಆಫೀಸಿಗೆ ಹೋಗಬೇಕು... ಅವರು ಯಾಕೆ ಹಾಗೆ ಮಾತಾಡಿದರು... ಆಮೇಲೆ ಏನು ಮಾಡಬೇಕು..."</div>
+    <div class="line">ಕೈಯಲ್ಲಿ ಚಹಾ ಇದ್ದರೂ, ಮನಸ್ಸು ಬೇರೆಲ್ಲೋ ಅಲೆದಾಡುತ್ತಿರುತ್ತದೆ.</div>
+    <div class="line">ಇದಕ್ಕೆ ವಿರುದ್ಧವಾಗಿ, ಪ್ರಸ್ತುತರಾಗಿ ಇರುವುದೆಂದರೆ:</div>
+    <div class="line item">ಕಪ್ಪಿನ ಬಿಸಿಯನ್ನು ಕೈಯಲ್ಲಿ ಅನುಭವಿಸುವುದು</div>
+    <div class="line item">ಚಹಾದ ರುಚಿಯನ್ನು ನಿಜವಾಗಿ ಸವಿಯುವುದು</div>
+    <div class="line item">ಉಸಿರಾಟದ ಗತಿಯನ್ನು ಗಮನಿಸುವುದು</div>
+    <div class="line item">ಸುತ್ತಲಿನ ಶಬ್ದಗಳಿಗೆ ಕಿವಿಗೊಡುವುದು</div>
+    <div class="spacer-small"></div>
+    <div class="line strong">ಆಗ ನೀವು ನಿಜಕ್ಕೂ ಆ ಕ್ಷಣದಲ್ಲಿ ಇರುತ್ತೀರಿ.</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="chapter">
+    <span class="section-number">೦೨</span>
+    <h2 class="section-title">ಪ್ರಸ್ತುತತೆಯನ್ನು ಅಭ್ಯಾಸ ಮಾಡುವುದು ಹೇಗೆ</h2>
+    <div class="line">ಇದಕ್ಕಾಗಿ ಪುಸ್ತಕ ಒಂದು ಸುಲಭವಾದ ಪ್ರಯೋಗವನ್ನು ಸೂಚಿಸುತ್ತದೆ.</div>
+    <div class="line">ಕಣ್ಣುಗಳನ್ನು ಮುಚ್ಚಿ, ನಿಮ್ಮಷ್ಟಕ್ಕೇ ಹೀಗೆ ಕೇಳಿಕೊಳ್ಳಿ:</div>
+    <div class="line quote">"ನನ್ನ ಮುಂದಿನ ಆಲೋಚನೆ ಯಾವುದಾಗಿರಬಹುದು?"</div>
+    <div class="line">ಆಮೇಲೆ ಸುಮ್ಮನೆ ಕಾದು ಗಮನಿಸಿ.</div>
+    <div class="line">ಆ ಕ್ಷಣದಲ್ಲಿ, ಯಾವುದೇ ಆಲೋಚನೆ ಇಲ್ಲದ ಒಂದು ಶೂನ್ಯ ಜಾಗ — ಕೇವಲ ಎಚ್ಚರ ಮತ್ತು ಸ್ತಬ್ಧತೆ — ಇರುವುದನ್ನು ನೀವು ಗಮನಿಸಬಹುದು. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">30 ಸೆಕೆಂಡುಗಳ ಒಂದು ಅಭ್ಯಾಸ</h3>
+    <div class="line item">ಈಗ ಮಾಡುತ್ತಿರುವುದನ್ನು ಸ್ವಲ್ಪ ನಿಲ್ಲಿಸಿ.</div>
+    <div class="line item">ಸಹಜವಾದ ಒಂದು ಉಸಿರನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ.</div>
+    <div class="line item">ಮನಸ್ಸನ್ನು ಬಲವಂತವಾಗಿ ಖಾಲಿ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಬೇಡಿ.</div>
+    <div class="line item">ಆಲೋಚನೆಗಳು ಬಂದಂತೆ ಅವುಗಳನ್ನು ಗಮನಿಸುತ್ತಿರಿ.</div>
+    <div class="line item">ಒಂದು ಆಲೋಚನೆ ಮುಗಿದು ಮತ್ತೊಂದು ಬರುವ ಮೊದಲಿನ ಖಾಲಿ ಜಾಗವನ್ನು ಗುರುತಿಸಿ.</div>
+    <div class="line item">ದೇಹದ ಅನುಭವವನ್ನು ಅರಿಯಿರಿ.</div>
+    <div class="line item">ಗಮನವನ್ನು ಮತ್ತೆ ಈಗ ನಡೆಯುತ್ತಿರುವುದರತ್ತ ತನ್ನಿ.</div>
+  </section>
+
+  <!-- 3 -->
+  <section class="chapter">
+    <span class="section-number">೦೩</span>
+    <h2 class="section-title">ದೇಹವನ್ನೇ ಆಧಾರವಾಗಿಸಿಕೊಳ್ಳಿ</h2>
+    <div class="line">ದೇಹದ ಬಗ್ಗೆ ಇರುವ ಅರಿವು, ಪ್ರಸ್ತುತ ಕ್ಷಣದಲ್ಲಿ ಇರಲು ದೊಡ್ಡ ಸಹಾಯ ಮಾಡುತ್ತದೆ ಎಂದು ಪುಸ್ತಕ ಒತ್ತಿ ಹೇಳುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">ಇದಕ್ಕಾಗಿ ಸಂಕೀರ್ಣವಾದುದೇನೂ ಮಾಡಬೇಕಿಲ್ಲ.</div>
+    <div class="line">ಉದಾಹರಣೆಗೆ, ಶಾಂತವಾಗಿ ಕುಳಿತಾಗ ಗಮನಿಸಿ:</div>
+    <div class="line item">ಕೈಗಳಲ್ಲಿನ ಅನುಭವ</div>
+    <div class="line item">ಪಾದಗಳಲ್ಲಿನ ಅನುಭವ</div>
+    <div class="line item">ಉಸಿರಾಟದ ಗತಿ</div>
+    <div class="line item">ಹೃದಯ ಬಡಿತ</div>
+    <div class="line item">ದೇಹದೊಳಗಿನ ಒಟ್ಟಾರೆ ಸಂವೇದನೆ</div>
+    <div class="spacer-small"></div>
+    <div class="line">ಈ ಸಮಯದಲ್ಲಿ ಮನಸ್ಸು ಬೇರೆಡೆ ಅಲೆದಾಡಬಹುದು — ಅದು ಸಹಜ, ಅದರ ಬಗ್ಗೆ ಚಿಂತಿಸಬೇಕಿಲ್ಲ.</div>
+    <div class="line">ಆಗ ಸರಳವಾಗಿ ಗಮನಿಸಿ ಹೇಳಿಕೊಳ್ಳಿ:</div>
+    <div class="line quote">"ನಾನು ಆಲೋಚಿಸುತ್ತಿದ್ದೇನೆ."</div>
+    <div class="line">ಮತ್ತೆ ನಿಧಾನವಾಗಿ ದೇಹ ಮತ್ತು ಪ್ರಸ್ತುತ ಕ್ಷಣಕ್ಕೆ ಗಮನ ಹಿಂತಿರುಗಿಸಿ.</div>
+  </section>
+
+  <!-- 4 -->
+  <section class="chapter">
+    <span class="section-number">೦೪</span>
+    <h2 class="section-title">ಭವಿಷ್ಯಕ್ಕಾಗಿ ಸಂತೋಷವನ್ನು ಕಾಯಿಸಿಡಬೇಡಿ</h2>
+    <div class="line">ಇಲ್ಲಿ ಪುಸ್ತಕ ಒಂದು ವಿಶಿಷ್ಟ ಬಗೆಯ ಕಾಯುವಿಕೆಯ ಬಗ್ಗೆ ಮಾತನಾಡುತ್ತದೆ.</div>
+    <div class="line">ಸಾಮಾನ್ಯವಾಗಿ ಮನಸ್ಸು ಹೀಗೆ ಯೋಚಿಸುತ್ತದೆ:</div>
+    <div class="line quote">"ಆ ಕೆಲಸ ಸಿಕ್ಕ ಮೇಲೆಯೇ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</div>
+    <div class="line quote">"ಓದು ಮುಗಿದ ಮೇಲೆಯೇ ನಾನು ನಿರಾಳವಾಗಿ ಇರುತ್ತೇನೆ."</div>
+    <div class="line quote">"ನಾನು ಯಶಸ್ವಿಯಾದ ಮೇಲೆಯೇ ಜೀವನ ಚೆನ್ನಾಗಿರುತ್ತದೆ."</div>
+    <div class="line">ಇಲ್ಲಿ ಮನಸ್ಸು, ಪ್ರಸ್ತುತ ಕ್ಷಣವನ್ನೇ ಒಂದು ತಡೆಗೋಡೆಯಂತೆ ಪರಿಗಣಿಸುತ್ತಿದೆ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.</div>
+    <div class="line">ಆದರೆ ನಿಜವಾದ ಪ್ರಸ್ತುತತೆ ಇದಕ್ಕಿಂತ ಭಿನ್ನ.</div>
+    <div class="line">ನಿಮ್ಮ ಗುರಿಗಳ ಕಡೆಗೆ ಶ್ರಮಿಸುತ್ತಲೇ, ಆ ಇಡೀ ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿ ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ಪ್ರಸ್ತುತರಾಗಿ ಇರಬಹುದು. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">ಉದಾಹರಣೆ</h3>
+    <div class="line">ಹೀಗೆ ಯೋಚಿಸುವ ಬದಲು:</div>
+    <div class="line quote">"ಇಂಗ್ಲಿಷ್ ಚೆನ್ನಾಗಿ ಬಂದ ಮೇಲೆಯೇ ಕಲಿಕೆಯನ್ನು ಆನಂದಿಸುತ್ತೇನೆ."</div>
+    <div class="line">ಹೀಗೆ ಯೋಚಿಸಿ:</div>
+    <div class="line quote">"ಈಗಲೇ ನಾನು ಇಂಗ್ಲಿಷ್ ಕಲಿಯುತ್ತಿದ್ದೇನೆ — ಈ ಕಲಿಕೆಯ ಕ್ಷಣವನ್ನೇ ಅನುಭವಿಸೋಣ."</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="chapter">
+    <span class="section-number">೦೫</span>
+    <h2 class="section-title">ಪ್ರಕೃತಿ ಮನಸ್ಸಿಗೆ ಶಾಂತಿ ನೀಡುವುದೇಕೆ</h2>
+    <div class="line">ನೀವು ಎಂದಾದರೂ ಇವುಗಳನ್ನು ದಿಟ್ಟಿಸಿ ನೋಡಿದ್ದೀರಾ:</div>
+    <div class="line item">ಸೂರ್ಯಾಸ್ತ</div>
+    <div class="line item">ವಿಶಾಲ ಆಕಾಶ</div>
+    <div class="line item">ಮರಗಳ ಸಾಲು</div>
+    <div class="line item">ಎತ್ತರದ ಪರ್ವತಗಳು</div>
+    <div class="line item">ಸುರಿಯುವ ಮಳೆ</div>
+    <div class="line item">ಹರಿಯುವ ನದಿ</div>
+    <div class="spacer-small"></div>
+    <div class="line">— ಮತ್ತು ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಒಂದು ಆಳವಾದ ಶಾಂತಿಯನ್ನು ಅನುಭವಿಸಿದ್ದೀರಾ?</div>
+    <div class="line">ಇಂತಹ ಕ್ಷಣಗಳಲ್ಲಿ ಮನಸ್ಸು ತಾತ್ಕಾಲಿಕವಾಗಿ ಸ್ತಬ್ಧವಾಗುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಮುಂದಿರುವುದನ್ನು ನೀವು ನೇರವಾಗಿ, ಯಾವುದೇ ಆಲೋಚನೆಯ ಮಧ್ಯಸ್ಥಿಕೆ ಇಲ್ಲದೆ ಅನುಭವಿಸುತ್ತೀರಿ ಎಂದು ಪುಸ್ತಕ ವಿವರಿಸುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">ಇದನ್ನು ಪ್ರಯತ್ನಿಸಿ</h3>
+    <div class="line">ಮುಂದಿನ ಬಾರಿ ಸುಂದರವಾದುದೇನೋ ಕಣ್ಣಿಗೆ ಬಿದ್ದಾಗ, ತಕ್ಷಣ ಹೀಗೆ ಹೇಳಿಕೊಳ್ಳಬೇಡಿ:</div>
+    <div class="line quote">"ಆಹಾ, ಎಷ್ಟು ಸುಂದರ!"</div>
+    <div class="line">ಬದಲಿಗೆ, 10–20 ಸೆಕೆಂಡುಗಳ ಕಾಲ ಸುಮ್ಮನೆ ದಿಟ್ಟಿಸಿ ನೋಡಿ.</div>
+    <div class="line">ಬಣ್ಣ, ಆಕಾರ, ಶಬ್ದ ಮತ್ತು ಒಟ್ಟಾರೆ ಅನುಭವವನ್ನು ಗಮನಿಸಿ.</div>
+    <div class="line">ಅದನ್ನು ಪದಗಳಲ್ಲಿ ವಿವರಿಸಲು ಆತುರಪಡಬೇಡಿ.</div>
+  </section>
+
+  <!-- 6 -->
+  <section class="chapter">
+    <span class="section-number">೦೬</span>
+    <h2 class="section-title">ಅರಿತುಕೊಳ್ಳುವುದು ಮತ್ತು ನಿಜವಾಗಿ ಪ್ರಸ್ತುತರಾಗಿರುವುದು ಬೇರೆಬೇರೆ</h2>
+    <div class="line">ಇದೊಂದು ಬಹಳ ಮುಖ್ಯವಾದ ಎಚ್ಚರಿಕೆ.</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆಯ ಬಗ್ಗೆ ನೂರು ಪುಸ್ತಕಗಳನ್ನು ಓದಿದ ಮಾತ್ರಕ್ಕೆ ನೀವು ನಿಜವಾಗಿ ಪ್ರಸ್ತುತರಾಗುತ್ತೀರಿ ಎಂದೇನಿಲ್ಲ.</div>
+    <div class="line">ಉದಾಹರಣೆಗೆ, ಒಬ್ಬರು ಹೀಗೆ ಹೇಳಬಹುದು:</div>
+    <div class="line quote">"ನನಗೆ ಮೈಂಡ್‌ಫುಲ್‌ನೆಸ್ ಗೊತ್ತಿದೆ. ಪ್ರಜ್ಞೆ ಎಂದರೇನೆಂದು ನನಗೆ ಅರ್ಥವಾಗುತ್ತದೆ. 'ಈಗ' ಎಂಬ ಪರಿಕಲ್ಪನೆಯೂ ನನಗೆ ಗೊತ್ತಿದೆ."</div>
+    <div class="line">ಆದರೂ ಅವರ ಮನಸ್ಸು ಇನ್ನೂ ನಿರಂತರವಾಗಿ ಚಿಂತೆ, ಆಲೋಚನೆಗಳಲ್ಲೇ ಮುಳುಗಿರಬಹುದು.</div>
+    <div class="line">ಪುಸ್ತಕ ಹೇಳುವ ಅಂಶ ಇಷ್ಟೇ:</div>
+    <div class="line strong">ಬರೀ ಪರಿಕಲ್ಪನೆಯನ್ನು ಅರ್ಥಮಾಡಿಕೊಂಡರೆ ಸಾಲದು — ಅದನ್ನು ಆಚರಣೆಗೆ ತನ್ನಬೇಕು.</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆ ಎಂಬುದು ಅನುಭವಿಸಬೇಕಾದ ಸಂಗತಿ, ಬರೀ ನೆನಪಿಟ್ಟುಕೊಳ್ಳಬೇಕಾದ ಮಾಹಿತಿಯಲ್ಲ. �</div>
+    <div class="line marker">5.PDF</div>
+  </section>
+
+  <!-- 7 -->
+  <section class="chapter">
+    <span class="section-number">೦೭</span>
+    <h2 class="section-title">ನಿಮ್ಮ ಆಲೋಚನೆಗಳ "ವೀಕ್ಷಕ"ರಾಗಿ</h2>
+    <div class="line">ಇದು ಈ ಅಧ್ಯಾಯದ ಅತ್ಯಂತ ಮಹತ್ವದ ಪರಿಕಲ್ಪನೆಗಳಲ್ಲಿ ಒಂದು.</div>
+    <div class="line">ಹೀಗೆ ಹೇಳುವ ಬದಲು:</div>
+    <div class="line quote">"ನಾನು ಕೋಪಗೊಂಡಿದ್ದೇನೆ."</div>
+    <div class="line">ಹೀಗೆ ಗಮನಿಸಲು ಪ್ರಯತ್ನಿಸಿ:</div>
+    <div class="line quote">"ನನ್ನೊಳಗೆ ಕೋಪ ಎಂಬ ಭಾವನೆ ಉಂಟಾಗುತ್ತಿದೆ."</div>
+    <div class="line">ಅಂತೆಯೇ, ಹೀಗೆ ಹೇಳುವ ಬದಲು:</div>
+    <div class="line quote">"ನಾನು ತುಂಬಾ ಚಿಂತಿತನಾಗಿದ್ದೇನೆ."</div>
+    <div class="line">ಹೀಗೆ ಗಮನಿಸಿ:</div>
+    <div class="line quote">"ಒಂದು ಚಿಂತೆಯ ಆಲೋಚನೆ ಮೂಡುತ್ತಿರುವುದನ್ನು ನಾನು ಗಮನಿಸುತ್ತಿದ್ದೇನೆ."</div>
+    <div class="line">ಇಲ್ಲಿನ ವ್ಯತ್ಯಾಸ ಸೂಕ್ಷ್ಮ ಆದರೆ ಆಳವಾದದ್ದು — ನೀವು ಆ ಭಾವನೆಯೇ ಆಗಿಬಿಡುವ ಬದಲು, ಅದನ್ನು ಹೊರಗಿನಿಂದ ಗಮನಿಸುತ್ತಿದ್ದೀರಿ.</div>
+    <div class="line">ಮನಸ್ಸನ್ನು ಈ ರೀತಿ ಗಮನಿಸುವ ಸ್ಥಿತಿಯನ್ನು ಪುಸ್ತಕ "ವೀಕ್ಷಕ" ಅಥವಾ "ಸಾಕ್ಷಿ" ಎಂದು ಕರೆಯುತ್ತದೆ. ಮನಸ್ಸನ್ನು ಹೀಗೆ ಗಮನಿಸಿದಷ್ಟೂ, ಅದರ ಚಟುವಟಿಕೆಗಳೊಂದಿಗಿನ ನಿಮ್ಮ ತಾದಾತ್ಮ್ಯ ಕಡಿಮೆಯಾಗುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">ಉದಾಹರಣೆ</h3>
+    <div class="line">ಯಾರೋ ಒಬ್ಬರು ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸುತ್ತಾರೆ ಎಂದುಕೊಳ್ಳಿ.</div>
+    <div class="line">ಸಹಜ, ತಕ್ಷಣದ ಪ್ರತಿಕ್ರಿಯೆ ಹೀಗಿರುತ್ತದೆ:</div>
+    <div class="line quote">"ಇಷ್ಟು ಧೈರ್ಯವೇ ಇವರಿಗೆ! ಈಗಲೇ ಉತ್ತರ ಕೊಡಲೇಬೇಕು!"</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆಯ ಮಾರ್ಗ ಬೇರೆ:</div>
+    <div class="line quote">"ಕೋಪ ಎದ್ದೇಳುತ್ತಿದೆ."</div>
+    <div class="line">ಒಂದು ಕ್ಷಣ ನಿಲ್ಲಿ.</div>
+    <div class="line">ದೇಹದಲ್ಲಿ ಆ ಕೋಪ ಹೇಗೆ ಅನುಭವವಾಗುತ್ತಿದೆ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.</div>
+    <div class="line">ಆಗ ನಿಜವಾಗಿ ಏನು ಮಾಡಬೇಕೆಂದು ನಿರ್ಧರಿಸಿ.</div>
+    <div class="line strong">ಹೀಗೆ, ಭಾವನೆ ಮತ್ತು ನಿಮ್ಮ ಪ್ರತಿಕ್ರಿಯೆಯ ನಡುವೆ ಒಂದು ಅಂತರವನ್ನು ನೀವು ಸೃಷ್ಟಿಸುತ್ತೀರಿ.</div>
+  </section>
+
+  <!-- 8 -->
+  <section class="chapter">
+    <span class="section-number">೦೮</span>
+    <h2 class="section-title">ಆಲೋಚನೆಗಳನ್ನು ನಾಶಪಡಿಸಲು ಪ್ರಯತ್ನಿಸಬೇಡಿ</h2>
+    <div class="line">ಇದೊಂದು ಮುಖ್ಯ ಎಚ್ಚರಿಕೆ.</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆ ಎಂದರೆ ಇವಲ್ಲ:</div>
+    <div class="line cross">❌ "ನಾನು ಎಂದಿಗೂ ಆಲೋಚಿಸಲೇಬಾರದು."</div>
+    <div class="line cross">❌ "ನನ್ನ ಮನಸ್ಸು ಸಂಪೂರ್ಣ ಖಾಲಿಯಾಗಿಬಿಡಬೇಕು."</div>
+    <div class="line cross">❌ "ಆಲೋಚಿಸುವುದೇ ಒಂದು ತಪ್ಪು."</div>
+    <div class="line">ಬದಲಿಗೆ, ಮಾಡಬೇಕಾದುದು ಇಷ್ಟೇ:</div>
+    <div class="line item">ಆಲೋಚನೆ ಬಂದಾಗ ಅದನ್ನು ಗುರುತಿಸಿ.</div>
+    <div class="line item">ನಂತರ ಮತ್ತೆ ಪ್ರಸ್ತುತ ಕ್ಷಣಕ್ಕೆ ಹಿಂತಿರುಗಿ.</div>
+    <div class="spacer-small"></div>
+    <div class="line arrow">ಆಲೋಚನೆ ಬರುತ್ತದೆ → ಅದನ್ನು ಗಮನಿಸಿ → ಅದನ್ನು ಹಿಂಬಾಲಿಸಬೇಡಿ → ಈಗಿಗೆ ಹಿಂತಿರುಗಿ.</div>
+  </section>
+
+  <!-- 9 -->
+  <section class="chapter">
+    <span class="section-number">೦೯</span>
+    <h2 class="section-title">ಮೌನವನ್ನು ಆಲಿಸುವುದು</h2>
+    <div class="line">ಪುಸ್ತಕ ಕೊಡುವ ಇನ್ನೊಂದು ಸರಳ ಅಭ್ಯಾಸ ಇದು:</div>
+    <div class="line">ನಿಮ್ಮ ಸುತ್ತಲಿನ ಮೌನಕ್ಕೆ ಕಿವಿಗೊಡಿ.</div>
+    <div class="line">ಸುತ್ತ ಶಬ್ದ ಇದ್ದಾಗಲೂ, ಒಂದು ಶಬ್ದ ಮತ್ತು ಮತ್ತೊಂದರ ನಡುವೆ ಸಣ್ಣ ಮೌನದ ಅಂತರಗಳಿರುತ್ತವೆ. ಈ ಅಂತರಗಳತ್ತ ಗಮನ ಕೊಟ್ಟಷ್ಟೂ ಆಂತರಿಕ ಶಾಂತಿ ಬೆಳೆಯುತ್ತದೆ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">ಇದನ್ನು ಒಂದು ನಿಮಿಷ ಪ್ರಯತ್ನಿಸಿ.</div>
+    <div class="line">ಏನನ್ನೂ ವಿಶ್ಲೇಷಿಸಲು ಹೋಗಬೇಡಿ.</div>
+    <div class="line strong">ಬರೀ ಆಲಿಸಿ.</div>
+  </section>
+
+  <!-- 10 -->
+  <section class="chapter">
+    <span class="section-number">೧೦</span>
+    <h2 class="section-title">ಈ ಅಧ್ಯಾಯ ಕ್ರಿಸ್ತನ ಬಗ್ಗೆ ಹೇಳುವುದೇನು</h2>
+    <div class="line">ಅಧ್ಯಾಯದ ಕೊನೆಯ ಭಾಗದಲ್ಲಿ, ಪುಸ್ತಕ ಕ್ರಿಸ್ತನ ಪರಿಕಲ್ಪನೆಯನ್ನು ದೈವಿಕ ಪ್ರಸ್ತುತತೆ ಮತ್ತು ಕಾಲಾತೀತ ಪ್ರಜ್ಞೆಯೊಂದಿಗೆ ಬೆಸೆಯುತ್ತದೆ.</div>
+    <div class="line">ಪುಸ್ತಕದ ವ್ಯಾಖ್ಯಾನದಂತೆ, ಕ್ರಿಸ್ತ ಎಂಬುದನ್ನು ಪ್ರಮುಖವಾಗಿ ಹಿಂದೆ ಬದುಕಿದ್ದ ಒಬ್ಬ ವ್ಯಕ್ತಿಯಂತೆ ಆಲೋಚಿಸುವ ಬದಲು, "ಪ್ರಸ್ತುತತೆ" ಎಂಬುದು ಪ್ರತಿಯೊಬ್ಬರೊಳಗೂ ಇರುವ ಕಾಲಾತೀತ ದೈವಿಕ ಪ್ರಜ್ಞೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ ಎಂದು ಅರ್ಥೈಸಬಹುದು. ಇದನ್ನು "ನಾನಿದ್ದೇನೆ" ಎಂಬ ಹೇಳಿಕೆಯೊಂದಿಗೆ ಮತ್ತು ಮಾನಸಿಕ ಕಾಲದಿಂದ ಪ್ರಸ್ತುತತೆಗೆ ಸಾಗುವ ಚಲನೆಯೊಂದಿಗೆ ಪುಸ್ತಕ ಜೋಡಿಸುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">ಈ ಪದಪ್ರಯೋಗದಲ್ಲೇ ಸಿಲುಕಿಕೊಳ್ಳುವ ಅಗತ್ಯವಿಲ್ಲ; ಮುಖ್ಯ ಪಾಠವನ್ನು ಆಚರಣೆಗೆ ತನ್ನುವುದೇ ಮುಖ್ಯ.</div>
+    <div class="line">ಪ್ರಾಯೋಗಿಕ ಸಂದೇಶ ಒಂದೇ ಸಾಲಿನದ್ದು:</div>
+    <div class="line strong">ಪ್ರಸ್ತುತ ಕ್ಷಣಕ್ಕೆ ಹಿಂತಿರುಗಿ.</div>
+  </section>
+
+  <!-- WHAT TO DO -->
+  <section class="chapter">
+    <h2 class="section-title">ಮಾಡಬೇಕಾದ ಅಂಶಗಳು</h2>
+    <div class="line">ಪ್ರತಿದಿನ ಈ ಕೆಳಗಿನವುಗಳನ್ನು ಅಭ್ಯಾಸ ಮಾಡಿ:</div>
+    <div class="spacer"></div>
+
+    <h3 class="sub-title">1. ಮೂವತ್ತು ಸೆಕೆಂಡುಗಳ ಕಾಲ ನಿಲ್ಲಿ</h3>
+    <div class="line item">ಸಹಜವಾಗಿ ಉಸಿರಾಡಿ.</div>
+    <div class="line item">ದೇಹವನ್ನು ಗಮನಿಸಿ.</div>
+    <div class="line item">ಸುತ್ತಮುತ್ತಲಿನದನ್ನು ಗಮನಿಸಿ.</div>
+
+    <h3 class="sub-title">2. ಆಲೋಚನೆಗಳನ್ನು ಗಮನಿಸಿ</h3>
+    <div class="line item">ಅವುಗಳೊಡನೆ ಹೋರಾಡಬೇಡಿ.</div>
+    <div class="line item">ಪ್ರತಿ ಆಲೋಚನೆಯನ್ನೂ ಹಿಂಬಾಲಿಸಬೇಡಿ.</div>
+    <div class="line item">ಬರೀ ಗಮನಿಸಿ.</div>
+
+    <h3 class="sub-title">3. ದೇಹವನ್ನು ಅನುಭವಿಸಿ</h3>
+    <div class="line item">ಕೈಗಳು</div>
+    <div class="line item">ಪಾದಗಳು</div>
+    <div class="line item">ಉಸಿರಾಟ</div>
+    <div class="line item">ಆಂತರಿಕ ಸಂವೇದನೆಗಳು</div>
+
+    <h3 class="sub-title">4. ಒಂದು ಕೆಲಸವನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಮಾಡಿ</h3>
+    <div class="line">ಊಟ ಮಾಡುವಾಗ → ಊಟದಲ್ಲೇ ಇರಿ.</div>
+    <div class="line">ನಡೆಯುವಾಗ → ನಡಿಗೆಯಲ್ಲೇ ಇರಿ.</div>
+    <div class="line">ಓದುವಾಗ → ಓದಿನಲ್ಲೇ ಇರಿ.</div>
+    <div class="line">ಮಾತನಾಡುವಾಗ → ಆಲಿಸುವುದರಲ್ಲೇ ಇರಿ.</div>
+
+    <h3 class="sub-title">5. ಸುಂದರವಾದ ವಿಷಯಗಳನ್ನು ಗಮನಿಸಿ</h3>
+    <div class="line">ಪ್ರಕೃತಿಯನ್ನು ತಕ್ಷಣ ಆಲೋಚನೆಗಳಾಗಿ ಪರಿವರ್ತಿಸದೆ, ಇರುವಂತೆಯೇ ನೋಡಿ.</div>
+
+    <h3 class="sub-title">6. ಮೌನಕ್ಕೆ ಕಿವಿಗೊಡಿ</h3>
+    <div class="line">ಒಂದು ನಿಮಿಷ, ಬರೀ ಆಲಿಸಲು ಮೀಸಲಿಡಿ.</div>
+
+    <h3 class="sub-title">7. ಭಾವನೆಗಳು ಉಂಟಾದಾಗ, ಒಂದು ಕ್ಷಣ ನಿಲ್ಲಿ</h3>
+    <div class="line">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಬದಲು, ಗಮನಿಸಿ:</div>
+    <div class="line quote">"ನನ್ನೊಳಗೆ ಏನೋ ಒಂದು ಸಂಗತಿ ಸಂಭವಿಸುತ್ತಿದೆ."</div>
+    <div class="line">ಆಗ ಪ್ರಜ್ಞಾಪೂರ್ವಕವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸಿ.</div>
+  </section>
+
+  <!-- WHAT TO AVOID -->
+  <section class="chapter">
+    <h2 class="section-title">ತಪ್ಪಿಸಬೇಕಾದ ಅಂಶಗಳು</h2>
+    <div class="line cross">❌ ಸತತವಾಗಿ ಭೂತಕಾಲದಲ್ಲೇ ಬದುಕಬೇಡಿ.</div>
+    <div class="line cross">❌ ಸತತವಾಗಿ ಭವಿಷ್ಯದ ಕಲ್ಪನೆಗಳಲ್ಲೇ ಮುಳುಗಬೇಡಿ.</div>
+    <div class="line cross">❌ ಮನಸ್ಸು ಸೃಷ್ಟಿಸುವ ಪ್ರತಿಯೊಂದು ಆಲೋಚನೆಯನ್ನೂ ಸತ್ಯವೆಂದು ನಂಬಬೇಡಿ.</div>
+    <div class="line cross">❌ ಮನಸ್ಸನ್ನು ಬಲವಂತವಾಗಿ ಖಾಲಿ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಬೇಡಿ.</div>
+    <div class="line cross">❌ ಆಚರಣೆಗೆ ಮೊದಲು ಎಲ್ಲವನ್ನೂ ಬೌದ್ಧಿಕವಾಗಿ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲೇಬೇಕು ಎಂದು ಭಾವಿಸಬೇಡಿ.</div>
+    <div class="line cross">❌ ಯಾವುದೋ ಭವಿಷ್ಯದ ಸಾಧನೆಗಾಗಿ ಕಾಯುತ್ತಾ, ಈಗಿನ ಕ್ಷಣವನ್ನು ಅನುಭವಿಸುವುದನ್ನು ಮುಂದೂಡಬೇಡಿ.</div>
+    <div class="line cross">❌ ನಿಮ್ಮ ಪ್ರಸ್ತುತತೆಗಾಗಿ ಯಾವುದೇ ಗುರುವಿನ ಮೇಲೆ ಅಥವಾ ಗುಂಪಿನ ಮೇಲೆ ಅವಲಂಬಿತರಾಗಬೇಡಿ — ಇಂತಹ ಅವಲಂಬನೆಯ ವಿರುದ್ಧ ಈ ಅಧ್ಯಾಯ ನಿರ್ದಿಷ್ಟವಾಗಿ ಎಚ್ಚರಿಸುತ್ತದೆ. �</div>
+    <div class="line marker">5.PDF</div>
+  </section>
+
+  <!-- FULL EXAMPLE -->
+  <section class="chapter">
+    <h2 class="section-title">ಇಡೀ ಅಧ್ಯಾಯವನ್ನು ಒಂದೇ ಉದಾಹರಣೆಯಲ್ಲಿ</h2>
+    <div class="line">ಯಾರೋ ಒಬ್ಬರು ನಿಮಗೆ ಒಂದು ಅಸಭ್ಯ ಸಂದೇಶ ಕಳುಹಿಸುತ್ತಾರೆ ಎಂದುಕೊಳ್ಳಿ.</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆ ಇಲ್ಲದೆ ಇದ್ದಾಗ, ಇದು ಹೀಗೆ ಸಾಗುತ್ತದೆ:</div>
+    <div class="line arrow">ಸಂದೇಶ → ಆಲೋಚನೆ → ಕೋಪ → ಇನ್ನಷ್ಟು ಆಲೋಚನೆಗಳು → ಭಾವನಾತ್ಮಕ ಪ್ರತಿಕ್ರಿಯೆ → ಕೋಪದಿಂದ ಉತ್ತರ ಕಳುಹಿಸುವುದು → ನಂತರ ಪಶ್ಚಾತ್ತಾಪ.</div>
+    <div class="line">ಪ್ರಸ್ತುತತೆಯೊಂದಿಗೆ ಇದ್ದಾಗ, ಇದೇ ಸನ್ನಿವೇಶ ಹೀಗೆ ಸಾಗುತ್ತದೆ:</div>
+    <div class="line arrow">ಸಂದೇಶ → ಒಂದು ಕ್ಷಣ ವಿರಾಮ → ಕೋಪವನ್ನು ಗಮನಿಸುವುದು → ದೇಹದಲ್ಲಿ ಅದನ್ನು ಅನುಭವಿಸುವುದು → ಆಲೋಚನೆಗಳನ್ನು ಗಮನಿಸುವುದು → ಉಸಿರಾಡುವುದು → ನಿಜಕ್ಕೂ ಏನು ಬೇಕೋ ಅದನ್ನು ನಿರ್ಧರಿಸುವುದು.</div>
+    <div class="spacer-small"></div>
+    <div class="line">ಸನ್ನಿವೇಶ ಎರಡೂ ಕಡೆ ಒಂದೇ ಆಗಿರಬಹುದು.</div>
+    <div class="line strong">ಆದರೆ ಇನ್ನು ಮುಂದೆ ನಿಮ್ಮ ಮನಸ್ಸು ನಿಮ್ಮನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ನಿಯಂತ್ರಿಸುವುದಿಲ್ಲ.</div>
+  </section>
+
+  <div class="closing">
+    <div class="line">ಈ ಒಂದು ಸಾಲನ್ನು ಮನಸ್ಸಿನಲ್ಲಿಟ್ಟುಕೊಳ್ಳಿ:</div>
+    <div class="closing-final">ಪ್ರತಿಯೊಂದು ಆಲೋಚನೆಯನ್ನೂ ನಿಯಂತ್ರಿಸಲು ಹೋಗಬೇಡಿ. ನೀವು ಆಲೋಚಿಸುತ್ತಿದ್ದೀರಿ ಎಂಬುದನ್ನಷ್ಟೇ ಜಾಗೃತವಾಗಿ ಅರಿಯಿರಿ. ನಂತರ ಈಗ ನಡೆಯುತ್ತಿರುವುದರತ್ತ ಮತ್ತೆ ಹಿಂತಿರುಗಿ.</div>
+    <div class="closing-final">"ಪ್ರಸ್ತುತತೆಯ ಸ್ಥಿತಿ" ಎಂಬ ಈ ಅಧ್ಯಾಯದ ಪ್ರಾಯೋಗಿಕ ಸಾರಾಂಶ ಇದೇ ಆಗಿದೆ.</div>
+  </div>
+
+</main>
+
+<footer>ಅಧ್ಯಾಯ ಐದು &middot; ಪ್ರಸ್ತುತತೆಯ ಸ್ಥಿತಿ</footer>
+
+<script>
+  // ---------- particle field: floating up & falling down motes ----------
+  const field = document.getElementById('particle-field');
+  const MOTE_COUNT = 42;
+
+  function spawnMote(initial){
+    const el = document.createElement('div');
+    const rising = Math.random() > 0.45;
+    const isSage = Math.random() > 0.6;
+    const size = 2 + Math.random() * 5;
+    const left = Math.random() * 100;
+    const duration = 14 + Math.random() * 18;
+    const delay = initial ? Math.random() * duration : 0;
+    const drift = (Math.random() * 120 - 60) + 'px';
+
+    el.className = 'mote' + (isSage ? ' sage' : '');
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = left + 'vw';
+    el.style.setProperty('--drift', drift);
+    el.style.top = rising ? '100vh' : '-5vh';
+    el.style.animation = (rising ? 'rise' : 'fall') + ' ' + duration + 's linear ' + (-delay) + 's infinite';
+
+    field.appendChild(el);
+  }
+
+  for (let i = 0; i < MOTE_COUNT; i++) spawnMote(true);
+
+  // ---------- scroll reveal ----------
+  const revealTargets = document.querySelectorAll('.line, .closing-final');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  revealTargets.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

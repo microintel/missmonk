@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಈ ಕ್ಷಣದೊಳಗೆ ಆಳವಾಗಿ — ಅಧ್ಯಾಯ 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Kannada:wght@300;400;500;600;700&family=Noto+Sans+Kannada:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0a0d13;
+    --bg-1:#10141d;
+    --gold:#d4a857;
+    --gold-soft:#d4a85788;
+    --sage:#7c9885;
+    --ink:#f0ede6;
+    --muted:#8b92a0;
+    --line:#ffffff14;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(ellipse 120% 80% at 50% 0%, var(--bg-1), var(--bg-0) 70%);
+    color:var(--ink);
+    font-family:'Noto Sans Kannada', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  canvas#embers{
+    position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;
+  }
+
+  .rail{
+    position:fixed; right:22px; top:50%; transform:translateY(-50%);
+    width:2px; height:180px; background:var(--line); z-index:50;
+    display:none;
+  }
+  @media (min-width:720px){ .rail{display:block;} }
+  .rail-fill{
+    position:absolute; left:0; top:0; width:100%; height:0%;
+    background:linear-gradient(var(--gold), var(--sage));
+    transition:height .1s linear;
+  }
+
+  .wrap{ position:relative; z-index:2; max-width:760px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; position:relative; z-index:2; padding:40px 24px;
+  }
+  .hero .eyebrow{
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--sage);
+    opacity:0; animation:fadeUp 1.1s .2s ease forwards;
+  }
+  .hero h1{
+    font-family:'Noto Serif Kannada',serif; font-weight:500;
+    font-size:clamp(1.9rem, 6.5vw, 3.6rem); line-height:1.3; margin:22px 0 18px;
+    opacity:0; animation:fadeUp 1.3s .45s ease forwards;
+  }
+  .hero h1 em{ color:var(--gold); font-style:normal; }
+  .hero p.sub{
+    max-width:520px; color:var(--muted); font-size:1.05rem; line-height:1.9;
+    opacity:0; animation:fadeUp 1.3s .75s ease forwards;
+  }
+  .hero .scroll-cue{
+    margin-top:56px; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+    opacity:0; animation:fadeUp 1s 1.2s ease forwards, pulseCue 2.6s 2.2s ease-in-out infinite;
+  }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes pulseCue{ 0%,100%{opacity:.45;} 50%{opacity:1;} }
+
+  /* ---------- SECTIONS ---------- */
+  .section{
+    position:relative; z-index:2; padding:120px 0 40px; border-top:1px solid var(--line);
+  }
+  .section:first-of-type{ border-top:none; }
+  .num{
+    font-family:'Noto Serif Kannada',serif; font-size:13px; color:var(--gold); letter-spacing:.1em;
+    display:inline-block; margin-bottom:18px; opacity:.85;
+  }
+  h2{
+    font-family:'Noto Serif Kannada',serif; font-weight:500; font-size:clamp(1.4rem,4vw,2rem);
+    line-height:1.45; margin-bottom:34px; max-width:620px;
+  }
+  h2 .accent{ color:var(--gold); font-weight:600; }
+
+  .line{
+    font-size:1.06rem; line-height:2; color:var(--ink); margin-bottom:14px;
+    max-width:620px;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .line.visible{ opacity:1; transform:translateY(0); }
+  .line.muted{ color:var(--muted); }
+  .line.quote{
+    font-family:'Noto Serif Kannada',serif; font-size:1.25rem; line-height:1.8;
+    color:var(--gold); padding-left:22px; border-left:2px solid var(--gold-soft);
+    margin:20px 0 22px;
+  }
+  .line.tight{ margin-bottom:4px; }
+  .line.x::before{ content:"✕  "; color:#a25c5c; }
+  .line.dash{ padding-left:16px; }
+  .line.dash::before{ content:"·"; color:var(--gold); margin-right:10px; }
+
+  .source-tag{
+    display:inline-block; font-size:10.5px; letter-spacing:.08em;
+    color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:4px 10px;
+    margin:6px 0 20px; opacity:0; transform:translateY(10px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .source-tag.visible{ opacity:1; transform:translateY(0); }
+
+  .twocol{ display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:10px; }
+  @media (min-width:560px){ .twocol{ grid-template-columns:1fr 1fr; gap:24px; } }
+  .col-title{ font-size:11.5px; letter-spacing:.1em; color:var(--sage); margin:26px 0 10px; }
+
+  .ravi-flow{ display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 30px; }
+  .chip{
+    font-size:.88rem; color:var(--muted); border:1px solid var(--line); padding:7px 13px; border-radius:999px;
+    opacity:0; transform:scale(.92); transition:opacity .5s ease, transform .5s ease, color .3s, border-color .3s;
+  }
+  .chip.visible{ opacity:1; transform:scale(1); }
+  .arrow{ color:var(--muted); align-self:center; opacity:.6; }
+
+  .practice-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:20px 0 10px; }
+  @media (min-width:560px){ .practice-grid{ grid-template-columns:repeat(4,1fr); } }
+  .practice-card{
+    border:1px solid var(--line); border-radius:14px; padding:20px 14px; text-align:center;
+    opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s ease, border-color .4s;
+  }
+  .practice-card.visible{ opacity:1; transform:translateY(0); }
+  .practice-card:hover{ border-color:var(--gold-soft); }
+  .practice-card .step{ font-family:'Noto Serif Kannada',serif; color:var(--gold); font-size:1.05rem; margin-bottom:6px; }
+  .practice-card .desc{ font-size:.82rem; color:var(--muted); line-height:1.6; }
+
+  .closing{
+    min-height:80svh; display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:100px 24px 140px; position:relative; z-index:2;
+  }
+  .closing .line.quote{
+    font-size:clamp(1.25rem,3.6vw,1.8rem); max-width:680px; margin:0 auto; border:none; padding:0;
+    text-align:center;
+  }
+  .closing .foot{ margin-top:34px; font-size:11px; letter-spacing:.14em; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<canvas id="embers"></canvas>
+<div class="rail"><div class="rail-fill" id="railFill"></div></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+    <h1>ಈ <em>ಕ್ಷಣ</em>ದೊಳಗೆ<br>ಆಳವಾಗಿ ಪ್ರವೇಶ</h1>
+    <p class="sub">ನಿಮ್ಮ ಜೀವನ ನಡೆಯುತ್ತಿರುವುದು ಈ ಒಂದೇ ಕ್ಷಣದಲ್ಲಿ. ನೆನಪುಗಳಲ್ಲಿ ಅಥವಾ ಕಲ್ಪಿತ ಭವಿಷ್ಯದಲ್ಲಿ ಬದುಕುವ ಬದಲು, ಸಂಪೂರ್ಣವಾಗಿ ಇಲ್ಲಿಯೇ ಇರುವುದನ್ನು ಕಲಿಯಿರಿ.</p>
+    <div class="scroll-cue">ಕೆಳಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ ↓</div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section" data-section>
+    <p class="line">ಪ್ರಜ್ಞಾವಂತರಾಗಲು ಮನಸ್ಸಿನ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯನ್ನೂ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಬೇಕಿಲ್ಲ ಎಂದು ಈ ಅಧ್ಯಾಯ ಆರಂಭವಾಗುತ್ತದೆ.</p>
+    <p class="line">ಮುಖ್ಯವಾಗಿ ಗಮನಿಸಬೇಕಾದ ಒಂದೇ ಒಂದು ಮಾದರಿ ಇದೆ — ನಮ್ಮ ಆಲೋಚನೆಗಳನ್ನೇ ನಾವು ಆಗಾಗ ನಮ್ಮ ಗುರುತು ಎಂದು ತಪ್ಪಾಗಿ ತಿಳಿಯುತ್ತೇವೆ.</p>
+  </section>
+
+  <!-- 1 -->
+  <section class="section" data-section>
+    <div class="num">೦೧</div>
+    <h2>ನೀವು ಮನಸ್ಸಿನ <span class="accent">ಪ್ರತಿ ಆಲೋಚನೆಯೂ ಅಲ್ಲ</span></h2>
+    <p class="line muted">ಇಂತಹ ಆಲೋಚನೆಗಳನ್ನು ಊಹಿಸಿ:</p>
+    <p class="line dash">"ನಾನು ಸೋತವನು."</p>
+    <p class="line dash">"ಯಾರೂ ನನ್ನನ್ನು ಗೌರವಿಸುವುದಿಲ್ಲ."</p>
+    <p class="line dash">"ನಾಳೆ ವಿಫಲನಾದರೆ ಏನು ಗತಿ?"</p>
+    <p class="line dash">"ನಿನ್ನೆ ಇನ್ನೂ ಚೆನ್ನಾಗಿ ಮಾಡಬಹುದಿತ್ತು."</p>
+    <p class="line">ಇವನ್ನೆಲ್ಲ ಸೃಷ್ಟಿಸುವುದು ಮನಸ್ಸು. ಆದರೆ ಪುಸ್ತಕ ಒಂದು ಮುಖ್ಯ ಸಂಗತಿ ಗಮನಿಸಲು ಹೇಳುತ್ತದೆ:</p>
+    <p class="line quote">ಒಂದು ಆಲೋಚನೆಯನ್ನು ನೀವು ಗಮನಿಸಬಲ್ಲಿರಿ ಎಂದರೆ, ಅದನ್ನು ಗಮನಿಸುತ್ತಿರುವುದು ಬೇರೆ ಏನೋ ಇದೆ ಎಂದೇ ಅರ್ಥ.</p>
+    <p class="line muted">ಉದಾಹರಣೆಗೆ, ನಿಮಗೆ ಕೋಪ ಬಂದಿದೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line">ತಕ್ಷಣ ಹೀಗೆ ಹೇಳುವ ಬದಲು —</p>
+    <p class="line dash">"ನನಗೆ ಕೋಪ ಬಂದಿದೆ!"</p>
+    <p class="line">ಹೀಗೆ ಪ್ರಯತ್ನಿಸಿ —</p>
+    <p class="line dash">"ಈಗ ನನ್ನೊಳಗೆ ಕೋಪ ಎದ್ದಿದೆ."</p>
+    <p class="line">ಈ ಚಿಕ್ಕ ವ್ಯತ್ಯಾಸವೇ ನಿಮ್ಮ ಮತ್ತು ಆ ಭಾವನೆಯ ನಡುವೆ ಸ್ವಲ್ಪ ಜಾಗ ಸೃಷ್ಟಿಸುತ್ತದೆ. ಪುಸ್ತಕ ಇದನ್ನು "ಸಾಕ್ಷಿಪ್ರಜ್ಞೆ" ಎಂದು ಕರೆಯುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+
+    <div class="col-title">ದೈನಂದಿನ ಉದಾಹರಣೆ</div>
+    <p class="line">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸಿದರೆ, ಸಹಜ ಪ್ರತಿಕ್ರಿಯೆ ಹೀಗಿರಬಹುದು:</p>
+    <p class="line dash">"ಇವನಿಗೆ ಹಾಗೆ ಹೇಳುವ ಧೈರ್ಯವಾದರೂ ಹೇಗೆ ಬಂತು! ನಾನು ತೋರಿಸುತ್ತೇನೆ!"</p>
+    <p class="line">ಬದಲಿಗೆ, ಸ್ವಲ್ಪ ನಿಲ್ಲಿಸಿ ಗಮನಿಸಿ:</p>
+    <p class="line dash">"ನನ್ನ ದೇಹ ಬಿಗಿಯಾಗಿದೆ."</p>
+    <p class="line dash">"ಕೋಪ ಏರುತ್ತಿದೆ."</p>
+    <p class="line dash">"ನನ್ನ ಮನಸ್ಸು ಪ್ರತಿಕ್ರಿಯೆ ಸಿದ್ಧಪಡಿಸುತ್ತಿದೆ."</p>
+    <p class="line">ಕೋಪವನ್ನು ಅದುಮಿಟ್ಟಿಲ್ಲ — ಅದೇ ಆಗುವ ಬದಲು, ಅದನ್ನು ಗಮನಿಸುತ್ತಿದ್ದೀರಿ ಅಷ್ಟೇ.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="section" data-section>
+    <div class="num">೦೨</div>
+    <h2>"ಈ ಕ್ಷಣದಲ್ಲಿ ಬದುಕುವುದು" <span class="accent">ಎಂದರೆ ನಿಜವಾಗಿ ಏನು?</span></h2>
+    <p class="line muted">ಇದರ ಅರ್ಥ ಇವಲ್ಲ:</p>
+    <p class="line x">ನಾಳೆಯ ಬಗ್ಗೆ ಎಂದೂ ಯೋಚಿಸಬಾರದು.</p>
+    <p class="line x">ನಿನ್ನೆಯನ್ನು ಎಂದೂ ನೆನಪಿಸಿಕೊಳ್ಳಬಾರದು.</p>
+    <p class="line x">ಯೋಜನೆ ಮಾಡಲೇಬಾರದು.</p>
+    <p class="line x">ಓದುವುದನ್ನು ಅಥವಾ ಗುರಿಯತ್ತ ಶ್ರಮಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಬೇಕು.</p>
+    <p class="line">ಗಡಿಯಾರದ ಸಮಯ ಮತ್ತು ಮಾನಸಿಕ ಸಮಯ ನಡುವೆ ಪುಸ್ತಕ ಒಂದು ಮುಖ್ಯ ವ್ಯತ್ಯಾಸ ಮಾಡುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+
+    <div class="twocol">
+      <div>
+        <div class="col-title">ಗಡಿಯಾರದ ಸಮಯ</div>
+        <p class="line tight">ಉಪಯುಕ್ತವಾದ ಸಮಯ.</p>
+        <p class="line tight quote" style="font-size:1rem;">"ಪರೀಕ್ಷೆ ಮುಂದಿನ ತಿಂಗಳು, ಹಾಗಾಗಿ ಇಂದು ಎರಡು ಗಂಟೆ ಓದುತ್ತೇನೆ."</p>
+        <p class="line tight">ಇದು ಸಂಪೂರ್ಣ ಪ್ರಾಯೋಗಿಕ.</p>
+      </div>
+      <div>
+        <div class="col-title">ಮಾನಸಿಕ ಸಮಯ</div>
+        <p class="line tight">ಮನಸ್ಸು ಭೂತ ಅಥವಾ ಭವಿಷ್ಯದಲ್ಲಿ ಸಿಲುಕುವುದು.</p>
+        <p class="line tight quote" style="font-size:1rem;">"ಕಳೆದ ವರ್ಷ ಸೋತೆ, ನಾನು ನಿಷ್ಪ್ರಯೋಜಕ."</p>
+        <p class="line tight">ಇದು ಭೂತಕಾಲವೇ ಗುರುತಾಗುವುದು.</p>
+        <p class="line tight quote" style="font-size:1rem;">"ಮತ್ತೆ ಸೋತರೆ? ಎಲ್ಲರೂ ಏನೆಂದುಕೊಳ್ಳುತ್ತಾರೆ?"</p>
+        <p class="line tight">ಇದು ಭವಿಷ್ಯ ಈಗಲೇ ಭಯ ಸೃಷ್ಟಿಸುವುದು.</p>
+      </div>
+    </div>
+    <p class="line" style="margin-top:20px;">ಯೋಜನೆ ಮಾಡಬೇಡಿ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತಿಲ್ಲ. ಇದು ಹೇಳುವುದು:</p>
+    <p class="line quote">ಭವಿಷ್ಯಕ್ಕಾಗಿ ಯೋಜಿಸಿ, ಆದರೆ ನೀವಿರುವ ನಿಜವಾದ ಕ್ಷಣವನ್ನು ಬದುಕಿ.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="section" data-section>
+    <div class="num">೦೩</div>
+    <h2>ಭೂತಕಾಲ ಎಂಬುದು <span class="accent">ಈಗ ನಡೆಯುತ್ತಿರುವ ನೆನಪು</span></h2>
+    <p class="line">ನಿನ್ನೆಯ ಬಗ್ಗೆ ಯೋಚಿಸಿ. ನೀವು ದೈಹಿಕವಾಗಿ ನಿನ್ನೆಗೆ ಹಿಂತಿರುಗಬಹುದೇ?</p>
+    <p class="line muted">ಇಲ್ಲ.</p>
+    <p class="line">ನಿನ್ನೆಯನ್ನು ನೆನಪಿಸಿಕೊಳ್ಳಬಹುದಷ್ಟೇ — ಅದೂ ಈಗಲೇ.</p>
+    <p class="line">ಶಾಲೆಯ ಒಂದು ಮುಜುಗರದ ಕ್ಷಣ ಯಾರಾದರೂ ನೆನಪಿಸಿಕೊಂಡರೆ, ಘಟನೆ ವರ್ಷಗಳ ಹಿಂದಿನದು.</p>
+    <p class="line">ಆದರೆ ಇಂದು ಅದನ್ನು ನೆನಪಿಸಿಕೊಂಡಾಗ, ಆ ನೆನಪು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತಿರುವುದು ಈಗಲೇ.</p>
+    <p class="line">ಅದೇ ರೀತಿ ಭವಿಷ್ಯ ಇನ್ನೂ ಸಂಭವಿಸಿಲ್ಲ. ನಾಳಿನ ಸಂದರ್ಶನ ಕಲ್ಪಿಸಿಕೊಂಡರೆ:</p>
+    <p class="line dash">"ಅವರು ನನ್ನನ್ನು ತಿರಸ್ಕರಿಸಿದರೆ?"</p>
+    <p class="line">ಆ ಆಲೋಚನೆ ನಡೆಯುತ್ತಿರುವುದೂ ಈಗಲೇ.</p>
+    <p class="line quote">ಇದೇ ಕಾರಣಕ್ಕೆ ಭೂತ ಮತ್ತು ಭವಿಷ್ಯ ಎರಡನ್ನೂ ನಾವು ಅನುಭವಿಸುವುದು ವರ್ತಮಾನ ಕ್ಷಣದ ಮೂಲಕವೇ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 4 -->
+  <section class="section" data-section>
+    <div class="num">೦೪</div>
+    <h2>ಜನರು ವರ್ತಮಾನವನ್ನು <span class="accent">ಏಕೆ ತಪ್ಪಿಸಿಕೊಳ್ಳುತ್ತಾರೆ?</span></h2>
+    <p class="line">ಮನಸ್ಸು ಸದಾ ಹೇಳುತ್ತಿರುತ್ತದೆ:</p>
+    <p class="line dash">"ಅದು ಸಿಕ್ಕಾಗ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line muted">ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line dash">"ಕೆಲಸ ಸಿಕ್ಕಾಗ ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line dash">"ಹೆಚ್ಚು ಸಂಪಾದಿಸಿದಾಗ ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line dash">"ಮನೆ ಖರೀದಿಸಿದಾಗ ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line dash">"ಮದುವೆಯಾದಾಗ ಕೊನೆಗೂ ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+    <p class="line">ಭವಿಷ್ಯದ ಗುರಿ ಸ್ವತಃ ಕೆಟ್ಟದ್ದಲ್ಲ. ಸಮಸ್ಯೆ ಇರುವುದು ಈ ನಂಬಿಕೆಯಲ್ಲಿ:</p>
+    <p class="line quote">"ನನ್ನ ಜೀವನ ನಿಜವಾಗಿ ಆರಂಭವಾಗುವುದು ಮುಂದೆಯೇ."</p>
+    <p class="line">ಇದರಿಂದಾಗಿ ವರ್ತಮಾನ ಕ್ಷಣ ಕೇವಲ ಕಲ್ಪಿತ ಭವಿಷ್ಯದ ಕಡೆಗಿನ ಒಂದು ಮೆಟ್ಟಿಲಿನಂತೆ ಭಾಸವಾಗುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="section" data-section>
+    <div class="num">೦೫</div>
+    <h2>ಒಂದು ಸರಳ ಉದಾಹರಣೆ: <span class="accent">ಊಟ ಮಾಡುವುದು</span></h2>
+    <p class="line">ಇಷ್ಟದ ಊಟ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದುಕೊಳ್ಳಿ. ದೇಹ ಊಟ ಮಾಡುತ್ತಿದೆ, ಆದರೆ ಮನಸ್ಸು ಬೇರೆಲ್ಲೋ ಇದೆ:</p>
+    <p class="line dash">"ನಾಳೆ ಕೆಲಸ ಇದೆ."</p>
+    <p class="line dash">"ನಿನ್ನೆ ಆ ವ್ಯಕ್ತಿ ಹಾಗೇಕೆ ಹೇಳಿದರು?"</p>
+    <p class="line dash">"ಇಂದು ರಾತ್ರಿ ಏನೋ ಮುಗಿಸಬೇಕು."</p>
+    <p class="line">ಇಡೀ ಊಟ ಮುಗಿದರೂ ನಿಜವಾಗಿ ಅನುಭವಿಸಿಯೇ ಇಲ್ಲ.</p>
+    <p class="line">ಈಗ ಬೇರೆ ರೀತಿ ಪ್ರಯತ್ನಿಸಿ. ಊಟ ಮಾಡುವಾಗ:</p>
+    <p class="line dash">ವಾಸನೆ ಗಮನಿಸಿ.</p>
+    <p class="line dash">ರುಚಿ ಗಮನಿಸಿ.</p>
+    <p class="line dash">ವಿನ್ಯಾಸ ಅನುಭವಿಸಿ.</p>
+    <p class="line dash">ಅಗಿಯುವುದನ್ನು ಗಮನಿಸಿ.</p>
+    <p class="line dash">ಉಸಿರಾಟ ಗಮನಿಸಿ.</p>
+    <p class="line dash">ಅನುಭವದ ಕಡೆಗೆ ಗಮನ ಕೊಡಿ.</p>
+    <p class="line">ಕ್ಷಣಕಾಲ, ನೀವು ನಿಜವಾಗಿಯೂ ಇಲ್ಲಿಯೇ ಇರುತ್ತೀರಿ. ಪುಸ್ತಕ ಸೂಚಿಸುತ್ತಿರುವ ವರ್ತಮಾನ-ಕ್ಷಣ ಜಾಗೃತಿ ಇದೇ.</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="section" data-section>
+    <div class="num">೦೬</div>
+    <h2>ಸಮಸ್ಯೆಗಳ <span class="accent">ಬಗ್ಗೆ ಏನು?</span></h2>
+    <p class="line">ಇದು ಈ ಅಧ್ಯಾಯದ ಅತ್ಯಂತ ಆಸಕ್ತಿಕರ ವಿಚಾರಗಳಲ್ಲಿ ಒಂದು.</p>
+    <p class="line quote">"ಸನ್ನಿವೇಶ" ಮತ್ತು ಮನಸ್ಸು ಸೃಷ್ಟಿಸುವ "ಸಮಸ್ಯೆ" ನಡುವೆ ಪುಸ್ತಕ ವ್ಯತ್ಯಾಸ ಮಾಡುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+    <p class="line">ನಿಮ್ಮ ಫೋನ್ ಹಾಳಾಯಿತು ಎಂದುಕೊಳ್ಳಿ. ಇದೊಂದು ಸನ್ನಿವೇಶ. ನೀವು ಹೀಗೆ ಮಾಡಬಹುದು:</p>
+    <p class="line dash">ರಿಪೇರಿ ಮಾಡಿಸಬಹುದು</p>
+    <p class="line dash">ಬದಲಾಯಿಸಬಹುದು</p>
+    <p class="line dash">ಬೇರೊಂದನ್ನು ಎರವಲು ಪಡೆಯಬಹುದು</p>
+    <p class="line dash">ನಾಳೆಯವರೆಗೆ ಕಾಯಬಹುದು</p>
+    <p class="line">ಆದರೆ ಮನಸ್ಸು ಇದನ್ನು ಹೀಗೆ ಬದಲಾಯಿಸಬಹುದು:</p>
+    <p class="line dash">"ಎಲ್ಲವೂ ನನಗೇ ಏಕೆ ಆಗುತ್ತದೆ?"</p>
+    <p class="line dash">"ನನ್ನ ಜೀವನ ಭಯಂಕರ."</p>
+    <p class="line dash">"ನನಗೆ ಎಂದೂ ಏನೂ ಸರಿಯಾಗಿ ಆಗುವುದಿಲ್ಲ."</p>
+    <p class="line dash">"ಇನ್ನೇನು ಕೆಟ್ಟದ್ದಾಗಲಿದೆ?"</p>
+    <p class="line">ಈಗ ಮೂಲ ಸನ್ನಿವೇಶ ಒಂದು ದೊಡ್ಡ ಮಾನಸಿಕ ಕಥೆಯಾಗಿ ಬದಲಾಗಿದೆ. ಪುಸ್ತಕದ ಅಂಶ:</p>
+    <p class="line quote">ನೂರಾರು ಕಲ್ಪಿತ ಸಮಸ್ಯೆಗಳನ್ನು ಮಾನಸಿಕವಾಗಿ ಹೊತ್ತುಕೊಳ್ಳುವ ಬದಲು, ಈಗ ನಿಜವಾಗಿ ಇರುವ ಸನ್ನಿವೇಶವನ್ನು ನಿಭಾಯಿಸಿ.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="section" data-section>
+    <div class="num">೦೭</div>
+    <h2>"ನನಗೆ ಈಗಲೇ <span class="accent">ಸಮಸ್ಯೆ ಇದೆಯೇ?"</span></h2>
+    <p class="line">ಇದು ಅಧ್ಯಾಯದ ಒಂದು ಶಕ್ತಿಶಾಲಿ ಅಭ್ಯಾಸ.</p>
+    <p class="line">ನಾಳೆಯ ಪರೀಕ್ಷೆಯ ಬಗ್ಗೆ ಚಿಂತಿತರಾಗಿದ್ದೀರಿ ಎಂದುಕೊಳ್ಳಿ. ಕೇಳಿಕೊಳ್ಳಿ:</p>
+    <p class="line quote">"ಈ ಕ್ಷಣದಲ್ಲಿ ನನಗೆ ಪರೀಕ್ಷೆಯ ಸಮಸ್ಯೆ ಇದೆಯೇ?"</p>
+    <p class="line muted">ಬಹುಶಃ ಇಲ್ಲ.</p>
+    <p class="line">ಈಗ ನೀವು ನಿಮ್ಮ ಕೋಣೆಯಲ್ಲಿ ಕುಳಿತಿದ್ದೀರಿ. ನಿಜವಾದ ಕೆಲಸ ಇಷ್ಟೇ ಇರಬಹುದು:</p>
+    <p class="line dash">ಮುಂದಿನ ವಿಷಯವನ್ನು ಓದಿ.</p>
+    <p class="line">ನಾಳಿನ ಪರೀಕ್ಷೆ ನಿಜ, ಅದಕ್ಕೆ ತಯಾರಾಗಬೇಕು. ಆದರೆ ನಾಳೆಯ ಬಗ್ಗೆ ಮಾನಸಿಕವಾಗಿ ನೊಂದುಕೊಳ್ಳುವುದರಿಂದ ಉತ್ತಮ ತಯಾರಿ ಆಗುವುದಿಲ್ಲ.</p>
+    <p class="line">ಮುಂದಿರುವ ಪುಟವನ್ನು ಓದುವುದೇ ಆಗುತ್ತದೆ.</p>
+    <p class="line quote">ಗಮನವನ್ನು ವರ್ತಮಾನ ಕ್ಷಣಕ್ಕೆ ಸಂಕುಚಿತಗೊಳಿಸಿ, "ಜೀವನ ಸನ್ನಿವೇಶದ ಒಳಗಿನ ಜೀವನ"ವನ್ನು ಕಂಡುಕೊಳ್ಳುವುದು ಎಂದು ಪುಸ್ತಕ ಇದನ್ನು ವಿವರಿಸುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 8 -->
+  <section class="section" data-section>
+    <div class="num">೦೮</div>
+    <h2>"ಜೀವನ" vs. <span class="accent">"ಜೀವನ ಸನ್ನಿವೇಶ"</span></h2>
+    <p class="line">ಇದೊಂದು ಮುಖ್ಯ ಪರಿಕಲ್ಪನೆ.</p>
+    <div class="twocol">
+      <div>
+        <div class="col-title">ಜೀವನ ಸನ್ನಿವೇಶ</div>
+        <p class="line tight">ಪರಿಸ್ಥಿತಿಗಳ ಬಗ್ಗೆ ಮನಸ್ಸು ಹೇಳುವ ಎಲ್ಲವೂ:</p>
+        <p class="line tight dash">"ನನ್ನ ಬಳಿ ಸಾಕಷ್ಟು ಹಣ ಇಲ್ಲ."</p>
+        <p class="line tight dash">"ನನ್ನ ವೃತ್ತಿ ನಾನು ಬಯಸಿದಷ್ಟಿಲ್ಲ."</p>
+        <p class="line tight dash">"ನಾನು ತಪ್ಪುಗಳನ್ನು ಮಾಡಿದ್ದೇನೆ."</p>
+        <p class="line tight dash">"ಬೇರೆಯವರು ನನಗಿಂತ ಮುಂದಿದ್ದಾರೆ."</p>
+        <p class="line tight dash">"ನನ್ನ ಭವಿಷ್ಯ ಸುರಕ್ಷಿತವಾಗಿಲ್ಲ."</p>
+        <p class="line tight">ಇವೆಲ್ಲ ಭೂತ ಮತ್ತು ಭವಿಷ್ಯವನ್ನು ಒಳಗೊಂಡಿವೆ.</p>
+      </div>
+      <div>
+        <div class="col-title">ಜೀವನ</div>
+        <p class="line tight">ಈಗ ನಿಜವಾಗಿ ನಡೆಯುತ್ತಿರುವುದು:</p>
+        <p class="line tight dash">ನೀವು ಉಸಿರಾಡುತ್ತಿದ್ದೀರಿ.</p>
+        <p class="line tight dash">ನೀವು ಎಲ್ಲೋ ಕುಳಿತಿದ್ದೀರಿ.</p>
+        <p class="line tight dash">ನೀವು ಶಬ್ದಗಳನ್ನು ಕೇಳುತ್ತಿದ್ದೀರಿ.</p>
+        <p class="line tight dash">ನೀವು ವಸ್ತುಗಳನ್ನು ನೋಡುತ್ತಿದ್ದೀರಿ.</p>
+        <p class="line tight dash">ನೀವು ಈ ಪದಗಳನ್ನು ಓದುತ್ತಿದ್ದೀರಿ.</p>
+      </div>
+    </div>
+    <p class="line quote" style="margin-top:20px;">ಜೀವನ ಸನ್ನಿವೇಶ ಕಾಲದಲ್ಲಿ ಇರುತ್ತದೆ, ಆದರೆ ಜೀವನ ಇರುವುದು ಈಗಲೇ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 9 -->
+  <section class="section" data-section>
+    <div class="num">೦೯</div>
+    <h2>ಇಂದ್ರಿಯಗಳನ್ನು ಬಳಸಿ <span class="accent">ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗಿ</span></h2>
+    <p class="line">ಮನಸ್ಸು ಅತಿಯಾದಾಗ, ಆಲೋಚನೆಗಳ ಜೊತೆ ಹೋರಾಡಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಬದಲಿಗೆ, ಇಂದ್ರಿಯಗಳ ಕಡೆಗೆ ಗಮನ ಕೊಡಿ. ಇದನ್ನು ಪ್ರಯತ್ನಿಸಿ:</p>
+    <p class="line muted">ಸುತ್ತಲೂ ನೋಡಿ. ಎಲ್ಲವನ್ನೂ ತಕ್ಷಣ ಹೆಸರಿಸಬೇಡಿ. ಗಮನಿಸಿ:</p>
+    <p class="line dash">ಆಕಾರಗಳು</p>
+    <p class="line dash">ಬೆಳಕು</p>
+    <p class="line dash">ಬಣ್ಣಗಳು</p>
+    <p class="line dash">ವಿನ್ಯಾಸಗಳು</p>
+    <p class="line muted" style="margin-top:14px;">ನಂತರ ಕೇಳಿ. ಗಮನಿಸಿ:</p>
+    <p class="line dash">ಹತ್ತಿರದ ಶಬ್ದಗಳು</p>
+    <p class="line dash">ದೂರದ ಶಬ್ದಗಳು</p>
+    <p class="line dash">ಶಬ್ದಗಳ ನಡುವಿನ ಮೌನ</p>
+    <p class="line muted" style="margin-top:14px;">ನಂತರ ದೇಹವನ್ನು ಗಮನಿಸಿ. ಅನುಭವಿಸಿ:</p>
+    <p class="line dash">ನಿಮ್ಮ ಉಸಿರಾಟ</p>
+    <p class="line dash">ನಿಮ್ಮ ಕೈಗಳು</p>
+    <p class="line dash">ನಿಮ್ಮ ಪಾದಗಳು</p>
+    <p class="line dash">ದೇಹ ಪ್ರವೇಶಿಸುವ ಮತ್ತು ಹೊರಹೋಗುವ ಗಾಳಿ</p>
+    <p class="line" style="margin-top:14px;">ಇದು ಗಮನವನ್ನು ಮಾನಸಿಕ ಕಥೆಗಳಿಂದ ದೂರ ಮಾಡಿ, ಈಗ ನಿಜವಾಗಿ ನಡೆಯುತ್ತಿರುವುದರ ಕಡೆಗೆ ತರುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 10 -->
+  <section class="section" data-section>
+    <div class="num">೧೦</div>
+    <h2>ತೀವ್ರ ಭಾವನೆಗಳು <span class="accent">ಎದುರಾದಾಗ</span></h2>
+    <p class="line">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಟೀಕಿಸಿದರೆ, ತಕ್ಷಣ ಅನಿಸಬಹುದು:</p>
+    <p class="line dash">ಕೋಪ → ಬಿಗಿತ → ರಕ್ಷಣಾತ್ಮಕ ಆಲೋಚನೆಗಳು → ವಾದ</p>
+    <p class="line">ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಗಮನಿಸಲು ಪುಸ್ತಕ ಸಲಹೆ ನೀಡುತ್ತದೆ.</p>
+    <p class="line">ಬದಲಿಗೆ —</p>
+    <p class="line dash">"ನನಗೆ ಕೋಪ ಬಂದಿದೆ."</p>
+    <p class="line">ಗಮನಿಸಿ —</p>
+    <p class="line dash">"ಕೋಪ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತಿದೆ."</p>
+    <p class="line">ವ್ಯಕ್ತಿಯ ಮೇಲೆ ತಕ್ಷಣ ಆಕ್ರಮಣ ಮಾಡುವ ಬದಲು, ಗಮನಿಸಿ:</p>
+    <p class="line dash">"ನನ್ನ ದೇಹ ಬಿಗಿಯಾಗಿದೆ."</p>
+    <p class="line dash">"ನನ್ನ ಮನಸ್ಸು ರಕ್ಷಿಸಿಕೊಳ್ಳಲು ಬಯಸುತ್ತಿದೆ."</p>
+    <p class="line dash">"ಪ್ರತಿಕ್ರಿಯಿಸುವ ಒತ್ತಡ ಇದೆ."</p>
+    <p class="line">ಈ ಗಮನಿಸುವಿಕೆಯೇ ಭಾವನೆ ಮತ್ತು ಕ್ರಿಯೆಯ ನಡುವೆ ಒಂದು ಅಂತರ ಸೃಷ್ಟಿಸುತ್ತದೆ.</p>
+    <p class="line quote">ಮನಸ್ಸನ್ನು ಗಮನಿಸುವುದರಿಂದ ಅದರೊಂದಿಗೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಗುರುತಿಸಿಕೊಳ್ಳುವ ಶಕ್ತಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 11 -->
+  <section class="section" data-section>
+    <div class="num">೧೧</div>
+    <h2>ಆತಂಕ ಹೆಚ್ಚಾಗಿ <span class="accent">ಭವಿಷ್ಯದ ಬಗ್ಗೆಯೇ</span></h2>
+    <p class="line">ಪುಸ್ತಕ ಅನೇಕ ನಕಾರಾತ್ಮಕ ಭಾವನೆಗಳನ್ನು ಮಾನಸಿಕ ಸಮಯದೊಂದಿಗೆ ಜೋಡಿಸುತ್ತದೆ.</p>
+    <div class="twocol">
+      <div>
+        <div class="col-title">ಭವಿಷ್ಯ-ಕೇಂದ್ರಿತ ಮನಸ್ಸು</div>
+        <p class="line tight quote" style="font-size:1rem;">"ಏನಾದರೂ ತಪ್ಪಾದರೆ?"</p>
+        <p class="line tight">ಇದು ಸೃಷ್ಟಿಸಬಹುದು:</p>
+        <p class="line tight dash">ಆತಂಕ</p>
+        <p class="line tight dash">ಚಿಂತೆ</p>
+        <p class="line tight dash">ಒತ್ತಡ</p>
+        <p class="line tight dash">ಟೆನ್ಷನ್</p>
+        <p class="line tight dash">ಭಯ</p>
+      </div>
+      <div>
+        <div class="col-title">ಭೂತ-ಕೇಂದ್ರಿತ ಮನಸ್ಸು</div>
+        <p class="line tight quote" style="font-size:1rem;">"ನಾನೇಕೆ ಹಾಗೆ ಮಾಡಿದೆ?"</p>
+        <p class="line tight">ಇದು ಸೃಷ್ಟಿಸಬಹುದು:</p>
+        <p class="line tight dash">ಅಪರಾಧಿಭಾವ</p>
+        <p class="line tight dash">ಪಶ್ಚಾತ್ತಾಪ</p>
+        <p class="line tight dash">ಅಸಮಾಧಾನ</p>
+        <p class="line tight dash">ಕಹಿ</p>
+        <p class="line tight dash">ದುಃಖ</p>
+      </div>
+    </div>
+    <p class="line quote" style="margin-top:20px;">ವರ್ತಮಾನದ ಸಂಪರ್ಕ ಕಳೆದುಕೊಂಡಾಗ ಇವು ಇನ್ನಷ್ಟು ಬಲಗೊಳ್ಳುತ್ತವೆ ಎಂಬುದು ಪುಸ್ತಕದ ವಾದ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+    <p class="line">ಇದರರ್ಥ ಪ್ರತಿ ಕಷ್ಟದ ಭಾವನೆಯೂ ಕೇವಲ ಕಲ್ಪನೆ ಎಂದಲ್ಲ. ಪುಸ್ತಕ ಒಂದು ನಿರ್ದಿಷ್ಟ ಆಧ್ಯಾತ್ಮಿಕ ದೃಷ್ಟಿಕೋನ ಕಲಿಸುತ್ತಿದೆ — ಪ್ರೆಸೆನ್ಸ್ ಆ ಭಾವನೆಗಳೊಂದಿಗಿನ ನಮ್ಮ ಸಂಬಂಧವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.</p>
+  </section>
+
+  <!-- 12 -->
+  <section class="section" data-section>
+    <div class="num">೧೨</div>
+    <h2>ಒಪ್ಪಿಕೊಳ್ಳುವಿಕೆ <span class="accent">ಎಂದರೆ ಸೋಲೊಪ್ಪಿಗೆ ಅಲ್ಲ</span></h2>
+    <p class="line">ಕೆಲಸದಲ್ಲಿ ಸಮಸ್ಯೆ ಇದೆ ಎಂದುಕೊಳ್ಳಿ. ವರ್ತಮಾನದಲ್ಲಿ ಇರುವುದೆಂದರೆ ಇದಲ್ಲ:</p>
+    <p class="line dash">"ಏನಾದರೂ ಆಗಲಿ, ನನಗೇನೂ ಚಿಂತೆ ಇಲ್ಲ."</p>
+    <p class="line">ಬದಲಿಗೆ:</p>
+    <p class="line dash">"ಈಗ ಇದು ನಡೆಯುತ್ತಿದೆ. ಇದರ ಬಗ್ಗೆ ನಾನು ನಿಜವಾಗಿ ಏನು ಮಾಡಬಲ್ಲೆ?"</p>
+    <p class="line">ನಂತರ ಕ್ರಮ ಕೈಗೊಳ್ಳಿ.</p>
+    <p class="line muted" style="margin-top:14px;">ಸನ್ನಿವೇಶ: ಪರೀಕ್ಷೆಯಲ್ಲಿ ಸೋತಿರಿ.</p>
+    <p class="line">ಸಹಾಯಕಾರಿಯಲ್ಲದ ಮಾನಸಿಕ ಸುತ್ತು:</p>
+    <p class="line dash">"ನಾನು ಮೂರ್ಖ. ಎಲ್ಲರೂ ನನಗಿಂತ ಉತ್ತಮರು. ನನ್ನ ಭವಿಷ್ಯ ಮುಗಿಯಿತು."</p>
+    <p class="line">ವರ್ತಮಾನ ಪ್ರತಿಕ್ರಿಯೆ:</p>
+    <p class="line dash">"ಪರೀಕ್ಷೆಯಲ್ಲಿ ಸೋತೆ."</p>
+    <p class="line dash">"ಏನು ತಪ್ಪಾಯಿತು?"</p>
+    <p class="line dash">"ಏನು ಕಲಿಯಬಹುದು?"</p>
+    <p class="line dash">"ಮುಂದಿನ ಹೆಜ್ಜೆ ಏನು?"</p>
+    <p class="line">ಮೊದಲ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಚ್ಚು ನೋವು ಸೃಷ್ಟಿಸುತ್ತದೆ. ಎರಡನೆಯದು ಸನ್ನಿವೇಶವನ್ನು ಕೆಲಸ ಮಾಡಬಹುದಾದ ಸಂಗತಿಯಾಗಿ ಬದಲಾಯಿಸುತ್ತದೆ.</p>
+  </section>
+
+  <!-- 13 -->
+  <section class="section" data-section>
+    <div class="num">೧೩</div>
+    <h2>ಗುರಿಗಳಿಗೆ <span class="accent">ಇನ್ನೂ ಅವಕಾಶವಿದೆ</span></h2>
+    <p class="line">ಇದನ್ನು ತಪ್ಪಾಗಿ ಅರ್ಥೈಸಿಕೊಳ್ಳುವುದು ಸುಲಭ. ಪುಸ್ತಕ ಹೀಗೆ ಹೇಳುತ್ತಿಲ್ಲ:</p>
+    <p class="line dash">"ಗುರಿ ಇಟ್ಟುಕೊಳ್ಳಬೇಡಿ."</p>
+    <p class="line">ನಿಮಗೆ ಗುರಿಗಳಿರಬಹುದು. ಉದಾಹರಣೆಗೆ:</p>
+    <p class="line dash">"ನಾನು ಪ್ರೋಗ್ರಾಮರ್ ಆಗಬೇಕು."</p>
+    <p class="line">ಇದು ಸರಿಯಾಗಿದೆ. ನೀವು ಹೀಗೆ ಮಾಡಬಹುದು:</p>
+    <p class="line dash">ಗುರಿ ಆಯ್ಕೆಮಾಡಿ</p>
+    <p class="line dash">ಯೋಜನೆ ರೂಪಿಸಿ</p>
+    <p class="line dash">ಓದಿ</p>
+    <p class="line dash">ಅಭ್ಯಾಸ ಮಾಡಿ</p>
+    <p class="line dash">ಸುಧಾರಿಸಿ</p>
+    <p class="line">ಆದರೆ ಓದುವಾಗ, ಗಮನ ಈಗ ನಡೆಯುತ್ತಿರುವ ಓದುವಿಕೆಯ ಮೇಲಿರಬೇಕು. ಪದೇಪದೇ ಹೀಗಲ್ಲ:</p>
+    <p class="line dash">"ನಾನು ಕೊನೆಗೂ ಯಶಸ್ವಿಯಾಗುವುದು ಯಾವಾಗ?"</p>
+    <p class="line quote">ಭವಿಷ್ಯದ ಗುರಿಯನ್ನು ನಿಮ್ಮ ಗುರುತು ಮತ್ತು ಸಂತೋಷದ ಮೂಲ ಮಾಡದಿರುವವರೆಗೆ, ಯೋಜನೆ ಮತ್ತು ಗುರಿ-ನಿರ್ಧಾರ ಎರಡೂ ಉಪಯುಕ್ತ ಗಡಿಯಾರ-ಸಮಯ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 14 -->
+  <section class="section" data-section>
+    <div class="num">೧೪</div>
+    <h2>ಫಲಿತಾಂಶಕ್ಕಿಂತ <span class="accent">ಕ್ರಿಯೆಯ ಮೇಲೆ ಗಮನ</span></h2>
+    <p class="line">ಇಬ್ಬರು ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ.</p>
+    <div class="twocol">
+      <div>
+        <div class="col-title">ವಿದ್ಯಾರ್ಥಿ A</div>
+        <p class="line tight quote" style="font-size:1rem;">"ನಾನು 90% ಪಡೆಯಲೇಬೇಕು."</p>
+        <p class="line tight">ಪ್ರತಿ ಬಾರಿ ಓದುವಾಗ:</p>
+        <p class="line tight dash">"90 ಸಿಗದಿದ್ದರೆ?"</p>
+        <p class="line tight">ಓದುತ್ತಿರುವುದು ಭವಿಷ್ಯದಲ್ಲಿ ಮಾನಸಿಕವಾಗಿ ಬದುಕುತ್ತಲೇ.</p>
+      </div>
+      <div>
+        <div class="col-title">ವಿದ್ಯಾರ್ಥಿ B</div>
+        <p class="line tight quote" style="font-size:1rem;">"ಮುಂದಿನ 30 ನಿಮಿಷ, ಈ ಒಂದು ವಿಷಯ ಅರ್ಥಮಾಡಿಕೊಳ್ಳುತ್ತೇನೆ."</p>
+        <p class="line tight">ನಿಜವಾದ ಕೆಲಸದ ಮೇಲೆ ಗಮನ.</p>
+      </div>
+    </div>
+    <p class="line" style="margin-top:20px;">ಇಬ್ಬರ ಗುರಿ ಒಂದೇ. ಆದರೆ ಗುರಿಯೊಂದಿಗಿನ ಮಾನಸಿಕ ಸಂಬಂಧ ಬೇರೆ.</p>
+    <p class="line quote">ಫಲಿತಾಂಶವನ್ನು ನಿರಂತರವಾಗಿ ಬೆನ್ನಟ್ಟುವ ಬದಲು, ಕ್ರಿಯೆಯ ಮೇಲೆಯೇ ಗಮನ ಕೊಡಲು ಪುಸ್ತಕ ಪ್ರೋತ್ಸಾಹಿಸುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 15 -->
+  <section class="section" data-section>
+    <div class="num">೧೫</div>
+    <h2>"ಏನು" ಗಿಂತ <span class="accent">"ಹೇಗೆ" ಮುಖ್ಯ</span></h2>
+    <p class="line">ಇಬ್ಬರು ವ್ಯಕ್ತಿಗಳು ಪಾತ್ರೆ ತೊಳೆಯುತ್ತಿದ್ದಾರೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+    <p class="line muted">ವ್ಯಕ್ತಿ A:</p>
+    <p class="line dash">"ನನಗೆ ಇದು ಇಷ್ಟವಿಲ್ಲ. ಬೇಗ ಮುಗಿಸಬೇಕು."</p>
+    <p class="line muted">ವ್ಯಕ್ತಿ B:</p>
+    <p class="line dash">"ನಾನು ಈ ಪಾತ್ರೆಗಳನ್ನು ತೊಳೆಯುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line">ಅವರು ಗಮನಿಸುತ್ತಾರೆ:</p>
+    <p class="line dash">ನೀರು</p>
+    <p class="line dash">ಉಷ್ಣತೆ</p>
+    <p class="line dash">ಚಲನೆ</p>
+    <p class="line dash">ಶಬ್ದ</p>
+    <p class="line dash">ತಮ್ಮ ಕೈಗಳು</p>
+    <p class="line">ಚಟುವಟಿಕೆ ಬದಲಾಗಿಲ್ಲ. ಅದರೊಂದಿಗಿನ ಸಂಬಂಧ ಬದಲಾಗಿದೆ. ಇದೇ ಕಾರಣಕ್ಕೆ ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ:</p>
+    <p class="line quote">"ಏನು" ಎನ್ನುವುದಕ್ಕಿಂತ "ಹೇಗೆ" ಯಾವಾಗಲೂ ಮುಖ್ಯ.</p>
+    <p class="line">ಕ್ಷಣದೊಂದಿಗೆ ಮಾನಸಿಕವಾಗಿ ಹೋರಾಡುವ ಬದಲು, ಚಟುವಟಿಕೆಗೆ ಪೂರ್ಣ ಗಮನ ತರುವುದೇ ಇಲ್ಲಿನ ಆಶಯ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 16 -->
+  <section class="section" data-section>
+    <div class="num">೧೬</div>
+    <h2>"ಇರುವಿಕೆಯ ಆನಂದ" <span class="accent">ಎಂದರೇನು?</span></h2>
+    <p class="line">ಪುಸ್ತಕ ಒಂದು ಸರಳ ಪ್ರಶ್ನೆ ಕೇಳುತ್ತದೆ:</p>
+    <p class="line quote">"ನಾನು ಮಾಡುತ್ತಿರುವುದರಲ್ಲಿ ಆನಂದ, ಸರಾಗತೆ, ಹಗುರತೆ ಇದೆಯೇ?"</p>
+    <p class="line">ಇಲ್ಲದಿದ್ದರೆ, ಅದರರ್ಥ ಇದಲ್ಲ:</p>
+    <p class="line dash">"ಕೆಲಸ ಬಿಡಿ."</p>
+    <p class="line">ಅದರರ್ಥ ಇರಬಹುದು:</p>
+    <p class="line dash">ಅದನ್ನು ಮಾಡುವ ರೀತಿಯನ್ನು ಬದಲಿಸಿ.</p>
+    <p class="line">ಉದಾ: ಓದುವುದು ಕಷ್ಟವಾಗಬಹುದು. ಪ್ರತಿ ಕ್ಷಣವನ್ನೂ ಪ್ರೀತಿಸಬೇಕಿಲ್ಲ.</p>
+    <p class="line">ಆದರೆ ಇದರ ಬದಲು —</p>
+    <p class="line dash">"ನನಗೆ ಓದುವುದು ಇಷ್ಟವಿಲ್ಲ. ಎಲ್ಲವನ್ನೂ ಮುಗಿಸಬೇಕು. ಯಶಸ್ವಿಯಾಗಬೇಕು."</p>
+    <p class="line">ಇದನ್ನು ಪ್ರಯತ್ನಿಸಿ —</p>
+    <p class="line dash">"ಈಗ, ನಾನು ಈ ಒಂದು ವಿಷಯ ಕಲಿಯುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line">ನಿಜವಾದ ಚಟುವಟಿಕೆಯ ಮೇಲೆ ಗಮನ ಕೊಡಿ.</p>
+    <p class="line quote">ಗಮನ ವರ್ತಮಾನಕ್ಕೆ ಹೊರಳಿದಾಗ, ಒಂದು ಬಗೆಯ ಶಾಂತಿ, ನೆಮ್ಮದಿ ಮತ್ತು ಇರುವಿಕೆಯ ಭಾವ ಮೂಡಬಹುದು.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- 17 -->
+  <section class="section" data-section>
+    <div class="num">೧೭</div>
+    <h2>ಆಳವಾದ <span class="accent">ಸಂದೇಶ</span></h2>
+    <p class="line">ಕೊನೆಯಲ್ಲಿ, ಪುಸ್ತಕ ಒಂದು ಬಲವಾದ ಅಂಶ ಮುಂದಿಡುತ್ತದೆ.</p>
+    <p class="line">ನೀವು ಇನ್ನೂ ಬಾಹ್ಯ ಗುರಿಗಳನ್ನು ಬಯಸಬಹುದು:</p>
+    <p class="line dash">ಹಣ</p>
+    <p class="line dash">ಶಿಕ್ಷಣ</p>
+    <p class="line dash">ವೃತ್ತಿ ಯಶಸ್ಸು</p>
+    <p class="line dash">ಸಂಬಂಧಗಳು</p>
+    <p class="line dash">ಜ್ಞಾನ</p>
+    <p class="line dash">ಸಾಧನೆಗಳು</p>
+    <p class="line">ಆದರೆ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಗುರುತನ್ನು ಭವಿಷ್ಯದ ಹೊಣೆಗಾರಿಕೆಯಾಗಿ ಮಾಡಬೇಡಿ.</p>
+    <p class="line muted">ಪುಸ್ತಕದ ಚೌಕಟ್ಟಿನಲ್ಲಿ:</p>
+    <p class="line">ಯಶಸ್ಸೇ ನಿಮ್ಮನ್ನು ಪೂರ್ಣಗೊಳಿಸುತ್ತದೆ ಎಂದು ನಂಬದೆಯೇ ನೀವು ಯಶಸ್ಸನ್ನು ಬೆನ್ನಟ್ಟಬಹುದು.</p>
+    <p class="line">ಸೃಷ್ಟಿಸಲು, ಕಲಿಯಲು, ಕೊಡುಗೆ ನೀಡಲು ಅಥವಾ ಅನುಭವಿಸಲು ಬಯಸುವ ಕಾರಣಕ್ಕೆ ನೀವು ಕೆಲಸ ಮಾಡುತ್ತೀರಿ — ಹೀಗೆ ನಂಬಿ ಅಲ್ಲ:</p>
+    <p class="line quote">"ಇದನ್ನು ಸಾಧಿಸಿದಾಗ ಮಾತ್ರ ನಾನು ಯೋಗ್ಯ ಅಥವಾ ಪರಿಪೂರ್ಣ."</p>
+    <p class="line">ಮಾನಸಿಕ "ಆಗುವಿಕೆ" ಯಿಂದ ಮುಕ್ತರಾಗುವುದು ಎಂದು ಪುಸ್ತಕ ಇದನ್ನು ವಿವರಿಸುತ್ತದೆ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- RAVI STORY -->
+  <section class="section" data-section>
+    <div class="num">🌱</div>
+    <h2>ಇಡೀ ಅಧ್ಯಾಯ <span class="accent">ಒಂದೇ ಉದಾಹರಣೆಯಲ್ಲಿ</span></h2>
+    <p class="line">ರವಿ ಎಂಬ ವ್ಯಕ್ತಿಯನ್ನು ಕಲ್ಪಿಸಿಕೊಳ್ಳಿ. ಅವನು ಯೋಚಿಸುತ್ತಾನೆ:</p>
+    <div class="ravi-flow">
+      <span class="chip" data-chip>"ಮೊದಲು ಸೋತಿದ್ದೆ."</span>
+      <span class="arrow">→</span>
+      <span class="chip" data-chip>"ಎಲ್ಲರೂ ನನಗಿಂತ ಮುಂದಿದ್ದಾರೆ."</span>
+      <span class="arrow">→</span>
+      <span class="chip" data-chip>"ಮತ್ತೆ ಸೋತರೆ?"</span>
+      <span class="arrow">→</span>
+      <span class="chip" data-chip>"ನಾನು ಯಶಸ್ವಿಯಾಗಬೇಕು."</span>
+      <span class="arrow">→</span>
+      <span class="chip" data-chip>"ಯಶಸ್ವಿಯಾದಾಗ ಕೊನೆಗೂ ಸಂತೋಷ."</span>
+    </div>
+    <p class="line">ಅವನ ಮನಸ್ಸು ನಿರಂತರವಾಗಿ ಚಲಿಸುತ್ತಿದೆ:</p>
+    <p class="line quote">ಭೂತ → ಭವಿಷ್ಯ → ಭೂತ → ಭವಿಷ್ಯ</p>
+    <p class="line">ಅವನು ಬದುಕುತ್ತಿರುವ ಕ್ಷಣವನ್ನು ನಿಜವಾಗಿ ಅನುಭವಿಸುತ್ತಿಲ್ಲ. ಈಗ ಅವನು ಈ ಮಾದರಿಯನ್ನು ಗಮನಿಸುತ್ತಾನೆ. ಅವನು ಹೇಳಿಕೊಳ್ಳುತ್ತಾನೆ:</p>
+    <p class="line dash">"ನಾನು ಭೂತಕಾಲ ನೆನಪಿಸಿಕೊಳ್ಳುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line dash">"ನಾನು ಭವಿಷ್ಯದ ಬಗ್ಗೆ ಚಿಂತಿಸುತ್ತಿದ್ದೇನೆ."</p>
+    <p class="line">ನಂತರ ಅವನು ನಿಜವಾಗಿ ನಡೆಯುತ್ತಿರುವುದನ್ನು ನೋಡುತ್ತಾನೆ:</p>
+    <p class="line dash">ಅವನು ಮೇಜಿನ ಬಳಿ ಕುಳಿತಿದ್ದಾನೆ.</p>
+    <p class="line dash">ಅವನ ಉಸಿರಾಟ ಅನುಭವಿಸುತ್ತಾನೆ.</p>
+    <p class="line dash">ಪುಸ್ತಕ ತೆರೆಯುತ್ತಾನೆ.</p>
+    <p class="line dash">ಮುಂದಿನ ಪುಟ ಓದುತ್ತಾನೆ.</p>
+    <p class="line dash">ಮನಸ್ಸು ಅಲೆದಾಡಿದಾಗ ಗಮನಿಸುತ್ತಾನೆ.</p>
+    <p class="line dash">ಮತ್ತೆ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗುತ್ತಾನೆ.</p>
+    <p class="line" style="margin-top:14px;">ಅವನು ಗುರಿಗಳನ್ನು ನಿಲ್ಲಿಸಿಲ್ಲ. ಅವನು ಕೇವಲ ಇನ್ನೂ ಬಾರದ ಭವಿಷ್ಯದಲ್ಲಿ ಮಾನಸಿಕವಾಗಿ ಬದುಕುವುದನ್ನು ನಿಲ್ಲಿಸಿದ್ದಾನೆ.</p>
+    <p class="line">ಇದೇ "ಈ ಕ್ಷಣದೊಳಗೆ ಆಳವಾಗಿ ಪ್ರವೇಶ" ಎಂಬುದರ ಪ್ರಾಯೋಗಿಕ ಅರ್ಥ.</p>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="section" data-section>
+    <div class="num">🧠</div>
+    <h2>ಈ ಅಧ್ಯಾಯದ <span class="accent">ಒಂದು ಸರಳ ಅಭ್ಯಾಸ</span></h2>
+    <p class="line">ಇದನ್ನು ಎಲ್ಲಿ ಬೇಕಾದರೂ ಪ್ರಯತ್ನಿಸಬಹುದು:</p>
+    <div class="practice-grid">
+      <div class="practice-card" data-card>
+        <div class="step">ನಿಲ್ಲಿಸಿ</div>
+        <div class="desc">ಕೆಲವು ಕ್ಷಣ ನಿಲ್ಲಿಸಿ.</div>
+      </div>
+      <div class="practice-card" data-card>
+        <div class="step">ಗಮನಿಸಿ</div>
+        <div class="desc">"ನನ್ನ ಮನಸ್ಸು ಈಗ ಏನು ಮಾಡುತ್ತಿದೆ?"</div>
+      </div>
+      <div class="practice-card" data-card>
+        <div class="step">ಅನುಭವಿಸಿ</div>
+        <div class="desc">ಉಸಿರಾಟ ಮತ್ತು ದೇಹ ಅನುಭವಿಸಿ.</div>
+      </div>
+      <div class="practice-card" data-card>
+        <div class="step">ಕ್ರಮಿಸಿ</div>
+        <div class="desc">"ಈಗ ನಿಜವಾಗಿ ಮಾಡಬಹುದಾದ ಒಂದು ಕೆಲಸ ಏನು?" ಅದನ್ನು ಮಾಡಿ.</div>
+      </div>
+    </div>
+    <p class="line" style="margin-top:24px;">ಮನಸ್ಸನ್ನು ಸಂಪೂರ್ಣ ಮೌನಗೊಳಿಸುವುದು ಗುರಿಯಲ್ಲ. ಆಲೋಚನೆಗಳಿಗೆ ಸೆಳೆಯಲ್ಪಟ್ಟಾಗ ಗಮನಿಸಿ, ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗುವುದೇ ಗುರಿ.</p>
+    <p class="line">ಪುಸ್ತಕದ ಅತ್ಯಂತ ಮಹತ್ವದ ಒಂದು ಅಂಶ:</p>
+    <p class="line quote">ನೀವು ವರ್ತಮಾನದಲ್ಲಿಲ್ಲ ಎಂದು ಗಮನಿಸಿದ ಕ್ಷಣವೇ, ನೀವು ಆಗಲೇ ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗಿದ್ದೀರಿ.</p>
+    <div class="source-tag" data-source>ದ ಪವರ್ ಆಫ್ ನೌ · ಎಕ್‌ಹಾರ್ಟ್ ಟಾಲೆ</div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <div>
+      <p class="line quote">ಭೂತಕಾಲದಿಂದ ಕಲಿಯಿರಿ, ಭವಿಷ್ಯಕ್ಕಾಗಿ ಯೋಜಿಸಿ — ಆದರೆ ಇವೆರಡರಲ್ಲಿ ಮಾನಸಿಕವಾಗಿ ಬದುಕುತ್ತಾ ವರ್ತಮಾನ ಕ್ಷಣವನ್ನು ಬಲಿಕೊಡಬೇಡಿ.</p>
+      <div class="foot">ಅಧ್ಯಾಯ 3 · ಈ ಕ್ಷಣದೊಳಗೆ ಆಳವಾಗಿ ಪ್ರವೇಶ</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ---------- Falling embers background ----------
+const canvas = document.getElementById('embers');
+const ctx = canvas.getContext('2d');
+let W, H, particles;
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function makeParticle(){
+  return {
+    x: Math.random()*W,
+    y: Math.random()*-H,
+    r: Math.random()*1.8 + 0.5,
+    speed: Math.random()*0.35 + 0.12,
+    drift: (Math.random()-0.5)*0.3,
+    alpha: Math.random()*0.5 + 0.15,
+    hue: Math.random() > 0.65 ? 'sage' : 'gold',
+    sway: Math.random()*Math.PI*2
+  };
+}
+
+const COUNT = window.innerWidth < 640 ? 45 : 90;
+particles = Array.from({length: COUNT}, makeParticle);
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for(const p of particles){
+    p.sway += 0.01;
+    p.y += p.speed;
+    p.x += p.drift + Math.sin(p.sway)*0.15;
+
+    if(p.y > H + 10){ Object.assign(p, makeParticle(), {y: -10}); }
+    if(p.x > W + 10) p.x = -10;
+    if(p.x < -10) p.x = W + 10;
+
+    const color = p.hue === 'gold' ? `212,168,87` : `124,152,133`;
+    ctx.beginPath();
+    const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+    grad.addColorStop(0, `rgba(${color},${p.alpha})`);
+    grad.addColorStop(1, `rgba(${color},0)`);
+    ctx.fillStyle = grad;
+    ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(${color},${p.alpha+0.2})`;
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  }
+  if(!REDUCED) requestAnimationFrame(draw);
+}
+draw();
+if(REDUCED){
+  setInterval(draw, 4000);
+}
+
+// ---------- Scroll reveal ----------
+const revealTargets = document.querySelectorAll('.line, .source-tag, .chip, .practice-card');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting){
+      const el = entry.target;
+      const siblings = Array.from(el.parentElement.children).filter(c=>c.classList.contains('line')||c.classList.contains('source-tag')||c.classList.contains('chip')||c.classList.contains('practice-card'));
+      const idx = siblings.indexOf(el);
+      setTimeout(()=> el.classList.add('visible'), Math.max(0, idx) * 55);
+      io.unobserve(el);
+    }
+  });
+}, {threshold:0.15, rootMargin:'0px 0px -8% 0px'});
+revealTargets.forEach(el=> io.observe(el));
+
+// ---------- Scroll progress rail ----------
+const railFill = document.getElementById('railFill');
+window.addEventListener('scroll', ()=>{
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop/docHeight)*100 : 0;
+  if(railFill) railFill.style.height = pct + '%';
+}, {passive:true});
+</script>
+</body>
+</html>

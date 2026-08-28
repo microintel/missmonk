@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಅಧ್ಯಾಯ ನಾಲ್ಕು — ದಿ ಪವರ್ ಆಫ್ ನೌ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Kannada:wght@300;400;500;600&family=Noto+Sans+Kannada:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E14;
+    --ink-2:#111623;
+    --paper:#EDE8DD;
+    --ember:#E8944A;
+    --sage:#8FA88B;
+    --slate:#5A6478;
+    --line:rgba(237,232,221,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Noto Sans Kannada',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  canvas#bg{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+  .glow{
+    position:fixed;
+    top:-20%;left:50%;
+    transform:translateX(-50%);
+    width:900px;height:900px;
+    background:radial-gradient(circle, rgba(232,148,74,0.08) 0%, rgba(232,148,74,0) 70%);
+    z-index:0;
+    pointer-events:none;
+  }
+  main{
+    position:relative;
+    z-index:1;
+    max-width:760px;
+    margin:0 auto;
+    padding:14vh 6vw 22vh;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+  }
+  .eyebrow{
+    font-size:0.75rem;
+    letter-spacing:0.2em;
+    color:var(--sage);
+    margin-bottom:2rem;
+    opacity:0;
+    animation:fadeUp 1.2s ease forwards 0.2s;
+  }
+  h1{
+    font-family:'Noto Serif Kannada',serif;
+    font-weight:400;
+    font-size:clamp(2.1rem, 6.5vw, 3.6rem);
+    line-height:1.35;
+    color:var(--paper);
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 0.5s;
+  }
+  h1 em{
+    font-style:normal;
+    font-weight:600;
+    color:var(--ember);
+  }
+  .hero-sub{
+    margin-top:2.2rem;
+    max-width:560px;
+    font-size:1.05rem;
+    line-height:2;
+    color:var(--slate);
+    font-weight:300;
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 0.9s;
+  }
+  .hero-thesis{
+    margin-top:2.6rem;
+    font-family:'Noto Serif Kannada',serif;
+    font-size:1.2rem;
+    line-height:1.9;
+    color:var(--ember);
+    border-left:2px solid var(--ember);
+    padding-left:1.4rem;
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 1.3s;
+  }
+  .scroll-cue{
+    margin-top:4rem;
+    font-size:0.75rem;
+    letter-spacing:0.15em;
+    color:var(--slate);
+    opacity:0;
+    animation:fadeUp 1.2s ease forwards 1.8s, pulse 2.4s ease-in-out infinite 2s;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.4;}
+    50%{opacity:0.9;}
+  }
+
+  /* ---------- Section blocks ---------- */
+  section{
+    margin-top:14vh;
+    position:relative;
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:1.1rem;
+    margin-bottom:2.6rem;
+  }
+  .section-num{
+    font-family:'Noto Serif Kannada',serif;
+    font-size:1rem;
+    color:var(--ember);
+    opacity:0.85;
+    white-space:nowrap;
+  }
+  .section-title{
+    font-family:'Noto Serif Kannada',serif;
+    font-weight:500;
+    font-size:clamp(1.35rem, 3.6vw, 1.8rem);
+    color:var(--paper);
+    line-height:1.5;
+  }
+  .rule{
+    height:1px;
+    width:100%;
+    background:var(--line);
+    margin:3.2rem 0;
+  }
+
+  .block{
+    margin-bottom:1.9rem;
+  }
+  .block-label{
+    font-size:0.78rem;
+    letter-spacing:0.1em;
+    color:var(--sage);
+    margin-bottom:0.9rem;
+    font-weight:500;
+  }
+
+  .line{
+    font-size:1.08rem;
+    line-height:2;
+    font-weight:300;
+    color:var(--paper);
+    opacity:0.92;
+    padding:0.15rem 0;
+  }
+  .line.dim{ color:var(--slate); }
+  .line.quote{
+    font-family:'Noto Serif Kannada',serif;
+    color:var(--ember);
+    font-size:1.12rem;
+  }
+  .line.indent{ padding-left:1.6rem; }
+
+  .cite{
+    display:inline-block;
+    font-family:'Noto Sans Kannada',sans-serif;
+    font-size:0.62rem;
+    letter-spacing:0.05em;
+    color:var(--slate);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:0.05rem 0.4rem;
+    margin-left:0.5rem;
+    vertical-align:middle;
+    opacity:0.6;
+  }
+
+  .example-card{
+    margin-top:1.2rem;
+    padding:1.6rem 1.8rem;
+    background:var(--ink-2);
+    border-left:2px solid var(--sage);
+    border-radius:2px;
+  }
+  .example-card .block-label{ color:var(--sage); }
+
+  .avoid .line::before{ content:"✕  "; color:#B4664A; opacity:0.7; }
+  .do .line::before{ content:"→  "; color:var(--sage); opacity:0.9; }
+
+  .two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3rem;
+  }
+  @media(max-width:640px){
+    .two-col{grid-template-columns:1fr; gap:2.4rem;}
+  }
+
+  .formula{
+    margin-top:1.4rem;
+    font-family:'Noto Serif Kannada',serif;
+    font-size:1.08rem;
+  }
+  .formula .row{
+    display:flex;
+    gap:0.8rem;
+    align-items:baseline;
+    padding:0.6rem 0;
+    border-bottom:1px solid var(--line);
+  }
+  .formula .row:last-child{border-bottom:none;}
+  .formula .tag{
+    font-family:'Noto Sans Kannada',sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.05em;
+    color:var(--ember);
+    width:110px;
+    flex-shrink:0;
+  }
+
+  footer{
+    margin-top:18vh;
+    text-align:center;
+    padding-bottom:6vh;
+  }
+  footer .closing{
+    font-family:'Noto Serif Kannada',serif;
+    font-size:clamp(1.25rem,3.2vw,1.7rem);
+    line-height:1.9;
+    color:var(--paper);
+  }
+  footer .closing .accent{ color:var(--ember); }
+  footer .tag{
+    margin-top:2rem;
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    color:var(--slate);
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="glow"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">ದಿ ಪವರ್ ಆಫ್ ನೌ · ನಾಲ್ಕನೇ ಅಧ್ಯಾಯ</div>
+    <h1>ಈ <em>ಕ್ಷಣ</em>ವನ್ನು ಕಳೆದುಕೊಳ್ಳುವುದು,<br>ಮತ್ತೆ ಅದಕ್ಕೆ ಹಿಂತಿರುಗುವುದು.</h1>
+    <p class="hero-sub">ಇದು ದಿ ಪವರ್ ಆಫ್ ನೌ ಪುಸ್ತಕದ ನಾಲ್ಕನೇ ಅಧ್ಯಾಯದ ವಿವರಣೆ. ಮನಸ್ಸು ನಮ್ಮನ್ನು ವರ್ತಮಾನದಿಂದ ಹೇಗೆ ದೂರ ಕೊಂಡೊಯ್ಯುತ್ತದೆ ಮತ್ತು ಅದರಿಂದ ಅನಗತ್ಯ ದುಃಖ ಹೇಗೆ ಸೃಷ್ಟಿಯಾಗುತ್ತದೆ ಎಂಬುದನ್ನು ಈ ಅಧ್ಯಾಯ ವಿವರಿಸುತ್ತದೆ.</p>
+    <p class="hero-thesis">ನಿಮ್ಮ ಅತಿದೊಡ್ಡ ಸಮಸ್ಯೆ ಸಾಮಾನ್ಯವಾಗಿ ಪರಿಸ್ಥಿತಿಯೇ ಆಗಿರುವುದಿಲ್ಲ — ಬದಲಿಗೆ ಭೂತ ಅಥವಾ ಭವಿಷ್ಯದ ಆಲೋಚನೆಗಳಲ್ಲಿ ನೀವು ಕಳೆದುಹೋಗುವುದೇ ಆಗಿದೆ.</p>
+    <div class="scroll-cue">ಕೆಳಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ ↓</div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೧</span>
+      <h2 class="section-title">ನಿಜವಾದ ಸಮಸ್ಯೆ — "ಈ ಕ್ಷಣ"ವನ್ನು ಕಳೆದುಕೊಳ್ಳುವುದು</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಪ್ರಾಯೋಗಿಕವಾಗಿ ನೋಡಿದರೆ, ಸಮಯವನ್ನು ನಿಲ್ಲಿಸಲು ನಿಮಗೆ ಸಾಧ್ಯವಿಲ್ಲ.</p>
+      <p class="line reveal">ನಿಮಗೆ ಇನ್ನೂ ಇವು ಬೇಕಾಗಿವೆ:</p>
+      <p class="line reveal indent dim">ನಾಳಿನ ಬಿಲ್‌ಗಳನ್ನು ಪಾವತಿಸುವುದು</p>
+      <p class="line reveal indent dim">ಭವಿಷ್ಯಕ್ಕಾಗಿ ಯೋಜನೆ ಮಾಡುವುದು</p>
+      <p class="line reveal indent dim">ಹಿಂದಿನ ಸಂಗತಿಗಳನ್ನು ನೆನಪಿಸಿಕೊಳ್ಳುವುದು</p>
+      <p class="line reveal indent dim">ಗುರಿಗಳ ಕಡೆಗೆ ಶ್ರಮಿಸುವುದು</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಸಮಸ್ಯೆ ಸಮಯವನ್ನು ಬಳಸುವುದರಲ್ಲಿ ಇಲ್ಲ.</p>
+      <p class="line reveal quote">ಸಮಸ್ಯೆ ಎಂದರೆ, ವರ್ತಮಾನದಲ್ಲಿ ಇರುವ ಬದಲು ಮಾನಸಿಕವಾಗಿ ಭೂತ ಅಥವಾ ಭವಿಷ್ಯದಲ್ಲಿ ಬದುಕುವುದು. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">ಉದಾಹರಣೆ</p>
+      <p class="line reveal">ನೀವು ಈಗ ಓದುತ್ತಿದ್ದೀರಿ ಎಂದುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal">ನಿಮ್ಮ ದೇಹ ಓದುತ್ತಿದೆ, ಆದರೆ ಮನಸ್ಸು ಹೇಳುತ್ತಿದೆ:</p>
+      <p class="line reveal indent dim">"ನಾನು ಫೇಲ್ ಆದರೆ?"</p>
+      <p class="line reveal indent dim">"ನಿನ್ನೆ ಏನಾಯಿತು?"</p>
+      <p class="line reveal indent dim">"ಮುಂದಿನ ವರ್ಷ ಏನಾಗುತ್ತದೆ?"</p>
+      <p class="line reveal">ನೀವು ದೈಹಿಕವಾಗಿ ಇಲ್ಲಿದ್ದೀರಿ, ಆದರೆ ಮನಸ್ಸಿನಿಂದ ಬೇರೆಲ್ಲೋ ಇದ್ದೀರಿ.</p>
+      <p class="line reveal">ಅದೇ ಈ ಕ್ಷಣದ ನಷ್ಟ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೨</span>
+      <h2 class="section-title">"ವರ್ತಮಾನದಲ್ಲಿ ಇರುವುದು" ಎಂದರೇನು?</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಇದರ ಅರ್ಥ ಸರಳ:</p>
+      <p class="line reveal quote">ಈಗ ನಡೆಯುತ್ತಿರುವುದರ ಬಗ್ಗೆ ಗಮನ ಕೊಡುವುದು.</p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">ಉದಾಹರಣೆಗೆ, ಚಹಾ ಕುಡಿಯುವಾಗ</p>
+      <p class="line reveal">ಚಹಾ ಕುಡಿಯುವಾಗ ಸಂಪೂರ್ಣವಾಗಿ ಆಲೋಚನೆಗಳಲ್ಲಿ ಮುಳುಗಿಹೋಗಬೇಡಿ.</p>
+      <p class="line reveal">ಇವುಗಳನ್ನು ಗಮನಿಸಿ:</p>
+      <p class="line reveal indent dim">ಕಪ್‌ನ ಬೆಚ್ಚಗಿನ ಸ್ಪರ್ಶ</p>
+      <p class="line reveal indent dim">ರುಚಿ</p>
+      <p class="line reveal indent dim">ನಿಮ್ಮ ಉಸಿರಾಟ</p>
+      <p class="line reveal indent dim">ನಿಮ್ಮ ದೇಹ</p>
+      <p class="line reveal indent dim">ನೀವು ಏನು ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂಬುದು</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">"ನಾನು ವರ್ತಮಾನದಲ್ಲಿ ಇರಲಿಲ್ಲ" ಎಂದು ಗಮನಿಸುವುದೇ ವರ್ತಮಾನದ ಕಡೆಗಿನ ಒಂದು ಹೆಜ್ಜೆ ಎಂದು ಪುಸ್ತಕ ಹೇಳುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+      <p class="line reveal">ಆದ್ದರಿಂದ ಮನಸ್ಸು ಅಲೆದಾಡಿದಾಗ ಹತಾಶರಾಗಬೇಡಿ.</p>
+      <p class="line reveal">ಬರೀ ಗಮನಿಸಿ, ಮತ್ತೆ ಹಿಂತಿರುಗಿ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೩</span>
+      <h2 class="section-title">ಸಾಮಾನ್ಯ ಪ್ರಜ್ಞಾಹೀನತೆ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಇದರ ಅರ್ಥ ನೀವು ದೈಹಿಕವಾಗಿ ಪ್ರಜ್ಞೆ ಕಳೆದುಕೊಂಡಿದ್ದೀರಿ ಎಂದಲ್ಲ.</p>
+      <p class="line reveal quote">ಇದರ ಅರ್ಥ, ನಿಮ್ಮ ಆಲೋಚನೆಗಳು, ಭಾವನೆಗಳು, ಬಯಕೆಗಳು ಮತ್ತು ಪ್ರತಿಕ್ರಿಯೆಗಳು ನಿಮ್ಮನ್ನು ನಿಯಂತ್ರಿಸುತ್ತಿವೆ, ಆದರೆ ಅದು ನಿಮಗೆ ಗೊತ್ತಾಗುತ್ತಿಲ್ಲ. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">ಉದಾಹರಣೆ</p>
+      <p class="line reveal">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸುತ್ತಾರೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal">ತಕ್ಷಣ ಮನಸ್ಸಿನಲ್ಲಿ:</p>
+      <p class="line reveal indent dim">"ಅವನಿಗೆ ಎಷ್ಟು ಧೈರ್ಯ!"</p>
+      <p class="line reveal indent dim">"ನಾನು ಅವನಿಗೆ ಪಾಠ ಕಲಿಸುತ್ತೇನೆ!"</p>
+      <p class="line reveal indent dim">"ಯಾರೂ ನನ್ನನ್ನು ಗೌರವಿಸುವುದಿಲ್ಲ!"</p>
+      <p class="line reveal">ನೀವು ಕೋಪವನ್ನು ಗಮನಿಸುವುದಿಲ್ಲ.</p>
+      <p class="line reveal">ಕೋಪವೇ ನಿಮ್ಮನ್ನು ನಿಯಂತ್ರಿಸುತ್ತದೆ.</p>
+      <p class="line reveal">ಅದೇ ಪ್ರಜ್ಞಾಹೀನತೆ.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಪ್ರಜ್ಞಾಪೂರ್ವಕವಾಗಿರುವುದು ಎಂದರೆ:</p>
+      <p class="line reveal quote">"ನನಗೆ ಈಗ ಕೋಪ ಬರುತ್ತಿದೆ."</p>
+      <p class="line reveal">ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಮೊದಲು ನೀವು ಅದನ್ನು ಗಮನಿಸುತ್ತೀರಿ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೪</span>
+      <h2 class="section-title">ನಿಮ್ಮ ಕಷ್ಟದ ಕ್ಷಣಗಳೇ ಪರೀಕ್ಷೆಗಳು</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಪುಸ್ತಕ ಇಲ್ಲಿ ಒಂದು ಮುಖ್ಯ ವಿಚಾರ ನೀಡುತ್ತದೆ:</p>
+      <p class="line reveal quote">ಏನಾದರೂ ತಪ್ಪಾದಾಗ ಮಾತ್ರ ನಿಮ್ಮ ಪ್ರಜ್ಞೆಯ ಮಟ್ಟ ನಿಜವಾಗಿ ಗೋಚರವಾಗುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಎಲ್ಲವೂ ಪರಿಪೂರ್ಣವಾಗಿದ್ದಾಗ ಯಾರಾದರೂ ಶಾಂತಿಯಿಂದ ಇರಬಹುದು.</p>
+      <p class="line reveal">ನಿಜವಾದ ಪರೀಕ್ಷೆ ಇರುವುದು ಇಲ್ಲಿ:</p>
+      <p class="line reveal indent dim">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಅವಮಾನಿಸಿದಾಗ</p>
+      <p class="line reveal indent dim">ನೀವು ಹಣ ಕಳೆದುಕೊಂಡಾಗ</p>
+      <p class="line reveal indent dim">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ತಿರಸ್ಕರಿಸಿದಾಗ</p>
+      <p class="line reveal indent dim">ನಿಮ್ಮ ಯೋಜನೆಗಳು ವಿಫಲವಾದಾಗ</p>
+      <p class="line reveal indent dim">ಯಾರಾದರೂ ನಿಮ್ಮನ್ನು ಕಿರಿಕಿರಿಗೊಳಿಸಿದಾಗ</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಆಗ ನೀವು ತಕ್ಷಣ ಕೋಪ, ಭಯ ಮತ್ತು ನಕಾರಾತ್ಮಕತೆಗೆ ವಶವಾಗುತ್ತೀರಾ?</p>
+      <p class="line reveal">ಅಥವಾ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಮೊದಲು ನಿಮ್ಮೊಳಗೆ ಏನಾಗುತ್ತಿದೆ ಎಂದು ಗಮನಿಸಬಲ್ಲಿರಾ?</p>
+      <p class="line reveal">ಅದೇ ನಿಜವಾದ ಅಭ್ಯಾಸ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೫</span>
+      <h2 class="section-title">ನಿಮ್ಮ ಭಾವನೆಗಳ ವಿರುದ್ಧ ಹೋರಾಡಬೇಡಿ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಇದು ಬಹಳ ಮುಖ್ಯವಾದ ಅಂಶ.</p>
+      <p class="line reveal">ಪುಸ್ತಕ ಹೇಳುತ್ತಿರುವುದು ಇದಲ್ಲ:</p>
+      <p class="line reveal quote indent">"ಎಂದಿಗೂ ಕೋಪಗೊಳ್ಳಬೇಡಿ."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಬದಲಿಗೆ ಹೇಳುತ್ತಿರುವುದು:</p>
+      <p class="line reveal">ಕೋಪವಾಗಿ ಬಿಡದೆ, ಕೋಪವನ್ನು ಗಮನಿಸಿ.</p>
+      <p class="line reveal">ಕೋಪ ಬಂದಾಗ ಒಪ್ಪಿಕೊಳ್ಳಿ:</p>
+      <p class="line reveal quote indent">"ಕೋಪ ಇಲ್ಲಿದೆ."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಆದರೆ ಹೀಗೆ ಹೇಳಬೇಡಿ:</p>
+      <p class="line reveal indent dim">"ನಾನು ಕೋಪಗೊಂಡಿದ್ದೇನೆ, ಆದ್ದರಿಂದ ನಾನು ಕೆಟ್ಟ ವ್ಯಕ್ತಿ."</p>
+      <p class="line reveal">ಮತ್ತು ಕೋಪದ ಆಧಾರದ ಮೇಲೆ ಕುರುಡಾಗಿ ವರ್ತಿಸಲೂ ಬೇಡಿ.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">ಸ್ವೀಕಾರ ಎಂದರೆ, ಈಗಾಗಲೇ ನಡೆಯುತ್ತಿರುವುದನ್ನು ಅನಗತ್ಯ ಪ್ರತಿರೋಧವಿಲ್ಲದೆ ಇರುವಂತೆಯೇ ನೋಡುವುದು. <span class="cite">4.PDF</span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೬</span>
+      <h2 class="section-title">ಏನಾದರೂ ನಿಮಗೆ ತೊಂದರೆ ಕೊಡುತ್ತಿದ್ದರೆ ಏನು ಮಾಡಬೇಕು?</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಪುಸ್ತಕ ಇಲ್ಲಿ ಒಂದು ಪ್ರಾಯೋಗಿಕ ವಿಧಾನ ಕೊಡುತ್ತದೆ.</p>
+      <p class="line reveal">ವರ್ತಮಾನದ ಪರಿಸ್ಥಿತಿ ನಿಮ್ಮನ್ನು ಅಸಂತೋಷಗೊಳಿಸುತ್ತಿದ್ದರೆ, ಮೂಲತಃ ನಿಮಗೆ ಮೂರು ಆಯ್ಕೆಗಳಿವೆ:</p>
+    </div>
+    <div class="formula" style="margin-top:1.6rem;">
+      <div class="row reveal"><span class="tag">ಒಂದು</span><span>ಬಿಟ್ಟುಬಿಡುವುದು — ಪರಿಸ್ಥಿತಿಯನ್ನು ಬಿಡಲು ಸಾಧ್ಯವಾದರೆ, ಬಿಟ್ಟುಬಿಡಿ.</span></div>
+      <div class="row reveal"><span class="tag">ಎರಡು</span><span>ಬದಲಾಯಿಸುವುದು — ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾದರೆ, ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</span></div>
+      <div class="row reveal"><span class="tag">ಮೂರು</span><span>ಸ್ವೀಕರಿಸುವುದು — ಬದಲಾಯಿಸಲು ಅಥವಾ ಬಿಡಲು ಸಾಧ್ಯವಾಗದಿದ್ದರೆ, ಮಾನಸಿಕವಾಗಿ ವಾಸ್ತವದ ವಿರುದ್ಧ ಹೋರಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ.</span></div>
+    </div>
+    <p class="line reveal" style="margin-top:1.6rem;"><span class="cite" style="margin-left:0; margin-right:0.5rem;">4.PDF</span></p>
+
+    <div class="example-card">
+      <p class="block-label reveal">ಉದಾಹರಣೆ</p>
+      <p class="line reveal">ನಿಮ್ಮ ಕೆಲಸದ ಸ್ಥಳ ಬಹಳ ಕೆಟ್ಟದಾಗಿದೆ ಎಂದುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal">ಪ್ರತಿದಿನ ಹೀಗೆ ಯೋಚಿಸುತ್ತಾ ಕೂರಬೇಡಿ:</p>
+      <p class="line reveal quote indent">"ನನಗೆ ಈ ಜಾಗ ಇಷ್ಟವಿಲ್ಲ! ನನ್ನ ಜೀವನ ಯಾಕೆ ಹೀಗಿದೆ?"</p>
+      <p class="line reveal" style="margin-top:1.2rem;">ಬದಲಿಗೆ:</p>
+      <p class="line reveal indent dim">ಆಯ್ಕೆ ಒಂದು: ಬೇರೊಂದು ಕೆಲಸ ಹುಡುಕಿ.</p>
+      <p class="line reveal indent dim">ಆಯ್ಕೆ ಎರಡು: ಪರಿಸ್ಥಿತಿಯನ್ನು ಸುಧಾರಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</p>
+      <p class="line reveal indent dim">ಆಯ್ಕೆ ಮೂರು: ಈಗ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗದಿದ್ದರೆ, ಇದೇ ನಿಮ್ಮ ಈಗಿನ ಪರಿಸ್ಥಿತಿ ಎಂದು ಒಪ್ಪಿಕೊಂಡು, ಪ್ರತಿ ಕ್ಷಣವೂ ಮಾನಸಿಕವಾಗಿ ಹೋರಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ.</p>
+      <p class="line reveal" style="margin-top:1.2rem;">ಸ್ವೀಕಾರ ಎಂದರೆ ಅದನ್ನು ಎಂದಿಗೂ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ ಎಂದಲ್ಲ.</p>
+      <p class="line reveal">ಅದರ ಅರ್ಥ, ಆ ಪರಿಸ್ಥಿತಿಯನ್ನು ನಿಭಾಯಿಸುವಾಗ ಹೆಚ್ಚುವರಿ ದುಃಖವನ್ನು ಸೃಷ್ಟಿಸಿಕೊಳ್ಳುವುದನ್ನು ನಿಲ್ಲಿಸುವುದು.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 7 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೭</span>
+      <h2 class="section-title">ತಪ್ಪಿಸಬೇಕಾದದ್ದು: ದೂರುವಿಕೆ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಈ ಅಧ್ಯಾಯ ದೂರುವಿಕೆಯ ಮೇಲೆ ವಿಶೇಷ ಗಮನ ಹರಿಸುತ್ತದೆ.</p>
+      <p class="line reveal">ನೀವು ನಿರಂತರವಾಗಿ ದೂರಿದಾಗ:</p>
+      <p class="line reveal indent dim">"ಈ ಹವಾಮಾನ ಭಯಂಕರವಾಗಿದೆ."</p>
+      <p class="line reveal indent dim">"ನನ್ನ ಸ್ನೇಹಿತರು ಭಯಂಕರರು."</p>
+      <p class="line reveal indent dim">"ನನ್ನ ಜೀವನ ಭಯಂಕರವಾಗಿದೆ."</p>
+      <p class="line reveal indent dim">"ಇದು ಯಾಕೆ ಯಾವಾಗಲೂ ನನಗೇ ಆಗುತ್ತದೆ?"</p>
+      <p class="line reveal quote">ನಿಮ್ಮ ಮನಸ್ಸು ನಕಾರಾತ್ಮಕತೆಯನ್ನು ಮತ್ತೆ ಮತ್ತೆ ಬಲಪಡಿಸುತ್ತಲೇ ಇರುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಬದಲಿಗೆ ಕೇಳಿಕೊಳ್ಳಿ:</p>
+      <p class="line reveal quote indent">"ಇದನ್ನು ನಾನು ಬದಲಾಯಿಸಬಹುದೇ?"</p>
+      <p class="line reveal indent dim">ಹೌದಾದರೆ → ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal indent dim">ಇಲ್ಲದಿದ್ದರೆ → ಸ್ವೀಕರಿಸಿ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 8 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೮</span>
+      <h2 class="section-title">ಭವಿಷ್ಯದಲ್ಲಿ ಬದುಕಬೇಡಿ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಈ ಅಧ್ಯಾಯದ ಅತಿ ದೊಡ್ಡ ವಿಚಾರಗಳಲ್ಲಿ ಒಂದು ಭವಿಷ್ಯದ ಬಗೆಗಿನ ಆಲೋಚನೆ.</p>
+      <p class="line reveal">ಯೋಜನೆ ಮಾಡುವುದು ಉಪಯುಕ್ತವೇ.</p>
+      <p class="line reveal">ಆದರೆ ನಿರಂತರವಾಗಿ ಹೀಗೆ ಯೋಚಿಸುವುದು:</p>
+      <p class="line reveal indent dim">"ಕೆಲಸ ಸಿಕ್ಕಾಗ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+      <p class="line reveal indent dim">"ಶ್ರೀಮಂತನಾದಾಗ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+      <p class="line reveal indent dim">"ಯಶಸ್ವಿಯಾದಾಗ ನಾನು ಸಂತೋಷವಾಗಿರುತ್ತೇನೆ."</p>
+      <p class="line reveal">ಇದರ ಅರ್ಥ, ನೀವು ಇಂದಿನ ಜೀವನವನ್ನು ನಾಳೆಗಾಗಿ ಕಾಯುವ ಕೋಣೆಯನ್ನಾಗಿ ಮಾತ್ರ ಮಾಡಿಕೊಳ್ಳುತ್ತಿದ್ದೀರಿ.</p>
+      <p class="line reveal quote">ಪುಸ್ತಕ ಇದನ್ನು ಒಂದು ರೀತಿಯ "ಕಾಯುವಿಕೆ" ಎಂದು ಕರೆಯುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">ಉತ್ತಮ ವಿಧಾನ</p>
+      <p class="line reveal">ಗುರಿ ಇಟ್ಟುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal">ಆದರೆ ಅದರ ಕಡೆಗೆ ಶ್ರಮಿಸುವಾಗ:</p>
+      <p class="line reveal">ಇಂದಿನ ಹೆಜ್ಜೆಯಲ್ಲಿ ಸಂಪೂರ್ಣವಾಗಿ ತೊಡಗಿಸಿಕೊಳ್ಳಿ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 9 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೦೯</span>
+      <h2 class="section-title">ಗುರಿಗಳು ಸಮಸ್ಯೆಯಲ್ಲ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಇದು ಮುಖ್ಯ, ಏಕೆಂದರೆ "ವರ್ತಮಾನದಲ್ಲಿ ಬದುಕುವುದು" ಎಂದರೆ ಇದಲ್ಲ:</p>
+      <p class="line reveal quote indent">"ಗುರಿಗಳನ್ನು ಇಟ್ಟುಕೊಳ್ಳಬೇಡಿ."</p>
+      <p class="line reveal">ನಿಮಗೆ ಖಂಡಿತ ಗುರಿಗಳಿರಬಹುದು.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="line reveal indent dim">ಗುರಿ: ಇಂಗ್ಲಿಷ್ ಕಲಿಯುವುದು.</p>
+      <p class="line reveal">ಅದು ನಿಮ್ಮ ಭವಿಷ್ಯದ ದಿಕ್ಕು.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಆದರೆ ಇಂದಿನ ಕೆಲಸ:</p>
+      <p class="line reveal indent dim">20 ನಿಮಿಷ ಇಂಗ್ಲಿಷ್ ಅಭ್ಯಾಸ ಮಾಡುವುದು.</p>
+      <p class="line reveal">ಇಡೀ ದಿನ ಹೀಗೆ ಯೋಚಿಸುತ್ತಾ ಕೂರಬೇಡಿ:</p>
+      <p class="line reveal quote indent">"ನಾನು ಯಾವಾಗ ನಿರರ್ಗಳವಾಗಿ ಮಾತನಾಡುತ್ತೇನೆ?"</p>
+      <p class="line reveal">ಬದಲಿಗೆ:</p>
+      <p class="line reveal">ಇಂದಿನ ಅಭ್ಯಾಸವನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಮಾಡಿ.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">ಹೊರಗಿನ ಒಂದು ಗುರಿಯನ್ನು ಇಟ್ಟುಕೊಂಡು, ಪ್ರಸ್ತುತ ಹೆಜ್ಜೆಯಲ್ಲಿ ಸಂಪೂರ್ಣವಾಗಿ ಇರುವುದನ್ನೇ ಪುಸ್ತಕ ಹೀಗೆ ವಿವರಿಸುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 10 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೧೦</span>
+      <h2 class="section-title">ಭೂತಕಾಲದಲ್ಲಿ ನಿರಂತರವಾಗಿ ಬದುಕಬೇಡಿ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಭೂತಕಾಲ ನಿಮಗೆ ಕಲಿಸಬಹುದು.</p>
+      <p class="line reveal">ಆದರೆ ಅದನ್ನು ಪದೇ ಪದೇ ಮನಸ್ಸಿನಲ್ಲಿ ಮರುಪ್ರದರ್ಶಿಸುವುದು ಸಮಸ್ಯೆಯಾಗಬಹುದು.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಉದಾಹರಣೆಗೆ:</p>
+      <p class="line reveal indent dim">"ನಾನು ಯಾಕೆ ಹಾಗೆ ಹೇಳಿದೆ?"</p>
+      <p class="line reveal indent dim">"ಅವರು ನನ್ನನ್ನು ಯಾಕೆ ಹಾಗೆ ನಡೆಸಿಕೊಂಡರು?"</p>
+      <p class="line reveal indent dim">"ನಾನು ಇದನ್ನು ಬೇರೆ ರೀತಿ ಮಾಡಬೇಕಿತ್ತು."</p>
+      <p class="line reveal indent dim">"ಮೊದಲು ನಾನು ಚೆನ್ನಾಗಿದ್ದೆ."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಪುಸ್ತಕದ ಸಲಹೆ ಇಷ್ಟೇ:</p>
+      <p class="line reveal quote">ಭೂತಕಾಲ ಪ್ರಸ್ತುತವಾಗಿದ್ದಾಗ ಅದನ್ನು ಬಳಸಿ, ಆದರೆ ನಿರಂತರವಾಗಿ ಅದರೊಳಗೇ ಬದುಕಬೇಡಿ. <span class="cite">4.PDF</span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 11 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೧೧</span>
+      <h2 class="section-title">ಕಾಲ್ಪನಿಕ ಭವಿಷ್ಯದ ಬಗ್ಗೆ ಚಿಂತಿಸಬೇಡಿ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಚಿಂತೆ ಸಾಮಾನ್ಯವಾಗಿ ಹೀಗೆ ಕಾಣಿಸುತ್ತದೆ:</p>
+      <p class="line reveal indent dim">"ಇದು ಆದರೆ ಏನಾಗುತ್ತದೆ?"</p>
+      <p class="line reveal indent dim">"ನಾನು ಫೇಲ್ ಆದರೆ?"</p>
+      <p class="line reveal indent dim">"ಏನಾದರೂ ತಪ್ಪಾದರೆ?"</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">ಮನಸ್ಸು ಒಂದು ಕಾಲ್ಪನಿಕ ಭವಿಷ್ಯವನ್ನು ಸೃಷ್ಟಿಸಿ, ಅದು ಈಗಲೇ ನಡೆಯುತ್ತಿರುವಂತೆ ಭಾವನಾತ್ಮಕವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">ಇದನ್ನು ಗಮನಿಸಿದ ಕೂಡಲೇ, ಹಿಂತಿರುಗಿ ಕೇಳಿ:</p>
+      <p class="line reveal quote indent">"ಈಗ ನಿಜವಾಗಿ ಏನಾಗುತ್ತಿದೆ?"</p>
+      <p class="line reveal">ನಂತರ ಕೇಳಿ:</p>
+      <p class="line reveal quote indent">"ಈ ಕ್ಷಣದಲ್ಲಿ ನಿಜವಾದ ಸಮಸ್ಯೆ ಇದೆಯೇ?"</p>
+      <p class="line reveal indent dim">ನಿಜವಾದ ಸಮಸ್ಯೆ ಇದ್ದರೆ → ಅದನ್ನು ನಿಭಾಯಿಸಿ.</p>
+      <p class="line reveal indent dim">ಇಲ್ಲದಿದ್ದರೆ → ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗಿ.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 12 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">೧೨</span>
+      <h2 class="section-title">ಈ ಅಧ್ಯಾಯದ ಅತ್ಯಂತ ಪ್ರಾಯೋಗಿಕ ಅಭ್ಯಾಸ</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">ದಿನಕ್ಕೆ ಹಲವು ಬಾರಿ, ಕೆಲವು ಸೆಕೆಂಡುಗಳ ಕಾಲ ನಿಲ್ಲಿಸಿ ಕೇಳಿಕೊಳ್ಳಿ:</p>
+      <p class="line reveal quote">"ನನ್ನೊಳಗೆ ಈಗ ಏನು ನಡೆಯುತ್ತಿದೆ?"</p>
+      <p class="line reveal">ನಂತರ ಗಮನಿಸಿ:</p>
+    </div>
+    <div class="formula">
+      <div class="row reveal"><span class="tag">ಆಲೋಚನೆ</span><span>"ನಾನು ಏನು ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ?"</span></div>
+      <div class="row reveal"><span class="tag">ಭಾವನೆ</span><span>"ನನಗೆ ಏನು ಅನಿಸುತ್ತಿದೆ?"</span></div>
+      <div class="row reveal"><span class="tag">ದೇಹ</span><span>"ಎಲ್ಲಿಯಾದರೂ ಒತ್ತಡ ಇದೆಯೇ?"</span></div>
+      <div class="row reveal"><span class="tag">ವರ್ತಮಾನ</span><span>"ನಾನು ನಿಜವಾಗಿ ಏನು ಮಾಡುತ್ತಿದ್ದೇನೆ?"</span></div>
+    </div>
+    <p class="line reveal quote" style="margin-top:1.6rem;">ಸ್ವಯಂ-ಅವಲೋಕನದ ಮೂಲಕ ನಿಮ್ಮ ಮಾನಸಿಕ-ಭಾವನಾತ್ಮಕ ಸ್ಥಿತಿಯನ್ನು ಗಮನಿಸುವಂತೆ ಈ ಅಧ್ಯಾಯ ನಿರ್ದಿಷ್ಟವಾಗಿ ಶಿಫಾರಸು ಮಾಡುತ್ತದೆ. <span class="cite">4.PDF</span></p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- TO DO / TO AVOID -->
+  <section>
+    <div class="two-col">
+      <div>
+        <div class="block-label reveal" style="color:var(--sage); font-size:0.9rem; margin-bottom:1.4rem;">ಪ್ರತಿದಿನ ಮಾಡಬೇಕಾದದ್ದು</div>
+        <div class="do">
+          <p class="line reveal">ಮನಸ್ಸು ವರ್ತಮಾನವನ್ನು ಬಿಟ್ಟಾಗ ಗಮನಿಸಿ.</p>
+          <p class="line reveal">ಉಸಿರಾಟ / ದೇಹಕ್ಕೆ ಹಿಂತಿರುಗಿ.</p>
+          <p class="line reveal">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯಿಸುವ ಬದಲು ಭಾವನೆಗಳನ್ನು ಗಮನಿಸಿ.</p>
+          <p class="line reveal">ಏನಾದರೂ ತಪ್ಪಾಗಿದ್ದರೆ ಕೇಳಿ: ಇದನ್ನು ಬಿಡಬಹುದೇ?</p>
+          <p class="line reveal">ಇದನ್ನು ಬದಲಾಯಿಸಬಹುದೇ?</p>
+          <p class="line reveal">ಎರಡೂ ಸಾಧ್ಯವಿಲ್ಲದಿದ್ದರೆ, ಸ್ವೀಕರಿಸಬಹುದೇ?</p>
+          <p class="line reveal">ಗುರಿಗಳಿರಲಿ, ಆದರೆ ಇಂದಿನ ಹೆಜ್ಜೆಯ ಮೇಲೆ ಗಮನ ಕೊಡಿ.</p>
+          <p class="line reveal">ಭೂತಕಾಲವನ್ನು ಕಲಿಕೆಗಾಗಿ ಬಳಸಿ, ನಿರಂತರ ಮರುಪ್ರದರ್ಶನಕ್ಕಲ್ಲ.</p>
+          <p class="line reveal">ಭವಿಷ್ಯಕ್ಕಾಗಿ ಯೋಜನೆ ಮಾಡಿ, ಆದರೆ ಮಾನಸಿಕವಾಗಿ ಅಲ್ಲಿ ಬದುಕಬೇಡಿ.</p>
+          <p class="line reveal">ಚಿಂತೆಯಾದಾಗ ಕೇಳಿ: "ಈಗ ನಿಜವಾಗಿ ಏನು ತಪ್ಪಾಗಿದೆ?"</p>
+          <p class="line reveal">ಕಾಯುತ್ತಿರುವಾಗ, ನೀವು ಕಾಯುತ್ತಿದ್ದೀರಿ ಎಂದು ಗಮನಿಸಿ ವರ್ತಮಾನಕ್ಕೆ ಹಿಂತಿರುಗಿ.</p>
+          <p class="line reveal">ಇದನ್ನು ಸಾಮಾನ್ಯ ಚಟುವಟಿಕೆಗಳಲ್ಲಿ ಅಭ್ಯಾಸ ಮಾಡಿ, ಕೇವಲ ಧ್ಯಾನದಲ್ಲಿ ಅಲ್ಲ.</p>
+        </div>
+      </div>
+      <div>
+        <div class="block-label reveal" style="color:#B4664A; font-size:0.9rem; margin-bottom:1.4rem;">ತಪ್ಪಿಸಬೇಕಾದದ್ದು</div>
+        <div class="avoid">
+          <p class="line reveal">ನಿರಂತರ ದೂರುವಿಕೆ</p>
+          <p class="line reveal">ಹಳೆಯ ತಪ್ಪುಗಳನ್ನು ಮತ್ತೆ ಮತ್ತೆ ಮನಸ್ಸಿನಲ್ಲಿ ಮರುಪ್ರದರ್ಶಿಸುವುದು</p>
+          <p class="line reveal">ಕ್ರಮವಿಲ್ಲದ "ಇದು ಆದರೆ?" ಆಲೋಚನೆ</p>
+          <p class="line reveal">ಭವಿಷ್ಯ ಅಂತಿಮವಾಗಿ ಸಂತೋಷ ತರುತ್ತದೆ ಎಂದು ಕಾಯುತ್ತಿರುವುದು</p>
+          <p class="line reveal">ಕೋಪ / ಭಯಕ್ಕೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುವುದು</p>
+          <p class="line reveal">ವಾಸ್ತವದ ವಿರುದ್ಧ ಮಾನಸಿಕವಾಗಿ ಹೋರಾಡುವುದು</p>
+          <p class="line reveal">ಭಾವನೆಗಳನ್ನು ಅದುಮಿಡುವುದು</p>
+          <p class="line reveal">ಗುರಿಯನ್ನು ವರ್ತಮಾನದ ಹೆಜ್ಜೆಗಿಂತ ಮುಖ್ಯವಾಗಿಸುವುದು</p>
+          <p class="line reveal">"ವರ್ತಮಾನದಲ್ಲಿ ಇರುವುದನ್ನೇ" ಇನ್ನೊಂದು ಚಿಂತೆಯ ವಿಷಯವಾಗಿ ಮಾಡುವುದು</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- One simple example -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">ಒಂದು ಸರಳ ಉದಾಹರಣೆ</h2>
+    </div>
+    <p class="line reveal">ನಾಳೆ ನಿಮಗೆ ಪರೀಕ್ಷೆ ಇದೆ ಎಂದು ಊಹಿಸಿಕೊಳ್ಳಿ.</p>
+
+    <div class="example-card" style="border-left-color:#B4664A;">
+      <p class="block-label reveal" style="color:#B4664A;">ಪ್ರಜ್ಞಾಹೀನ ವಿಧಾನ</p>
+      <p class="line reveal indent dim">"ನಾನು ಫೇಲ್ ಆದರೆ?"</p>
+      <p class="line reveal indent dim">"ನಾನು ಮೊದಲೇ ಶುರು ಮಾಡಬೇಕಿತ್ತು."</p>
+      <p class="line reveal indent dim">"ಎಲ್ಲರೂ ನನಗಿಂತ ಚೆನ್ನಾಗಿದ್ದಾರೆ."</p>
+      <p class="line reveal indent dim">"ನನ್ನ ಭವಿಷ್ಯಕ್ಕೆ ಏನಾಗುತ್ತದೆ?"</p>
+      <p class="line reveal" style="margin-top:1rem;">ನೀವು ಪುಸ್ತಕದೊಂದಿಗೆ ಕುಳಿತಿದ್ದೀರಿ, ಆದರೆ ಮನಸ್ಸು ಎಲ್ಲೆಡೆ ಅಲೆದಾಡುತ್ತಿದೆ.</p>
+    </div>
+
+    <div class="example-card">
+      <p class="block-label reveal">ವರ್ತಮಾನ-ಕೇಂದ್ರಿತ ವಿಧಾನ</p>
+      <p class="line reveal quote indent">"ಪರೀಕ್ಷೆ ನಾಳೆ ಇದೆ. ಅದು ನಿಜ."</p>
+      <p class="line reveal" style="margin-top:1rem;">ನಂತರ:</p>
+      <p class="line reveal indent dim">ಈಗ → ನಾನು ಏನು ಮಾಡಬಹುದು?</p>
+      <p class="line reveal quote indent">"ಮುಂದಿನ 30 ನಿಮಿಷ ಈ ಅಧ್ಯಾಯವನ್ನು ಓದಬಹುದು."</p>
+      <p class="line reveal">ನಂತರ ಓದಿ.</p>
+      <p class="line reveal" style="margin-top:1rem;">ಭಯ ಬಂದರೆ:</p>
+      <p class="line reveal quote indent">"ನನಗೆ ಭಯವಾಗುತ್ತಿದೆ."</p>
+      <p class="line reveal indent dim">ಗಮನಿಸಿ.</p>
+      <p class="line reveal indent dim">ಉಸಿರು ತೆಗೆದುಕೊಳ್ಳಿ.</p>
+      <p class="line reveal indent dim">ಅಧ್ಯಾಯಕ್ಕೆ ಹಿಂತಿರುಗಿ.</p>
+      <p class="line reveal" style="margin-top:1rem;">ಅದೇ ವರ್ತಮಾನವನ್ನು ಅಭ್ಯಾಸ ಮಾಡುವುದು.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- One sentence -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">ಇಡೀ ಅಧ್ಯಾಯ ಒಂದೇ ವಾಕ್ಯದಲ್ಲಿ</h2>
+    </div>
+    <p class="line reveal quote" style="font-size:1.3rem;">ವರ್ತಮಾನದ ವಿರುದ್ಧ ಹೋರಾಡಬೇಡಿ, ಭೂತಕಾಲದಲ್ಲಿ ನಿರಂತರವಾಗಿ ಬದುಕಬೇಡಿ, ಭವಿಷ್ಯದಲ್ಲಿ ಮಾನಸಿಕವಾಗಿ ಬದುಕಬೇಡಿ; ಈಗ ಏನು ನಡೆಯುತ್ತಿದೆ ಎಂದು ಗುರುತಿಸಿ, ಈ ಕ್ಷಣಕ್ಕೆ ಪ್ರಜ್ಞಾಪೂರ್ವಕವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸಿ.</p>
+
+    <p class="line reveal" style="margin-top:2.4rem;">ಮತ್ತು ಈ ಅಧ್ಯಾಯದ ಆಳವಾದ, ಪ್ರಾಯೋಗಿಕ ಸಂದೇಶ ಇದು:</p>
+    <p class="line reveal quote">ನೀವು ಇಡೀ ಜೀವನವನ್ನು ಈಗಲೇ ಪರಿಹರಿಸಬೇಕಾಗಿಲ್ಲ. ಈಗ ನಡೆಯುತ್ತಿರುವ ಹೆಜ್ಜೆಯನ್ನು ಮಾತ್ರ ನೀವು ಪ್ರಜ್ಞಾಪೂರ್ವಕವಾಗಿ ನಿಭಾಯಿಸಬೇಕು. <span class="cite">4.PDF</span></p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- Formula -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">ಈ ಸರಳ ಸೂತ್ರವನ್ನು ನೆನಪಿಡಿ</h2>
+    </div>
+    <div class="formula">
+      <div class="row reveal"><span class="tag">ಸಮಸ್ಯೆ</span><span>ಗಮನಿಸಿ → ವಾಸ್ತವವನ್ನು ಸ್ವೀಕರಿಸಿ → ಆಯ್ಕೆ ಮಾಡಿ → ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ</span></div>
+      <div class="row reveal"><span class="tag">ಭೂತಕಾಲ</span><span>ಕಲಿಯಿರಿ, ನಂತರ ಹಿಂತಿರುಗಿ.</span></div>
+      <div class="row reveal"><span class="tag">ಭವಿಷ್ಯ</span><span>ಯೋಜಿಸಿ, ನಂತರ ಹಿಂತಿರುಗಿ.</span></div>
+      <div class="row reveal"><span class="tag">ವರ್ತಮಾನ</span><span>ಬದುಕಿ ಮತ್ತು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="closing reveal">ವರ್ತಮಾನದ ವಿರುದ್ಧ ಹೋರಾಡಬೇಡಿ.<br>ಬರೀ <span class="accent">ಗಮನಿಸಿ</span> — ಮತ್ತೆ ಹಿಂತಿರುಗಿ.</p>
+    <p class="tag reveal">ದಿ ಪವರ್ ಆಫ್ ನೌ · ನಾಲ್ಕನೇ ಅಧ್ಯಾಯ</p>
+  </footer>
+
+</main>
+
+<script>
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let w, h, particles;
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function makeParticles(n){
+  const arr = [];
+  for(let i=0;i<n;i++){
+    arr.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*2.2 + 0.6,
+      speedY: Math.random()*0.35 + 0.08,
+      speedX: (Math.random()-0.5)*0.25,
+      drift: Math.random()*Math.PI*2,
+      driftSpeed: Math.random()*0.01 + 0.003,
+      alpha: Math.random()*0.5 + 0.15,
+      hueMix: Math.random()
+    });
+  }
+  return arr;
+}
+particles = makeParticles(reduced ? 0 : 70);
+
+function colorFor(mix, alpha){
+  const c1 = [232,148,74];
+  const c2 = [143,168,139];
+  const c = mix > 0.5 ? c1 : c2;
+  return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
+}
+
+function tick(){
+  ctx.clearRect(0,0,w,h);
+  for(const p of particles){
+    p.drift += p.driftSpeed;
+    p.y += p.speedY;
+    p.x += p.speedX + Math.sin(p.drift)*0.15;
+
+    if(p.y > h + 10){
+      p.y = -10;
+      p.x = Math.random()*w;
+    }
+    if(p.x > w + 10) p.x = -10;
+    if(p.x < -10) p.x = w + 10;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = colorFor(p.hueMix, p.alpha);
+    ctx.fill();
+  }
+  requestAnimationFrame(tick);
+}
+if(!reduced) tick();
+
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting){
+      const el = entry.target;
+      const siblingsRevealed = [...el.parentElement.querySelectorAll('.reveal.in')].length;
+      el.style.transitionDelay = (Math.min(siblingsRevealed,10) * 0.05) + 's';
+      el.classList.add('in');
+      io.unobserve(el);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

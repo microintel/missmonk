@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ಆಂತರಿಕ ಶಾಂತಿ ಮತ್ತು ಶರಣಾಗತಿ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Noto+Sans+Kannada:wght@300;400;500;600&family=Noto+Serif+Kannada:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fog-0:#0b0f12;
+    --fog-1:#12181c;
+    --fog-2:#1b2328;
+    --amber:#d9a55e;
+    --amber-soft:#e8c98f;
+    --cream:#ede7dd;
+    --teal:#5c6b6d;
+    --glow:#fff6e2;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--fog-0);
+    color:var(--cream);
+    font-family:'Noto Serif Kannada', 'Source Serif 4', serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- drifting fog / falling dust background ---------- */
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .fog-layer{
+    position:fixed;
+    inset:-10% -10%;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(92,107,109,0.10), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 80% 70%, rgba(217,165,94,0.05), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 90%, rgba(27,35,40,0.6), transparent 70%);
+    animation: fogDrift 40s ease-in-out infinite alternate;
+  }
+  @keyframes fogDrift{
+    0%{ transform: translate(0,0) scale(1); }
+    100%{ transform: translate(-3%,2%) scale(1.06); }
+  }
+
+  /* vignette that follows the reading position — the flashlight */
+  #beam{
+    position:fixed;
+    left:50%;
+    top:0;
+    width:900px;
+    height:900px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(232,201,143,0.10) 0%, rgba(232,201,143,0.04) 30%, transparent 65%);
+    z-index:1;
+    pointer-events:none;
+    transition: top 0.6s ease-out;
+  }
+
+  /* ---------- shell ---------- */
+  .shell{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+    padding: 14vh 24px 22vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    padding:0 24px;
+    position:relative;
+    z-index:2;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--amber);
+    opacity:0.85;
+    margin-bottom:28px;
+  }
+  .hero h1{
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-weight:400;
+    font-size:clamp(2.1rem, 6.4vw, 3.9rem);
+    line-height:1.22;
+    margin:0 0 20px;
+    color:var(--glow);
+    letter-spacing:0;
+  }
+  .hero h1 em{
+    font-style:normal;
+    font-weight:600;
+    color:var(--amber-soft);
+  }
+  .hero .sub{
+    font-family:'Noto Sans Kannada', sans-serif;
+    font-weight:400;
+    font-size:14px;
+    color:var(--teal);
+    letter-spacing:0.01em;
+    max-width:440px;
+    margin:0 auto;
+    line-height:1.8;
+  }
+  .scroll-cue{
+    margin-top:56px;
+    font-family:'Noto Sans Kannada', sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--teal);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    opacity:0.8;
+  }
+  .scroll-cue .line{
+    width:1px;
+    height:40px;
+    background:linear-gradient(to bottom, var(--amber), transparent);
+    animation: pulseLine 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseLine{
+    0%,100%{opacity:0.3; height:30px;}
+    50%{opacity:1; height:48px;}
+  }
+
+  /* ---------- opening statement block ---------- */
+  .thesis{
+    position:relative;
+    z-index:2;
+    max-width:600px;
+    margin:0 auto;
+    padding: 6vh 24px 10vh;
+    text-align:center;
+  }
+  .thesis p{
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-style:normal;
+    font-weight:500;
+    font-size:clamp(1.15rem, 2.8vw, 1.4rem);
+    line-height:1.75;
+    color:var(--cream);
+    margin:0 0 14px;
+    opacity:0;
+    transform:translateY(14px);
+  }
+  .thesis .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.15em;
+    color:var(--amber);
+    margin-top:20px;
+  }
+
+  /* ---------- sections ---------- */
+  .section{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+    padding: 9vh 24px;
+    border-top:1px solid rgba(237,231,221,0.08);
+  }
+  .section:first-of-type{border-top:none;}
+
+  .section .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--amber);
+    letter-spacing:0.15em;
+    margin-bottom:14px;
+    opacity:0.9;
+  }
+
+  .section h2{
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-weight:600;
+    font-size:clamp(1.35rem, 3.6vw, 1.9rem);
+    line-height:1.4;
+    color:var(--glow);
+    margin:0 0 32px;
+  }
+
+  .line{
+    font-family:'Noto Sans Kannada', sans-serif;
+    font-weight:400;
+    font-size:1.04rem;
+    line-height:2;
+    color:var(--cream);
+    margin:0 0 14px;
+    opacity:0.92;
+  }
+  .line.tight{ margin-bottom:4px; }
+  .line.quote{
+    color:var(--amber-soft);
+    font-family:'Noto Serif Kannada', serif;
+    font-style:normal;
+    padding-left:18px;
+    border-left:2px solid rgba(217,165,94,0.4);
+    margin:10px 0 14px;
+  }
+  .line.muted{
+    color:var(--teal);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.82rem;
+  }
+  .line.key{
+    color:var(--glow);
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-weight:500;
+    font-size:1.12rem;
+    margin:22px 0;
+  }
+  .spacer{ height:18px; }
+  .spacer-sm{ height:8px; }
+
+  .divider-word{
+    text-align:center;
+    font-family:'Noto Sans Kannada', sans-serif;
+    font-size:13px;
+    letter-spacing:0.08em;
+    color:var(--teal);
+    margin:26px 0;
+  }
+  .divider-word span{ color:var(--amber); font-weight:500; }
+
+  /* reveal-on-scroll */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition: opacity 0.9s cubic-bezier(.2,.7,.3,1), transform 0.9s cubic-bezier(.2,.7,.3,1);
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- final message ---------- */
+  .final{
+    position:relative;
+    z-index:2;
+    max-width:600px;
+    margin:0 auto;
+    padding: 14vh 24px 20vh;
+    text-align:center;
+    border-top:1px solid rgba(237,231,221,0.08);
+  }
+  .final .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.28em;
+    color:var(--amber);
+    margin-bottom:26px;
+  }
+  .final h2{
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-weight:400;
+    font-size:clamp(1.4rem, 4.4vw, 2rem);
+    line-height:1.6;
+    color:var(--glow);
+    margin:0 0 40px;
+  }
+  .final .line{
+    text-align:center;
+    font-size:1.05rem;
+  }
+  .closing-list{
+    margin:34px 0 0;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+  }
+  .closing-list .line{
+    font-family:'Fraunces', 'Noto Serif Kannada', serif;
+    font-weight:500;
+    color:var(--amber-soft);
+    font-size:1.1rem;
+    margin:0;
+  }
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:6vh 24px 10vh;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--teal);
+    opacity:0.6;
+  }
+
+  @media (max-width:520px){
+    .shell{padding-top:10vh;}
+    .hero{min-height:80vh;}
+    #beam{width:600px;height:600px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="fog-layer"></div>
+<div id="beam"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">ಅಧ್ಯಾಯ ಒಂಬತ್ತು ಮತ್ತು ಹತ್ತು</div>
+  <h1>ಆಂತರಿಕ <em>ಶಾಂತಿ</em><br>ಮತ್ತು ಶರಣಾಗತಿ</h1>
+  <p class="sub">ಆಂತರಿಕ ಶಾಂತಿ ಅನ್ನೋದು ಸಂತೋಷಕ್ಕಿಂತ ಬೇರೆ.<br>ಶರಣಾಗತಿ ಅಂದ್ರೆ ಈಗಿನ ಕ್ಷಣವನ್ನ ಒಪ್ಪಿಕೊಳ್ಳೋದು — ಆದ್ರೆ ಜೀವನ ಸುಧಾರಿಸೋದನ್ನ ಬಿಟ್ಟುಬಿಡೋದಲ್ಲ.</p>
+  <div class="scroll-cue">
+    <span>ಶುರು ಮಾಡೋಣ</span>
+    <span class="line"></span>
+  </div>
+</section>
+
+<div class="shell">
+
+  <div class="thesis">
+    <p class="reveal">ಈಗ ಏನಾಗ್ತಿದೆಯೋ ಅದರ ಜೊತೆ ಮನಸ್ಸಲ್ಲಿ ಜಗಳ ಆಡೋದು ನಿಲ್ಲಿಸಿ.</p>
+    <p class="reveal">ಈಗಿನ ಕ್ಷಣವನ್ನ ಒಪ್ಪಿಕೊಂಡು, ಆಮೇಲೆ ಸರಿಯಾದ ಕ್ರಮ ತಗೊಳ್ಳಿ.</p>
+    <div class="tag reveal">ಪುಸ್ತಕದ ಮುಖ್ಯ ಸಂದೇಶ</div>
+  </div>
+
+  <!-- 1 -->
+  <div class="section">
+    <div class="num reveal">೦೧</div>
+    <h2 class="reveal">ಸಂತೋಷ vs ಆಂತರಿಕ ಶಾಂತಿ</h2>
+
+    <div class="line reveal key">ಸಂತೋಷ</div>
+    <div class="line reveal">ಸಂತೋಷ ಅನ್ನೋದು ಸಾಮಾನ್ಯವಾಗಿ ಏನಾದ್ರೂ ಚೆನ್ನಾಗಿ ಆದಾಗ ಬರುತ್ತೆ:</div>
+    <div class="line reveal quote">"ನಂಗೆ ಒಳ್ಳೆ ಮಾರ್ಕ್ಸ್ ಬಂತು → ನಾನು ಖುಷಿಯಾಗಿದ್ದೀನಿ."</div>
+    <div class="line reveal quote">"ನಂಗೆ ಹೊಸ ಫೋನ್ ಸಿಕ್ತು → ನಾನು ಖುಷಿಯಾಗಿದ್ದೀನಿ."</div>
+    <div class="line reveal quote">"ನನ್ ಫ್ರೆಂಡ್ ನನ್ನ ಹೊಗಳಿದ್ರು → ನಾನು ಖುಷಿಯಾಗಿದ್ದೀನಿ."</div>
+    <div class="line reveal">ಆದ್ರೆ ಪರಿಸ್ಥಿತಿ ಬದಲಾದ್ರೆ, ಈ ಖುಷಿ ಮಾಯ ಆಗ್ಬೋದು.</div>
+
+    <div class="spacer"></div>
+
+    <div class="line reveal key">ಆಂತರಿಕ ಶಾಂತಿ</div>
+    <div class="line reveal">ಆಂತರಿಕ ಶಾಂತಿಗೆ ಎಲ್ಲಾ ಪರ್ಫೆಕ್ಟ್ ಆಗಿರಬೇಕು ಅಂತೇನಿಲ್ಲ.</div>
+    <div class="line reveal tight">ಉದಾಹರಣೆಗೆ:</div>
+    <div class="line reveal">ಯಾರಿಗಾದ್ರೂ ಒಂದು ಮುಖ್ಯ ಅವಕಾಶ ಕೈತಪ್ಪಿ ಹೋಗುತ್ತೆ.</div>
+    <div class="line reveal">ಅವರಿಗೆ ಬೇಜಾರು, ನಿರಾಶೆ ಆಗ್ಬೋದು — ಆದ್ರೆ ಇರೋ ವಾಸ್ತವದ ಜೊತೆ ಮನಸ್ಸಲ್ಲಿ ಜಗಳ ಆಡೋ ಅಗತ್ಯ ಇಲ್ಲ:</div>
+    <div class="line reveal quote">"ಇದು ಆಗ್ಬಾರ್ದಿತ್ತು! ಯಾಕೆ ನನ್ ಜೊತೆನೇ ಆಯ್ತು? ನನ್ ಜೀವನ ಹಾಳಾಯ್ತು!"</div>
+    <div class="line reveal tight">ಬದ್ಲಾಗಿ:</div>
+    <div class="line reveal quote">"ಇದು ಆಯ್ತು. ನಂಗೆ ಇಷ್ಟ ಆಗ್ಲಿಲ್ಲ, ಆದ್ರೆ ಈಗ ಇದೇ ನಡೀತಿರೋದು. ಮುಂದೆ ನಾನೇನ್ ಮಾಡ್ಬಹುದು?"</div>
+    <div class="line reveal">ಖುಷಿ ಸಾಧ್ಯ ಇಲ್ದೇ ಇದ್ರೂ ಶಾಂತಿ ಇರಬಹುದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal muted">ಸರಳ ವ್ಯತ್ಯಾಸ:</div>
+    <div class="line reveal key">ಸಂತೋಷ = "ನಡೀತಿರೋದು ನಂಗೆ ಇಷ್ಟ ಆಗ್ತಿದೆ."</div>
+    <div class="line reveal key">ಶಾಂತಿ = "ನಡೀತಿರೋದನ್ನ ಮನಸ್ಸಲ್ಲಿ ಜಗಳ ಆಡ್ದೆ ಒಪ್ಪಿಕೊಳ್ಳಬಹುದು."</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section">
+    <div class="num reveal">೦೨</div>
+    <h2 class="reveal">ಒಪ್ಪಿಕೊಳ್ಳೋದು ಅಂದ್ರೆ ಎಲ್ಲಾ ಚೆನ್ನಾಗಿದೆ ಅಂತ ಹೇಳೋದಲ್ಲ</h2>
+
+    <div class="line reveal">ಇದು ತುಂಬಾ ಮುಖ್ಯ ವಿಷಯ.</div>
+    <div class="line reveal">ಒಬ್ಬರು ಟ್ರಾಫಿಕ್‌ನಲ್ಲಿ ಸಿಕ್ಕಿಬಿದ್ದಿದ್ದಾರೆ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+    <div class="line reveal tight">ಒಪ್ಪಿಕೊಳ್ಳೋದು ಅಂದ್ರೆ ಇದಲ್ಲ:</div>
+    <div class="line reveal quote">"ಟ್ರಾಫಿಕ್ ಎಷ್ಟು ಚೆನ್ನಾಗಿದೆ! ಲೇಟ್ ಆಗೋದು ನಂಗೆ ಇಷ್ಟ!"</div>
+    <div class="line reveal">😂 ಇಲ್ಲ.</div>
+    <div class="line reveal tight">ಇದರ ಅರ್ಥ:</div>
+    <div class="line reveal quote">"ನಾನು ಈಗ ಟ್ರಾಫಿಕ್‌ನಲ್ಲಿ ಸಿಕ್ಕಿಬಿದ್ದಿದ್ದೀನಿ."</div>
+    <div class="line reveal">ಇಷ್ಟೇ — ಈಗಿನ ವಾಸ್ತವಾನ ಗುರುತಿಸೋದು.</div>
+    <div class="line reveal tight">ಆಮೇಲೆ ಕೇಳ್ಕೊಳ್ಳಬಹುದು:</div>
+    <div class="line reveal quote">"ನಾನೇನ್ ಮಾಡ್ಬಹುದು?"</div>
+    <div class="line reveal">ಯಾರಿಗಾದ್ರೂ ಫೋನ್ ಮಾಡ್ಬಹುದು, ಬೇರೆ ದಾರಿ ತಗೊಳ್ಬಹುದು, ಅಥವಾ ಸುಮ್ನೆ ಕಾಯ್ಬಹುದು.</div>
+    <div class="line reveal">ಈಗಿರೋದನ್ನ ಒಪ್ಪಿಕೊಂಡು, ಪರಿಸ್ಥಿತಿ ಬದಲಾಯಿಸೋಕೂ ಆಗುತ್ತೆ ಅಂತ ಪುಸ್ತಕ ಸ್ಪಷ್ಟವಾಗಿ ಹೇಳುತ್ತೆ.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section">
+    <div class="num reveal">೦೩</div>
+    <h2 class="reveal">"ಡ್ರಾಮಾ" ಅಂದ್ರೆ ಏನು?</h2>
+
+    <div class="line reveal">ಅನಗತ್ಯ ಮಾನಸಿಕ ಮತ್ತು ಭಾವನಾತ್ಮಕ ಗೊಂದಲಕ್ಕೆ ಪುಸ್ತಕ "ಡ್ರಾಮಾ" ಅಂತ ಕರೀತ್ತೆ.</div>
+    <div class="line reveal tight">ಉದಾಹರಣೆ:</div>
+    <div class="line reveal">ಚಿಕ್ಕ ವಿಷಯ ಒಂದು ಆಗುತ್ತೆ:</div>
+    <div class="line reveal quote">ಫ್ರೆಂಡ್: "ನೀನು ತಪ್ಪು ಮಾಡಿದ್ದೀಯ."</div>
+    <div class="line reveal">ಇದನ್ನ ಸುಮ್ನೆ ಕೇಳಿಸ್ಕೊಳ್ಳೋ ಬದ್ಲು:</div>
+    <div class="line reveal quote">"ಸರಿ, ನಾನು ಚೆಕ್ ಮಾಡ್ತೀನಿ."</div>
+    <div class="line reveal tight">ಮನಸ್ಸು ಇದನ್ನ ಸೃಷ್ಟಿಸ್ಬೋದು:</div>
+    <div class="line reveal quote">"ಅವರು ಯಾಕೆ ಹಂಗಂದ್ರು?"</div>
+    <div class="line reveal quote">"ಅವರಿಗೆ ನನ್ ಬಗ್ಗೆ ಗೌರವ ಇಲ್ಲ."</div>
+    <div class="line reveal quote">"ಎಲ್ಲರೂ ನನ್ನ ಮೂರ್ಖ ಅಂತ ತಿಳ್ಕೊಂಡಿದ್ದಾರೆ."</div>
+    <div class="line reveal quote">"ನಾನು ಇನ್ ಮುಂದೆ ಅವರ ಜೊತೆ ಮಾತಾಡಲ್ಲ."</div>
+    <div class="line reveal">ಒಂದೇ ವಾಕ್ಯ ಈಗ ದೊಡ್ಡ ಮಾನಸಿಕ ಕಥೆ ಆಗಿಬಿಡುತ್ತೆ.</div>
+    <div class="line reveal">ನಿಜವಾದ ಘಟನೆ ಚಿಕ್ಕದಿತ್ತು.</div>
+    <div class="line reveal">ಮನಸ್ಸೇ ಆ ಹೆಚ್ಚಿನ ಡ್ರಾಮಾ ಸೃಷ್ಟಿಸಿದ್ದು.</div>
+    <div class="line reveal">ಗಮನಿಸದೇ ಬಿಟ್ಟ ಮನಸ್ಸೇ ಪ್ರತಿರೋಧ, ಹತೋಟಿ, ಸಮರ್ಥನೆ, ಆಕ್ರಮಣ ಮತ್ತು ಗೊಂದಲ ಸೃಷ್ಟಿಸೋ "ಇಗೋ" ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section">
+    <div class="num reveal">೦೪</div>
+    <h2 class="reveal">ನಿಮ್ಮ ಪರವಾಗಿ ನೀವೇ ನಿಲ್ಲಬಹುದು</h2>
+
+    <div class="line reveal">ಈಗಿನ ಕ್ಷಣದಲ್ಲಿ ಇರೋದು ಅಂದ್ರೆ ದುರ್ಬಲ ಆಗೋದಲ್ಲ.</div>
+    <div class="line reveal">ಯಾರಾದ್ರೂ ನಿಮ್ಮನ್ನ ಅವಮಾನಿಸಿದ್ರು ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+    <div class="line reveal tight">ನೀವು ಹೀಗೆ ಹೇಳ್ಬೇಕಿಲ್ಲ:</div>
+    <div class="line reveal quote">"ಪರವಾಗಿಲ್ಲ, ಬೈಯ್ಯಿ."</div>
+    <div class="line reveal tight">ಬದ್ಲಾಗಿ, ಶಾಂತವಾಗಿ ಹೀಗೆ ಹೇಳ್ಬಹುದು:</div>
+    <div class="line reveal quote">"ನನ್ ಜೊತೆ ಹಂಗೆ ಮಾತಾಡ್ಬೇಡಿ."</div>
+    <div class="line reveal">ಇಲ್ಲಿ ಇರೋ ವ್ಯತ್ಯಾಸ ಅಂದ್ರೆ ಪ್ರತಿಕ್ರಿಯೆ (reaction) ಮತ್ತು ಜಾಗೃತ ಪ್ರತಿಸ್ಪಂದನೆ (conscious response) ನಡುವಿನದ್ದು.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಪ್ರತಿಕ್ರಿಯೆ</div>
+    <div class="line reveal">ಅವಮಾನ → ಕೋಪ → ಕೂಗಾಟ → ಜಗಳ → ಇನ್ನೂ ಜಾಸ್ತಿ ಕೋಪ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಜಾಗೃತ ಪ್ರತಿಸ್ಪಂದನೆ</div>
+    <div class="line reveal">ಅವಮಾನ → ಕೋಪ ಗಮನಿಸೋದು → ಸ್ವಲ್ಪ ನಿಲ್ಲೋದು → ಸ್ಪಷ್ಟವಾಗಿ ಉತ್ತರಿಸೋದು.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಬೇರೆಯವರ ವರ್ತನೆ ಒಪ್ಪೋಕ್ಕಾಗಲ್ಲ ಅಂತ ದೃಢವಾಗಿ ಹೇಳ್ತಾ, ಆ ವರ್ತನೆ ನಿಮ್ ಒಳಗಿನ ಸ್ಥಿತಿಯನ್ನ ಹತೋಟಿಗೆ ತಗೊಳ್ಳೋಕೆ ಬಿಡ್ದೇ ಇರಬಹುದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section">
+    <div class="num reveal">೦೫</div>
+    <h2 class="reveal">ಜೀವನದಲ್ಲಿ ಏರಿಳಿತಗಳಿವೆ</h2>
+
+    <div class="line reveal">ಪುಸ್ತಕ ಅಸ್ಥಿರತೆ ಬಗ್ಗೇನೂ ಮಾತಾಡುತ್ತೆ.</div>
+    <div class="line reveal">ಎಲ್ಲಾನೂ ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಯಶಸ್ಸು ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಸೋಲು ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ದುಡ್ಡು ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಸಂಬಂಧಗಳು ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಶಕ್ತಿ ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಪರಿಸ್ಥಿತಿಗಳು ಬದಲಾಗುತ್ತೆ.</div>
+    <div class="line reveal">ಯಾವಾಗ್ಲೂ ಟಾಪ್‌ನಲ್ಲೇ ಇರೋಕೆ ಆಗಲ್ಲ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಉದಾಹರಣೆಗೆ:</div>
+    <div class="line reveal key">ವಿದ್ಯಾರ್ಥಿ ಜೀವನ</div>
+    <div class="line reveal">ಒಂದು ಸೆಮಿಸ್ಟರ್: ಒಳ್ಳೆ ಮಾರ್ಕ್ಸ್ 📈</div>
+    <div class="line reveal">ಇನ್ನೊಂದು ಸೆಮಿಸ್ಟರ್: ಕಷ್ಟದ ಸಬ್ಜೆಕ್ಟ್‌ಗಳು 📉</div>
+    <div class="line reveal">ಆಮೇಲೆ: ಸುಧಾರಣೆ 📈</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಇಲ್ಲಿ ಆಗೋ ತಪ್ಪು ಏನಂದ್ರೆ:</div>
+    <div class="line reveal quote">"ಚೆನ್ನಾಗಿರೋ ಕಾಲ = ನನ್ ಜೀವನ ಚೆನ್ನಾಗಿದೆ."</div>
+    <div class="line reveal quote">"ಕೆಟ್ಟ ಕಾಲ = ನನ್ ಜೀವನ ಹಾಳಾಗಿದೆ."</div>
+    <div class="line reveal">ಏರಿಳಿತಗಳು ಜೀವನದ ಒಂದು ಭಾಗ ಅನ್ನೋದೇ ಪುಸ್ತಕದ ಮುಖ್ಯ ಅಂಶ.</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="section">
+    <div class="num reveal">೦೬</div>
+    <h2 class="reveal">ಶಕ್ತಿ ಕಡಿಮೆ ಇದ್ರೆ ಅಂದ್ರೆ ನೀವು ಸೋಲ್ತಿದ್ದೀರಿ ಅಂತಲ್ಲ</h2>
+
+    <div class="line reveal">ದೈಹಿಕ ಶಕ್ತಿಯ ಏರಿಳಿತಗಳ ಬಗ್ಗೇನೂ ಪುಸ್ತಕ ಮಾತಾಡುತ್ತೆ.</div>
+    <div class="line reveal tight">ಕೆಲವೊಮ್ಮೆ ಒಬ್ಬರು ಹೀಗಿರ್ತಾರೆ:</div>
+    <div class="line reveal key">ಶಕ್ತಿಯುತ → ಕ್ರಿಯಾಶೀಲ → ಚೆನ್ನಾಗಿ ಕೆಲಸ ಮಾಡೋ ಸ್ಥಿತಿ</div>
+    <div class="line reveal tight">ಇನ್ನೊಮ್ಮೆ ಹೀಗಿರ್ತಾರೆ:</div>
+    <div class="line reveal key">ಸುಸ್ತು → ನಿಧಾನ → ಕಡಿಮೆ ಕೆಲಸ ಆಗೋ ಸ್ಥಿತಿ</div>
+    <div class="line reveal">ಈ ಸಹಜ ಏರಿಳಿತಗಳ ಜೊತೆ ನಿರಂತರವಾಗಿ ಹೋರಾಡ್ಬಾರ್ದು ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಫೋನ್ ಬಗ್ಗೆ ಯೋಚ್ಸಿ:</div>
+    <div class="line reveal">100% ಬ್ಯಾಟರಿ → ಬಳಸೋದು → 50% → 20% → ಚಾರ್ಜ್</div>
+    <div class="line reveal tight">ನೀವು ಹೀಗೆ ಹೇಳಲ್ಲ:</div>
+    <div class="line reveal quote">"ನನ್ ಫೋನ್ ಯಾವಾಗ್ಲೂ 100% ಇಲ್ಲ ಅಂದ್ರೆ ಅದು ಉಪಯೋಗಕ್ಕೆ ಬಾರ್ದು."</div>
+    <div class="line reveal">ಅದೇ ರೀತಿ, ಮನುಷ್ಯನ ಶಕ್ತಿ ಕೂಡ ಸಹಜವಾಗೇ ಏರಿಳಿತ ಆಗುತ್ತೆ.</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section">
+    <div class="num reveal">೦೭</div>
+    <h2 class="reveal">ಹೊರಗಿನ ವಿಷಯಗಳನ್ನ ನಿಮ್ಮ ಗುರುತು ಮಾಡ್ಕೋಬೇಡಿ</h2>
+
+    <div class="line reveal tight">ಒಬ್ಬರು ಹೀಗ್ ಅಂದ್ಕೋತಾರೆ:</div>
+    <div class="line reveal quote">"ನನ್ ಹತ್ರ ದುಡ್ಡು ಇರೋದ್ರಿಂದ ನಾನು ಯಶಸ್ವಿ."</div>
+    <div class="line reveal">ಆಮೇಲೆ ಅವರ ದುಡ್ಡು ಹೋಗುತ್ತೆ.</div>
+    <div class="line reveal tight">ಆಗ ಅವರ ಮನಸ್ಸು ಹೇಳುತ್ತೆ:</div>
+    <div class="line reveal quote">"ಈಗ ನಾನು ಏನೂ ಅಲ್ಲ."</div>
+    <div class="line reveal">ಸಮಸ್ಯೆ ಬರೀ ದುಡ್ಡು ಕಳ್ಕೊಂಡಿದ್ದಲ್ಲ.</div>
+    <div class="line reveal">ಆಳವಾದ ಸಮಸ್ಯೆ ಏನಂದ್ರೆ:</div>
+    <div class="line reveal key">ಆ ಹೊರಗಿನ ವಿಷಯಾನ ಅವರ ಗುರುತಿನ ಭಾಗ ಮಾಡ್ಕೊಂಡಿದ್ರು.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಇದೇ ರೀತಿ ಇವುಗಳ ಜೊತೆನೂ ಆಗ್ಬೋದು:</div>
+    <div class="line reveal">ರೂಪ</div>
+    <div class="line reveal">ಕೆಲಸ</div>
+    <div class="line reveal">ಮಾರ್ಕ್ಸ್</div>
+    <div class="line reveal">ಸಂಬಂಧಗಳು</div>
+    <div class="line reveal">ಜನಪ್ರಿಯತೆ</div>
+    <div class="line reveal">ಆಸ್ತಿಪಾಸ್ತಿ</div>
+    <div class="line reveal">ಸಾಮಾಜಿಕ ಸ್ಥಾನಮಾನ</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಹೊರಗಿನ ಪರಿಸ್ಥಿತಿಗಳು ಸಂತೋಷ ಕೊಡ್ಬೋದು, ಆದ್ರೆ ಶಾಶ್ವತ ತೃಪ್ತಿ ಅಥವಾ ಗುರುತನ್ನ ಕೊಡಕ್ಕಾಗಲ್ಲ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section">
+    <div class="num reveal">೦೮</div>
+    <h2 class="reveal">ನೆಗೆಟಿವ್ ಭಾವನೆಗಳ ಜೊತೆ ಏನ್ ಮಾಡ್ಬೇಕು?</h2>
+
+    <div class="line reveal tight">ಪುಸ್ತಕ ಸುಮ್ನೆ ಹೀಗ್ ಹೇಳಲ್ಲ:</div>
+    <div class="line reveal quote">"ನೆಗೆಟಿವ್ ಭಾವನೆ ಎಂದಿಗೂ ಅನುಭವಿಸ್ಬೇಡಿ."</div>
+    <div class="line reveal">ಬದ್ಲಾಗಿ, ನೆಗೆಟಿವಿಟಿ ಬಂದಾಗ, ಅದನ್ನ ಗಮನಿಸಿ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಉದಾಹರಣೆಗೆ:</div>
+    <div class="line reveal">ಯಾರೋ ಒಬ್ಬರು ಅಸಭ್ಯವಾಗಿ ಏನೋ ಹೇಳ್ತಾರೆ.</div>
+    <div class="line reveal tight">ನೀವು ಗಮನಿಸ್ತೀರಿ:</div>
+    <div class="line reveal quote">"ನಂಗೆ ಕೋಪ ಬರ್ತಿದೆ."</div>
+    <div class="line reveal tight">ತಕ್ಷಣ ಏನೋ ಮಾಡೋ ಬದ್ಲು:</div>
+    <div class="line reveal">ಸ್ವಲ್ಪ ನಿಲ್ಲಿ.</div>
+    <div class="line reveal">ಕೋಪವನ್ನ ಅನುಭವಿಸಿ.</div>
+    <div class="line reveal">ನಿಮ್ ಯೋಚನೆಗಳನ್ನ ಗಮನಿಸಿ.</div>
+    <div class="line reveal">ಕೇಳ್ಕೊಳ್ಳಿ: "ನನ್ ಒಳಗೆ ಈಗ ಏನಾಗ್ತಿದೆ?"</div>
+    <div class="line reveal">ನೆಗೆಟಿವಿಟಿ ಅನ್ನೋದು ಹೆಚ್ಚು ಪ್ರೆಸೆಂಟ್ ಆಗೋಕೆ ಒಂದು ಸಂಕೇತ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ನೆಗೆಟಿವ್ ಭಾವನೆ → "ಎಚ್ಚರ ಆಗಿ. ಈಗಿನ ಕ್ಷಣಕ್ಕೆ ಗಮನ ಕೊಡಿ."</div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section">
+    <div class="num reveal">೦೯</div>
+    <h2 class="reveal">ಉದಾಹರಣೆ: ಕಾರ್ ಹಾರ್ನ್ 🚗</h2>
+
+    <div class="line reveal">ನೀವು ಓದ್ತಾ ಇದ್ದೀರಾ, ಹೊರಗಡೆ ಯಾರೋ ಸತತವಾಗಿ ಹಾರ್ನ್ ಹಾಕ್ತಾ ಇದ್ದಾರೆ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+    <div class="line reveal tight">ನಿಮ್ ಮನಸ್ಸು:</div>
+    <div class="line reveal quote">"ಯಾರ್ ಈ ಶಬ್ದ ಮಾಡ್ತಿರೋದು?!"</div>
+    <div class="line reveal quote">"ಜನ ಎಷ್ಟು ಕಿರಿಕಿರಿ ಮಾಡ್ತಾರೆ!"</div>
+    <div class="line reveal quote">"ಸ್ವಲ್ಪ ಸುಮ್ನಿರಕ್ಕಾಗಲ್ವ?"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಆ ಹಾರ್ನ್ 10 ಸೆಕೆಂಡ್ ಇರ್ಬಹುದು.</div>
+    <div class="line reveal">ಆದ್ರೆ ನಿಮ್ ಮನಸ್ಸು ಆ ಕಿರಿಕಿರಿಯನ್ನ 30 ನಿಮಿಷ ಮುಂದುವರಿಸ್ಬಹುದು.</div>
+    <div class="line reveal">ಮೂಲ ಶಬ್ದಕ್ಕಿಂತ, ಮನಸ್ಸಿನ ಪ್ರತಿರೋಧನೇ ಜಾಸ್ತಿ ತೊಂದ್ರೆ ಕೊಡ್ಬಹುದು ಅಂತ ಗಮನಿಸಿ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಬದ್ಲಾಗಿ ನೀವು ಹೀಗೆ ಗಮನಿಸ್ಬಹುದು:</div>
+    <div class="line reveal quote">"ಒಂದು ಜೋರಾದ ಶಬ್ದ ಇದೆ."</div>
+    <div class="line reveal">ಅಷ್ಟೇ.</div>
+    <div class="line reveal tight">ಇದನ್ನ ಸೇರಿಸೋ ಅಗತ್ಯ ಇಲ್ಲ:</div>
+    <div class="line reveal quote">"ಇದು ಆಗಬಾರ್ದಿತ್ತು!"</div>
+  </div>
+
+  <!-- 10 -->
+  <div class="section">
+    <div class="num reveal">೧೦</div>
+    <h2 class="reveal">ಶರಣಾಗತಿ ಅಂದ್ರೆ ಏನು?</h2>
+
+    <div class="line reveal">ಈಗ ಅಧ್ಯಾಯ ಹತ್ತಕ್ಕೆ ಬರೋಣ.</div>
+    <div class="line reveal tight">"ಶರಣಾಗತಿ" ಅಂದ್ರೆ ಹೀಗೆ ಕೇಳಿಸ್ಬಹುದು:</div>
+    <div class="line reveal quote">"ಬಿಟ್ಟುಬಿಡೋದು."</div>
+    <div class="line reveal">ಆದ್ರೆ ಇದರ ಅರ್ಥ ಅದಲ್ಲ ಅಂತ ಪುಸ್ತಕ ಸ್ಪಷ್ಟವಾಗಿ ಹೇಳುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಶರಣಾಗತಿ ಅಂದ್ರೆ:</div>
+    <div class="line reveal key">ಈಗಿನ ಕ್ಷಣದ ಜೊತೆ ಮಾನಸಿಕವಾಗಿ ಜಗಳ ಆಡೋದನ್ನ ನಿಲ್ಲಿಸೋದು.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಇದರ ಅರ್ಥ ಇದಲ್ಲ:</div>
+    <div class="line reveal">ಕೆಲಸ ನಿಲ್ಸೋದು</div>
+    <div class="line reveal">ಗುರಿಗಳನ್ನ ಬಿಟ್ಟುಬಿಡೋದು</div>
+    <div class="line reveal">ಸಮಸ್ಯೆ ಬಗೆಹರಿಸೋದನ್ನ ನಿಲ್ಸೋದು</div>
+    <div class="line reveal">ದೌರ್ಜನ್ಯ ಒಪ್ಪಿಕೊಳ್ಳೋದು</div>
+    <div class="line reveal">ಸೋಮಾರಿಯಾಗೋದು</div>
+    <div class="line reveal">ನಿಮ್ ಭವಿಷ್ಯ ಬಿಟ್ಟುಬಿಡೋದು</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಶರಣಾಗತಿ ಅನ್ನೋದು ಯೋಜನೆ, ಕ್ರಮ ಮತ್ತು ಒಳ್ಳೆ ಬದಲಾವಣೆ ಜೊತೆ ಚೆನ್ನಾಗೇ ಹೊಂದಿಕೊಳ್ಳುತ್ತೆ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ.</div>
+  </div>
+
+  <!-- 11 -->
+  <div class="section">
+    <div class="num reveal">೧೧</div>
+    <h2 class="reveal">ಕೆಸರಿನ ಉದಾಹರಣೆ</h2>
+
+    <div class="line reveal">ಪುಸ್ತಕ ತುಂಬಾ ಚೆನ್ನಾಗಿರೋ ಒಂದು ಐಡಿಯಾ ಕೊಡುತ್ತೆ.</div>
+    <div class="line reveal">ನೀವು ದೈಹಿಕವಾಗಿ ಕೆಸರಲ್ಲಿ ಸಿಕ್ಕಿಬಿದ್ದಿದ್ದೀರಿ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+    <div class="line reveal tight">ನೀವು ಹೀಗ್ ಹೇಳಲ್ಲ:</div>
+    <div class="line reveal quote">"ನಾನು ಶರಣಾಗ್ತೀನಿ. ಈ ಕೆಸರಲ್ಲೇ ಜೀವನ ಪೂರ್ತಿ ಇರ್ತೀನಿ."</div>
+    <div class="line reveal">😂</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಹಂತ ೧ — ವಾಸ್ತವ ಒಪ್ಪಿಕೊಳ್ಳಿ</div>
+    <div class="line reveal quote">"ನಾನು ಕೆಸರಲ್ಲಿ ಸಿಕ್ಕಿಬಿದ್ದಿದ್ದೀನಿ."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಹಂತ ೨ — ಇದರ ಜೊತೆ ಮಾನಸಿಕವಾಗಿ ಜಗಳ ಆಡ್ದೆ ಶಕ್ತಿ ವ್ಯರ್ಥ ಮಾಡ್ಬೇಡಿ</div>
+    <div class="line reveal tight">ಇದನ್ನ 20 ನಿಮಿಷ ಯೋಚ್ಸೋದ್ರಲ್ಲಿ ಸಮಯ ಕಳ್ಸಬೇಡಿ:</div>
+    <div class="line reveal quote">"ಇದು ಆಗಬಾರ್ದಿತ್ತು!"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಹಂತ ೩ — ಕ್ರಮ ತಗೊಳ್ಳಿ</div>
+    <div class="line reveal quote">"ಇಲ್ಲಿಂದ ಹೊರಗ್ ಬರೋಕೆ ಈಗ ನಾನೇನ್ ಮಾಡ್ಬಹುದು?"</div>
+    <div class="line reveal">ಆಮೇಲೆ ಕಾಲನ್ನ ಎಳ್ಕೊಳ್ಳಿ, ಹಿಡ್ಕೊಳ್ಳೋಕೆ ಏನಾದ್ರೂ ಹುಡುಕಿ, ಯಾರಿಗಾದ್ರೂ ಫೋನ್ ಮಾಡಿ — ಹೀಗೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಇದನ್ನೇ ಶರಣಾಗತಿ + ಕ್ರಮ ಅಂತಾರೆ.</div>
+    <div class="line reveal">ಕೋಪ, ಹತಾಶೆ, ನಿರಾಶೆಯಿಂದ ಬಂದ ಕ್ರಮಕ್ಕಿಂತ, ಇದನ್ನ ಸಕಾರಾತ್ಮಕ ಕ್ರಮ ಅಂತ ಪುಸ್ತಕ ಕರೀತ್ತೆ.</div>
+  </div>
+
+  <!-- 12 -->
+  <div class="section">
+    <div class="num reveal">೧೨</div>
+    <h2 class="reveal">ಫ್ಲ್ಯಾಶ್‌ಲೈಟ್ ಉದಾಹರಣೆ 🔦</h2>
+
+    <div class="line reveal">ಈ ಅಧ್ಯಾಯ ಅರ್ಥ ಮಾಡ್ಕೊಳ್ಳೋಕೆ ಇದು ಸುಲಭದ ದಾರಿ.</div>
+    <div class="line reveal">ಕತ್ತಲೆ, ಮಂಜು ಇರೋ ರಸ್ತೇಲಿ ನೀವು ನಡೀತಿದ್ದೀರಿ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+    <div class="line reveal">ಪೂರ್ತಿ ರಸ್ತೆ ನಿಮಗೆ ಕಾಣಲ್ಲ.</div>
+    <div class="line reveal">ಆದ್ರೆ ನಿಮ್ ಹತ್ರ ಒಂದು ಫ್ಲ್ಯಾಶ್‌ಲೈಟ್ ಇದೆ.</div>
+    <div class="line reveal">ಆ ಫ್ಲ್ಯಾಶ್‌ಲೈಟ್ ನಿಮ್ ಮುಂದೆ ಇರೋ ಸ್ವಲ್ಪ ಜಾಗಾನೇ ತೋರಿಸುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಪುಸ್ತಕದ ಪ್ರಕಾರ:</div>
+    <div class="line reveal key">ಮಂಜು = ನಿಮ್ ಪೂರ್ತಿ ಜೀವನ ಪರಿಸ್ಥಿತಿ</div>
+    <div class="line reveal key">ಫ್ಲ್ಯಾಶ್‌ಲೈಟ್ = ಜಾಗೃತ ಅರಿವು</div>
+    <div class="line reveal key">ಸ್ಪಷ್ಟ ಕಾಣೋ ಜಾಗ = ಈಗಿನ ಕ್ಷಣ</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಮುಂದಿನ 10 ವರ್ಷ ಬಗ್ಗೆ ಎಲ್ಲಾ ಗೊತ್ತಿರೋ ಅಗತ್ಯ ಇಲ್ಲ.</div>
+    <div class="line reveal tight">ಇಷ್ಟೇ ಕೇಳ್ಕೊಳ್ಳಿ:</div>
+    <div class="line reveal quote">"ಈಗ ನಾನ್ ಮಾಡ್ಬಹುದಾದ ಮುಂದಿನ ಕೆಲಸ ಏನು?"</div>
+  </div>
+
+  <!-- 13 -->
+  <div class="section">
+    <div class="num reveal">೧೩</div>
+    <h2 class="reveal">ಉದಾಹರಣೆ: ಪರೀಕ್ಷೆ ಟೆನ್ಶನ್</h2>
+
+    <div class="line reveal tight">ಇಟ್ಕೊಳ್ಳಿ:</div>
+    <div class="line reveal">ನಾಳೆ ಪರೀಕ್ಷೆ ಇದೆ.</div>
+    <div class="line reveal tight">ಮನಸ್ಸು ಶುರು ಮಾಡುತ್ತೆ:</div>
+    <div class="line reveal quote">"ಫೇಲ್ ಆದ್ರೆ ಏನ್ ಮಾಡ್ಲಿ?"</div>
+    <div class="line reveal quote">"ಎಲ್ಲರೂ ಏನ್ ಅಂದ್ಕೋತಾರೆ?"</div>
+    <div class="line reveal quote">"ನನ್ ಭವಿಷ್ಯ ಏನ್ ಆಗುತ್ತೆ?"</div>
+    <div class="line reveal quote">"ನಂಗೆ ಒಳ್ಳೆ ಕೆಲಸ ಸಿಗಲ್ಲ."</div>
+    <div class="line reveal">ದೇಹ ಪುಸ್ತಕ ಮುಂದೆ ಕುಳಿತಿದ್ರೂ, ಮನಸ್ಸು 20 ಬೇರೆ ಬೇರೆ ಭವಿಷ್ಯಗಳಲ್ಲಿ ಓಡಾಡ್ತಿರುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಪುಸ್ತಕದ ವಿಧಾನ ಹೀಗಿರುತ್ತೆ:</div>
+    <div class="line reveal key">ಈಗಿನದ್ದನ್ನ ಒಪ್ಪಿಕೊಳ್ಳಿ:</div>
+    <div class="line reveal quote">"ಈಗ, ನಾಳೆ ನಂಗೆ ಪರೀಕ್ಷೆ ಇದೆ."</div>
+    <div class="line reveal key">ಕೇಳ್ಕೊಳ್ಳಿ:</div>
+    <div class="line reveal quote">"ಈಗ ನಾನೇನ್ ಮಾಡ್ಬಹುದು?"</div>
+    <div class="line reveal key">ಕ್ರಮ:</div>
+    <div class="line reveal">ಮುಂದಿನ ಟಾಪಿಕ್ ಓದಿ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಹೀಗಲ್ಲ:</div>
+    <div class="line reveal quote">"ನಾನು ಎಲ್ಲಾನೂ ಈಗ್ಲೇ ಮುಗ್ಸಬೇಕು!"</div>
+    <div class="line reveal tight">ಬದ್ಲಾಗಿ:</div>
+    <div class="line reveal">ಒಂದೊಂದೇ ವಿಷಯ.</div>
+    <div class="line reveal">ಈಗ ಮಾಡ್ಬಹುದಾದ ಒಂದೇ ಕೆಲಸದ ಮೇಲೆ ಗಮನ ಕೊಡಿ ಅಂತ ಪುಸ್ತಕ ಹೇಳುತ್ತೆ — ಆದ್ರೆ ಪ್ಲ್ಯಾನ್ ಮಾಡೋದೇ ಈಗ ಬೇಕಾಗಿರೋ ಕೆಲಸ ಆಗಿದ್ರೆ, ಪ್ಲ್ಯಾನ್ ಮಾಡೋಕೂ ಅವಕಾಶ ಇದೆ.</div>
+  </div>
+
+  <!-- 14 -->
+  <div class="section">
+    <div class="num reveal">೧೪</div>
+    <h2 class="reveal">ಶರಣಾಗತಿ ≠ "ನಂಗೇನೂ ಬೇಡ"</h2>
+
+    <div class="line reveal">ಇದು ಇನ್ನೊಂದು ಮುಖ್ಯ ವ್ಯತ್ಯಾಸ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಬಿಟ್ಟುಬಿಡೋದು:</div>
+    <div class="line reveal quote">"ಇನ್ ಮುಂದೆ ನಂಗೇನೂ ಬೇಡ."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಶರಣಾಗತಿ:</div>
+    <div class="line reveal quote">"ಈಗ ಆಗ್ತಿರೋದನ್ನ ನಾನು ಒಪ್ಪಿಕೊಳ್ತೀನಿ, ನನ್ನಿಂದ ಆಗೋದನ್ನ ಮಾಡ್ತೀನಿ."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">ಉದಾಹರಣೆಗೆ:</div>
+    <div class="line reveal key">ಬಿಟ್ಟುಬಿಡೋದು:</div>
+    <div class="line reveal quote">"ಇಂಟರ್ವ್ಯೂ ಫೇಲ್ ಆಯ್ತು. ಪರವಾಗಿಲ್ಲ, ಇನ್ ಮುಂದೆ ಟ್ರೈ ಮಾಡಲ್ಲ."</div>
+    <div class="line reveal key">ಶರಣಾಗತಿ:</div>
+    <div class="line reveal quote">"ಕೆಲಸ ಸಿಗ್ಲಿಲ್ಲ. ಆಯ್ತು, ಒಪ್ಪಿಕೊಳ್ತೀನಿ. ಇದ್ರಿಂದ ಏನ್ ಕಲಿಬಹುದು? ಮುಂದೆ ಏನ್ ಮಾಡ್ಬಹುದು?"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಇದು ಸಂಪೂರ್ಣ ಬೇರೆ ರೀತಿಯ ಮನೋಭಾವ.</div>
+    <div class="line reveal">ಶರಣಾಗತಿಯನ್ನ ಸೋಮಾರಿತನ, ನಿರ್ಲಕ್ಷ್ಯ, ಅಥವಾ "ನಂಗ್ ಬೇಡ" ಅನ್ನೋದರ ಜೊತೆ ಗೊಂದಲ ಮಾಡ್ಕೋಬೇಡಿ ಅಂತ ಪುಸ್ತಕ ಸ್ಪಷ್ಟವಾಗಿ ಎಚ್ಚರಿಸುತ್ತೆ.</div>
+  </div>
+
+  <!-- 15 -->
+  <div class="section">
+    <div class="num reveal">೧೫</div>
+    <h2 class="reveal">ಇದನ್ನ ಹೇಗೆ ಅಭ್ಯಾಸ ಮಾಡೋದು</h2>
+
+    <div class="line reveal">ಏನಾದ್ರೂ ಬೇಜಾರಾಗೋ ವಿಷಯ ಆದಾಗ, ಇದನ್ನ ಟ್ರೈ ಮಾಡಿ:</div>
+    <div class="line reveal key">ನಿಲ್ಲಿ → ಒಪ್ಪಿಕೊಳ್ಳಿ → ಗಮನಿಸಿ → ಕ್ರಮ ತಗೊಳ್ಳಿ</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">೧. ನಿಲ್ಲಿ</div>
+    <div class="line reveal">ತಕ್ಷಣ ಪ್ರತಿಕ್ರಿಯಿಸ್ಬೇಡಿ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">೨. ಒಪ್ಪಿಕೊಳ್ಳಿ</div>
+    <div class="line reveal tight">ಮನಸ್ಸಲ್ಲೇ ಹೇಳ್ಕೊಳ್ಳಿ:</div>
+    <div class="line reveal quote">"ಈಗ ಇದೇ ನಡೀತಿದೆ."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">೩. ಗಮನಿಸಿ</div>
+    <div class="line reveal tight">ಗಮನಿಸಿ:</div>
+    <div class="line reveal">ನಾನೇನ್ ಯೋಚಿಸ್ತಾ ಇದ್ದೀನಿ?</div>
+    <div class="line reveal">ನಂಗೇನ್ ಅನಿಸ್ತಿದೆ?</div>
+    <div class="line reveal">ಎಲ್ಲಿ ಒತ್ತಡ ಅನಿಸ್ತಿದೆ?</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">೪. ಕ್ರಮ ತಗೊಳ್ಳಿ</div>
+    <div class="line reveal tight">ಕೇಳ್ಕೊಳ್ಳಿ:</div>
+    <div class="line reveal quote">"ನಿಜವಾಗ್ಲೂ ಈಗ ನಾನೇನ್ ಮಾಡ್ಬಹುದು?"</div>
+    <div class="line reveal">ಆಮೇಲೆ ಆ ಒಂದು ಕೆಲಸ ಮಾಡಿ.</div>
+  </div>
+
+  <!-- whole chapter example -->
+  <div class="section">
+    <div class="num reveal">🌱</div>
+    <h2 class="reveal">ಇಡೀ ಅಧ್ಯಾಯ ಒಂದೇ ಸರಳ ಉದಾಹರಣೆಯಲ್ಲಿ</h2>
+
+    <div class="line reveal">ನೀವು ಕಳ್ಸಿದ ಮೆಸೇಜ್‌ಗೆ ಯಾರೋ ಒಬ್ಬರು ರಿಪ್ಲೈ ಮಾಡ್ದೇ ಇದ್ದಾರೆ ಅಂತ ಇಟ್ಕೊಳ್ಳಿ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಮನಸ್ಸಿನ ಪ್ರತಿಕ್ರಿಯೆ:</div>
+    <div class="line reveal quote">"ಯಾಕೆ ರಿಪ್ಲೈ ಮಾಡ್ತಿಲ್ಲ?"</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"ಬಹುಶಃ ಅವರಿಗೆ ನಾನಂದ್ರೆ ಇಷ್ಟ ಇಲ್ಲ."</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"ನಾನೇನಾದ್ರೂ ತಪ್ಪು ಮಾಡ್ದೆನಾ?"</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"ಎಲ್ಲರೂ ನನ್ನ ನಿರ್ಲಕ್ಷ್ಯ ಮಾಡ್ತಾರೆ."</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"ನನ್ ಜೀವನ ಹಾಳಾಗಿದೆ."</div>
+    <div class="line reveal">ಒಂದು ರಿಪ್ಲೈ ಆಗ್ದೇ ಇರೋ ಮೆಸೇಜ್ ಈಗ ದೊಡ್ಡ ಭಾವನಾತ್ಮಕ ಕಥೆ ಆಗಿಬಿಡುತ್ತೆ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">ಈಗಿನ ಕ್ಷಣದಲ್ಲಿ ಇರೋದು:</div>
+    <div class="line reveal quote">"ಅವರಿನ್ನೂ ರಿಪ್ಲೈ ಮಾಡಿಲ್ಲ."</div>
+    <div class="line reveal">ಸ್ವಲ್ಪ ನಿಲ್ಲಿ.</div>
+    <div class="line reveal quote">"ನಂಗೆ ಆತಂಕ ಆಗ್ತಿದೆ ಅಂತ ಗಮನಿಸ್ತೀನಿ."</div>
+    <div class="line reveal">ಸ್ವಲ್ಪ ನಿಲ್ಲಿ.</div>
+    <div class="line reveal quote">"ಅವರ್ಯಾಕೆ ರಿಪ್ಲೈ ಮಾಡ್ಲಿಲ್ಲ ಅಂತ ನಂಗೊತ್ತಿಲ್ಲ."</div>
+    <div class="line reveal tight">ಆಮೇಲೆ:</div>
+    <div class="line reveal quote">"ಈಗ ನಾನೇನಾದ್ರೂ ಮಾಡ್ಬೇಕಾ?"</div>
+    <div class="line reveal tight">ಇಲ್ಲ ಅಂದ್ರೆ:</div>
+    <div class="line reveal">ನಿಮ್ ಜೀವನ ಮುಂದುವರಿಸಿ.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">ಇದೇ ಈ ಅಧ್ಯಾಯದ ಪ್ರಾಕ್ಟಿಕಲ್ ಅರ್ಥ.</div>
+  </div>
+
+</div>
+
+<!-- FINAL MESSAGE -->
+<div class="final">
+  <div class="eyebrow reveal">⭐ ಕೊನೆಯ ಸಂದೇಶ</div>
+  <h2 class="reveal">ಈ ಅಧ್ಯಾಯಗಳ ಮುಖ್ಯ ಪಾಠ ಇಷ್ಟೇ:</h2>
+
+  <div class="line reveal">ಪ್ರತಿ ಪರಿಸ್ಥಿತೀನೂ ಪಾಸಿಟಿವ್ ಮಾಡ್ಬೇಕು ಅಂತೇನಿಲ್ಲ.</div>
+  <div class="line reveal">ಮನಸ್ಸಲ್ಲಿ ವಾಸ್ತವದ ಜೊತೆ ಜಗಳ ಆಡೋದನ್ನ ನಿಲ್ಲಿಸ್ಬೇಕು.</div>
+
+  <div class="spacer"></div>
+  <div class="line reveal tight">ಏನಾದ್ರೂ ಆದಾಗ:</div>
+  <div class="line reveal">ಈಗಿನದ್ದನ್ನ ಒಪ್ಪಿಕೊಳ್ಳಿ → ಅನಗತ್ಯ ಮಾನಸಿಕ ಡ್ರಾಮಾ ಸೃಷ್ಟಿಸ್ಬೇಡಿ → ನಿಮ್ ಯೋಚನೆ, ಭಾವನೆಗಳನ್ನ ಗಮನಿಸಿ → ಏನ್ ಮಾಡ್ಬಹುದು ಅಂತ ಹುಡುಕಿ → ಕ್ರಮ ತಗೊಳ್ಳಿ.</div>
+
+  <div class="divider-word reveal">ಮತ್ತು <span>ನೆನಪಿಡಿ</span></div>
+
+  <div class="closing-list">
+    <div class="line reveal">ಶರಣಾಗತಿ ಅಂದ್ರೆ ಬಿಟ್ಟುಬಿಡೋದಲ್ಲ.</div>
+    <div class="line reveal">ಒಪ್ಪಿಕೊಳ್ಳೋದು ಅಂದ್ರೆ ದೌರ್ಬಲ್ಯ ಅಲ್ಲ.</div>
+    <div class="line reveal">ಶಾಂತಿ ಅಂದ್ರೆ ಸಂತೋಷ ಅಲ್ಲ.</div>
+    <div class="line reveal">ಈಗಿನ ಕ್ಷಣದಲ್ಲಿ ಇರೋದು ಅಂದ್ರೆ ಏನೂ ಮಾಡ್ದೆ ಇರೋದಲ್ಲ.</div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="line reveal key">ಅನಗತ್ಯ ಒಳಗಿನ ಪ್ರತಿರೋಧ ಇಲ್ದೇ ಕ್ರಮ ತಗೊಳ್ಳೋದು ಅಂತ ಇದರ ಅರ್ಥ.</div>
+</div>
+
+<footer>ಈಗಿನ ಕ್ಷಣ → ಅರಿವು → ಕ್ರಮ</footer>
+
+<script>
+  // ---------- falling / floating dust motes canvas ----------
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const COUNT = Math.min(90, Math.floor((window.innerWidth * window.innerHeight) / 16000));
+  const motes = [];
+  for(let i=0;i<COUNT;i++){
+    motes.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.6 + 0.4,
+      vy: Math.random()*0.18 + 0.05,
+      vx: (Math.random()-0.5)*0.12,
+      drift: Math.random()*Math.PI*2,
+      driftSpeed: Math.random()*0.004 + 0.001,
+      alpha: Math.random()*0.35 + 0.08,
+      warm: Math.random() > 0.6
+    });
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(const m of motes){
+      m.drift += m.driftSpeed;
+      m.x += m.vx + Math.sin(m.drift)*0.15;
+      m.y += m.vy;
+      if(m.y > H + 5){ m.y = -5; m.x = Math.random()*W; }
+      if(m.x > W + 5) m.x = -5;
+      if(m.x < -5) m.x = W + 5;
+
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+      ctx.fillStyle = m.warm
+        ? `rgba(232,201,143,${m.alpha})`
+        : `rgba(237,231,221,${m.alpha*0.7})`;
+      ctx.fill();
+    }
+    if(!reduced) requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ---------- scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  revealEls.forEach(el=> io.observe(el));
+
+  // ---------- flashlight beam follows scroll position ----------
+  const beam = document.getElementById('beam');
+  function updateBeam(){
+    const scrollFrac = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    const top = scrollFrac * (document.body.scrollHeight - window.innerHeight) + window.innerHeight*0.15;
+    beam.style.top = Math.min(top, document.body.scrollHeight) + 'px';
+  }
+  window.addEventListener('scroll', updateBeam, { passive:true });
+  updateBeam();
+</script>
+
+</body>
+</html>
