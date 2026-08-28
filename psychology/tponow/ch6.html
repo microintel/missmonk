@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Being, Here — The Power of Now</title>
+<style>
+  :root{
+    --bg: #0a0c10;
+    --bg-2: #0d1117;
+    --ink: #eae6da;
+    --ink-dim: #8b9099;
+    --gold: #d9a94f;
+    --gold-soft: rgba(217,169,79,0.5);
+    --line: rgba(234,230,218,0.08);
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at 50% -10%, #14181f 0%, var(--bg) 55%, #060708 100%);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    html{ scroll-behavior: auto; }
+  }
+
+  /* ---------- floating particle field ---------- */
+  #particles{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .mote{
+    position: absolute;
+    bottom: -5vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(217,169,79,0.9), rgba(217,169,79,0.05) 70%);
+    filter: blur(0.4px);
+    opacity: 0;
+    animation-name: drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  @keyframes drift{
+    0%   { transform: translate3d(0,0,0); opacity:0; }
+    8%   { opacity: var(--peak, 0.55); }
+    50%  { transform: translate3d(var(--sway, 20px), -55vh, 0); }
+    92%  { opacity: var(--peak, 0.55); }
+    100% { transform: translate3d(calc(var(--sway, 20px) * -1), -110vh, 0); opacity:0; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position: relative;
+    z-index: 1;
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8vh 6vw 6vh;
+  }
+  .hero .eyebrow{
+    font-family: var(--sans);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--gold);
+    opacity: 0.85;
+    margin-bottom: 1.6rem;
+  }
+  .hero h1{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    line-height: 1.08;
+    margin: 0 0 1.4rem;
+    max-width: 16ch;
+    background: linear-gradient(180deg, #f6efdf 0%, #cbb27c 60%, #8a723f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .sub{
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 40ch;
+    line-height: 1.6;
+  }
+  .hero .scroll-cue{
+    margin-top: 4rem;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(var(--gold-soft), transparent);
+    position: relative;
+    animation: cue-fade 2.4s ease-in-out infinite;
+  }
+  @keyframes cue-fade{ 0%,100%{opacity:0.25;} 50%{opacity:0.9;} }
+
+  /* ---------- layout ---------- */
+  main{
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 6vw 20vh;
+  }
+
+  section.block{
+    padding: 8vh 0;
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(.2,.7,.3,1), transform 0.9s cubic-bezier(.2,.7,.3,1);
+  }
+  section.block.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .num{
+    font-family: var(--serif);
+    color: var(--gold);
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    opacity: 0.75;
+    margin-bottom: 0.9rem;
+    display: block;
+  }
+
+  h2{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+    line-height: 1.25;
+    margin: 0 0 2rem;
+    color: #f3ead4;
+  }
+
+  .line{
+    font-size: clamp(1rem, 2vw, 1.12rem);
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 0.85rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.block.in-view .line{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .line.quote{
+    font-family: var(--serif);
+    font-style: italic;
+    color: #f0dfae;
+    font-size: clamp(1.08rem, 2.2vw, 1.3rem);
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--gold-soft);
+    margin: 1.2rem 0;
+  }
+  .line.dim{
+    color: var(--ink-dim);
+  }
+  .line.tight{
+    margin-bottom: 0.2rem;
+  }
+  .cite{
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: rgba(139,144,153,0.55);
+    margin: 0.2rem 0 1rem;
+    font-style: normal;
+  }
+  .arrow{
+    color: var(--gold);
+    opacity: 0.7;
+    text-align: center;
+    margin: 0.15rem 0;
+  }
+
+  .chain-box{
+    background: rgba(217,169,79,0.04);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.6rem 1.4rem;
+    margin: 1rem 0 1.6rem;
+  }
+
+  .try-box{
+    margin-top: 2rem;
+    padding: 2rem 1.8rem;
+    background: linear-gradient(180deg, rgba(217,169,79,0.07), rgba(217,169,79,0.015));
+    border: 1px solid var(--gold-soft);
+    border-radius: 6px;
+  }
+  .try-box .line{ color: #f3ead4; }
+
+  footer{
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 6vh 6vw 10vh;
+    color: var(--ink-dim);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 480px){
+    main{ padding: 0 7vw 16vh; }
+    section.block{ padding: 6vh 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div class="hero">
+  <span class="eyebrow">The Power of Now — Eckhart Tolle</span>
+  <h1>Being, Here</h1>
+  <p class="sub">Not your name, your job, your thoughts — the deeper "I am" beneath them. A slow walk through presence, the body, and the Now.</p>
+  <div class="scroll-cue"></div>
+</div>
+
+<main>
+
+  <section class="block">
+    <span class="num">01</span>
+    <h2>What is "Being"?</h2>
+    <p class="line">The author introduces a word that can sound confusing: Being.</p>
+    <p class="line">He says that Being is the deepest part of who you are. It is not your name, job, appearance, memories, or thoughts.</p>
+    <p class="line">For example, you can say:</p>
+    <p class="line quote">"I am angry."</p>
+    <p class="line">But notice something interesting: you are aware that you are angry.</p>
+    <p class="line">That means there is something observing the anger.</p>
+    <p class="line">Likewise:</p>
+    <p class="line quote">"I am thinking."</p>
+    <p class="line">You can notice your thoughts.</p>
+    <p class="line">So there is a difference between you and the things appearing in your mind.</p>
+    <p class="line">The author calls that deeper sense of "I am" Being. He says it isn't something you can completely understand intellectually; it is something you experience.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">02</span>
+    <h2>Why does he say we are confused about who we are?</h2>
+    <p class="line">Most of us automatically identify ourselves with our body and mind.</p>
+    <p class="line">For example:</p>
+    <p class="line quote tight">"I am ugly."</p>
+    <p class="line quote tight">"I am successful."</p>
+    <p class="line quote tight">"I am a failure."</p>
+    <p class="line quote tight">"I am intelligent."</p>
+    <p class="line quote">"I am an angry person."</p>
+    <p class="line">But these things keep changing.</p>
+    <p class="line dim tight">Your body changes.</p>
+    <p class="line dim tight">Your emotions change.</p>
+    <p class="line dim tight">Your opinions change.</p>
+    <p class="line dim">Your thoughts change.</p>
+    <p class="line">Yet something remains aware of all these changes.</p>
+    <p class="line">The author says that we mistakenly make the changing things our entire identity. He connects this to what he calls the "illusion of the self."</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">03</span>
+    <h2>How does this create fear?</h2>
+    <p class="line">Imagine your entire identity is:</p>
+    <p class="line quote">"I am this body and this personality."</p>
+    <p class="line">Then naturally you become afraid of anything that threatens them.</p>
+    <p class="line">You worry about:</p>
+    <p class="line dim tight">losing people</p>
+    <p class="line dim tight">getting old</p>
+    <p class="line dim tight">losing money</p>
+    <p class="line dim tight">being rejected</p>
+    <p class="line dim tight">looking bad</p>
+    <p class="line dim tight">failing</p>
+    <p class="line dim tight">getting sick</p>
+    <p class="line dim tight">dying</p>
+    <p class="line dim">what people think about you</p>
+    <p class="line">The mind constantly tries to protect this identity.</p>
+    <p class="line">So the author says that when your sense of self is based entirely on the temporary body and mind, fear becomes a major underlying emotion.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">04</span>
+    <h2>Don't get trapped by words</h2>
+    <p class="line">There is an interesting point about words.</p>
+    <p class="line">The author says words are only signposts.</p>
+    <p class="line">For example, if I say:</p>
+    <p class="line quote">"Honey."</p>
+    <p class="line">The word honey isn't actually honey.</p>
+    <p class="line">You can talk about honey for hours, but you only know what honey really is when you taste it.</p>
+    <p class="line">He uses this idea to explain spiritual words such as God, Being, and enlightenment.</p>
+    <p class="line">You can read hundreds of explanations about them, but intellectual knowledge isn't the same as actually experiencing what they point toward.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">So don't worry if the word Being feels confusing.</p>
+    <p class="line">The important question is:</p>
+    <p class="line quote">Can I experience the awareness it is pointing toward?</p>
+  </section>
+
+  <section class="block">
+    <span class="num">05</span>
+    <h2>Now comes the important connection: your body</h2>
+    <p class="line">Here's where the chapter becomes practical.</p>
+    <p class="line">The author says your body can be used as a doorway into presence.</p>
+    <p class="line">Normally, where is your attention?</p>
+    <p class="line">Mostly in your head.</p>
+    <p class="line">You're thinking:</p>
+    <p class="line quote tight">"What happened yesterday?"</p>
+    <p class="line quote tight">"What should I do tomorrow?"</p>
+    <p class="line quote tight">"What does that person think about me?"</p>
+    <p class="line quote">"What if this happens?"</p>
+    <p class="line">Your attention is constantly being pulled into thoughts.</p>
+    <p class="line">The author says that when your mind takes up almost all your attention, you lose touch with the deeper sense of Being.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">06</span>
+    <h2>So what does "inhabit your body" mean?</h2>
+    <p class="line">This is not something complicated.</p>
+    <p class="line">Right now, for example, become aware of your right hand.</p>
+    <p class="line dim tight">Don't look at it.</p>
+    <p class="line dim">Don't describe it.</p>
+    <p class="line">Instead, feel it.</p>
+    <p class="line">Can you sense anything?</p>
+    <p class="line dim tight">Maybe warmth.</p>
+    <p class="line dim tight">Maybe tingling.</p>
+    <p class="line dim tight">Maybe pressure.</p>
+    <p class="line dim">Maybe almost nothing.</p>
+    <p class="line">That's okay.</p>
+    <p class="line">Now feel your left hand.</p>
+    <p class="line">Then your feet.</p>
+    <p class="line">Then your chest.</p>
+    <p class="line">Then your stomach.</p>
+    <p class="line">You're bringing attention away from thinking and toward direct experience.</p>
+    <p class="line">That's what he means by being in the body.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">07</span>
+    <h2>Why is this powerful?</h2>
+    <p class="line">Because thinking and feeling are different.</p>
+    <p class="line">Suppose you're extremely worried.</p>
+    <p class="line">Your mind says:</p>
+    <p class="line quote">"What if I fail? What if everything goes wrong? What am I going to do?"</p>
+    <p class="line">You can continue that story for an hour.</p>
+    <p class="line">Instead, stop for a moment.</p>
+    <p class="line dim tight">Feel your body.</p>
+    <p class="line dim tight">Notice your breathing.</p>
+    <p class="line dim tight">Feel your chest.</p>
+    <p class="line dim">Feel your stomach.</p>
+    <p class="line">Notice the physical sensation of the anxiety.</p>
+    <p class="line">You're no longer feeding the story as much.</p>
+    <p class="line">You're observing the experience directly.</p>
+    <p class="line">That brings you closer to the present moment.</p>
+  </section>
+
+  <section class="block">
+    <span class="num">08</span>
+    <h2>This is what he means by "Now"</h2>
+    <p class="line">You are always physically in the present.</p>
+    <p class="line">You cannot physically stand in yesterday.</p>
+    <p class="line">You cannot physically stand in tomorrow.</p>
+    <p class="line">But your mind can travel there constantly.</p>
+    <p class="line">Your body is here.</p>
+    <p class="line">Your mind is somewhere else.</p>
+    <p class="line">The author says that feeling the inner body helps bring your attention back to where you actually are: this moment.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">That's why the body becomes an anchor.</p>
+  </section>
+
+  <section class="block">
+    <span class="num">09</span>
+    <h2>What happens when life goes wrong?</h2>
+    <p class="line">This is where the practice becomes useful.</p>
+    <p class="line">Imagine someone insults you.</p>
+    <p class="line">Immediately:</p>
+    <div class="chain-box">
+      <p class="line tight">They insult you</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">anger appears</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">thoughts start</p>
+      <p class="arrow">↓</p>
+      <p class="line">you react.</p>
+    </div>
+    <p class="line">The reaction may happen automatically because you've developed habitual patterns.</p>
+    <p class="line">Instead, the author suggests:</p>
+    <div class="chain-box">
+      <p class="line tight">Something happens</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">notice the reaction</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">go into the body</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">feel the emotion</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">become present</p>
+      <p class="arrow">↓</p>
+      <p class="line">then respond.</p>
+    </div>
+    <p class="line">Even a few seconds can make a difference.</p>
+    <p class="line">He specifically says to go within as soon as the challenge appears, before the conditioned reaction completely takes over.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">10</span>
+    <h2>What if you feel anger?</h2>
+    <p class="line">Don't immediately say:</p>
+    <p class="line quote">"I'm angry, therefore I must act."</p>
+    <p class="line">Instead:</p>
+    <p class="line quote">"There is anger here."</p>
+    <p class="line">Feel it.</p>
+    <p class="line">Where is it?</p>
+    <p class="line dim tight">Chest?</p>
+    <p class="line dim tight">Stomach?</p>
+    <p class="line dim tight">Face?</p>
+    <p class="line dim">Hands?</p>
+    <p class="line">Notice it without immediately turning it into a story.</p>
+    <p class="line">The author says attention means observing and feeling the emotion rather than simply thinking about it.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">11</span>
+    <h2>Now we come to forgiveness</h2>
+    <p class="line">This part is easy to misunderstand.</p>
+    <p class="line">Forgiveness here doesn't simply mean:</p>
+    <p class="line quote">"What they did was okay."</p>
+    <p class="line">Rather, the author is talking about letting go of the mental grievance.</p>
+    <p class="line">For example:</p>
+    <p class="line">Someone hurts you.</p>
+    <p class="line">The event ends.</p>
+    <p class="line">But your mind keeps replaying it:</p>
+    <p class="line quote tight">"How dare they?"</p>
+    <p class="line quote tight">"I'll never forgive them."</p>
+    <p class="line quote tight">"I should have said this."</p>
+    <p class="line quote">"They always treat me badly."</p>
+    <p class="line">You're still carrying the event.</p>
+    <p class="line">The author says forgiveness means releasing that grievance instead of continuing to strengthen it through thought.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">12</span>
+    <h2>The deeper idea</h2>
+    <p class="line">Everything we've discussed connects to one simple chain:</p>
+    <div class="chain-box">
+      <p class="line tight">You have thoughts.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">You become identified with the thoughts.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">You believe every thought is "me."</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">Your emotions follow those thoughts.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">You react automatically.</p>
+      <p class="arrow">↓</p>
+      <p class="line">You suffer.</p>
+    </div>
+    <p class="line">The practice he proposes is:</p>
+    <div class="chain-box">
+      <p class="line tight">Notice the thought.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">Don't automatically become it.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">Feel your body.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">Become present.</p>
+      <p class="arrow">↓</p>
+      <p class="line tight">Observe what is happening.</p>
+      <p class="arrow">↓</p>
+      <p class="line">Respond rather than react.</p>
+    </div>
+    <p class="line">That's the practical heart of the teaching.</p>
+  </section>
+
+  <section class="block">
+    <span class="num">13</span>
+    <h2>And you don't have to stop thinking</h2>
+    <p class="line">This is very important.</p>
+    <p class="line">The goal isn't:</p>
+    <p class="line quote">"I must have zero thoughts."</p>
+    <p class="line">That's impossible and would itself become another mental struggle.</p>
+    <p class="line">Instead, the idea is to have awareness alongside thinking.</p>
+    <p class="line dim tight">You can think about mathematics.</p>
+    <p class="line dim tight">You can plan your day.</p>
+    <p class="line dim tight">You can study.</p>
+    <p class="line dim">You can solve problems.</p>
+    <p class="line">But you don't need to be trapped in thought every second.</p>
+    <p class="line">The author even suggests using inner-body awareness when you need a creative solution, then returning to thinking with greater clarity.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <section class="block">
+    <span class="num">14</span>
+    <h2>A simple example from daily life</h2>
+    <p class="line">Imagine someone sends you a message:</p>
+    <p class="line quote">"You're useless."</p>
+    <p class="line dim" style="margin-top:1.4rem;letter-spacing:0.1em;font-size:0.75rem;text-transform:uppercase;">Normal reaction</p>
+    <p class="line tight">You read it.</p>
+    <p class="line tight">Anger appears.</p>
+    <p class="line">Your mind starts:</p>
+    <p class="line quote">"Who does he think he is?"</p>
+    <p class="line">Then:</p>
+    <p class="line quote">"I'll show him."</p>
+    <p class="line">Then you send an angry reply.</p>
+    <p class="line">Now there's an argument.</p>
+    <p class="line dim" style="margin-top:1.4rem;letter-spacing:0.1em;font-size:0.75rem;text-transform:uppercase;">Practicing presence</p>
+    <p class="line tight">You read it.</p>
+    <p class="line tight">You notice anger.</p>
+    <p class="line">Instead of immediately replying, you pause.</p>
+    <p class="line dim tight">Feel your hands.</p>
+    <p class="line dim tight">Feel your chest.</p>
+    <p class="line dim">Notice your breathing.</p>
+    <p class="line">Feel the anger without feeding the story.</p>
+    <p class="line">Wait.</p>
+    <p class="line">Now you have a choice.</p>
+    <p class="line">You can respond intelligently—or decide not to respond.</p>
+    <p class="line">That small pause is the practice.</p>
+  </section>
+
+  <section class="block">
+    <span class="num">15</span>
+    <h2>The whole chapter in one sentence</h2>
+    <p class="line">If I had to reduce the entire teaching to one simple sentence:</p>
+    <p class="line quote">Don't live entirely inside your thoughts; bring some of your attention into your body and become aware of the present moment.</p>
+    <p class="line">The author believes that this gradually creates a deeper connection with yourself and makes thoughts and emotions less controlling.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+
+    <div class="try-box">
+      <p class="line" style="letter-spacing:0.1em;font-size:0.75rem;text-transform:uppercase;color:var(--gold);">Try this right now</p>
+      <p class="line tight">Don't think about your hand.</p>
+      <p class="line">Feel your hand.</p>
+      <p class="line tight">Don't think about your breathing.</p>
+      <p class="line">Feel the breath.</p>
+      <p class="line tight">Don't think about being present.</p>
+      <p class="line">Be aware of what is happening right now.</p>
+      <p class="line" style="margin-top:1rem;">That difference—thinking about an experience vs. directly experiencing it—is one of the most important things the author is trying to teach.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Be aware of what is happening right now.
+</footer>
+
+<script>
+  // ---- floating particle field ----
+  const field = document.getElementById('particles');
+  const COUNT = 26;
+  for (let i = 0; i < COUNT; i++){
+    const m = document.createElement('div');
+    m.className = 'mote';
+    const size = 2 + Math.random() * 5;
+    m.style.width = size + 'px';
+    m.style.height = size + 'px';
+    m.style.left = Math.random() * 100 + 'vw';
+    const duration = 14 + Math.random() * 18;
+    m.style.animationDuration = duration + 's';
+    m.style.animationDelay = (-Math.random() * duration) + 's';
+    m.style.setProperty('--sway', (Math.random() * 60 - 30) + 'px');
+    m.style.setProperty('--peak', (0.25 + Math.random() * 0.45).toFixed(2));
+    field.appendChild(m);
+  }
+
+  // ---- scroll-triggered reveal ----
+  const blocks = document.querySelectorAll('section.block');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  blocks.forEach(b => io.observe(b));
+</script>
+
+</body>
+</html>
