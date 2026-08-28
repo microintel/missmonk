@@ -1613,9 +1613,7 @@ a { color:inherit; text-decoration:none; }
     <button class="theme-close" onclick="closeLangPanel()"><i class="bi bi-x-lg"></i></button>
   </div>
   <p style="font-size:.72rem;color:var(--text3);line-height:1.5;margin:-.4rem 0 .9rem;">
-    Books that are fully translated into your chosen language will show up in Home and Books.
-    Everything else (diploma subjects, chapters, courses without a book) always shows as-is.
-    English is the default and always shows every book.
+    Books fully translated into your chosen language appear in Home and Books; everything else shows as-is, while English always shows every book.
   </p>
   <div class="theme-section-lbl">Language</div>
   <div class="theme-options" id="langOptions"></div>
@@ -3344,7 +3342,7 @@ function showAccountPage() {
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-translate"></i> Content Language</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
-        Currently showing books available in <strong>${getLanguageLabel()}</strong>. Diploma subjects and chapters aren't affected — only books.
+        Currently showing books available in <strong>${getLanguageLabel()}</strong>..
       </p>
       <button class="btn-sm nav-icon-btn account-lang-open-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="toggleLangPanel()">
         <i class="bi bi-translate"></i> Change Content Language
