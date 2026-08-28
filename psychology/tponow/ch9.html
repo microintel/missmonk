@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inner Peace & Surrender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fog-0:#0b0f12;
+    --fog-1:#12181c;
+    --fog-2:#1b2328;
+    --amber:#d9a55e;
+    --amber-soft:#e8c98f;
+    --cream:#ede7dd;
+    --teal:#5c6b6d;
+    --glow:#fff6e2;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--fog-0);
+    color:var(--cream);
+    font-family:'Source Serif 4', serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- drifting fog / falling dust background ---------- */
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .fog-layer{
+    position:fixed;
+    inset:-10% -10%;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(92,107,109,0.10), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 80% 70%, rgba(217,165,94,0.05), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 90%, rgba(27,35,40,0.6), transparent 70%);
+    animation: fogDrift 40s ease-in-out infinite alternate;
+  }
+  @keyframes fogDrift{
+    0%{ transform: translate(0,0) scale(1); }
+    100%{ transform: translate(-3%,2%) scale(1.06); }
+  }
+
+  /* vignette that follows the reading position — the flashlight */
+  #beam{
+    position:fixed;
+    left:50%;
+    top:0;
+    width:900px;
+    height:900px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(232,201,143,0.10) 0%, rgba(232,201,143,0.04) 30%, transparent 65%);
+    z-index:1;
+    pointer-events:none;
+    transition: top 0.6s ease-out;
+  }
+
+  /* ---------- shell ---------- */
+  .shell{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+    padding: 14vh 24px 22vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    padding:0 24px;
+    position:relative;
+    z-index:2;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--amber);
+    opacity:0.85;
+    margin-bottom:28px;
+  }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size:clamp(2.4rem, 7vw, 4.6rem);
+    line-height:1.08;
+    margin:0 0 20px;
+    color:var(--glow);
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--amber-soft);
+  }
+  .hero .sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--teal);
+    letter-spacing:0.04em;
+    max-width:420px;
+    margin:0 auto;
+  }
+  .scroll-cue{
+    margin-top:56px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--teal);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    opacity:0.8;
+  }
+  .scroll-cue .line{
+    width:1px;
+    height:40px;
+    background:linear-gradient(to bottom, var(--amber), transparent);
+    animation: pulseLine 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseLine{
+    0%,100%{opacity:0.3; height:30px;}
+    50%{opacity:1; height:48px;}
+  }
+
+  /* ---------- opening statement block ---------- */
+  .thesis{
+    position:relative;
+    z-index:2;
+    max-width:600px;
+    margin:0 auto;
+    padding: 6vh 24px 10vh;
+    text-align:center;
+  }
+  .thesis p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(1.2rem, 3vw, 1.5rem);
+    line-height:1.6;
+    color:var(--cream);
+    margin:0 0 14px;
+    opacity:0;
+    transform:translateY(14px);
+  }
+  .thesis .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-top:20px;
+  }
+
+  /* ---------- sections ---------- */
+  .section{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+    padding: 9vh 24px;
+    border-top:1px solid rgba(237,231,221,0.08);
+  }
+  .section:first-of-type{border-top:none;}
+
+  .section .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--amber);
+    letter-spacing:0.15em;
+    margin-bottom:14px;
+    opacity:0.9;
+  }
+
+  .section h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(1.5rem, 4vw, 2.1rem);
+    line-height:1.2;
+    color:var(--glow);
+    margin:0 0 32px;
+    letter-spacing:-0.01em;
+  }
+
+  .line{
+    font-size:1.02rem;
+    line-height:1.9;
+    color:var(--cream);
+    margin:0 0 14px;
+    opacity:0.92;
+  }
+  .line.tight{ margin-bottom:4px; }
+  .line.quote{
+    color:var(--amber-soft);
+    font-style:italic;
+    padding-left:18px;
+    border-left:2px solid rgba(217,165,94,0.4);
+    margin:10px 0 14px;
+  }
+  .line.muted{
+    color:var(--teal);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.82rem;
+    letter-spacing:0.02em;
+  }
+  .line.key{
+    color:var(--glow);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    margin:22px 0;
+  }
+  .spacer{ height:18px; }
+  .spacer-sm{ height:8px; }
+
+  .divider-word{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:26px 0;
+  }
+  .divider-word span{ color:var(--amber); }
+
+  /* reveal-on-scroll */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition: opacity 0.9s cubic-bezier(.2,.7,.3,1), transform 0.9s cubic-bezier(.2,.7,.3,1);
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- final message ---------- */
+  .final{
+    position:relative;
+    z-index:2;
+    max-width:600px;
+    margin:0 auto;
+    padding: 14vh 24px 20vh;
+    text-align:center;
+    border-top:1px solid rgba(237,231,221,0.08);
+  }
+  .final .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:26px;
+  }
+  .final h2{
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size:clamp(1.6rem, 5vw, 2.3rem);
+    line-height:1.4;
+    color:var(--glow);
+    margin:0 0 40px;
+  }
+  .final .line{
+    text-align:center;
+    font-size:1.05rem;
+  }
+  .closing-list{
+    margin:34px 0 0;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+  }
+  .closing-list .line{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    color:var(--amber-soft);
+    font-size:1.1rem;
+    margin:0;
+  }
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:6vh 24px 10vh;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.15em;
+    color:var(--teal);
+    opacity:0.6;
+  }
+
+  @media (max-width:520px){
+    .shell{padding-top:10vh;}
+    .hero{min-height:80vh;}
+    #beam{width:600px;height:600px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="fog-layer"></div>
+<div id="beam"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">Chapters Nine &amp; Ten</div>
+  <h1>Understanding<br><em>Inner Peace</em> &amp; Surrender</h1>
+  <p class="sub">Inner peace is different from happiness.<br>Surrender means accepting the present moment without giving up on improving your life.</p>
+  <div class="scroll-cue">
+    <span>begin</span>
+    <span class="line"></span>
+  </div>
+</section>
+
+<div class="shell">
+
+  <div class="thesis">
+    <p class="reveal">Stop fighting mentally with what is happening right now.</p>
+    <p class="reveal">Accept the present, then take the right action.</p>
+    <div class="tag reveal">the book's main message</div>
+  </div>
+
+  <!-- 1 -->
+  <div class="section">
+    <div class="num reveal">01</div>
+    <h2 class="reveal">Happiness vs. Inner Peace</h2>
+
+    <div class="line reveal key">Happiness</div>
+    <div class="line reveal">Happiness usually depends on something going well:</div>
+    <div class="line reveal quote">"I got good marks → I'm happy."</div>
+    <div class="line reveal quote">"I got a new phone → I'm happy."</div>
+    <div class="line reveal quote">"My friend praised me → I'm happy."</div>
+    <div class="line reveal">But if the situation changes, happiness can disappear.</div>
+
+    <div class="spacer"></div>
+
+    <div class="line reveal key">Inner peace</div>
+    <div class="line reveal">Inner peace doesn't require everything to be perfect.</div>
+    <div class="line reveal tight">For example:</div>
+    <div class="line reveal">Someone loses an important opportunity.</div>
+    <div class="line reveal">They may feel sad or disappointed, but they don't have to mentally fight with reality:</div>
+    <div class="line reveal quote">"This shouldn't have happened! Why me? My life is ruined!"</div>
+    <div class="line reveal tight">Instead:</div>
+    <div class="line reveal quote">"This happened. I don't like it, but it is what is happening right now. What can I do next?"</div>
+    <div class="line reveal">The book says that peace can exist even when happiness isn't possible.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal muted">Simple difference:</div>
+    <div class="line reveal key">Happiness = "I like what is happening."</div>
+    <div class="line reveal key">Peace = "I can be with what is happening without mentally fighting it."</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section">
+    <div class="num reveal">02</div>
+    <h2 class="reveal">Acceptance Does NOT Mean Saying Everything Is Good</h2>
+
+    <div class="line reveal">This is very important.</div>
+    <div class="line reveal">Suppose someone is stuck in traffic.</div>
+    <div class="line reveal tight">Acceptance doesn't mean:</div>
+    <div class="line reveal quote">"Traffic is wonderful! I love being late!"</div>
+    <div class="line reveal">😂 No.</div>
+    <div class="line reveal tight">It means:</div>
+    <div class="line reveal quote">"I'm stuck in traffic right now."</div>
+    <div class="line reveal">That's simply recognizing reality.</div>
+    <div class="line reveal tight">Then you can ask:</div>
+    <div class="line reveal quote">"What can I do?"</div>
+    <div class="line reveal">Maybe call someone, take another route, or simply wait.</div>
+    <div class="line reveal">The book specifically says you can accept the present while still taking action to change the situation.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section">
+    <div class="num reveal">03</div>
+    <h2 class="reveal">What Is "Drama"?</h2>
+
+    <div class="line reveal">The book uses drama to describe unnecessary mental and emotional conflict.</div>
+    <div class="line reveal tight">Example:</div>
+    <div class="line reveal">Something small happens:</div>
+    <div class="line reveal quote">Friend: "You made a mistake."</div>
+    <div class="line reveal">Instead of simply hearing it:</div>
+    <div class="line reveal quote">"Okay, I'll check."</div>
+    <div class="line reveal tight">The mind may create:</div>
+    <div class="line reveal quote">"Why did he say that?"</div>
+    <div class="line reveal quote">"He doesn't respect me."</div>
+    <div class="line reveal quote">"Everyone thinks I'm stupid."</div>
+    <div class="line reveal quote">"I'll never talk to him again."</div>
+    <div class="line reveal">Now one sentence has become a huge mental story.</div>
+    <div class="line reveal">The original event was small.</div>
+    <div class="line reveal">The mind created the extra drama.</div>
+    <div class="line reveal">The book describes ego as the unobserved mind that creates resistance, control, defense, attack, and conflict.</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section">
+    <div class="num reveal">04</div>
+    <h2 class="reveal">You Can Still Stand Up for Yourself</h2>
+
+    <div class="line reveal">Being present doesn't mean becoming weak.</div>
+    <div class="line reveal">Suppose somebody insults you.</div>
+    <div class="line reveal tight">You don't have to say:</div>
+    <div class="line reveal quote">"It's okay, insult me."</div>
+    <div class="line reveal tight">Instead, you can calmly say:</div>
+    <div class="line reveal quote">"Don't speak to me like that."</div>
+    <div class="line reveal">The difference is reaction vs. conscious response.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Reaction</div>
+    <div class="line reveal">Insult → anger → shouting → argument → more anger.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Conscious response</div>
+    <div class="line reveal">Insult → notice anger → pause → respond clearly.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">The book says you can firmly tell someone that their behavior is unacceptable without allowing their behavior to control your inner state.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section">
+    <div class="num reveal">05</div>
+    <h2 class="reveal">Life Has Cycles</h2>
+
+    <div class="line reveal">The book also talks about impermanence.</div>
+    <div class="line reveal">Everything changes.</div>
+    <div class="line reveal">Success changes.</div>
+    <div class="line reveal">Failure changes.</div>
+    <div class="line reveal">Money changes.</div>
+    <div class="line reveal">Relationships change.</div>
+    <div class="line reveal">Energy changes.</div>
+    <div class="line reveal">Circumstances change.</div>
+    <div class="line reveal">You cannot permanently stay at the top.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">For example:</div>
+    <div class="line reveal key">Student life</div>
+    <div class="line reveal">One semester: excellent marks 📈</div>
+    <div class="line reveal">Another semester: difficult subjects 📉</div>
+    <div class="line reveal">Later: improvement 📈</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">The mistake is thinking:</div>
+    <div class="line reveal quote">"Good period = my life is good."</div>
+    <div class="line reveal quote">"Bad period = my life is terrible."</div>
+    <div class="line reveal">The book's point is that up and down cycles are part of life.</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="section">
+    <div class="num reveal">06</div>
+    <h2 class="reveal">Low Energy Doesn't Mean You Are Failing</h2>
+
+    <div class="line reveal">The book discusses cycles of physical energy too.</div>
+    <div class="line reveal tight">There are times when someone is:</div>
+    <div class="line reveal key">energetic → creative → productive</div>
+    <div class="line reveal tight">and other times:</div>
+    <div class="line reveal key">tired → slower → less productive.</div>
+    <div class="line reveal">The book argues that we shouldn't constantly fight these natural cycles.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">Think about a phone:</div>
+    <div class="line reveal">100% battery → use → 50% → 20% → recharge</div>
+    <div class="line reveal tight">You don't say:</div>
+    <div class="line reveal quote">"My phone is useless because it isn't always at 100%."</div>
+    <div class="line reveal">Similarly, human energy naturally varies.</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section">
+    <div class="num reveal">07</div>
+    <h2 class="reveal">Don't Make External Things Your Identity</h2>
+
+    <div class="line reveal tight">Imagine someone thinks:</div>
+    <div class="line reveal quote">"I'm successful because I have money."</div>
+    <div class="line reveal">Then they lose money.</div>
+    <div class="line reveal tight">Their mind says:</div>
+    <div class="line reveal quote">"I am nobody now."</div>
+    <div class="line reveal tight">The problem isn't simply losing money.</div>
+    <div class="line reveal">The deeper problem is:</div>
+    <div class="line reveal key">They made the external thing part of their identity.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">The same can happen with:</div>
+    <div class="line reveal">appearance</div>
+    <div class="line reveal">job</div>
+    <div class="line reveal">marks</div>
+    <div class="line reveal">relationships</div>
+    <div class="line reveal">popularity</div>
+    <div class="line reveal">possessions</div>
+    <div class="line reveal">social status</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">The book says external conditions can provide pleasure, but they cannot provide permanent fulfillment or identity.</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section">
+    <div class="num reveal">08</div>
+    <h2 class="reveal">What Should You Do With Negative Emotions?</h2>
+
+    <div class="line reveal tight">The book doesn't simply say:</div>
+    <div class="line reveal quote">"Never feel negative emotions."</div>
+    <div class="line reveal">Instead, when negativity appears, notice it.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">For example:</div>
+    <div class="line reveal">Someone says something rude.</div>
+    <div class="line reveal tight">You notice:</div>
+    <div class="line reveal quote">"I'm becoming angry."</div>
+    <div class="line reveal tight">Instead of immediately acting:</div>
+    <div class="line reveal">Pause.</div>
+    <div class="line reveal">Feel the anger.</div>
+    <div class="line reveal">Observe your thoughts.</div>
+    <div class="line reveal">Ask: "What is happening inside me right now?"</div>
+    <div class="line reveal">The book presents negativity as a signal to become more present.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Negative emotion → "Wake up. Pay attention to the Now."</div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section">
+    <div class="num reveal">09</div>
+    <h2 class="reveal">Example: Car Horn 🚗</h2>
+
+    <div class="line reveal">Imagine you're studying and someone continuously honks outside.</div>
+    <div class="line reveal tight">Your mind:</div>
+    <div class="line reveal quote">"Who is making that noise?!"</div>
+    <div class="line reveal quote">"People are so irritating!"</div>
+    <div class="line reveal quote">"Why can't they be quiet?"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">The horn may last 10 seconds.</div>
+    <div class="line reveal">But your mind can continue the irritation for 30 minutes.</div>
+    <div class="line reveal">The book asks you to notice that the mental resistance can become more disturbing than the original noise.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">You can instead notice:</div>
+    <div class="line reveal quote">"There is a loud sound."</div>
+    <div class="line reveal">That's all.</div>
+    <div class="line reveal tight">You don't have to add:</div>
+    <div class="line reveal quote">"This shouldn't be happening!"</div>
+  </div>
+
+  <!-- 10 -->
+  <div class="section">
+    <div class="num reveal">10</div>
+    <h2 class="reveal">What Is Surrender?</h2>
+
+    <div class="line reveal">Now we reach Chapter 10.</div>
+    <div class="line reveal tight">"Surrender" can sound like:</div>
+    <div class="line reveal quote">"Give up."</div>
+    <div class="line reveal">But the book specifically says that is NOT what it means.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Surrender means:</div>
+    <div class="line reveal key">Stop mentally fighting the present moment.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">It does not mean:</div>
+    <div class="line reveal">stop working</div>
+    <div class="line reveal">stop having goals</div>
+    <div class="line reveal">stop solving problems</div>
+    <div class="line reveal">accept abuse</div>
+    <div class="line reveal">become lazy</div>
+    <div class="line reveal">give up your future</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">The book says surrender is compatible with planning, action, and positive change.</div>
+  </div>
+
+  <!-- 11 -->
+  <div class="section">
+    <div class="num reveal">11</div>
+    <h2 class="reveal">The Mud Example</h2>
+
+    <div class="line reveal">The book gives a very useful idea.</div>
+    <div class="line reveal">Imagine you're physically stuck in mud.</div>
+    <div class="line reveal tight">You don't say:</div>
+    <div class="line reveal quote">"I surrender. I'll live in this mud forever."</div>
+    <div class="line reveal">😂</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Step 1 — Accept reality</div>
+    <div class="line reveal quote">"I'm stuck in mud."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Step 2 — Don't waste energy mentally fighting it</div>
+    <div class="line reveal tight">Don't spend 20 minutes thinking:</div>
+    <div class="line reveal quote">"This shouldn't have happened!"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Step 3 — Take action</div>
+    <div class="line reveal quote">"What can I do right now to get out?"</div>
+    <div class="line reveal">Then pull your leg, find something to hold, call someone, etc.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">That's surrender + action.</div>
+    <div class="line reveal">The book calls this positive action, rather than action driven by anger, frustration, or despair.</div>
+  </div>
+
+  <!-- 12 -->
+  <div class="section">
+    <div class="num reveal">12</div>
+    <h2 class="reveal">The Flashlight Example 🔦</h2>
+
+    <div class="line reveal">This is one of the easiest ways to understand the chapter.</div>
+    <div class="line reveal">Imagine walking through a dark, foggy road.</div>
+    <div class="line reveal">You can't see the entire road.</div>
+    <div class="line reveal">But you have a flashlight.</div>
+    <div class="line reveal">The flashlight shows you only a small area immediately in front of you.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">According to the book:</div>
+    <div class="line reveal key">Fog = your entire life situation</div>
+    <div class="line reveal key">Flashlight = conscious awareness</div>
+    <div class="line reveal key">Clear area = Now</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">You don't need to know everything about the next 10 years.</div>
+    <div class="line reveal tight">You only need to ask:</div>
+    <div class="line reveal quote">"What is the next thing I can do right now?"</div>
+  </div>
+
+  <!-- 13 -->
+  <div class="section">
+    <div class="num reveal">13</div>
+    <h2 class="reveal">Example: Exam Stress</h2>
+
+    <div class="line reveal tight">Imagine:</div>
+    <div class="line reveal">Exam tomorrow.</div>
+    <div class="line reveal tight">The mind starts:</div>
+    <div class="line reveal quote">"What if I fail?"</div>
+    <div class="line reveal quote">"What will everyone think?"</div>
+    <div class="line reveal quote">"What about my future?"</div>
+    <div class="line reveal quote">"I'll never get a good job."</div>
+    <div class="line reveal">Now you're physically sitting with a book, but mentally you're living in 20 different futures.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">The book's approach would be:</div>
+    <div class="line reveal key">Accept Now:</div>
+    <div class="line reveal quote">"Right now, I have an exam tomorrow."</div>
+    <div class="line reveal key">Ask:</div>
+    <div class="line reveal quote">"What can I do right now?"</div>
+    <div class="line reveal key">Action:</div>
+    <div class="line reveal">Study the next topic.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">Not:</div>
+    <div class="line reveal quote">"I must finish everything immediately!"</div>
+    <div class="line reveal tight">Just:</div>
+    <div class="line reveal">One thing at a time.</div>
+    <div class="line reveal">The book explicitly recommends focusing on the one thing that can be done now, while still allowing planning when planning itself is the appropriate present action.</div>
+  </div>
+
+  <!-- 14 -->
+  <div class="section">
+    <div class="num reveal">14</div>
+    <h2 class="reveal">Surrender ≠ "I Don't Care"</h2>
+
+    <div class="line reveal">This is another important distinction.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Giving up:</div>
+    <div class="line reveal quote">"I don't care anymore."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Surrender:</div>
+    <div class="line reveal quote">"I accept what is happening right now, and I'll do what I can."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal tight">For example:</div>
+    <div class="line reveal key">Giving up:</div>
+    <div class="line reveal quote">"I failed the interview. Whatever. I won't try again."</div>
+    <div class="line reveal key">Surrender:</div>
+    <div class="line reveal quote">"I didn't get the job. I accept that this happened. What can I learn? What can I do next?"</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">That's a completely different attitude.</div>
+    <div class="line reveal">The book specifically warns not to confuse surrender with laziness, indifference, or "I can't be bothered."</div>
+  </div>
+
+  <!-- 15 -->
+  <div class="section">
+    <div class="num reveal">15</div>
+    <h2 class="reveal">How to Practice It</h2>
+
+    <div class="line reveal">When something unpleasant happens, try this:</div>
+    <div class="line reveal key">STOP → ACCEPT → OBSERVE → ACT</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">1. STOP</div>
+    <div class="line reveal">Don't immediately react.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">2. ACCEPT</div>
+    <div class="line reveal tight">Say internally:</div>
+    <div class="line reveal quote">"This is what is happening right now."</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">3. OBSERVE</div>
+    <div class="line reveal tight">Notice:</div>
+    <div class="line reveal">What am I thinking?</div>
+    <div class="line reveal">What am I feeling?</div>
+    <div class="line reveal">Where do I feel tension?</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">4. ACT</div>
+    <div class="line reveal tight">Ask:</div>
+    <div class="line reveal quote">"What can I actually do right now?"</div>
+    <div class="line reveal">Then do that one thing.</div>
+  </div>
+
+  <!-- whole chapter example -->
+  <div class="section">
+    <div class="num reveal">🌱</div>
+    <h2 class="reveal">The Whole Chapter in One Simple Example</h2>
+
+    <div class="line reveal">Imagine someone doesn't reply to your message.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Mind reaction:</div>
+    <div class="line reveal quote">"Why aren't they replying?"</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"Maybe they don't like me."</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"Did I do something wrong?"</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"Everyone ignores me."</div>
+    <div class="line reveal muted">↓</div>
+    <div class="line reveal quote">"My life is terrible."</div>
+    <div class="line reveal">One unanswered message has become a huge emotional story.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal key">Presence:</div>
+    <div class="line reveal quote">"They haven't replied yet."</div>
+    <div class="line reveal">Pause.</div>
+    <div class="line reveal quote">"I notice I'm feeling anxious."</div>
+    <div class="line reveal">Pause.</div>
+    <div class="line reveal quote">"I don't know why they haven't replied."</div>
+    <div class="line reveal tight">Then:</div>
+    <div class="line reveal quote">"Is there anything I need to do right now?"</div>
+    <div class="line reveal tight">If no:</div>
+    <div class="line reveal">Continue with your life.</div>
+
+    <div class="spacer"></div>
+    <div class="line reveal">That's the practical meaning of the chapter.</div>
+  </div>
+
+</div>
+
+<!-- FINAL MESSAGE -->
+<div class="final">
+  <div class="eyebrow reveal">⭐ Final Message</div>
+  <h2 class="reveal">The central lesson of these chapters is:</h2>
+
+  <div class="line reveal">You don't need to make every situation positive.</div>
+  <div class="line reveal">You need to stop fighting reality in your mind.</div>
+
+  <div class="spacer"></div>
+  <div class="line reveal tight">When something happens:</div>
+  <div class="line reveal">Accept the Now → don't create unnecessary mental drama → observe your thoughts and emotions → find what you can do → take action.</div>
+
+  <div class="divider-word reveal">and <span>remember</span></div>
+
+  <div class="closing-list">
+    <div class="line reveal">Surrender is not giving up.</div>
+    <div class="line reveal">Acceptance is not weakness.</div>
+    <div class="line reveal">Peace is not the same as happiness.</div>
+    <div class="line reveal">Being present doesn't mean doing nothing.</div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="line reveal key">It means acting without unnecessary inner resistance.</div>
+</div>
+
+<footer>Now → Awareness → Action</footer>
+
+<script>
+  // ---------- falling / floating dust motes canvas ----------
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const COUNT = Math.min(90, Math.floor((window.innerWidth * window.innerHeight) / 16000));
+  const motes = [];
+  for(let i=0;i<COUNT;i++){
+    motes.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.6 + 0.4,
+      vy: Math.random()*0.18 + 0.05,
+      vx: (Math.random()-0.5)*0.12,
+      drift: Math.random()*Math.PI*2,
+      driftSpeed: Math.random()*0.004 + 0.001,
+      alpha: Math.random()*0.35 + 0.08,
+      warm: Math.random() > 0.6
+    });
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(const m of motes){
+      m.drift += m.driftSpeed;
+      m.x += m.vx + Math.sin(m.drift)*0.15;
+      m.y += m.vy;
+      if(m.y > H + 5){ m.y = -5; m.x = Math.random()*W; }
+      if(m.x > W + 5) m.x = -5;
+      if(m.x < -5) m.x = W + 5;
+
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+      ctx.fillStyle = m.warm
+        ? `rgba(232,201,143,${m.alpha})`
+        : `rgba(237,231,221,${m.alpha*0.7})`;
+      ctx.fill();
+    }
+    if(!reduced) requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ---------- scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  revealEls.forEach(el=> io.observe(el));
+
+  // ---------- flashlight beam follows scroll position ----------
+  const beam = document.getElementById('beam');
+  function updateBeam(){
+    const scrollFrac = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    const top = scrollFrac * (document.body.scrollHeight - window.innerHeight) + window.innerHeight*0.15;
+    beam.style.top = Math.min(top, document.body.scrollHeight) + 'px';
+  }
+  window.addEventListener('scroll', updateBeam, { passive:true });
+  updateBeam();
+</script>
+
+</body>
+</html>

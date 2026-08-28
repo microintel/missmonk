@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enlightened Relationships</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-deep: #0a0e1a;
+    --ink: #0f1526;
+    --ink-soft: #161d33;
+    --moon: #eef1fb;
+    --moon-dim: #a9b1cc;
+    --sage: #8fb9a8;
+    --ember: #dba587;
+    --line: rgba(238,241,251,0.09);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, #131b30 0%, var(--ink) 45%, var(--ink-deep) 100%);
+    color: var(--moon);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- floating / falling light field ---------- */
+  #field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    top:-5vh;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(238,241,251,0.9) 0%, rgba(238,241,251,0.15) 60%, transparent 75%);
+    filter: blur(0.3px);
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+    opacity:0.5;
+  }
+  .mote.sage{ background: radial-gradient(circle, rgba(143,185,168,0.95) 0%, rgba(143,185,168,0.18) 60%, transparent 75%); }
+  .mote.ember{ background: radial-gradient(circle, rgba(219,165,135,0.95) 0%, rgba(219,165,135,0.18) 60%, transparent 75%); }
+
+  @keyframes fall{
+    from{ transform: translateY(-10vh); }
+    to{ transform: translateY(110vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:-18px; }
+    50%{ margin-left:18px; }
+  }
+
+  /* ---------- layout shell ---------- */
+  main{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding: 0 28px 220px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top: 6vh;
+  }
+  .hero .kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: var(--sage);
+    margin-bottom:28px;
+    opacity:0;
+    animation: riseIn 1.1s 0.2s ease forwards;
+  }
+  .hero h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size: clamp(2.6rem, 8vw, 4.6rem);
+    line-height:1.05;
+    color: var(--moon);
+    opacity:0;
+    animation: riseIn 1.2s 0.4s ease forwards;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color: var(--ember);
+    font-weight:400;
+  }
+  .hero .sub{
+    margin-top:26px;
+    max-width:480px;
+    font-size:16px;
+    line-height:1.8;
+    color: var(--moon-dim);
+    opacity:0;
+    animation: riseIn 1.2s 0.7s ease forwards;
+  }
+  .hero .scroll-cue{
+    margin-top:70px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color: var(--moon-dim);
+    opacity:0;
+    animation: riseIn 1.2s 1s ease forwards, pulse 2.6s 2.2s ease-in-out infinite;
+  }
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:0.4; }
+    50%{ opacity:0.9; }
+  }
+
+  /* ---------- sections ---------- */
+  section.chapter{
+    padding-top: 108px;
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  section.chapter.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+  section.chapter:first-of-type{ padding-top:0; }
+
+  .meta-row{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:22px;
+    border-top: 1px solid var(--line);
+    padding-top:26px;
+  }
+  .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color: var(--sage);
+    letter-spacing:0.05em;
+  }
+  h2{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size: clamp(1.6rem, 4.4vw, 2.2rem);
+    color: var(--moon);
+    line-height:1.2;
+  }
+
+  .lines{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .lines .l{
+    font-size:16.5px;
+    line-height:1.7;
+    color: var(--moon-dim);
+  }
+  .lines .l.strong{ color: var(--moon); font-weight:400; }
+  .lines .l.quote{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color: var(--ember);
+    padding-left:18px;
+    border-left: 2px solid rgba(219,165,135,0.4);
+  }
+  .lines .l.label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color: var(--sage);
+    margin-top:6px;
+  }
+  .example{
+    margin-top:8px;
+    margin-bottom:4px;
+    padding:20px 22px;
+    background: rgba(238,241,251,0.03);
+    border: 1px solid var(--line);
+    border-radius:2px;
+  }
+  .example .lines{ gap:10px; }
+
+  /* before / after closing panel */
+  .duo{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:18px;
+    margin-top:12px;
+  }
+  @media(min-width:640px){
+    .duo{ grid-template-columns: 1fr 1fr; }
+  }
+  .duo .col{
+    padding:22px;
+    border-radius:2px;
+    border:1px solid var(--line);
+  }
+  .duo .col.without{ background: rgba(219,165,135,0.05); }
+  .duo .col.with{ background: rgba(143,185,168,0.06); }
+  .duo .col .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    display:block;
+  }
+  .duo .col.without .tag{ color: var(--ember); }
+  .duo .col.with .tag{ color: var(--sage); }
+  .duo .col .l{
+    font-size:15.5px;
+    line-height:1.9;
+    color: var(--moon-dim);
+  }
+
+  .closing{
+    margin-top:118px;
+    padding-top:36px;
+    border-top: 1px solid var(--line);
+    text-align:left;
+  }
+  .closing h2{ margin-bottom:20px; }
+  .closing .l.strong{ font-size:18px; }
+  .signoff{
+    margin-top:60px;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:22px;
+    color: var(--moon-dim);
+    opacity:0.8;
+  }
+
+  ::selection{ background: rgba(219,165,135,0.35); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    section.chapter{ opacity:1; transform:none; }
+    .hero .kicker, .hero h1, .hero .sub, .hero .scroll-cue{ opacity:1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="field"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="kicker">Chapter Eight</div>
+    <h1>Enlightened<br><em>Relationships</em></h1>
+    <p class="sub">On love, attachment, the pain-body, and what it means to stay present with another person.</p>
+    <div class="scroll-cue">↓ scroll</div>
+  </div>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">01</span><h2>Don't wait for the future to make you happy</h2></div>
+    <div class="lines">
+      <p class="l">A common way of thinking is:</p>
+      <p class="l quote">"When I get a partner, I'll be happy."</p>
+      <p class="l quote">"When I get married, everything will be perfect."</p>
+      <p class="l quote">"When I get a good job, then I'll feel complete."</p>
+      <p class="l">The book says this creates a future-based search for happiness.</p>
+      <p class="l label">For example</p>
+      <div class="example">
+        <div class="lines">
+          <p class="l">Someone feels lonely and thinks:</p>
+          <p class="l quote">"If I find the right person, my loneliness will disappear."</p>
+          <p class="l">They find someone and feel extremely happy for some time. But later, fear, jealousy, insecurity, or dissatisfaction may return.</p>
+        </div>
+      </div>
+      <p class="l">The idea is that happiness cannot permanently come from something outside you. The book calls true "salvation" a state of inner peace and fulfillment that is available in the present moment.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">02</span><h2>Love can become attachment</h2></div>
+    <div class="lines">
+      <p class="l">The book makes an important distinction between love and attachment.</p>
+      <p class="l">Imagine:</p>
+      <p class="l quote">"I love you."</p>
+      <p class="l">But underneath that feeling is:</p>
+      <p class="l quote">"I need you."</p>
+      <p class="l quote">"Don't leave me."</p>
+      <p class="l quote">"You must always give me attention."</p>
+      <p class="l quote">"If you talk to someone else, I'll become jealous."</p>
+      <p class="l">Now fear of losing the person becomes part of the relationship.</p>
+      <p class="l strong">The book describes this as addictive attachment rather than true love.</p>
+    </div>
+
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">Simple example</p>
+      <div class="lines">
+        <p class="l">Person A:</p>
+        <p class="l quote">"I can't live without you."</p>
+        <p class="l">At first it sounds romantic.</p>
+        <p class="l">But psychologically, it can mean:</p>
+        <p class="l quote">"My sense of security depends completely on you."</p>
+        <p class="l">Then if the person doesn't reply for several hours:</p>
+        <p class="l strong">Love → fear → overthinking → anger → accusation</p>
+        <p class="l">That cycle can create suffering.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">03</span><h2>Why relationships can change from love to hate</h2></div>
+    <div class="lines">
+      <p class="l">Have you noticed situations like:</p>
+      <p class="l">Morning:</p>
+      <p class="l quote">"I love you ❤️"</p>
+      <p class="l">Evening:</p>
+      <p class="l quote">"I never want to talk to you again!"</p>
+      <p class="l">The book says relationships can sometimes move between opposite emotional states:</p>
+      <p class="l strong">Love → attachment → fear → jealousy → anger → conflict → reconciliation → love → conflict again.</p>
+      <p class="l">Some couples even become attached to this emotional drama because intense emotions make them feel alive.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">Example</p>
+      <div class="lines">
+        <p class="l">A couple argues.</p>
+        <p class="l">One says:</p>
+        <p class="l quote">"You're ignoring me!"</p>
+        <p class="l">The other says:</p>
+        <p class="l quote">"You're always blaming me!"</p>
+        <p class="l">Then both become defensive.</p>
+        <p class="l">Instead of solving the original problem, they attack each other.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">04</span><h2>The ego looks for something outside itself</h2></div>
+    <div class="lines">
+      <p class="l">The book uses the word ego for the mind-created sense of "me."</p>
+      <p class="l">For example:</p>
+      <p class="l quote">"I am successful."</p>
+      <p class="l quote">"I am attractive."</p>
+      <p class="l quote">"I am someone's boyfriend/girlfriend."</p>
+      <p class="l quote">"I am respected."</p>
+      <p class="l quote">"I am better than others."</p>
+      <p class="l">The problem is that if your identity depends on these things, losing them can make you feel that you have lost yourself.</p>
+      <p class="l">The book says a romantic partner can temporarily become the center of this identity:</p>
+      <p class="l quote">"This person gives my life meaning."</p>
+      <p class="l">But if that person changes or leaves, the insecurity underneath can return.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">05</span><h2>Relationships don't necessarily create your pain</h2></div>
+    <div class="lines">
+      <p class="l strong">This is one of the chapter's major ideas.</p>
+      <p class="l">Suppose someone already has insecurity.</p>
+      <p class="l">Their partner doesn't reply to a message.</p>
+      <p class="l">The mind says:</p>
+      <p class="l quote">"They don't care about me."</p>
+      <p class="l">Then:</p>
+      <p class="l strong">thought → fear → anger → accusation</p>
+      <p class="l">The person may think:</p>
+      <p class="l quote">"My partner caused my suffering."</p>
+      <p class="l">But the book suggests that the relationship can bring existing pain and insecurity to the surface rather than creating it from nothing.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">Simple example</p>
+      <div class="lines">
+        <p class="l">Imagine a person who already fears rejection.</p>
+        <p class="l">Their friend says:</p>
+        <p class="l quote">"I can't meet today."</p>
+        <p class="l">The event is small.</p>
+        <p class="l">But their mind interprets it as:</p>
+        <p class="l quote">"Nobody wants me."</p>
+        <p class="l">The event triggered something that was already inside.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">06</span><h2>What does "being present" mean?</h2></div>
+    <div class="lines">
+      <p class="l strong">This is the main practice of the chapter.</p>
+      <p class="l">Being present means:</p>
+      <p class="l quote">Notice what is happening inside you instead of immediately becoming the reaction.</p>
+      <p class="l">For example:</p>
+      <p class="l">Someone insults you.</p>
+      <p class="l">Normal reaction:</p>
+      <p class="l quote">"How dare you!"</p>
+      <p class="l">Then you immediately attack back.</p>
+      <p class="l">Presence means:</p>
+      <p class="l quote">"I'm feeling anger right now."</p>
+      <p class="l">Notice:</p>
+      <p class="l">anger in the body</p>
+      <p class="l">thoughts appearing</p>
+      <p class="l">urge to respond</p>
+      <p class="l">tension</p>
+      <p class="l">desire to attack</p>
+      <p class="l">You don't have to pretend the anger isn't there.</p>
+      <p class="l">You simply observe it before automatically acting on it.</p>
+      <p class="l strong">The book describes this as becoming the "silent watcher" of your thoughts and reactions.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">07</span><h2>Don't judge yourself or your partner immediately</h2></div>
+    <div class="lines">
+      <p class="l">Suppose your partner becomes angry.</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"You're an horrible person."</p>
+      <p class="l">Try recognizing:</p>
+      <p class="l quote">"Anger is happening right now."</p>
+      <p class="l">This doesn't mean accepting harmful behavior.</p>
+      <p class="l">It means seeing the situation clearly without immediately becoming consumed by your own reaction.</p>
+      <p class="l strong">The book calls this moving from reaction to knowing.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">08</span><h2>Communicate without attacking</h2></div>
+    <div class="lines">
+      <p class="l">The chapter recommends expressing feelings without blaming.</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"You never listen to me!"</p>
+      <p class="l">Try:</p>
+      <p class="l quote">"I'm feeling ignored right now, and I'd like you to listen."</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"You always make me angry!"</p>
+      <p class="l">Try:</p>
+      <p class="l quote">"I'm noticing that I'm becoming angry. Can we talk about what happened?"</p>
+      <p class="l">The difference is:</p>
+      <p class="l">Blaming:</p>
+      <p class="l quote">"You are the problem."</p>
+      <p class="l">Awareness:</p>
+      <p class="l quote">"This is what I'm experiencing right now."</p>
+      <p class="l">The book also emphasizes listening without immediately becoming defensive.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">09</span><h2>Relationship problems can become opportunities</h2></div>
+    <div class="lines">
+      <p class="l">This is an interesting idea in the chapter.</p>
+      <p class="l">Normally people think:</p>
+      <p class="l quote">"A good relationship should have no problems."</p>
+      <p class="l">The book presents another perspective:</p>
+      <p class="l strong">Problems can reveal unconscious patterns that you normally don't notice.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">Example</p>
+      <div class="lines">
+        <p class="l">Someone criticizes you.</p>
+        <p class="l">Suddenly you notice:</p>
+        <p class="l quote">"Why did that sentence make me so angry?"</p>
+        <p class="l">You discover:</p>
+        <p class="l quote">"I have a strong need to always be right."</p>
+        <p class="l">Now the conflict has shown you something about yourself.</p>
+      </div>
+    </div>
+    <p class="l" style="margin-top:20px;">The book describes this as using the relationship as a spiritual practice — using difficult moments to become more conscious.</p>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">10</span><h2>The "pain-body"</h2></div>
+    <div class="lines">
+      <p class="l">The chapter uses the term pain-body to describe accumulated emotional pain that can become strongly activated.</p>
+      <p class="l">Think of it as an emotional trigger system.</p>
+      <p class="l">For example:</p>
+      <p class="l">Someone says something small:</p>
+      <p class="l quote">"You made a mistake."</p>
+      <p class="l">But suddenly you feel enormous anger.</p>
+      <p class="l">Why such a big reaction?</p>
+      <p class="l">The book's explanation is that the present event may have activated older emotional pain.</p>
+      <p class="l">When this happens, instead of thinking:</p>
+      <p class="l quote">"I AM angry."</p>
+      <p class="l">Try:</p>
+      <p class="l quote">"Anger is happening in me right now."</p>
+      <p class="l strong">That small difference creates some distance between you and the emotion.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">11</span><h2>Don't become your emotions</h2></div>
+    <div class="lines">
+      <p class="l strong">This is extremely important.</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"I am angry."</p>
+      <p class="l">You can notice:</p>
+      <p class="l quote">"Anger is present."</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"I am a failure."</p>
+      <p class="l">Notice:</p>
+      <p class="l quote">"My mind is producing the thought that I'm a failure."</p>
+      <p class="l">Instead of:</p>
+      <p class="l quote">"I am anxious."</p>
+      <p class="l">Notice:</p>
+      <p class="l quote">"Anxiety is being experienced right now."</p>
+      <p class="l">The goal isn't to suppress the emotion.</p>
+      <p class="l">It is to observe it without automatically becoming it.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">12</span><h2>What should you actually do?</h2></div>
+    <div class="lines">
+      <p class="l">When a strong emotion appears:</p>
+      <p class="l label">Step 1 — Stop</p>
+      <p class="l">Don't immediately react.</p>
+      <p class="l label">Step 2 — Notice</p>
+      <p class="l">Ask:</p>
+      <p class="l quote">"What am I feeling right now?"</p>
+      <p class="l label">Step 3 — Feel the body</p>
+      <p class="l">Notice:</p>
+      <p class="l">tight chest</p>
+      <p class="l">fast heartbeat</p>
+      <p class="l">stomach tension</p>
+      <p class="l">heat</p>
+      <p class="l">trembling</p>
+      <p class="l label">Step 4 — Watch the thoughts</p>
+      <p class="l">Notice what the mind is saying.</p>
+      <p class="l">For example:</p>
+      <p class="l quote">"They don't respect me."</p>
+      <p class="l quote">"They always do this."</p>
+      <p class="l quote">"I have to fight back."</p>
+      <p class="l label">Step 5 — Don't immediately believe every thought</p>
+      <p class="l">A thought is something appearing in your mind.</p>
+      <p class="l">You don't have to act on every thought.</p>
+      <p class="l label">Step 6 — Respond consciously</p>
+      <p class="l">Once the emotional intensity decreases, decide what actually needs to be said or done.</p>
+      <p class="l strong">This is the practical meaning of entering the Now according to the chapter.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">13</span><h2>Love doesn't mean tolerating everything</h2></div>
+    <div class="lines">
+      <p class="l">An important practical point:</p>
+      <p class="l strong">Presence ≠ allowing abuse.</p>
+      <p class="l">Being calm doesn't mean:</p>
+      <p class="l quote">"Someone can hurt me and I should do nothing."</p>
+      <p class="l">You can recognize:</p>
+      <p class="l quote">"This behavior is harmful."</p>
+      <p class="l">and still respond without unnecessary hatred, revenge, or uncontrolled reaction.</p>
+      <p class="l">The book says that relinquishing judgment doesn't mean failing to recognize dysfunctional behavior.</p>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="meta-row"><span class="num">14</span><h2>Don't depend on another person to complete you</h2></div>
+    <div class="lines">
+      <p class="l">The chapter eventually goes deeper.</p>
+      <p class="l">It says that if someone feels uncomfortable being alone, they may search for a relationship to escape that discomfort.</p>
+      <p class="l">But the discomfort can eventually appear inside the relationship too.</p>
+    </div>
+    <div class="example" style="margin-top:34px;">
+      <p class="l label">Example</p>
+      <div class="lines">
+        <p class="l">Before relationship:</p>
+        <p class="l quote">"I'm lonely."</p>
+        <p class="l">After relationship:</p>
+        <p class="l quote">"Why aren't they texting?"</p>
+        <p class="l">Later:</p>
+        <p class="l quote">"Why don't they understand me?"</p>
+        <p class="l">Later:</p>
+        <p class="l quote">"Are they going to leave me?"</p>
+        <p class="l">The external situation changed, but the internal uneasiness remained.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter closing">
+    <h2>The whole chapter in one simple idea</h2>
+    <div class="lines">
+      <p class="l">The chapter's central message can be understood like this:</p>
+      <p class="l strong">Don't use another person as the solution to your inner unhappiness.</p>
+      <p class="l">Instead:</p>
+      <p class="l strong">Notice → Feel → Observe → Become present → Respond consciously.</p>
+      <p class="l">A relationship can then become less about:</p>
+      <p class="l quote">"You must make me happy."</p>
+      <p class="l">and more about:</p>
+      <p class="l quote">"We can be together while both of us remain aware of what is happening inside."</p>
+      <p class="l">The book ultimately presents love as something deeper than emotional dependency: a state connected with presence and inner awareness.</p>
+    </div>
+  </section>
+
+  <section class="chapter closing">
+    <h2>One easy example to remember</h2>
+    <div class="duo">
+      <div class="col without">
+        <span class="tag">Without presence</span>
+        <p class="l">Partner doesn't reply →</p>
+        <p class="l">"They don't care!" →</p>
+        <p class="l">Anger →</p>
+        <p class="l">Accusation →</p>
+        <p class="l">Argument →</p>
+        <p class="l">More pain.</p>
+      </div>
+      <div class="col with">
+        <span class="tag">With presence</span>
+        <p class="l">Partner doesn't reply →</p>
+        <p class="l">"I'm feeling anxious." →</p>
+        <p class="l">Notice the feeling →</p>
+        <p class="l">Don't immediately react →</p>
+        <p class="l">Understand what is actually happening →</p>
+        <p class="l">Communicate calmly.</p>
+      </div>
+    </div>
+    <p class="signoff">That's the practical heart of Chapter 8.</p>
+  </section>
+
+</main>
+
+<script>
+  // build the falling light field
+  const field = document.getElementById('field');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) {
+    const count = 34;
+    for (let i = 0; i < count; i++) {
+      const mote = document.createElement('div');
+      const size = 2 + Math.random() * 5;
+      const kindRoll = Math.random();
+      mote.className = 'mote' + (kindRoll < 0.33 ? ' sage' : kindRoll < 0.66 ? ' ember' : '');
+      mote.style.width = size + 'px';
+      mote.style.height = size + 'px';
+      mote.style.left = Math.random() * 100 + 'vw';
+      const fallDur = 14 + Math.random() * 16;
+      const swayDur = 4 + Math.random() * 5;
+      const delay = -(Math.random() * fallDur);
+      mote.style.animationDuration = fallDur + 's, ' + swayDur + 's';
+      mote.style.animationDelay = delay + 's, ' + (Math.random() * swayDur) + 's';
+      mote.style.opacity = (0.25 + Math.random() * 0.5).toFixed(2);
+      field.appendChild(mote);
+    }
+  }
+
+  // scroll reveal
+  const chapters = document.querySelectorAll('section.chapter');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    chapters.forEach(ch => io.observe(ch));
+  } else {
+    chapters.forEach(ch => ch.classList.add('in-view'));
+  }
+</script>
+
+</body>
+</html>

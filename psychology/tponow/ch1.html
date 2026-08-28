@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Power of Now — Chapter 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0d12;
+    --ink-2:#12151d;
+    --gold:#c9a24d;
+    --sage:#7c9a8c;
+    --paper:#e9e4d8;
+    --muted:#8a8f9c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(ellipse at 50% 0%, var(--ink-2), var(--ink) 70%);
+    color:var(--paper);
+    font-family:'Work Sans', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  /* ---------- floating / falling particles ---------- */
+  #motes{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    top:-5%;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,162,77,0.9) 0%, rgba(201,162,77,0.15) 60%, transparent 100%);
+    animation-name:fall, drift;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+    filter:blur(0.3px);
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh); opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ transform:translateY(110vh); opacity:0; }
+  }
+  @keyframes drift{
+    0%,100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  /* breathing glow behind hero, like a candle / the Now */
+  .glow{
+    position:fixed;
+    top:18%;
+    left:50%;
+    width:520px;
+    height:520px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(201,162,77,0.16) 0%, rgba(201,162,77,0.05) 45%, transparent 70%);
+    border-radius:50%;
+    animation:breathe 6s ease-in-out infinite;
+    z-index:0;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{ opacity:0.55; transform:translate(-50%,-50%) scale(0.92); }
+    50%{ opacity:1; transform:translate(-50%,-50%) scale(1.08); }
+  }
+
+  main{
+    position:relative;
+    z-index:2;
+    max-width:720px;
+    margin:0 auto;
+    padding:14vh 6vw 22vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    margin-bottom:20vh;
+  }
+  .eyebrow{
+    font-family:'Work Sans', sans-serif;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-size:0.68rem;
+    color:var(--sage);
+    margin-bottom:1.6rem;
+  }
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(2.4rem, 7vw, 4.4rem);
+    line-height:1.05;
+    color:var(--paper);
+  }
+  .title em{
+    font-style:italic;
+    font-weight:300;
+    color:var(--gold);
+  }
+  .subtitle{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:300;
+    font-size:1.15rem;
+    color:var(--muted);
+    margin-top:1.4rem;
+  }
+
+  /* ---------- section scaffolding ---------- */
+  section{
+    margin-bottom:14vh;
+  }
+  .chapter-mark{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:0.95rem;
+    letter-spacing:0.05em;
+    margin-bottom:0.6rem;
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(1.5rem, 4vw, 2.1rem);
+    line-height:1.25;
+    margin-bottom:2.4rem;
+    color:var(--paper);
+  }
+  h2 .num{
+    color:var(--sage);
+    font-style:italic;
+    font-weight:300;
+    margin-right:0.6rem;
+  }
+  h3.sub-label{
+    font-family:'Work Sans', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:0.72rem;
+    color:var(--sage);
+    margin:2.4rem 0 1.2rem;
+  }
+
+  /* ---------- lines : each line of content, clearly spaced ---------- */
+  .line{
+    font-size:1.05rem;
+    line-height:1.8;
+    color:var(--paper);
+    margin-bottom:1rem;
+    max-width:620px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .line.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .line.quote{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:1.15rem;
+    border-left:2px solid rgba(201,162,77,0.4);
+    padding-left:1rem;
+  }
+  .line.muted{
+    color:var(--muted);
+    font-size:0.95rem;
+  }
+  .line.thought{
+    color:var(--paper);
+    background:rgba(255,255,255,0.03);
+    padding:0.5rem 1rem;
+    border-radius:6px;
+    display:inline-block;
+  }
+  .cite{
+    display:block;
+    font-size:0.72rem;
+    letter-spacing:0.04em;
+    color:rgba(138,143,156,0.55);
+    margin:0.2rem 0 1.4rem;
+    font-style:italic;
+  }
+  .arrow{
+    color:var(--sage);
+    margin:0.3rem 0;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .arrow.visible{ opacity:0.7; transform:translateY(0); }
+
+  .divider{
+    width:60px;
+    height:1px;
+    background:linear-gradient(to right, var(--gold), transparent);
+    margin:0 auto 6vh;
+    opacity:0;
+    transition:opacity 1.2s ease;
+  }
+  .divider.visible{ opacity:0.6; }
+
+  .closing{
+    text-align:center;
+    margin-top:8vh;
+  }
+  .closing .line{
+    max-width:100%;
+    font-family:'Fraunces', serif;
+    font-size:1.3rem;
+    font-style:italic;
+    color:var(--paper);
+  }
+  .closing .final{
+    color:var(--gold);
+    font-size:1.5rem;
+    margin-top:2rem;
+  }
+
+  ::selection{ background:rgba(201,162,77,0.3); }
+
+  @media (prefers-reduced-motion: reduce){
+    .mote{ animation:none; opacity:0.3; }
+    .glow{ animation:none; }
+    .line, .arrow, .divider{ transition:none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="motes"></div>
+<div class="glow"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">Reading Notes</div>
+    <h1 class="title">The Power<br>of <em>Now</em></h1>
+    <p class="subtitle">Chapter 1 — You Are Not Your Mind</p>
+  </div>
+
+  <section id="intro">
+    <div class="chapter-mark">Chapter 1</div>
+    <h2>You Are Not Your Mind</h2>
+    <p class="line">The central idea is:</p>
+    <p class="line quote">You have thoughts, but you are not the thoughts themselves.</p>
+    <p class="line">The book begins with a story about a beggar who has been sitting on a box for many years.</p>
+    <p class="line">He thinks the box contains nothing.</p>
+    <p class="line">When someone finally tells him to look inside, he discovers that it is filled with gold.</p>
+    <p class="line">The author uses this as a metaphor: people may search outside themselves for peace and happiness while overlooking what is happening within.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s1">
+    <h2><span class="num">1</span>What does "you are not your mind" mean?</h2>
+    <p class="line">Imagine your mind says:</p>
+    <p class="line thought">"I'm going to fail."</p>
+    <p class="line thought">"Everyone is better than me."</p>
+    <p class="line thought">"What if something goes wrong?"</p>
+    <p class="line thought">"I should have done that differently."</p>
+    <p class="line thought">"What will happen tomorrow?"</p>
+    <p class="line">These are thoughts.</p>
+    <p class="line">The book asks you to notice something important:</p>
+    <p class="line quote">If you can observe a thought, then there must be an awareness that is observing it.</p>
+    <p class="line">For example:</p>
+    <p class="line">Thought: "I am nervous about tomorrow."</p>
+    <p class="line">Instead of completely becoming that thought, notice:</p>
+    <p class="line thought">"I notice that I am having a nervous thought about tomorrow."</p>
+    <p class="line">That small difference is what the book calls watching the thinker.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s2">
+    <h2><span class="num">2</span>The mind isn't the enemy</h2>
+    <p class="line">This is important.</p>
+    <p class="line">The book is not saying that thinking is bad.</p>
+    <p class="line">The mind is useful when you need to:</p>
+    <p class="line muted">solve a mathematics problem</p>
+    <p class="line muted">write code</p>
+    <p class="line muted">plan a trip</p>
+    <p class="line muted">study for an exam</p>
+    <p class="line muted">make a decision</p>
+    <p class="line muted">remember information</p>
+    <p class="line muted">solve a practical problem</p>
+    <p class="line">The problem is compulsive thinking — thinking that continues even when it isn't useful.</p>
+    <p class="line">The author describes the mind as a tool that should be used when necessary, rather than something that constantly controls attention.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+
+    <h3 class="sub-label">Simple example</h3>
+    <p class="line">You have an exam tomorrow.</p>
+    <p class="line">Useful thinking:</p>
+    <p class="line thought">"I have three chapters. I'll study chapter 1 from 7–8 PM and chapter 2 from 8–9 PM."</p>
+    <p class="line">That's purposeful.</p>
+    <p class="line">Compulsive thinking:</p>
+    <p class="line thought">"What if I fail? What will everyone think? Maybe I'm not intelligent. What if the questions are difficult? Why didn't I start earlier? My future is ruined..."</p>
+    <p class="line">Notice that none of those thoughts actually studies the chapter.</p>
+    <p class="line">The first type solves a problem.</p>
+    <p class="line">The second type can become a mental loop.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s3">
+    <h2><span class="num">3</span>What is "watching the thinker"?</h2>
+    <p class="line">Suppose you're sitting quietly and suddenly you think:</p>
+    <p class="line thought">"I need to check my phone."</p>
+    <p class="line">Don't immediately follow the thought.</p>
+    <p class="line">Instead, notice:</p>
+    <p class="line thought">"There is a thought telling me to check my phone."</p>
+    <p class="line">Then return your attention to what you're doing.</p>
+    <p class="line">You're not fighting the thought.</p>
+    <p class="line">You're not saying:</p>
+    <p class="line thought">"I shouldn't think this!"</p>
+    <p class="line">You're simply observing it without judging it.</p>
+    <p class="line">The book specifically recommends listening to the mental voice without condemning it.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+
+    <h3 class="sub-label">Another example</h3>
+    <p class="line">Someone insults you.</p>
+    <p class="line">Your mind immediately says:</p>
+    <p class="line thought">"How dare they! I should respond!"</p>
+    <p class="line">Instead of immediately reacting:</p>
+    <p class="line">Step 1: Notice the thought.</p>
+    <p class="line">Step 2: Notice the emotion.</p>
+    <p class="line">Step 3: Notice your body — perhaps your heart is beating faster or your muscles are tense.</p>
+    <p class="line">Step 4: Give yourself a moment before responding.</p>
+    <p class="line">You haven't become passive. You're creating space between what happens and how you respond.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s4">
+    <h2><span class="num">4</span>What is "Now"?</h2>
+    <p class="line">The book places enormous importance on the present moment.</p>
+    <p class="line">Think about your normal day.</p>
+    <p class="line">You're eating breakfast, but your mind is thinking about yesterday.</p>
+    <p class="line">You're studying, but your mind is thinking about tomorrow.</p>
+    <p class="line">You're talking to someone, but you're thinking about your phone.</p>
+    <p class="line">Your body is in the present, but your attention is somewhere else.</p>
+    <p class="line">The practice is to bring attention back to what is actually happening right now.</p>
+    <p class="line">The book gives very ordinary examples: paying attention while walking up stairs, washing your hands, or sitting in a car and noticing your breathing.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+
+    <h3 class="sub-label">Example: washing your hands</h3>
+    <p class="line">Normally:</p>
+    <p class="line muted">Turn tap → wash → dry → leave.</p>
+    <p class="line">With presence:</p>
+    <p class="line muted">Feel the water.</p>
+    <p class="line muted">Notice its temperature.</p>
+    <p class="line muted">Hear the sound.</p>
+    <p class="line muted">Feel your hands moving.</p>
+    <p class="line muted">Notice the smell of soap.</p>
+    <p class="line">Nothing extraordinary happened.</p>
+    <p class="line">But your attention changed.</p>
+    <p class="line">That's the practice.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s5">
+    <h2><span class="num">5</span>Why does the past cause problems?</h2>
+    <p class="line">The book explains that the mind often looks at the present through the lens of past experiences.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">For example:</p>
+    <p class="line">Someone was embarrassed while speaking in public.</p>
+    <p class="line">Later, they have to give another presentation.</p>
+    <p class="line">The present situation is:</p>
+    <p class="line thought">"I have another presentation."</p>
+    <p class="line">But the mind adds the past:</p>
+    <p class="line thought">"Last time I embarrassed myself."</p>
+    <p class="line">Then it predicts:</p>
+    <p class="line thought">"It will happen again."</p>
+    <p class="line">Now the person isn't experiencing only the current presentation.</p>
+    <p class="line">They're experiencing:</p>
+    <p class="line quote">present event + memory + prediction + fear.</p>
+    <p class="line">The book's practice is to notice that process rather than automatically believing every thought.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s6">
+    <h2><span class="num">6</span>Why does the future create anxiety?</h2>
+    <p class="line">The mind often says:</p>
+    <p class="line thought">"I'll be happy when..."</p>
+    <p class="line muted">when I get a job</p>
+    <p class="line muted">when I become successful</p>
+    <p class="line muted">when I get money</p>
+    <p class="line muted">when I finish college</p>
+    <p class="line muted">when people respect me</p>
+    <p class="line muted">when I achieve my goal</p>
+    <p class="line">Goals themselves aren't bad.</p>
+    <p class="line">The problem is believing:</p>
+    <p class="line thought">"My life can only be okay after that future event happens."</p>
+    <p class="line">The book describes this as the ego continually projecting fulfillment into the future.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+
+    <h3 class="sub-label">Better approach</h3>
+    <p class="line">Have a goal:</p>
+    <p class="line thought">"I want to become a software engineer."</p>
+    <p class="line">But live today's step:</p>
+    <p class="line thought">"Right now, I'm going to learn one programming concept."</p>
+    <p class="line">The goal remains.</p>
+    <p class="line">But your attention returns to the action happening now.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s7">
+    <h2><span class="num">7</span>What about emotions?</h2>
+    <p class="line">The book says emotions are closely connected with mental patterns and bodily reactions.</p>
+    <p class="line">For example, a threatening thought can produce fear in the body, while hostile thoughts can produce anger and physical tension.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">So instead of immediately saying:</p>
+    <p class="line thought">"I AM angry."</p>
+    <p class="line">Try observing:</p>
+    <p class="line thought">"Anger is happening in me right now."</p>
+    <p class="line">Then notice:</p>
+    <p class="line muted">Where do I feel it?</p>
+    <p class="line muted">Tight chest?</p>
+    <p class="line muted">Hot face?</p>
+    <p class="line muted">Tense muscles?</p>
+    <p class="line muted">Fast heartbeat?</p>
+    <p class="line muted">What thoughts are accompanying it?</p>
+    <p class="line">The book recommends observing the emotion rather than immediately becoming controlled by it.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s8">
+    <h2><span class="num">8</span>The thought → emotion → thought cycle</h2>
+    <p class="line">This is one of the most useful ideas in the section.</p>
+    <p class="line">Imagine:</p>
+    <p class="line">Thought:</p>
+    <p class="line thought">"They don't respect me."</p>
+    <p class="arrow">↓</p>
+    <p class="line">Emotion:</p>
+    <p class="line thought">Anger.</p>
+    <p class="arrow">↓</p>
+    <p class="line">More thinking:</p>
+    <p class="line thought">"They always treat me like this."</p>
+    <p class="arrow">↓</p>
+    <p class="line">More anger</p>
+    <p class="arrow">↓</p>
+    <p class="line">More thoughts:</p>
+    <p class="line thought">"I'll show them."</p>
+    <p class="arrow">↓</p>
+    <p class="line">Even more emotion</p>
+    <p class="line">The book describes this as thoughts and emotions feeding each other.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">The practice is to interrupt the automatic cycle by becoming aware of it.</p>
+    <p class="line">Not:</p>
+    <p class="line thought">"I must stop being angry!"</p>
+    <p class="line">But:</p>
+    <p class="line thought">"I notice anger is here."</p>
+    <p class="line">That observation creates some distance.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s9">
+    <h2><span class="num">9</span>Pleasure vs deeper joy</h2>
+    <p class="line">The book makes a distinction between pleasure and what it calls joy/peace arising from within.</p>
+    <p class="line">For example:</p>
+    <p class="line">You buy a new phone.</p>
+    <p class="line">At first:</p>
+    <p class="line thought">"Amazing!"</p>
+    <p class="line">After several weeks:</p>
+    <p class="line thought">"It's just my phone."</p>
+    <p class="line">The pleasure depended on something external.</p>
+    <p class="line">Similarly, getting praise can feel good:</p>
+    <p class="line thought">"Everyone likes me!"</p>
+    <p class="line">But criticism can produce the opposite:</p>
+    <p class="line thought">"Everyone hates me!"</p>
+    <p class="line">The book argues that this creates an external pleasure/pain cycle.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line">It contrasts that with a deeper sense of peace that isn't dependent on constantly getting something from outside.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="s10">
+    <h2><span class="num">10</span>What should an ordinary person actually do?</h2>
+    <p class="line">You don't need to sit in a cave or stop using your brain.</p>
+    <p class="line">Try this simple practice:</p>
+
+    <h3 class="sub-label">30-second "Now" exercise</h3>
+    <p class="line">1. Stop. Don't change anything.</p>
+    <p class="line">2. Notice your breathing. Don't control it.</p>
+    <p class="line">3. Notice your body. Feel your hands, feet, face, shoulders.</p>
+    <p class="line">4. Notice your thoughts. Don't fight them. Just notice:</p>
+    <p class="line thought">"Thinking is happening."</p>
+    <p class="line">5. Notice your surroundings. Hear sounds. See objects. Feel the environment.</p>
+    <p class="line">6. Return to the present activity.</p>
+    <p class="line">That's it.</p>
+    <p class="line">The book says that ordinary activities can become opportunities for presence when attention is fully placed on them.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="wholechapter">
+    <h2>The whole chapter in one simple example</h2>
+    <p class="line">Imagine a student receives a bad exam result.</p>
+
+    <h3 class="sub-label">Automatic reaction</h3>
+    <p class="line thought">"I'm stupid."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"I'll never succeed."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"Everyone is ahead of me."</p>
+    <p class="arrow">↓</p>
+    <p class="line thought">"My future is finished."</p>
+    <p class="arrow">↓</p>
+    <p class="line">Sadness → more thinking → more sadness.</p>
+
+    <h3 class="sub-label">Practicing the book's approach</h3>
+    <p class="line thought">"I received a bad result."</p>
+    <p class="line thought">"I'm noticing thoughts saying I'm a failure."</p>
+    <p class="line thought">"I'm feeling disappointment in my body."</p>
+    <p class="line thought">"What can I actually do now?"</p>
+    <p class="line">Then:</p>
+    <p class="line thought">"I need to understand where I lost marks."</p>
+    <p class="line">Now the mind becomes a tool rather than the entire identity.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="closing">
+    <h2>The main message</h2>
+    <p class="line">You don't need to destroy your mind.</p>
+    <p class="line">You don't need to stop thinking forever.</p>
+    <p class="line">You don't need to avoid emotions.</p>
+    <p class="line">The central practice is:</p>
+    <p class="line">Notice your thoughts.</p>
+    <p class="line">Notice your emotions.</p>
+    <p class="line">Don't automatically become them.</p>
+    <p class="line">Bring attention back to the present.</p>
+    <p class="line">Use thinking when thinking is useful.</p>
+    <p class="line">When thinking isn't needed, allow some inner stillness.</p>
+    <p class="line">The book describes this as moving from identification with the mind toward being the observer of thoughts and emotions.</p>
+    <span class="cite">— The Power Of Now, Eckhart Tolle</span>
+    <p class="line final">And that's why the title is <em>The Power of Now</em>:</p>
+    <p class="line final">the book is repeatedly pointing attention away from being trapped in past/future mental stories and toward experiencing the present moment directly.</p>
+  </section>
+
+</main>
+
+<script>
+  // ---- generate falling / floating motes ----
+  const motesEl = document.getElementById('motes');
+  const MOTE_COUNT = 46;
+  for(let i=0;i<MOTE_COUNT;i++){
+    const m = document.createElement('div');
+    m.className = 'mote';
+    const size = (Math.random()*4 + 1.5).toFixed(1);
+    const left = (Math.random()*100).toFixed(2);
+    const fallDur = (Math.random()*14 + 14).toFixed(1);
+    const driftDur = (Math.random()*5 + 3).toFixed(1);
+    const delay = (Math.random()*20).toFixed(1);
+    m.style.width = size + 'px';
+    m.style.height = size + 'px';
+    m.style.left = left + 'vw';
+    m.style.animationDuration = fallDur + 's, ' + driftDur + 's';
+    m.style.animationDelay = '-' + delay + 's, -' + (Math.random()*driftDur).toFixed(1) + 's';
+    motesEl.appendChild(m);
+  }
+
+  // ---- scroll reveal for each line ----
+  const revealables = document.querySelectorAll('.line, .arrow, .divider');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+
+  revealables.forEach((el, idx)=>{
+    el.style.transitionDelay = (idx % 6) * 0.04 + 's';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

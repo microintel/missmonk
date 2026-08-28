@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consciousness: The Way Out of Pain</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@200;300;400;500&display=swap');
+
+  :root{
+    --ink:#090b10;
+    --panel:#0f131a;
+    --panel-2:#141a22;
+    --ember:#c9a572;
+    --ember-soft:#8a7250;
+    --witness:#6f93a1;
+    --text-high:#f2ede2;
+    --text-mid:#aab0b8;
+    --text-low:#6b7178;
+    --line:rgba(201,165,114,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text-mid);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- floating / rising ember field ---------- */
+  #ember-field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(111,147,161,0.10), transparent 60%),
+      radial-gradient(ellipse at 20% 100%, rgba(201,165,114,0.07), transparent 55%),
+      var(--ink);
+  }
+  .mote{
+    position:absolute;
+    bottom:-10%;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,165,114,0.9), rgba(201,165,114,0) 70%);
+    filter:blur(0.5px);
+    opacity:0;
+    animation-name:rise;
+    animation-timing-function:ease-in-out;
+    animation-iteration-count:infinite;
+  }
+  .mote.witness{
+    background:radial-gradient(circle, rgba(111,147,161,0.85), rgba(111,147,161,0) 70%);
+  }
+  @keyframes rise{
+    0%{ transform:translate(0,0) scale(0.6); opacity:0; }
+    8%{ opacity:0.85; }
+    50%{ transform:translate(var(--drift,20px), -55vh) scale(1); }
+    92%{ opacity:0.5; }
+    100%{ transform:translate(calc(var(--drift,20px) * 2), -110vh) scale(0.4); opacity:0; }
+  }
+
+  /* falling thought-fragments — heavier, slower, sinking, faint */
+  .thought{
+    position:absolute;
+    top:-5%;
+    color:rgba(168,176,184,0.16);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:14px;
+    white-space:nowrap;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:1; }
+    90%{ opacity:0.4; }
+    100%{ transform:translateY(115vh) translateX(var(--driftx,-30px)); opacity:0; }
+  }
+
+  main{position:relative; z-index:1;}
+
+  /* ---------- hero / signature witness-eye ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 24px;
+    position:relative;
+  }
+  .witness-eye{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin-bottom:44px;
+    background:radial-gradient(circle, rgba(201,165,114,0.55), rgba(201,165,114,0.05) 55%, transparent 75%);
+    animation:breathe 6s ease-in-out infinite;
+    position:relative;
+  }
+  .witness-eye::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid rgba(201,165,114,0.35);
+    animation:breathe-ring 6s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:scale(0.86); opacity:0.65; }
+    50%{ transform:scale(1.05); opacity:1; }
+  }
+  @keyframes breathe-ring{
+    0%,100%{ transform:scale(1); opacity:0.3; }
+    50%{ transform:scale(1.35); opacity:0; }
+  }
+
+  .eyebrow{
+    font-family:'Jost', sans-serif;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--ember);
+    margin-bottom:18px;
+  }
+  h1.title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(38px, 7vw, 78px);
+    color:var(--text-high);
+    margin:0 0 20px 0;
+    line-height:1.05;
+  }
+  .subtitle{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(16px,2.4vw,22px);
+    color:var(--text-mid);
+    max-width:560px;
+    line-height:1.6;
+  }
+  .scroll-cue{
+    margin-top:64px;
+    font-size:11px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--text-low);
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); opacity:0.5; }
+    50%{ transform:translateY(8px); opacity:1; }
+  }
+
+  /* ---------- section chrome ---------- */
+  section.block{
+    max-width:680px;
+    margin:0 auto;
+    padding:110px 28px;
+    position:relative;
+  }
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+    margin-bottom:54px;
+  }
+  .divider.visible{ opacity:1; transform:translateY(0); }
+  .divider .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 12px rgba(201,165,114,0.7);
+  }
+  .divider .rule{
+    height:1px; width:64px;
+    background:linear-gradient(90deg, transparent, var(--line), transparent);
+  }
+
+  .section-num{
+    font-family:'Cormorant Garamond', serif;
+    font-size:15px;
+    letter-spacing:0.3em;
+    color:var(--ember-soft);
+    margin-bottom:10px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .section-title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(26px,4vw,38px);
+    color:var(--text-high);
+    margin:0 0 34px 0;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 0.9s ease 0.05s, transform 0.9s ease 0.05s;
+  }
+  .visible .section-num,
+  .visible .section-title{ opacity:1; transform:translateY(0); }
+
+  .line{
+    font-size:16px;
+    line-height:1.9;
+    color:var(--text-mid);
+    margin:0 0 14px 0;
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .visible .line{ opacity:1; transform:translateY(0); }
+
+  .line.lead{
+    color:var(--text-high);
+    font-family:'Cormorant Garamond', serif;
+    font-size:20px;
+    font-style:italic;
+  }
+  .line.tag{
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:11px;
+    color:var(--ember);
+    margin-top:26px;
+    margin-bottom:10px;
+  }
+  .line.quote{
+    padding-left:18px;
+    border-left:2px solid var(--line);
+    color:var(--text-high);
+    font-style:italic;
+    font-family:'Cormorant Garamond', serif;
+    font-size:18px;
+  }
+  .line.spacer{ height:6px; margin:0; }
+  .line.step{
+    color:var(--witness);
+  }
+  .line.arrow{
+    text-align:center;
+    color:var(--ember-soft);
+    font-size:18px;
+    margin:2px 0;
+  }
+
+  /* stagger children */
+  .visible .line:nth-child(1){ transition-delay:0.05s; }
+  .visible .line:nth-child(2){ transition-delay:0.10s; }
+  .visible .line:nth-child(3){ transition-delay:0.15s; }
+  .visible .line:nth-child(4){ transition-delay:0.20s; }
+  .visible .line:nth-child(5){ transition-delay:0.25s; }
+  .visible .line:nth-child(6){ transition-delay:0.30s; }
+  .visible .line:nth-child(7){ transition-delay:0.35s; }
+  .visible .line:nth-child(8){ transition-delay:0.40s; }
+  .visible .line:nth-child(9){ transition-delay:0.45s; }
+  .visible .line:nth-child(10){ transition-delay:0.50s; }
+  .visible .line:nth-child(11){ transition-delay:0.55s; }
+  .visible .line:nth-child(12){ transition-delay:0.60s; }
+  .visible .line:nth-child(13){ transition-delay:0.65s; }
+  .visible .line:nth-child(14){ transition-delay:0.70s; }
+  .visible .line:nth-child(15){ transition-delay:0.75s; }
+  .visible .line:nth-child(16){ transition-delay:0.80s; }
+  .visible .line:nth-child(17){ transition-delay:0.85s; }
+  .visible .line:nth-child(18){ transition-delay:0.90s; }
+  .visible .line:nth-child(19){ transition-delay:0.95s; }
+  .visible .line:nth-child(20){ transition-delay:1.0s; }
+  .visible .line:nth-child(21){ transition-delay:1.05s; }
+  .visible .line:nth-child(22){ transition-delay:1.10s; }
+  .visible .line:nth-child(23){ transition-delay:1.15s; }
+  .visible .line:nth-child(24){ transition-delay:1.20s; }
+  .visible .line:nth-child(25){ transition-delay:1.25s; }
+  .visible .line:nth-child(26){ transition-delay:1.30s; }
+  .visible .line:nth-child(27){ transition-delay:1.35s; }
+  .visible .line:nth-child(28){ transition-delay:1.40s; }
+  .visible .line:nth-child(29){ transition-delay:1.45s; }
+  .visible .line:nth-child(30){ transition-delay:1.50s; }
+
+  .source-tag{
+    display:inline-block;
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--text-low);
+    margin-top:6px;
+    margin-bottom:20px;
+    opacity:0.75;
+  }
+
+  footer{
+    text-align:center;
+    padding:100px 24px 140px;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--text-mid);
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  footer.visible{ opacity:1; transform:translateY(0); }
+  footer .final{
+    color:var(--ember);
+    font-size:26px;
+    margin-top:18px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .mote, .thought, .witness-eye, .witness-eye::before, .scroll-cue{ animation:none !important; }
+    .line, .section-num, .section-title, .divider, footer{ transition:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  ::selection{ background:rgba(201,165,114,0.3); color:var(--text-high); }
+</style>
+</head>
+<body>
+
+<div id="ember-field"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="witness-eye"></div>
+    <div class="eyebrow">The Power of Now &nbsp;·&nbsp; Chapter 2</div>
+    <h1 class="title">Consciousness:<br>The Way Out of Pain</h1>
+    <p class="subtitle">Something happens. The mind reacts. We believe the reaction is &ldquo;me.&rdquo;<br>The reaction can create more suffering.</p>
+    <div class="scroll-cue">scroll ↓</div>
+  </div>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">The Main Idea</div>
+    <p class="section-title">Notice the process, instead of being run by it.</p>
+    <p class="line lead">A lot of psychological suffering becomes stronger when we resist the present moment and become completely identified with our thoughts and emotions.</p>
+    <p class="line tag">In very simple terms</p>
+    <p class="line step">Something happens →</p>
+    <p class="line step">the mind reacts →</p>
+    <p class="line step">we believe the reaction is &ldquo;me&rdquo; →</p>
+    <p class="line step">the reaction can create more suffering.</p>
+    <p class="line">The chapter teaches us to notice this process instead of automatically becoming controlled by it.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">01</div>
+    <p class="section-title">Pain and suffering are not exactly the same</p>
+    <p class="line">The book makes an important distinction.</p>
+    <p class="line tag">Pain</p>
+    <p class="line">Pain can be part of life.</p>
+    <p class="line">For example:</p>
+    <p class="line">Someone you love dies.</p>
+    <p class="line">You fail an exam.</p>
+    <p class="line">A relationship ends.</p>
+    <p class="line">Someone says something hurtful.</p>
+    <p class="line">You lose a job.</p>
+    <p class="line">These events can naturally hurt.</p>
+    <p class="line tag">Additional suffering</p>
+    <p class="line">Then the mind may keep adding thoughts:</p>
+    <p class="line quote">&ldquo;Why did this happen to me?&rdquo;</p>
+    <p class="line quote">&ldquo;My life is ruined.&rdquo;</p>
+    <p class="line quote">&ldquo;This should never have happened.&rdquo;</p>
+    <p class="line quote">&ldquo;What if everything goes wrong?&rdquo;</p>
+    <p class="line quote">&ldquo;I can't handle this.&rdquo;</p>
+    <p class="line">The original event is one thing.</p>
+    <p class="line">The continuous mental reaction can become another layer of suffering.</p>
+    <p class="line">Tolle argues that much human suffering is created or intensified by this resistance to what is happening now.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line tag">Everyday example</p>
+    <p class="line">Imagine someone gets a low mark in an exam.</p>
+    <p class="line">Event:</p>
+    <p class="line quote">&ldquo;I got 45%.&rdquo;</p>
+    <p class="line">That's a fact.</p>
+    <p class="line">Then the mind says:</p>
+    <p class="line quote">&ldquo;I'm stupid.&rdquo;</p>
+    <p class="line quote">&ldquo;Everyone is better than me.&rdquo;</p>
+    <p class="line quote">&ldquo;I'll never succeed.&rdquo;</p>
+    <p class="line quote">&ldquo;My future is finished.&rdquo;</p>
+    <p class="line">Now the person isn't dealing only with the exam result. They're also dealing with a whole story created by the mind.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">02</div>
+    <p class="section-title">What does &ldquo;accept the Now&rdquo; mean?</p>
+    <p class="line">This is one of the most important ideas in the chapter.</p>
+    <p class="line tag">Acceptance does NOT mean</p>
+    <p class="line quote">&ldquo;Everything is good.&rdquo;</p>
+    <p class="line tag">It means</p>
+    <p class="line quote">&ldquo;This is what is happening right now. I will first recognize reality instead of mentally fighting the fact that it is happening.&rdquo;</p>
+    <p class="line">The book says:</p>
+    <p class="line lead">Accept → then act.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line tag">Example</p>
+    <p class="line">Suppose your train is delayed by two hours.</p>
+    <p class="line">You have two possibilities.</p>
+    <p class="line tag">Reaction A</p>
+    <p class="line quote">&ldquo;This is terrible! Why does this always happen? I hate this!&rdquo;</p>
+    <p class="line">The train is still delayed.</p>
+    <p class="line">But now there is additional frustration.</p>
+    <p class="line tag">Reaction B</p>
+    <p class="line quote">&ldquo;The train is delayed. That's the current situation. What can I do now?&rdquo;</p>
+    <p class="line">Then you can:</p>
+    <p class="line">check another train,</p>
+    <p class="line">call someone,</p>
+    <p class="line">read,</p>
+    <p class="line">work,</p>
+    <p class="line">wait,</p>
+    <p class="line">change your plan.</p>
+    <p class="line">Acceptance doesn't prevent action.</p>
+    <p class="line">It allows action to happen without first wasting energy fighting reality.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">03</div>
+    <p class="section-title">The past and future can take us away from the present</p>
+    <p class="line">The book says the mind frequently moves between:</p>
+    <p class="line lead">Past → Present → Future</p>
+    <p class="line">But we actually experience life only in the present moment.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line tag">Example: Past</p>
+    <p class="line">Someone made an embarrassing mistake five years ago.</p>
+    <p class="line">Today they remember it:</p>
+    <p class="line quote">&ldquo;Why did I do that?&rdquo;</p>
+    <p class="line quote">&ldquo;Everyone must think I'm stupid.&rdquo;</p>
+    <p class="line">The event is over.</p>
+    <p class="line">But the mind is bringing the emotional experience into the present.</p>
+    <p class="line tag">Example: Future</p>
+    <p class="line">Someone has an interview tomorrow.</p>
+    <p class="line">Their mind starts:</p>
+    <p class="line quote">&ldquo;What if I fail?&rdquo;</p>
+    <p class="line quote">&ldquo;What if they reject me?&rdquo;</p>
+    <p class="line quote">&ldquo;What if I can't answer anything?&rdquo;</p>
+    <p class="line">The interview hasn't happened yet.</p>
+    <p class="line">The body is sitting in the present, but the mind is experiencing an imagined future.</p>
+    <p class="line">This is what Tolle calls an &ldquo;anxiety gap&rdquo; between the present and the future imagined by the mind.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">04</div>
+    <p class="section-title">But isn't thinking about the future useful?</p>
+    <p class="line lead">Yes.</p>
+    <p class="line">This is important.</p>
+    <p class="line">The book is not saying that planning is useless.</p>
+    <p class="line">You need the past and future for practical life.</p>
+    <p class="line">For example:</p>
+    <p class="line quote">&ldquo;I have an exam next month, so I'll study today.&rdquo;</p>
+    <p class="line">That's useful planning.</p>
+    <p class="line">The problem is when planning becomes:</p>
+    <p class="line quote">&ldquo;What if I fail?&rdquo;</p>
+    <p class="line quote">&ldquo;What if something goes wrong?&rdquo;</p>
+    <p class="line quote">&ldquo;What will everyone think?&rdquo;</p>
+    <p class="line quote">&ldquo;What if my entire future is ruined?&rdquo;</p>
+    <p class="line">Now the mind is creating suffering around something that hasn't happened.</p>
+    <p class="line">Tolle's point is to use past and future when necessary, rather than mentally living there all the time.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">05</div>
+    <p class="section-title">What is the &ldquo;pain-body&rdquo;?</p>
+    <p class="line">This is one of the major concepts of the chapter.</p>
+    <p class="line">Tolle uses &ldquo;pain-body&rdquo; to describe accumulated emotional pain that can remain psychologically active and get triggered by situations that resemble earlier painful experiences.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line">Think of it as a stored emotional pattern.</p>
+    <p class="line tag">Example</p>
+    <p class="line">Imagine someone was frequently criticized as a child.</p>
+    <p class="line">Years later, their manager says:</p>
+    <p class="line quote">&ldquo;This work needs improvement.&rdquo;</p>
+    <p class="line">The sentence itself might be normal.</p>
+    <p class="line">But the person suddenly feels:</p>
+    <p class="line">anger</p>
+    <p class="line">shame</p>
+    <p class="line">fear</p>
+    <p class="line">defensiveness</p>
+    <p class="line">Why such a strong reaction?</p>
+    <p class="line">According to Tolle's framework, the present situation may have triggered an older emotional pattern.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">06</div>
+    <p class="section-title">A small comment can trigger a huge reaction</p>
+    <p class="line">The book says that even an innocent remark can activate an old pain pattern.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line">For example:</p>
+    <p class="line tag">Friend</p>
+    <p class="line quote">&ldquo;Why are you so quiet today?&rdquo;</p>
+    <p class="line tag">Person</p>
+    <p class="line quote">&ldquo;Leave me alone!&rdquo;</p>
+    <p class="line">The friend may not have intended anything harmful.</p>
+    <p class="line">But something inside the person was already sensitive.</p>
+    <p class="line">The important question isn't only:</p>
+    <p class="line quote">&ldquo;Why did my friend say that?&rdquo;</p>
+    <p class="line">It can also be:</p>
+    <p class="line quote">&ldquo;Why did that comment produce such a strong reaction inside me?&rdquo;</p>
+    <p class="line">That question creates awareness.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">07</div>
+    <p class="section-title">Being angry vs observing anger</p>
+    <p class="line">This is probably the most practical lesson in the chapter.</p>
+    <p class="line">Suppose someone insults you.</p>
+    <p class="line">Your mind immediately produces:</p>
+    <p class="line quote">&ldquo;How dare they!&rdquo;</p>
+    <p class="line">Then more thoughts:</p>
+    <p class="line quote">&ldquo;I'll teach them a lesson.&rdquo;</p>
+    <p class="line quote">&ldquo;They always disrespect me.&rdquo;</p>
+    <p class="line quote">&ldquo;I should say something back.&rdquo;</p>
+    <p class="line">Now you are inside the anger.</p>
+    <p class="line">Tolle suggests something different:</p>
+    <p class="line lead">&ldquo;Anger is appearing in me right now.&rdquo;</p>
+    <p class="line">Notice:</p>
+    <p class="line quote">&ldquo;I am angry&rdquo;</p>
+    <p class="line">versus</p>
+    <p class="line quote">&ldquo;I notice anger happening.&rdquo;</p>
+    <p class="line">The second statement creates a little distance between you and the emotion.</p>
+    <p class="line">The book calls this becoming the &ldquo;watcher&rdquo; or &ldquo;witness.&rdquo;</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">08</div>
+    <p class="section-title">You don't have to fight the emotion</p>
+    <p class="line">This is subtle.</p>
+    <p class="line">Tolle doesn't recommend:</p>
+    <p class="line quote">&ldquo;I must destroy my anger.&rdquo;</p>
+    <p class="line">Instead:</p>
+    <p class="line lead">Observe it.</p>
+    <p class="line">Imagine anger is like a wave.</p>
+    <p class="line">You don't have to:</p>
+    <p class="line">suppress it,</p>
+    <p class="line">immediately act on it,</p>
+    <p class="line">create a story around it,</p>
+    <p class="line">identify yourself with it.</p>
+    <p class="line">You can notice:</p>
+    <p class="line quote">&ldquo;My body is tense.&rdquo;</p>
+    <p class="line quote">&ldquo;My heart is beating faster.&rdquo;</p>
+    <p class="line quote">&ldquo;Angry thoughts are appearing.&rdquo;</p>
+    <p class="line quote">&ldquo;I want to react.&rdquo;</p>
+    <p class="line">You're observing what is happening.</p>
+    <p class="line">The book says that trying to fight the pain-body can create more inner conflict; observation and presence are presented as the way to break identification with it.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">09</div>
+    <p class="section-title">&ldquo;Don't think about it&rdquo; doesn't mean suppress it</p>
+    <p class="line">This part can easily be misunderstood.</p>
+    <p class="line">When Tolle says not to let the feeling turn into thinking, he is describing the difference between feeling an emotion and building a long mental story around it.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line">Example:</p>
+    <p class="line tag">Feeling</p>
+    <p class="line quote">&ldquo;I'm angry.&rdquo;</p>
+    <p class="line">Notice the physical experience.</p>
+    <p class="line tag">Story</p>
+    <p class="line quote">&ldquo;He always does this.&rdquo;</p>
+    <p class="line quote">&ldquo;Nobody respects me.&rdquo;</p>
+    <p class="line quote">&ldquo;People are horrible.&rdquo;</p>
+    <p class="line quote">&ldquo;I'm going to get revenge.&rdquo;</p>
+    <p class="line quote">&ldquo;This always happens to me.&rdquo;</p>
+    <p class="line">The second process can keep the emotional reaction alive.</p>
+    <p class="line">So the practice is:</p>
+    <p class="line lead">Feel → observe → don't feed the story → remain present.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">10</div>
+    <p class="section-title">What does &ldquo;unconscious&rdquo; mean in this book?</p>
+    <p class="line">Tolle uses the word unconscious in a particular way.</p>
+    <p class="line">He doesn't simply mean:</p>
+    <p class="line quote">&ldquo;You are asleep.&rdquo;</p>
+    <p class="line">He means becoming completely identified with a mental or emotional pattern, without noticing that it is happening.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line tag">Example</p>
+    <p class="line">Someone becomes angry.</p>
+    <p class="line">They don't notice:</p>
+    <p class="line quote">&ldquo;Anger is happening.&rdquo;</p>
+    <p class="line">Instead:</p>
+    <p class="line quote">&ldquo;I AM angry. THEY are the problem. I MUST attack them.&rdquo;</p>
+    <p class="line">The emotion has taken control.</p>
+    <p class="line">Being conscious means noticing:</p>
+    <p class="line quote">&ldquo;Anger is happening inside me.&rdquo;</p>
+    <p class="line">That small observation changes the relationship with the emotion.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">11</div>
+    <p class="section-title">Fear: real danger vs psychological fear</p>
+    <p class="line">The chapter makes another useful distinction.</p>
+    <p class="line tag">Real danger</p>
+    <p class="line">You're walking near a fire.</p>
+    <p class="line">You understand:</p>
+    <p class="line quote">&ldquo;If I touch that, I'll get burned.&rdquo;</p>
+    <p class="line">You move away.</p>
+    <p class="line">That's practical intelligence.</p>
+    <p class="line tag">Psychological fear</p>
+    <p class="line">Now imagine you're sitting safely at home thinking:</p>
+    <p class="line quote">&ldquo;What if something terrible happens tomorrow?&rdquo;</p>
+    <p class="line">Nothing dangerous is happening right now.</p>
+    <p class="line">But your body can still react with:</p>
+    <p class="line">tension,</p>
+    <p class="line">anxiety,</p>
+    <p class="line">nervousness,</p>
+    <p class="line">worry.</p>
+    <p class="line">Tolle describes this kind of fear as being primarily about something that might happen, rather than something happening now.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">12</div>
+    <p class="section-title">Why does arguing become so intense?</p>
+    <p class="line">This is another interesting idea.</p>
+    <p class="line">Imagine two people arguing.</p>
+    <p class="line tag">Person A</p>
+    <p class="line quote">&ldquo;I'm right!&rdquo;</p>
+    <p class="line tag">Person B</p>
+    <p class="line quote">&ldquo;No, I'm right!&rdquo;</p>
+    <p class="line">Now suppose Person A discovers they were wrong.</p>
+    <p class="line">Why can admitting it feel so uncomfortable?</p>
+    <p class="line">Because sometimes a person isn't defending merely an idea.</p>
+    <p class="line">They're defending their identity.</p>
+    <p class="line">Their mind says:</p>
+    <p class="line quote">&ldquo;If I'm wrong, I'm less valuable.&rdquo;</p>
+    <p class="line">So a simple disagreement becomes a threat to the person's sense of self.</p>
+    <p class="line">Tolle argues that when someone is less identified with their mental positions, they can disagree without needing to aggressively prove themselves right.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">13</div>
+    <p class="section-title">Example: two people disagreeing</p>
+    <p class="line tag">Person A</p>
+    <p class="line quote">&ldquo;I think this movie is excellent.&rdquo;</p>
+    <p class="line tag">Person B</p>
+    <p class="line quote">&ldquo;I don't like it.&rdquo;</p>
+    <p class="line">A mind-identified reaction might be:</p>
+    <p class="line quote">&ldquo;What? How can you be so stupid?&rdquo;</p>
+    <p class="line">A more conscious response:</p>
+    <p class="line quote">&ldquo;Interesting. We have different opinions.&rdquo;</p>
+    <p class="line">You can still explain your opinion strongly.</p>
+    <p class="line">But you don't need to turn:</p>
+    <p class="line quote">&ldquo;I disagree with you&rdquo;</p>
+    <p class="line">into:</p>
+    <p class="line quote">&ldquo;You are a bad person.&rdquo;</p>
+    <p class="line">That's the distinction Tolle is making.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">14</div>
+    <p class="section-title">The ego's search for &ldquo;more&rdquo;</p>
+    <p class="line">Near the end of the chapter, Tolle discusses what he calls the ego's search for wholeness.</p>
+    <p class="line">The basic idea is:</p>
+    <p class="line quote">&ldquo;Something is missing in me, so I need something outside myself to make me complete.&rdquo;</p>
+    <p class="line">Then the mind may chase:</p>
+    <p class="line">money,</p>
+    <p class="line">success,</p>
+    <p class="line">possessions,</p>
+    <p class="line">popularity,</p>
+    <p class="line">recognition,</p>
+    <p class="line">relationships,</p>
+    <p class="line">status,</p>
+    <p class="line">knowledge,</p>
+    <p class="line">appearance.</p>
+    <p class="line">The book argues that these things can provide temporary satisfaction, but they don't permanently solve the deeper feeling of incompleteness.</p>
+    <p class="source-tag">— The Power Of Now, Eckhart Tolle</p>
+    <p class="line tag">Example</p>
+    <p class="line">Someone thinks:</p>
+    <p class="line quote">&ldquo;If I get a better phone, I'll be happy.&rdquo;</p>
+    <p class="line">They buy it.</p>
+    <p class="line">For a while:</p>
+    <p class="line quote">&ldquo;This is amazing!&rdquo;</p>
+    <p class="line">After some time:</p>
+    <p class="line quote">&ldquo;Maybe I need an even better phone.&rdquo;</p>
+    <p class="line">Then the cycle starts again.</p>
+    <p class="line">The same pattern can happen with:</p>
+    <p class="line lead">money → success → followers → relationships → status → possessions.</p>
+    <p class="line">The object changes, but the psychological search can remain.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">15</div>
+    <p class="section-title">The entire chapter in one simple story</p>
+    <p class="line">Imagine a person named Ravi.</p>
+    <p class="line">Ravi's manager criticizes his work.</p>
+    <p class="line tag">Step 1 — Event</p>
+    <p class="line tag">Manager</p>
+    <p class="line quote">&ldquo;This report needs improvement.&rdquo;</p>
+    <p class="line tag">Step 2 — Mind reacts</p>
+    <p class="line">Ravi thinks:</p>
+    <p class="line quote">&ldquo;He doesn't respect me.&rdquo;</p>
+    <p class="line tag">Step 3 — Old pain gets triggered</p>
+    <p class="line">He remembers previous experiences of being criticized.</p>
+    <p class="line tag">Step 4 — Emotion grows</p>
+    <p class="line">He becomes angry.</p>
+    <p class="line tag">Step 5 — More thinking</p>
+    <p class="line quote">&ldquo;Everyone treats me badly.&rdquo;</p>
+    <p class="line tag">Step 6 — Reaction</p>
+    <p class="line">He sends an angry message.</p>
+    <p class="line tag">Step 7 — More problems</p>
+    <p class="line">The manager becomes angry.</p>
+    <p class="line">Now Ravi thinks:</p>
+    <p class="line quote">&ldquo;See! Everyone is against me.&rdquo;</p>
+    <p class="line">The cycle continues.</p>
+    <p class="line spacer"></p>
+    <p class="line">Now imagine Ravi becoming aware.</p>
+    <p class="line tag">Manager</p>
+    <p class="line quote">&ldquo;This report needs improvement.&rdquo;</p>
+    <p class="line">Ravi notices:</p>
+    <p class="line quote">&ldquo;I'm feeling anger.&rdquo;</p>
+    <p class="line">He doesn't immediately act.</p>
+    <p class="line">He notices:</p>
+    <p class="line quote">&ldquo;My body is tense.&rdquo;</p>
+    <p class="line quote">&ldquo;I'm having defensive thoughts.&rdquo;</p>
+    <p class="line">He allows the feeling to be there.</p>
+    <p class="line">Then he asks:</p>
+    <p class="line quote">&ldquo;What actually needs to be fixed in the report?&rdquo;</p>
+    <p class="line">Now he can respond to the actual situation, rather than reacting entirely from the emotional pattern.</p>
+    <p class="line">That is very close to the practical application of the chapter.</p>
+  </section>
+
+  <section class="block" data-reveal>
+    <div class="divider"><span class="rule"></span><span class="dot"></span><span class="rule"></span></div>
+    <div class="section-num">16</div>
+    <p class="section-title">The practice Tolle is teaching</p>
+    <p class="line">You can reduce the whole chapter to this simple sequence:</p>
+    <p class="line step">1. Something happens</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">2. Notice your reaction</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">3. Don't immediately become the reaction</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">4. Observe the feeling</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">5. Notice the thoughts without automatically believing them</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">6. Accept that this is what is happening right now</p>
+    <p class="line arrow">↓</p>
+    <p class="line step">7. Then decide what action is appropriate</p>
+    <p class="line">This is what the book means by presence and becoming the watcher.</p>
+    <p class="line tag">A very simple daily example</p>
+    <p class="line">Someone sends you a message:</p>
+    <p class="line quote">&ldquo;We need to talk.&rdquo;</p>
+    <p class="line">Immediately your mind says:</p>
+    <p class="line quote">&ldquo;Oh no. What happened?&rdquo;</p>
+    <p class="line">Then:</p>
+    <p class="line quote">&ldquo;Maybe they're angry.&rdquo;</p>
+    <p class="line">Then:</p>
+    <p class="line quote">&ldquo;Maybe I did something wrong.&rdquo;</p>
+    <p class="line">Then:</p>
+    <p class="line quote">&ldquo;What if something terrible happened?&rdquo;</p>
+    <p class="line">Notice what happened.</p>
+    <p class="line">The message was only five words.</p>
+    <p class="line">The mind created an entire future.</p>
+    <p class="line">A present-focused response would be:</p>
+    <p class="line quote">&ldquo;I don't know what they mean yet.&rdquo;</p>
+    <p class="line">Then continue with what is actually happening now.</p>
+    <p class="line">When the person calls, you'll have the real information.</p>
+  </section>
+
+  <footer data-reveal>
+    <div class="section-num" style="text-align:center;">The Deepest Lesson</div>
+    <p>Tolle is essentially asking the reader to learn this difference:</p>
+    <p>❌ &ldquo;I am my thoughts and emotions.&rdquo;</p>
+    <p>versus</p>
+    <p>✅ &ldquo;I can observe my thoughts and emotions.&rdquo;</p>
+    <p style="margin-top:22px;">If you can observe anger, you are not completely lost inside the anger.</p>
+    <p>If you can observe fear, you are not completely lost inside the fear.</p>
+    <p>If you can observe worrying thoughts, you are not completely lost inside those thoughts.</p>
+    <p style="margin-top:22px;">That observing awareness is what Tolle calls presence/consciousness.</p>
+    <p class="final">Notice → allow → stay present → then act.</p>
+  </footer>
+
+</main>
+
+<script>
+  // build ember field
+  const field = document.getElementById('ember-field');
+  const MOTES = 34;
+  for(let i=0;i<MOTES;i++){
+    const m = document.createElement('div');
+    const isWitness = Math.random() < 0.3;
+    m.className = 'mote' + (isWitness ? ' witness' : '');
+    const size = 3 + Math.random()*7;
+    m.style.width = size+'px';
+    m.style.height = size+'px';
+    m.style.left = (Math.random()*100)+'vw';
+    m.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    const dur = 14 + Math.random()*16;
+    m.style.animationDuration = dur+'s';
+    m.style.animationDelay = (-Math.random()*dur)+'s';
+    field.appendChild(m);
+  }
+
+  const thoughts = ['why did this happen','what if','I should have','this always happens','what will they think'];
+  const THOUGHTS = 8;
+  for(let i=0;i<THOUGHTS;i++){
+    const t = document.createElement('div');
+    t.className = 'thought';
+    t.textContent = thoughts[Math.floor(Math.random()*thoughts.length)];
+    t.style.left = (Math.random()*100)+'vw';
+    t.style.setProperty('--driftx', (Math.random()*60-30)+'px');
+    const dur = 22 + Math.random()*18;
+    t.style.animationDuration = dur+'s';
+    t.style.animationDelay = (-Math.random()*dur)+'s';
+    field.appendChild(t);
+  }
+
+  // scroll reveal
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('[data-reveal]').forEach(el=>{
+    const divider = el.querySelector('.divider');
+    if(divider) observer.observe(divider);
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4 — The Power of Now</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E14;
+    --ink-2:#111623;
+    --paper:#EDE8DD;
+    --ember:#E8944A;
+    --sage:#8FA88B;
+    --slate:#5A6478;
+    --line:rgba(237,232,221,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  canvas#bg{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+  .glow{
+    position:fixed;
+    top:-20%;left:50%;
+    transform:translateX(-50%);
+    width:900px;height:900px;
+    background:radial-gradient(circle, rgba(232,148,74,0.08) 0%, rgba(232,148,74,0) 70%);
+    z-index:0;
+    pointer-events:none;
+  }
+  main{
+    position:relative;
+    z-index:1;
+    max-width:720px;
+    margin:0 auto;
+    padding:14vh 6vw 22vh;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:0;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:2rem;
+    opacity:0;
+    animation:fadeUp 1.2s ease forwards 0.2s;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:300;
+    font-size:clamp(2.6rem, 7vw, 4.6rem);
+    line-height:1.05;
+    color:var(--paper);
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 0.5s;
+  }
+  h1 em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--ember);
+  }
+  .hero-sub{
+    margin-top:2.2rem;
+    max-width:520px;
+    font-size:1.05rem;
+    line-height:1.85;
+    color:var(--slate);
+    font-weight:300;
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 0.9s;
+  }
+  .hero-thesis{
+    margin-top:2.6rem;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.3rem;
+    line-height:1.6;
+    color:var(--ember);
+    border-left:2px solid var(--ember);
+    padding-left:1.4rem;
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 1.3s;
+  }
+  .scroll-cue{
+    margin-top:4rem;
+    font-size:0.7rem;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--slate);
+    opacity:0;
+    animation:fadeUp 1.2s ease forwards 1.8s, pulse 2.4s ease-in-out infinite 2s;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.4;}
+    50%{opacity:0.9;}
+  }
+
+  /* ---------- Section blocks ---------- */
+  section{
+    margin-top:14vh;
+    position:relative;
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:1.1rem;
+    margin-bottom:2.6rem;
+  }
+  .section-num{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1rem;
+    color:var(--ember);
+    opacity:0.85;
+    white-space:nowrap;
+  }
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-weight:400;
+    font-size:clamp(1.5rem, 4vw, 2rem);
+    color:var(--paper);
+    line-height:1.3;
+  }
+  .rule{
+    height:1px;
+    width:100%;
+    background:var(--line);
+    margin:3.2rem 0;
+  }
+
+  .block{
+    margin-bottom:1.9rem;
+  }
+  .block-label{
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:0.9rem;
+    font-weight:500;
+  }
+
+  .line{
+    font-size:1.05rem;
+    line-height:1.9;
+    font-weight:300;
+    color:var(--paper);
+    opacity:0.92;
+    padding:0.15rem 0;
+  }
+  .line.dim{ color:var(--slate); }
+  .line.quote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--ember);
+    font-size:1.15rem;
+  }
+  .line.indent{ padding-left:1.6rem; }
+
+  .cite{
+    display:inline-block;
+    font-size:0.6rem;
+    letter-spacing:0.05em;
+    color:var(--slate);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:0.05rem 0.4rem;
+    margin-left:0.5rem;
+    vertical-align:middle;
+    opacity:0.6;
+  }
+
+  .example-card{
+    margin-top:1.2rem;
+    padding:1.6rem 1.8rem;
+    background:var(--ink-2);
+    border-left:2px solid var(--sage);
+    border-radius:2px;
+  }
+  .example-card .block-label{ color:var(--sage); }
+
+  .avoid .line::before{ content:"✕  "; color:#B4664A; opacity:0.7; }
+  .do .line::before{ content:"→  "; color:var(--sage); opacity:0.9; }
+
+  .two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3rem;
+  }
+  @media(max-width:640px){
+    .two-col{grid-template-columns:1fr; gap:2.4rem;}
+  }
+
+  .formula{
+    margin-top:1.4rem;
+    font-family:'Fraunces',serif;
+    font-size:1.15rem;
+    color:var(--paper);
+  }
+  .formula .row{
+    display:flex;
+    gap:0.8rem;
+    align-items:baseline;
+    padding:0.5rem 0;
+    border-bottom:1px solid var(--line);
+  }
+  .formula .row:last-child{border-bottom:none;}
+  .formula .tag{
+    font-family:'Inter',sans-serif;
+    font-size:0.68rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--ember);
+    width:90px;
+    flex-shrink:0;
+  }
+
+  footer{
+    margin-top:18vh;
+    text-align:center;
+    padding-bottom:6vh;
+  }
+  footer .closing{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,3.5vw,1.8rem);
+    line-height:1.6;
+    color:var(--paper);
+  }
+  footer .closing .accent{ color:var(--ember); }
+  footer .tag{
+    margin-top:2rem;
+    font-size:0.68rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--slate);
+  }
+
+  /* reveal-on-scroll */
+  .reveal{
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="glow"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">The Power of Now · Chapter Four</div>
+    <h1>Losing the <em>Now</em>,<br>and coming back.</h1>
+    <p class="hero-sub">This is Chapter 4 of The Power of Now. The chapter explains how the mind takes us away from the present and creates unnecessary suffering.</p>
+    <p class="hero-thesis">Your biggest problem is often not the situation itself, but losing yourself in thoughts about the past or future.</p>
+    <div class="scroll-cue">scroll ↓</div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">The real problem is "losing Now"</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">You cannot stop time in the practical sense.</p>
+      <p class="line reveal">You still need to:</p>
+      <p class="line reveal indent dim">pay tomorrow's bills</p>
+      <p class="line reveal indent dim">plan for the future</p>
+      <p class="line reveal indent dim">remember things from the past</p>
+      <p class="line reveal indent dim">work toward goals</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">The problem is not using time.</p>
+      <p class="line reveal quote">The problem is living psychologically in the past or future instead of being present. <span class="cite"></span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">Example</p>
+      <p class="line reveal">You are studying now.</p>
+      <p class="line reveal">Your body is studying, but your mind says:</p>
+      <p class="line reveal indent dim">"What if I fail?"</p>
+      <p class="line reveal indent dim">"What happened yesterday?"</p>
+      <p class="line reveal indent dim">"What will happen next year?"</p>
+      <p class="line reveal">You are physically here, but mentally somewhere else.</p>
+      <p class="line reveal">That is loss of Now.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">What does "being present" mean?</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">It simply means:</p>
+      <p class="line reveal quote">Pay attention to what is happening right now.</p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">For example, while drinking tea</p>
+      <p class="line reveal">Don't drink tea while completely lost in thoughts.</p>
+      <p class="line reveal">Notice:</p>
+      <p class="line reveal indent dim">the warmth of the cup</p>
+      <p class="line reveal indent dim">the taste</p>
+      <p class="line reveal indent dim">your breathing</p>
+      <p class="line reveal indent dim">your body</p>
+      <p class="line reveal indent dim">what you are doing</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">The book says that even noticing "I wasn't present" is already a movement toward presence. <span class="cite"></span></p>
+      <p class="line reveal">So don't get frustrated when your mind wanders.</p>
+      <p class="line reveal">Just notice and come back.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Ordinary unconsciousness</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">This doesn't mean you are physically unconscious.</p>
+      <p class="line reveal quote">It means you are controlled by your thoughts, emotions, desires and reactions without noticing them. <span class="cite"></span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">Example</p>
+      <p class="line reveal">Someone insults you.</p>
+      <p class="line reveal">Immediately:</p>
+      <p class="line reveal indent dim">"How dare he!"</p>
+      <p class="line reveal indent dim">"I'll teach him a lesson!"</p>
+      <p class="line reveal indent dim">"Nobody respects me!"</p>
+      <p class="line reveal">You don't observe the anger.</p>
+      <p class="line reveal">The anger controls you.</p>
+      <p class="line reveal">That's unconsciousness.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Being conscious means:</p>
+      <p class="line reveal quote">"I'm feeling anger right now."</p>
+      <p class="line reveal">You observe it before automatically acting on it.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Your difficult moments are tests</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">The book gives an important idea:</p>
+      <p class="line reveal quote">Your level of consciousness becomes visible when something goes wrong. <span class="cite"></span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Anyone can feel peaceful when everything is perfect.</p>
+      <p class="line reveal">The real test is:</p>
+      <p class="line reveal indent dim">Someone insults you.</p>
+      <p class="line reveal indent dim">You lose money.</p>
+      <p class="line reveal indent dim">Someone rejects you.</p>
+      <p class="line reveal indent dim">Your plans fail.</p>
+      <p class="line reveal indent dim">Someone annoys you.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Do you immediately become controlled by anger, fear and negativity?</p>
+      <p class="line reveal">Or can you notice what is happening inside you before reacting?</p>
+      <p class="line reveal">That's the practice.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Don't fight your emotions</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">This is very important.</p>
+      <p class="line reveal">The book is not saying:</p>
+      <p class="line reveal quote indent">"Never feel anger."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Instead:</p>
+      <p class="line reveal">Notice the anger without immediately becoming the anger.</p>
+      <p class="line reveal">If you're angry, acknowledge:</p>
+      <p class="line reveal quote indent">"Anger is here."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Don't say:</p>
+      <p class="line reveal indent dim">"I'm a terrible person because I'm angry."</p>
+      <p class="line reveal">And don't blindly act on the anger either.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">Acceptance means seeing what is already happening without adding unnecessary resistance. <span class="cite"></span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2 class="section-title">What should you do when something is bothering you?</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">The book gives a very practical approach.</p>
+      <p class="line reveal">If your present situation is making you unhappy, you basically have three choices:</p>
+    </div>
+    <div class="formula" style="margin-top:1.6rem;">
+      <div class="row reveal"><span class="tag">1</span><span>Leave it — if you can leave the situation, leave.</span></div>
+      <div class="row reveal"><span class="tag">2</span><span>Change it — if you can change it, take action.</span></div>
+      <div class="row reveal"><span class="tag">3</span><span>Accept it — if you cannot change or leave it, stop fighting reality internally.</span></div>
+    </div>
+    <p class="line reveal" style="margin-top:1.6rem;"><span class="cite" style="margin-left:0; margin-right:0.5rem;"></span></p>
+
+    <div class="example-card">
+      <p class="block-label reveal">Example</p>
+      <p class="line reveal">Your workplace is terrible.</p>
+      <p class="line reveal">Don't spend every day thinking:</p>
+      <p class="line reveal quote indent">"I hate this place! Why is my life like this?"</p>
+      <p class="line reveal" style="margin-top:1.2rem;">Instead:</p>
+      <p class="line reveal indent dim">Option A: Find another job.</p>
+      <p class="line reveal indent dim">Option B: Try to improve the situation.</p>
+      <p class="line reveal indent dim">Option C: If you currently cannot change it, accept that this is your present situation and stop mentally fighting it every second.</p>
+      <p class="line reveal" style="margin-top:1.2rem;">Acceptance doesn't mean you can never change it.</p>
+      <p class="line reveal">It means you stop creating additional suffering while dealing with it.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 7 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">07</span>
+      <h2 class="section-title">What to avoid: complaining</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">The chapter strongly focuses on complaining.</p>
+      <p class="line reveal">When you continuously complain:</p>
+      <p class="line reveal indent dim">"This weather is terrible."</p>
+      <p class="line reveal indent dim">"My friends are terrible."</p>
+      <p class="line reveal indent dim">"My life is terrible."</p>
+      <p class="line reveal indent dim">"Why does this always happen to me?"</p>
+      <p class="line reveal quote">your mind keeps reinforcing negativity. <span class="cite">4.</span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">Instead ask:</p>
+      <p class="line reveal quote indent">"Can I change this?"</p>
+      <p class="line reveal indent dim">If yes → take action.</p>
+      <p class="line reveal indent dim">If no → accept it.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 8 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Don't live in the future</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">One of the biggest ideas in this chapter is future-thinking.</p>
+      <p class="line reveal">Planning is useful.</p>
+      <p class="line reveal">But constantly thinking:</p>
+      <p class="line reveal indent dim">"I'll be happy when I get a job."</p>
+      <p class="line reveal indent dim">"I'll be happy when I become rich."</p>
+      <p class="line reveal indent dim">"I'll be happy when I become successful."</p>
+      <p class="line reveal">means you're making today's life only a waiting room for tomorrow.</p>
+      <p class="line reveal quote">The book calls this a form of waiting. <span class="cite">4.</span></p>
+    </div>
+    <div class="block">
+      <p class="block-label reveal">Better approach</p>
+      <p class="line reveal">Have a goal.</p>
+      <p class="line reveal">But while working toward it:</p>
+      <p class="line reveal">Be fully involved in today's step.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 9 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Goals are NOT the problem</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">This is important because "live in the present" doesn't mean:</p>
+      <p class="line reveal quote indent">"Don't have goals."</p>
+      <p class="line reveal">You can absolutely have goals.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">For example:</p>
+      <p class="line reveal indent dim">Goal: Learn English.</p>
+      <p class="line reveal">That's your future direction.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">But today's job is:</p>
+      <p class="line reveal indent dim">Practice English for 20 minutes.</p>
+      <p class="line reveal">Don't spend the whole day thinking:</p>
+      <p class="line reveal quote indent">"When will I become fluent?"</p>
+      <p class="line reveal">Instead:</p>
+      <p class="line reveal">Do today's practice completely.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">The book describes this as having an outer purpose while still being fully present in the current step. <span class="cite">4.</span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 10 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Don't constantly live in the past</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">The past can teach you.</p>
+      <p class="line reveal">But repeatedly replaying it can become a problem.</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">For example:</p>
+      <p class="line reveal indent dim">"Why did I say that?"</p>
+      <p class="line reveal indent dim">"Why did they treat me like that?"</p>
+      <p class="line reveal indent dim">"I should have done this."</p>
+      <p class="line reveal indent dim">"I was better before."</p>
+    </div>
+    <div class="block">
+      <p class="line reveal">The book's advice is:</p>
+      <p class="line reveal quote">Use the past when it is relevant, but don't continuously live inside it. <span class="cite">4.</span></p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 11 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">11</span>
+      <h2 class="section-title">Don't worry about imaginary futures</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">Worry often looks like:</p>
+      <p class="line reveal indent dim">"What if this happens?"</p>
+      <p class="line reveal indent dim">"What if I fail?"</p>
+      <p class="line reveal indent dim">"What if something goes wrong?"</p>
+    </div>
+    <div class="block">
+      <p class="line reveal quote">The mind creates an imaginary future and then reacts emotionally to it as though it were happening now. <span class="cite">4.</span></p>
+    </div>
+    <div class="block">
+      <p class="line reveal">When you notice this, come back to:</p>
+      <p class="line reveal quote indent">"What is actually happening right now?"</p>
+      <p class="line reveal">Then ask:</p>
+      <p class="line reveal quote indent">"Is there a real problem in this moment?"</p>
+      <p class="line reveal indent dim">If there is a real problem → deal with it.</p>
+      <p class="line reveal indent dim">If there isn't → return to the present.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- 12 -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">12</span>
+      <h2 class="section-title">The most practical exercise from this chapter</h2>
+    </div>
+    <div class="block">
+      <p class="line reveal">Several times a day, stop for a few seconds and ask:</p>
+      <p class="line reveal quote">"What is happening inside me right now?"</p>
+      <p class="line reveal">Then observe:</p>
+    </div>
+    <div class="formula">
+      <div class="row reveal"><span class="tag">Thoughts</span><span>"What am I thinking?"</span></div>
+      <div class="row reveal"><span class="tag">Emotion</span><span>"What am I feeling?"</span></div>
+      <div class="row reveal"><span class="tag">Body</span><span>"Is there tension anywhere?"</span></div>
+      <div class="row reveal"><span class="tag">Present</span><span>"What am I actually doing right now?"</span></div>
+    </div>
+    <p class="line reveal quote" style="margin-top:1.6rem;">The chapter specifically recommends monitoring your mental-emotional state through self-observation. <span class="cite">4.</span></p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- TO DO / TO AVOID -->
+  <section>
+    <div class="two-col">
+      <div>
+        <div class="block-label reveal" style="color:var(--sage); font-size:0.85rem; margin-bottom:1.4rem;">What TO DO — every day</div>
+        <div class="do">
+          <p class="line reveal">Notice when your mind leaves the present.</p>
+          <p class="line reveal">Come back to your breathing / body.</p>
+          <p class="line reveal">Observe emotions instead of immediately reacting.</p>
+          <p class="line reveal">If something is wrong, ask: can I leave it?</p>
+          <p class="line reveal">Can I change it?</p>
+          <p class="line reveal">If neither, can I accept it?</p>
+          <p class="line reveal">Have goals, but focus on today's step.</p>
+          <p class="line reveal">Use the past for learning, not continuous replaying.</p>
+          <p class="line reveal">Plan for the future, but don't live mentally there.</p>
+          <p class="line reveal">When worried, ask: "What is actually wrong right now?"</p>
+          <p class="line reveal">When waiting, notice that you are waiting and return to the present.</p>
+          <p class="line reveal">Practice this during ordinary activities, not only meditation.</p>
+        </div>
+      </div>
+      <div>
+        <div class="block-label reveal" style="color:#B4664A; font-size:0.85rem; margin-bottom:1.4rem;">What TO AVOID</div>
+        <div class="avoid">
+          <p class="line reveal">Constant complaining</p>
+          <p class="line reveal">Replaying old mistakes again and again</p>
+          <p class="line reveal">"What if?" thinking without action</p>
+          <p class="line reveal">Waiting for the future to finally become happy</p>
+          <p class="line reveal">Automatically reacting to anger / fear</p>
+          <p class="line reveal">Fighting reality mentally</p>
+          <p class="line reveal">Suppressing emotions</p>
+          <p class="line reveal">Making your goal more important than the present step</p>
+          <p class="line reveal">Turning "being present" into another thing to worry about</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- One simple example -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">One simple example</h2>
+    </div>
+    <p class="line reveal">Imagine you have an exam tomorrow.</p>
+
+    <div class="example-card" style="border-left-color:#B4664A;">
+      <p class="block-label reveal" style="color:#B4664A;">Unconscious approach</p>
+      <p class="line reveal indent dim">"What if I fail?"</p>
+      <p class="line reveal indent dim">"I should have started earlier."</p>
+      <p class="line reveal indent dim">"Everyone is better than me."</p>
+      <p class="line reveal indent dim">"What will happen to my future?"</p>
+      <p class="line reveal" style="margin-top:1rem;">You are sitting with the book, but your mind is everywhere.</p>
+    </div>
+
+    <div class="example-card">
+      <p class="block-label reveal">Present approach</p>
+      <p class="line reveal quote indent">"Exam is tomorrow. That's true."</p>
+      <p class="line reveal" style="margin-top:1rem;">Then:</p>
+      <p class="line reveal indent dim">Right now → What can I do?</p>
+      <p class="line reveal quote indent">"I can study this chapter for the next 30 minutes."</p>
+      <p class="line reveal">Then study.</p>
+      <p class="line reveal" style="margin-top:1rem;">If fear appears:</p>
+      <p class="line reveal quote indent">"I'm feeling fear."</p>
+      <p class="line reveal indent dim">Notice it.</p>
+      <p class="line reveal indent dim">Take a breath.</p>
+      <p class="line reveal indent dim">Return to the chapter.</p>
+      <p class="line reveal" style="margin-top:1rem;">That's practicing the Now.</p>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- One sentence -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">The entire chapter in one sentence</h2>
+    </div>
+    <p class="line reveal quote" style="font-size:1.35rem;">Don't fight the present, don't continuously live in the past, and don't mentally live in the future; recognize what is happening now and respond to this moment consciously.</p>
+
+    <p class="line reveal" style="margin-top:2.4rem;">And the deepest practical message of the chapter is:</p>
+    <p class="line reveal quote">You don't need to solve your entire life right now. You only need to deal consciously with the step that is happening now. <span class="cite">4.</span></p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- Formula -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">✳</span>
+      <h2 class="section-title">Remember this simple formula</h2>
+    </div>
+    <div class="formula">
+      <div class="row reveal"><span class="tag">Problem</span><span>Observe → Accept reality → Choose → Act</span></div>
+      <div class="row reveal"><span class="tag">Past</span><span>Learn, then return.</span></div>
+      <div class="row reveal"><span class="tag">Future</span><span>Plan, then return.</span></div>
+      <div class="row reveal"><span class="tag">Now</span><span>Live and act.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="closing reveal">Don't fight the present.<br>Just <span class="accent">notice</span> — and come back.</p>
+    <p class="tag reveal">The Power of Now · Chapter Four</p>
+  </footer>
+
+</main>
+
+<script>
+// ---------- Falling particle background ----------
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let w, h, particles;
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function makeParticles(n){
+  const arr = [];
+  for(let i=0;i<n;i++){
+    arr.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*2.2 + 0.6,
+      speedY: Math.random()*0.35 + 0.08,
+      speedX: (Math.random()-0.5)*0.25,
+      drift: Math.random()*Math.PI*2,
+      driftSpeed: Math.random()*0.01 + 0.003,
+      alpha: Math.random()*0.5 + 0.15,
+      hueMix: Math.random()
+    });
+  }
+  return arr;
+}
+particles = makeParticles(reduced ? 0 : 70);
+
+function colorFor(mix, alpha){
+  // blend between ember and sage/paper dust
+  const c1 = [232,148,74];
+  const c2 = [143,168,139];
+  const c = mix > 0.5 ? c1 : c2;
+  return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
+}
+
+function tick(){
+  ctx.clearRect(0,0,w,h);
+  for(const p of particles){
+    p.drift += p.driftSpeed;
+    p.y += p.speedY;
+    p.x += p.speedX + Math.sin(p.drift)*0.15;
+
+    if(p.y > h + 10){
+      p.y = -10;
+      p.x = Math.random()*w;
+    }
+    if(p.x > w + 10) p.x = -10;
+    if(p.x < -10) p.x = w + 10;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = colorFor(p.hueMix, p.alpha);
+    ctx.fill();
+  }
+  requestAnimationFrame(tick);
+}
+if(!reduced) tick();
+
+// ---------- Scroll reveal ----------
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((entry, idx)=>{
+    if(entry.isIntersecting){
+      const el = entry.target;
+      const siblingsRevealed = [...el.parentElement.querySelectorAll('.reveal.in')].length;
+      el.style.transitionDelay = (Math.min(siblingsRevealed,10) * 0.05) + 's';
+      el.classList.add('in');
+      io.unobserve(el);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

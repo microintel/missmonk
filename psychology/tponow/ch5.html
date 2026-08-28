@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The State of Presence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0f13;
+    --ink-2:#0d1a1a;
+    --gold:#d9a65c;
+    --gold-soft:#e8c98f;
+    --sage:#7fa88f;
+    --cream:#ede6d6;
+    --muted:#8fa39a;
+    --line: rgba(237,230,214,0.12);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background: radial-gradient(ellipse at 50% 0%, var(--ink-2) 0%, var(--ink) 55%, #060909 100%);
+    color:var(--cream);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- floating / falling particles ---------- */
+  #particle-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .mote{
+    position:absolute;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(217,166,92,0.9) 0%, rgba(217,166,92,0.15) 60%, transparent 100%);
+    filter: blur(0.3px);
+    opacity:0;
+  }
+  .mote.sage{
+    background: radial-gradient(circle, rgba(127,168,143,0.85) 0%, rgba(127,168,143,0.12) 60%, transparent 100%);
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    8%{ opacity:.8; }
+    92%{ opacity:.5; }
+    100%{ transform:translateY(-115vh) translateX(var(--drift)); opacity:0; }
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh) translateX(0); opacity:0; }
+    8%{ opacity:.7; }
+    92%{ opacity:.4; }
+    100%{ transform:translateY(115vh) translateX(var(--drift)); opacity:0; }
+  }
+
+  /* ---------- breathing glow, the signature element ---------- */
+  .breath-orb{
+    position:fixed;
+    top:50%; left:50%;
+    width:60vmax; height:60vmax;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(217,166,92,0.06) 0%, rgba(127,168,143,0.04) 40%, transparent 70%);
+    animation: breathe 9s ease-in-out infinite;
+    z-index:0;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:translate(-50%,-50%) scale(0.85); opacity:.55; }
+    50%{ transform:translate(-50%,-50%) scale(1.15); opacity:1; }
+  }
+
+  main{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+    margin:0 auto;
+    padding: 14vh 6vw 24vh;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:88vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding-bottom:6vh;
+  }
+  .eyebrow{
+    font-family:'Jost', sans-serif;
+    letter-spacing:0.45em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--sage);
+    margin-bottom:2rem;
+    opacity:0;
+    animation: fadeUp 1.4s ease forwards 0.2s;
+  }
+  h1.title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(2.6rem, 7vw, 4.6rem);
+    line-height:1.05;
+    color:var(--gold-soft);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 0.5s;
+  }
+  .title .em{ font-style:italic; color:var(--cream); }
+  .hero-sub{
+    margin-top:2.2rem;
+    max-width:46ch;
+    font-size:1.05rem;
+    line-height:1.9;
+    color:var(--muted);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 0.9s;
+  }
+  .scroll-hint{
+    margin-top:5rem;
+    font-size:0.7rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--sage);
+    opacity:0;
+    animation: fadeUp 1.6s ease forwards 1.3s, pulseHint 3s ease-in-out infinite 2s;
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(22px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulseHint{
+    0%,100%{ opacity:0.4; }
+    50%{ opacity:0.9; }
+  }
+
+  /* ---------- sections ---------- */
+  section.chapter{
+    margin-top: 16vh;
+    position:relative;
+  }
+  .section-number{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:5.5rem;
+    line-height:1;
+    color:transparent;
+    -webkit-text-stroke: 1px rgba(217,166,92,0.4);
+    margin-bottom:0.4rem;
+    display:block;
+  }
+  h2.section-title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(1.7rem, 4vw, 2.4rem);
+    color:var(--gold-soft);
+    margin-bottom:2.4rem;
+    padding-bottom:1rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  h3.sub-title{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:1.5rem;
+    color:var(--sage);
+    margin: 2.6rem 0 1rem;
+  }
+
+  /* every line of original content gets its own row + reveal transition */
+  .line{
+    font-size:1.05rem;
+    line-height:1.7;
+    color:var(--cream);
+    margin-bottom:0.85rem;
+    opacity:0;
+    transform:translateY(16px);
+    transition: opacity 0.9s cubic-bezier(.22,.68,.36,1), transform 0.9s cubic-bezier(.22,.68,.36,1);
+  }
+  .line.visible{ opacity:1; transform:translateY(0); }
+
+  .line.quote{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.35rem;
+    color:var(--gold-soft);
+    padding-left:1.2rem;
+    border-left:2px solid rgba(217,166,92,0.5);
+    margin:1.2rem 0;
+  }
+  .line.item{
+    padding-left:1.4rem;
+    position:relative;
+    color:var(--muted);
+  }
+  .line.item::before{
+    content:"·";
+    position:absolute;
+    left:0;
+    color:var(--sage);
+  }
+  .line.marker{
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:rgba(143,163,154,0.55);
+    margin: -0.3rem 0 1.2rem;
+  }
+  .line.strong{
+    color:var(--gold-soft);
+    font-weight:500;
+  }
+  .line.cross{
+    color:#c98b7f;
+  }
+  .line.arrow{
+    color:var(--sage);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.2rem;
+  }
+  .spacer-small{ height:0.6rem; }
+  .spacer{ height:2.2rem; }
+
+  /* closing */
+  .closing{
+    margin-top:20vh;
+    text-align:center;
+    padding: 6vh 0 4vh;
+  }
+  .closing .line.quote{
+    text-align:left;
+    display:inline-block;
+    text-align:left;
+  }
+  .closing-final{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(1.6rem, 4vw, 2.2rem);
+    color:var(--gold-soft);
+    margin-top:2.5rem;
+    opacity:0;
+    transform:translateY(16px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .closing-final.visible{ opacity:1; transform:translateY(0); }
+
+  footer{
+    text-align:center;
+    padding: 6vh 0 10vh;
+    font-size:0.7rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:rgba(143,163,154,0.4);
+    position:relative;
+    z-index:2;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+    .line{ opacity:1; transform:none; }
+  }
+
+  @media (max-width:600px){
+    main{ padding: 10vh 6vw 18vh; }
+    .section-number{ font-size:3.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particle-field"></div>
+<div class="breath-orb"></div>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">Chapter Five</div>
+    <h1 class="title">The State of <span class="em">Presence</span></h1>
+    <p class="hero-sub">This chapter is mainly about learning to be fully present in the current moment instead of being controlled by constant thinking.</p>
+    <div class="scroll-hint">Scroll to begin — breathe as you go ↓</div>
+  </div>
+
+  <!-- 1 -->
+  <section class="chapter" data-n="1">
+    <span class="section-number">01</span>
+    <h2 class="section-title">What is &ldquo;presence&rdquo;?</h2>
+    <div class="line">Presence means:</div>
+    <div class="line">You are fully aware of what is happening right now.</div>
+    <div class="line">You are not lost in:</div>
+    <div class="line item">What happened yesterday</div>
+    <div class="line item">What might happen tomorrow</div>
+    <div class="line item">Endless thoughts</div>
+    <div class="line item">Imaginary situations</div>
+    <div class="spacer-small"></div>
+    <div class="line">The book says presence cannot really be understood only by thinking about it. You experience it by becoming present. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">Simple example</h3>
+    <div class="line">You are drinking tea.</div>
+    <div class="line">Normally:</div>
+    <div class="line quote">&ldquo;I have work tomorrow&hellip; Why did that person say that&hellip; What should I do later?&rdquo;</div>
+    <div class="line">You are drinking tea, but your mind is somewhere else.</div>
+    <div class="line">Being present means:</div>
+    <div class="line item">Feel the warmth of the cup.</div>
+    <div class="line item">Taste the tea.</div>
+    <div class="line item">Notice your breathing.</div>
+    <div class="line item">Hear the sounds around you.</div>
+    <div class="spacer-small"></div>
+    <div class="line strong">You are actually here.</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="chapter" data-n="2">
+    <span class="section-number">02</span>
+    <h2 class="section-title">How to practice presence</h2>
+    <div class="line">The book gives a very simple experiment.</div>
+    <div class="line">Close your eyes and ask:</div>
+    <div class="line quote">&ldquo;What will my next thought be?&rdquo;</div>
+    <div class="line">Then wait and watch.</div>
+    <div class="line">For a moment, you may notice that there is no thought&mdash;just alertness and stillness. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">Try this for 30 seconds</h3>
+    <div class="line item">Stop what you're doing.</div>
+    <div class="line item">Take a normal breath.</div>
+    <div class="line item">Don't try to force your mind to become empty.</div>
+    <div class="line item">Watch your thoughts.</div>
+    <div class="line item">Notice the space before the next thought.</div>
+    <div class="line item">Feel your body.</div>
+    <div class="line item">Return attention to what is happening right now.</div>
+  </section>
+
+  <!-- 3 -->
+  <section class="chapter" data-n="3">
+    <span class="section-number">03</span>
+    <h2 class="section-title">Use your body as an anchor</h2>
+    <div class="line">The book says that being aware of your body helps keep you present. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">You don't have to do anything complicated.</div>
+    <div class="line">For example, while sitting:</div>
+    <div class="line">Notice:</div>
+    <div class="line item">Your hands</div>
+    <div class="line item">Your feet</div>
+    <div class="line item">Your breathing</div>
+    <div class="line item">Your heartbeat</div>
+    <div class="line item">The feeling inside your body</div>
+    <div class="spacer-small"></div>
+    <div class="line">Your mind may wander.</div>
+    <div class="line">That's okay.</div>
+    <div class="line">Simply notice:</div>
+    <div class="line quote">&ldquo;I'm thinking.&rdquo;</div>
+    <div class="line">Then gently return to your body and the present moment.</div>
+  </section>
+
+  <!-- 4 -->
+  <section class="chapter" data-n="4">
+    <span class="section-number">04</span>
+    <h2 class="section-title">Don't wait for the future to be happy</h2>
+    <div class="line">The chapter explains a special kind of waiting.</div>
+    <div class="line">Normal waiting:</div>
+    <div class="line quote">&ldquo;Once I get that job, I'll be happy.&rdquo;</div>
+    <div class="line quote">&ldquo;Once I finish college, I'll relax.&rdquo;</div>
+    <div class="line quote">&ldquo;Once I become successful, life will be good.&rdquo;</div>
+    <div class="line">Here, your mind is treating the present as an obstacle.</div>
+    <div class="line">Presence is different.</div>
+    <div class="line">You can work toward your goals while still being completely present during the process. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">Example</h3>
+    <div class="line">Don't think:</div>
+    <div class="line quote">&ldquo;I will enjoy learning after I become good at English.&rdquo;</div>
+    <div class="line">Instead:</div>
+    <div class="line quote">&ldquo;Right now, I'm learning English. Let me actually experience this moment.&rdquo;</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="chapter" data-n="5">
+    <span class="section-number">05</span>
+    <h2 class="section-title">Why nature can make you feel peaceful</h2>
+    <div class="line">Have you ever looked at:</div>
+    <div class="line item">A sunset</div>
+    <div class="line item">The sky</div>
+    <div class="line item">Trees</div>
+    <div class="line item">Mountains</div>
+    <div class="line item">Rain</div>
+    <div class="line item">A river</div>
+    <div class="spacer-small"></div>
+    <div class="line">and suddenly felt very peaceful?</div>
+    <div class="line">The book says this can happen because, for a moment, the mind becomes quiet and you simply experience what is in front of you. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">Try it</h3>
+    <div class="line">Next time you see something beautiful, don't immediately think:</div>
+    <div class="line quote">&ldquo;Wow, beautiful.&rdquo;</div>
+    <div class="line">Instead, spend 10&ndash;20 seconds simply looking.</div>
+    <div class="line">Notice the colors, shapes, sounds and sensations.</div>
+    <div class="line">Don't rush to describe it.</div>
+  </section>
+
+  <!-- 6 -->
+  <section class="chapter" data-n="6">
+    <span class="section-number">06</span>
+    <h2 class="section-title">Don't confuse thinking about presence with actually being present</h2>
+    <div class="line">This is very important.</div>
+    <div class="line">You can read 100 books about presence and still not be present.</div>
+    <div class="line">For example:</div>
+    <div class="line quote">&ldquo;I understand mindfulness. I understand consciousness. I understand the Now.&rdquo;</div>
+    <div class="line">But you're still constantly worrying and thinking.</div>
+    <div class="line">The book's point is:</div>
+    <div class="line strong">Don't only understand the idea. Practice it.</div>
+    <div class="line">Presence is something you experience, not merely something you memorize. �</div>
+    <div class="line marker">5.PDF</div>
+  </section>
+
+  <!-- 7 -->
+  <section class="chapter" data-n="7">
+    <span class="section-number">07</span>
+    <h2 class="section-title">Become the &ldquo;watcher&rdquo; of your thoughts</h2>
+    <div class="line">This is one of the most important ideas in the chapter.</div>
+    <div class="line">Instead of:</div>
+    <div class="line quote">&ldquo;I am angry.&rdquo;</div>
+    <div class="line">Try noticing:</div>
+    <div class="line quote">&ldquo;Anger is happening in me.&rdquo;</div>
+    <div class="line">Instead of:</div>
+    <div class="line quote">&ldquo;I am worried.&rdquo;</div>
+    <div class="line">Notice:</div>
+    <div class="line quote">&ldquo;I am noticing a worried thought.&rdquo;</div>
+    <div class="line">You are observing the thought instead of automatically becoming the thought.</div>
+    <div class="line">The book describes this as becoming the watcher/witness of the mind. When you observe the mind, you become less identified with its mental activity. �</div>
+    <div class="line marker">5.PDF</div>
+
+    <h3 class="sub-title">Example</h3>
+    <div class="line">Someone insults you.</div>
+    <div class="line">Automatic reaction:</div>
+    <div class="line quote">&ldquo;How dare he! I need to answer him!&rdquo;</div>
+    <div class="line">Presence:</div>
+    <div class="line quote">&ldquo;Anger is arising.&rdquo;</div>
+    <div class="line">Pause.</div>
+    <div class="line">Feel the anger in your body.</div>
+    <div class="line">Then decide what to do.</div>
+    <div class="line strong">You create a gap between the emotion and your reaction.</div>
+  </section>
+
+  <!-- 8 -->
+  <section class="chapter" data-n="8">
+    <span class="section-number">08</span>
+    <h2 class="section-title">Don't try to destroy your thoughts</h2>
+    <div class="line">This is important.</div>
+    <div class="line">Presence does not mean:</div>
+    <div class="line cross">❌ &ldquo;I must never think.&rdquo;</div>
+    <div class="line cross">❌ &ldquo;My mind must become completely empty.&rdquo;</div>
+    <div class="line cross">❌ &ldquo;Thinking is bad.&rdquo;</div>
+    <div class="line">Instead:</div>
+    <div class="line item">Notice when thinking happens.</div>
+    <div class="line item">Then return to the present.</div>
+    <div class="spacer-small"></div>
+    <div class="line arrow">Thought comes → notice it → don't follow it → return to now.</div>
+  </section>
+
+  <!-- 9 -->
+  <section class="chapter" data-n="9">
+    <span class="section-number">09</span>
+    <h2 class="section-title">Listening to silence</h2>
+    <div class="line">The book gives another simple practice:</div>
+    <div class="line">Listen to the silence around you.</div>
+    <div class="line">Even when there is noise, there can be small spaces of silence between sounds. Paying attention to that can help create inner stillness. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">Try it for 1 minute.</div>
+    <div class="line">Don't analyze anything.</div>
+    <div class="line strong">Just listen.</div>
+  </section>
+
+  <!-- 10 -->
+  <section class="chapter" data-n="10">
+    <span class="section-number">10</span>
+    <h2 class="section-title">What the chapter says about Christ</h2>
+    <div class="line">The later part of the chapter connects Christ with divine presence and timeless consciousness.</div>
+    <div class="line">The book's interpretation is that Christ is not primarily something to think about as a person in the past or future; rather, &ldquo;presence&rdquo; points to the timeless divine consciousness within. It connects this with the statement &ldquo;I AM&rdquo; and the idea of moving from psychological time into presence. �</div>
+    <div class="line marker">5.PDF</div>
+    <div class="line">You don't need to get stuck on the terminology to practice the main lesson.</div>
+    <div class="line">The practical message is:</div>
+    <div class="line strong">Come back to the present.</div>
+  </section>
+
+  <!-- WHAT TO DO -->
+  <section class="chapter" data-n="do">
+    <h2 class="section-title">What TO DO</h2>
+    <div class="line">Every day, practice these:</div>
+    <div class="spacer"></div>
+
+    <h3 class="sub-title">1. Stop for 30 seconds</h3>
+    <div class="line item">Breathe normally.</div>
+    <div class="line item">Notice your body.</div>
+    <div class="line item">Notice your surroundings.</div>
+
+    <h3 class="sub-title">2. Watch your thoughts</h3>
+    <div class="line item">Don't fight them.</div>
+    <div class="line item">Don't follow every thought.</div>
+    <div class="line item">Just observe.</div>
+
+    <h3 class="sub-title">3. Feel your body</h3>
+    <div class="line item">Hands</div>
+    <div class="line item">Feet</div>
+    <div class="line item">Breathing</div>
+    <div class="line item">Inner sensations</div>
+
+    <h3 class="sub-title">4. Do one thing fully</h3>
+    <div class="line">When eating → eat.</div>
+    <div class="line">When walking → walk.</div>
+    <div class="line">When studying → study.</div>
+    <div class="line">When talking → listen.</div>
+
+    <h3 class="sub-title">5. Notice beautiful things</h3>
+    <div class="line">Look at nature without immediately turning it into thoughts.</div>
+
+    <h3 class="sub-title">6. Listen to silence</h3>
+    <div class="line">Spend a minute simply listening.</div>
+
+    <h3 class="sub-title">7. When emotions arise, pause</h3>
+    <div class="line">Instead of immediately reacting, notice:</div>
+    <div class="line quote">&ldquo;Something is happening inside me.&rdquo;</div>
+    <div class="line">Then respond consciously.</div>
+  </section>
+
+  <!-- WHAT TO AVOID -->
+  <section class="chapter" data-n="avoid">
+    <h2 class="section-title">What to AVOID</h2>
+    <div class="line cross">❌ Don't constantly live in the past.</div>
+    <div class="line cross">❌ Don't constantly imagine the future.</div>
+    <div class="line cross">❌ Don't believe every thought your mind produces.</div>
+    <div class="line cross">❌ Don't try to force your mind to become empty.</div>
+    <div class="line cross">❌ Don't think you must understand everything intellectually before practicing.</div>
+    <div class="line cross">❌ Don't wait for some future achievement before allowing yourself to experience the present.</div>
+    <div class="line cross">❌ Don't become dependent on a teacher or group for your presence; the chapter specifically warns against dependence. �</div>
+    <div class="line marker">5.PDF</div>
+  </section>
+
+  <!-- FULL EXAMPLE -->
+  <section class="chapter" data-n="example">
+    <h2 class="section-title">The whole chapter in one simple example</h2>
+    <div class="line">Someone sends you a rude message.</div>
+    <div class="line">Without presence:</div>
+    <div class="line arrow">Message → thought → anger → more thoughts → emotional reaction → send an angry reply → regret.</div>
+    <div class="line">With presence:</div>
+    <div class="line arrow">Message → pause → notice anger → feel your body → observe thoughts → breathe → decide what actually needs to be done.</div>
+    <div class="spacer-small"></div>
+    <div class="line">The situation may be the same.</div>
+    <div class="line strong">But you are no longer completely controlled by your mind.</div>
+  </section>
+
+  <div class="closing">
+    <div class="line">Remember this one line:</div>
+    <div class="closing-final">Don't try to control every thought. Become aware that you are thinking. Then come back to what is happening right now.</div>
+    <div class="closing-final">That's the practical heart of &ldquo;The State of Presence.&rdquo;</div>
+  </div>
+
+</main>
+
+<footer>Chapter Five &middot; The State of Presence</footer>
+
+<script>
+  // ---------- particle field: floating up & falling down motes ----------
+  const field = document.getElementById('particle-field');
+  const MOTE_COUNT = 42;
+
+  function spawnMote(initial){
+    const el = document.createElement('div');
+    const rising = Math.random() > 0.45;
+    const isSage = Math.random() > 0.6;
+    const size = 2 + Math.random() * 5;
+    const left = Math.random() * 100;
+    const duration = 14 + Math.random() * 18;
+    const delay = initial ? Math.random() * duration : 0;
+    const drift = (Math.random() * 120 - 60) + 'px';
+
+    el.className = 'mote' + (isSage ? ' sage' : '');
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = left + 'vw';
+    el.style.setProperty('--drift', drift);
+    el.style.top = rising ? '100vh' : '-5vh';
+    el.style.animation = (rising ? 'rise' : 'fall') + ' ' + duration + 's linear ' + (-delay) + 's infinite';
+
+    field.appendChild(el);
+  }
+
+  for (let i = 0; i < MOTE_COUNT; i++) spawnMote(true);
+
+  // ---------- scroll reveal ----------
+  const revealTargets = document.querySelectorAll('.line, .closing-final');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  revealTargets.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
