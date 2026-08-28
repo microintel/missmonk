@@ -48,6 +48,8 @@
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
   --nav-bg:    rgba(0,0,0,0.9);
   --topnav-h:  60px;
+  --skel-base: var(--surface3);
+  --skel-shine: rgba(255,255,255,0.06);
 }
 [data-theme="light"] {
   --bg:        #faf9f6;
@@ -69,6 +71,7 @@
   --shadow:    0 4px 20px rgba(0,0,0,0.08);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
   --nav-bg:    rgba(250,249,246,0.92);
+  --skel-shine: rgba(0,0,0,0.045);
 }
 
 /* ════════════════════════════════════════════
@@ -735,6 +738,70 @@ a { color:inherit; text-decoration:none; }
 .card.empty { opacity:.5; cursor:default; }
 .card.empty:hover { transform:none; border-color:var(--border); box-shadow:none; }
 
+/* ════════════════════════════════════════════
+   SKELETON LOADING
+   Shimmer placeholders shown while data.json /
+   API responses are in flight. Same base building
+   blocks (.skel-bar / .skel-block) are reused to
+   assemble the shape of whatever is loading.
+════════════════════════════════════════════ */
+@keyframes skelShine {
+  0%   { background-position:-320px 0; }
+  100% { background-position:320px 0; }
+}
+.skel-bar, .skel-block {
+  position:relative; overflow:hidden;
+  background:var(--skel-base);
+  border-radius:6px;
+}
+.skel-bar::after, .skel-block::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, var(--skel-shine), transparent);
+  background-size:320px 100%;
+  animation:skelShine 1.35s ease-in-out infinite;
+}
+.skel-bar { height:.78rem; }
+.skel-bar.w-100 { width:100%; }
+.skel-bar.w-80  { width:80%; }
+.skel-bar.w-60  { width:60%; }
+.skel-bar.w-45  { width:45%; }
+.skel-bar.w-30  { width:30%; }
+.skel-bar.h-sm  { height:.6rem; }
+.skel-bar.h-lg  { height:1.3rem; }
+
+/* Card-shaped skeleton (matches .card / .card-grid) */
+.skel-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--radius-lg); padding:1.2rem 1.1rem 1rem;
+  display:flex; flex-direction:column; gap:.6rem;
+  animation:fadeUp .35s ease both;
+}
+.skel-card .skel-block.badge { width:64px; height:1.15rem; border-radius:5px; }
+.skel-card .skel-block.icon  { width:34px; height:34px; border-radius:9px; margin-top:.1rem; }
+.skel-card .skel-foot { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:.35rem; }
+
+/* Book-cover-shaped skeleton (matches .book-card / .book-cover-wrap) */
+.skel-card.skel-book { flex-direction:row; align-items:flex-start; gap:1rem; }
+.skel-card.skel-book .skel-block.cover { width:76px; height:112px; border-radius:8px; flex-shrink:0; }
+.skel-card.skel-book .skel-book-body { flex:1; min-width:0; display:flex; flex-direction:column; gap:.5rem; align-self:stretch; }
+.book-list .skel-card.skel-book { flex-direction:column; align-items:stretch; padding:.9rem; }
+.book-list .skel-card.skel-book .skel-block.cover { width:100%; height:auto; aspect-ratio:2/3; border-radius:12px; }
+
+/* Row-shaped skeleton (list rows: members, notifications, search results) */
+.skel-row {
+  display:flex; align-items:center; gap:.8rem;
+  padding:.75rem .9rem; border-radius:12px;
+  border:1.5px solid var(--border); background:var(--surface);
+  animation:fadeUp .35s ease both;
+}
+.skel-row .skel-block.avatar { width:38px; height:38px; border-radius:50%; flex-shrink:0; }
+.skel-row .skel-row-body { flex:1; min-width:0; display:flex; flex-direction:column; gap:.4rem; }
+
+/* Hero-shaped skeleton (welcome/full-page loading states) */
+.skel-hero { display:flex; flex-direction:column; align-items:center; gap:.9rem; padding:3rem 1rem; text-align:center; }
+.skel-hero .skel-block.orb { width:64px; height:64px; border-radius:50%; }
+.skel-hero .skel-bar { margin:0 auto; }
+
 .card-type-badge {
   display:inline-flex; align-items:center; gap:.3rem;
   font-size:.62rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
@@ -1196,6 +1263,15 @@ a { color:inherit; text-decoration:none; }
 .card:nth-child(7){animation-delay:.27s}
 .card:nth-child(8){animation-delay:.31s}
 .card:nth-child(9){animation-delay:.35s}
+.skel-card:nth-child(1),.skel-row:nth-child(1){animation-delay:.03s}
+.skel-card:nth-child(2),.skel-row:nth-child(2){animation-delay:.07s}
+.skel-card:nth-child(3),.skel-row:nth-child(3){animation-delay:.11s}
+.skel-card:nth-child(4),.skel-row:nth-child(4){animation-delay:.15s}
+.skel-card:nth-child(5),.skel-row:nth-child(5){animation-delay:.19s}
+.skel-card:nth-child(6),.skel-row:nth-child(6){animation-delay:.23s}
+.skel-card:nth-child(7),.skel-row:nth-child(7){animation-delay:.27s}
+.skel-card:nth-child(8),.skel-row:nth-child(8){animation-delay:.31s}
+.skel-card:nth-child(9),.skel-row:nth-child(9){animation-delay:.35s}
 
 /* ══════════════════════
    RESPONSIVE — MOBILE & LAPTOP
@@ -2029,12 +2105,7 @@ async function initAppData() {
   applyTheme(savedTheme);
 
   // Show loading state
-  document.getElementById('content').innerHTML = `
-    <div class="welcome-hero">
-      <div class="hero-glow"><i class="bi bi-hourglass-split"></i></div>
-      <h1 class="hero-title">Loading…</h1>
-      <p class="hero-sub">Fetching curriculum from Missmonk</p>
-    </div>`;
+  document.getElementById('content').innerHTML = skelHeroHTML(true);
 
   // Auto-fetch from the live URL
   await fetchFromUrl();
@@ -2572,8 +2643,9 @@ async function selectCourse(course) {
 async function navPush(key, obj) {
   const segs = [...pathStack.slice(1).map(p => p.key), cleanKey(key)];
   if (isLazyStub(obj)) {
+    document.getElementById('content').innerHTML = skelCardsHTML(6);
     try { obj = await ensureExpanded(obj, segs); }
-    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message); return; }
+    catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message); renderContent(); return; }
   }
   pathStack.push({ key: cleanKey(key), obj });
   renderContent();
@@ -2586,6 +2658,7 @@ async function navPush(key, obj) {
 async function navigateToPath(course, cleanSegments, fromPopstate = false) {
   if (!CURRICULUM[course]) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Course not found'); return; }
   currentCourse = course;
+  document.getElementById('content').innerHTML = skelCardsHTML(6);
   let node = CURRICULUM[course];
   let stack;
   try {
@@ -2603,6 +2676,7 @@ async function navigateToPath(course, cleanSegments, fromPopstate = false) {
     }
   } catch (e) {
     showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load: ' + e.message);
+    showWrongPath();
     return;
   }
   currentView = 'home';
@@ -2719,6 +2793,63 @@ function showWrongPath() {
 /* ══════════════════════════════
    RENDER CONTENT
 ══════════════════════════════ */
+/* ══════════════════════════════
+   SKELETON LOADING HELPERS
+   Shimmer placeholders shown wherever a network fetch (lazy node
+   expansion, /full, /search, Firestore reads) leaves the screen
+   waiting. Shapes mirror the real content so the swap-in feels
+   seamless instead of a layout jump.
+══════════════════════════════ */
+function skelCardsHTML(n) {
+  n = n || 8;
+  let out = '';
+  for (let i = 0; i < n; i++) {
+    out += `<div class="skel-card">
+      <div class="skel-block icon"></div>
+      <div class="skel-bar w-80 h-lg"></div>
+      <div class="skel-bar w-60"></div>
+      <div class="skel-foot"><div class="skel-bar w-30 h-sm"></div></div>
+    </div>`;
+  }
+  return `<div class="card-grid">${out}</div>`;
+}
+
+function skelBookGridHTML(n, list) {
+  n = n || 8;
+  let out = '';
+  for (let i = 0; i < n; i++) {
+    out += `<div class="skel-card skel-book">
+      <div class="skel-block cover"></div>
+      <div class="skel-book-body">
+        <div class="skel-bar w-80 h-lg"></div>
+        <div class="skel-bar w-45"></div>
+        <div class="skel-foot"><div class="skel-bar w-30 h-sm"></div></div>
+      </div>
+    </div>`;
+  }
+  return `<div class="${list ? 'book-list' : 'card-grid'}">${out}</div>`;
+}
+
+function skelRowsHTML(n) {
+  n = n || 5;
+  let out = '';
+  for (let i = 0; i < n; i++) {
+    out += `<div class="skel-row">
+      <div class="skel-block avatar"></div>
+      <div class="skel-row-body"><div class="skel-bar w-60"></div><div class="skel-bar w-30 h-sm"></div></div>
+    </div>`;
+  }
+  return out;
+}
+
+function skelHeroHTML(sub) {
+  return `<div class="skel-hero">
+    <div class="skel-block orb"></div>
+    <div class="skel-bar w-45 h-lg" style="max-width:260px;"></div>
+    ${sub ? '<div class="skel-bar w-30" style="max-width:180px;"></div>' : ''}
+  </div>`;
+}
+
 function renderContent() {
   currentView = 'home';
   setBottomNavActive('home');
@@ -3101,7 +3232,10 @@ async function showBooksPage() {
   setBottomNavActive('books');
   if (!curriculumFullyLoaded) {
     document.getElementById('content').innerHTML = `
-      <div class="welcome-hero"><div class="hero-glow"><i class="bi bi-hourglass-split"></i></div><h1 class="hero-title">Loading…</h1></div>`;
+      <div class="page-header">
+        <div class="page-tag teal"><i class="bi bi-collection-fill"></i> Library</div>
+        <div class="page-title">Books</div>
+      </div>` + skelBookGridHTML(8, true);
     try { await ensureFullyLoaded(); }
     catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load books: ' + e.message); return; }
     if (currentView !== 'books') return; // user navigated away while this was loading
@@ -3265,7 +3399,10 @@ async function showProgressPage() {
   setBottomNavActive('progress');
   if (!curriculumFullyLoaded) {
     document.getElementById('content').innerHTML = `
-      <div class="welcome-hero"><div class="hero-glow"><i class="bi bi-hourglass-split"></i></div><h1 class="hero-title">Loading…</h1></div>`;
+      <div class="page-header">
+        <div class="page-tag amber"><i class="bi bi-graph-up-arrow"></i> Progress</div>
+        <div class="page-title">Your Progress</div>
+      </div>` + skelRowsHTML(6);
     try { await ensureFullyLoaded(); }
     catch (e) { showToast('<i class="bi bi-exclamation-triangle-fill"></i> Failed to load progress: ' + e.message); return; }
     if (currentView !== 'progress') return; // user navigated away while this was loading
@@ -3382,8 +3519,8 @@ async function showMembersPage() {
       <div class="page-title">Members</div>
       <div class="page-meta">Loading members…</div>
     </div>
-    <div class="account-card" style="display:flex;justify-content:center;padding:2rem 0;">
-      <div class="loader-dots"><span></span><span></span><span></span></div>
+    <div class="account-card" style="display:flex;flex-direction:column;gap:.6rem;padding:1rem;">
+      ${skelRowsHTML(5)}
     </div>`;
 
   try {
@@ -3798,6 +3935,8 @@ async function performSearch() {
   if (!q) { box.classList.remove('open'); return; }
 
   const myToken = ++searchToken;
+  box.innerHTML = `<div class="sr-section">Searching…</div>${skelRowsHTML(3)}`;
+  box.classList.add('open');
   let items = [];
   try {
     const res = await fetch('/api/curriculum/search?q=' + encodeURIComponent(q) + '&lang=' + encodeURIComponent(currentLanguage));
