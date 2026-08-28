@@ -20,7 +20,8 @@
       "author": "Robert Greene"
     },
     "The Power of Now": {
-      "author": "Eckhart Tolle"
+      "author": "Eckhart Tolle",
+        "languages": ["kn"]
     },
     "The Richest Man in Babylon": {
       "author": "George S. Clason"
@@ -450,16 +451,15 @@
       "48. Assume Formlessness": ""
     },
     "The Power of Now": {
-      "1. You Are Not Your Mind": "",
-      "2. Consciousness: The Way Out of Pain": "",
-      "3. Moving Deeply into the Now": "",
-      "4. Mind Strategies for Avoiding the Now": "",
-      "5. The State of Presence": "",
-      "6. The Inner Body": "",
-      "7. Portals into the Unmanifested": "",
-      "8. Enlightened Relationships": "",
-      "9. Beyond Happiness and Unhappiness There Is Peace": "",
-      "10. The Meaning of Surrender": ""
+      "1. You Are Not Your Mind": "https://microintel.github.io/missmonk/psychology/tponow/ch1.html",
+      "2. Consciousness: The Way Out of Pain": "https://microintel.github.io/missmonk/psychology/tponow/ch2.html",
+      "3. Moving Deeply into the Now": "https://microintel.github.io/missmonk/psychology/tponow/ch3.html",
+      "4. Mind Strategies for Avoiding the Now": "https://microintel.github.io/missmonk/psychology/tponow/ch4.html",
+      "5. The State of Presence": "https://microintel.github.io/missmonk/psychology/tponow/ch5.html",
+      "6. The Inner Body": "https://microintel.github.io/missmonk/psychology/tponow/ch6.html",
+      "7. Portals into the Unmanifested": "https://microintel.github.io/missmonk/psychology/tponow/ch7.html",
+      "8. Enlightened Relationships": "https://microintel.github.io/missmonk/psychology/tponow/ch8.html",
+      "9 & 10. Beyond Happiness and Unhappiness There Is Peace & The Meaning of Surrender": "https://microintel.github.io/missmonk/psychology/tponow/ch9.html"
     },
     "Attached": {
       "1. Decoding Relationship Behavior": "https://microintel.github.io/missmonk/psychology/attached/ch1.html",
