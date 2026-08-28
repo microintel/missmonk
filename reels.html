@@ -138,9 +138,22 @@ a { color:inherit; text-decoration:none; }
 }
 .reel-meaning {
   font-size:.95rem; line-height:1.55; color:var(--text2);
-  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;
-  overflow:hidden;
+  max-height:calc(1.55em * 5);
+  overflow-y:auto; overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin; scrollbar-color:var(--text3) transparent;
+  -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 14px),transparent 100%);
+          mask-image:linear-gradient(180deg,#000 calc(100% - 14px),transparent 100%);
 }
+.reel-meaning.at-bottom { -webkit-mask-image:none; mask-image:none; }
+.reel-meaning::-webkit-scrollbar { width:4px; }
+.reel-meaning::-webkit-scrollbar-thumb { background:var(--text3); border-radius:4px; }
+.reel-meaning-lines {
+  display:none; align-items:center; gap:.3rem;
+  font-size:.68rem; font-weight:600; letter-spacing:.02em;
+  color:var(--text3); margin-top:.45rem; opacity:.8;
+}
+.reel-meaning-lines.show { display:flex; }
 
 .reel-author-row {
   position:absolute; z-index:2; left:0; right:0;
@@ -482,7 +495,7 @@ a { color:inherit; text-decoration:none; }
 @media (max-height:480px) {
   .reel-center { top:44%; }
   .reel-title { font-size:1.25rem; margin-bottom:.5rem; }
-  .reel-meaning { -webkit-line-clamp:2; font-size:.82rem; }
+  .reel-meaning { max-height:calc(1.55em * 2); font-size:.82rem; }
   .reel-author-row { bottom:calc(1rem + env(safe-area-inset-bottom)); gap:.25rem; }
   .reel-icon-row { margin-top:.3rem; gap:.8rem; }
   .reel-like-btn, .reel-share-btn, .reel-whatsapp-btn, .reel-chatgpt-btn { width:40px; height:40px; font-size:1.1rem; }
@@ -1032,6 +1045,7 @@ function cardHtml(idx) {
       <div class="reel-center" onclick="handleCenterTap(event, ${idx})">
         <div class="reel-title">${escapeHtml(it.title)}</div>
         <div class="reel-meaning">${escapeHtml(it.meaning)}</div>
+        <div class="reel-meaning-lines"><i class="bi bi-text-paragraph"></i> <span></span></div>
       </div>
       <div class="reel-author-row">
         <div class="reel-author-main">
@@ -1123,6 +1137,37 @@ function renderFull(order, initialIndex) {
       if (swiperInstance) swiperInstance.slideTo(initialIndex, 0, false);
     });
   }
+}
+
+/* ── MEANING TEXT: line-count badge + scroll-to-read affordance ──
+   .reel-meaning is capped at 5 lines tall with overflow-y:auto instead of
+   being clamped with a trailing "...". When a card's meaning is taller
+   than that, we label it with its real line count so it's clear there's
+   more, and fade the mask out once the user has scrolled to the end. */
+function measureMeaningEl(meaningEl) {
+  if (!meaningEl || meaningEl.dataset.measured === '1') return;
+  const badge = meaningEl.nextElementSibling;
+  const lineHeight = parseFloat(getComputedStyle(meaningEl).lineHeight) || 1;
+  const totalLines = Math.round(meaningEl.scrollHeight / lineHeight);
+  const overflowing = meaningEl.scrollHeight - meaningEl.clientHeight > 2;
+  if (overflowing && badge && badge.classList.contains('reel-meaning-lines')) {
+    badge.querySelector('span').textContent = `${totalLines} lines — scroll to read all`;
+    badge.classList.add('show');
+    meaningEl.addEventListener('scroll', () => {
+      const atBottom = meaningEl.scrollHeight - meaningEl.scrollTop - meaningEl.clientHeight < 4;
+      meaningEl.classList.toggle('at-bottom', atBottom);
+    }, { passive: true });
+  }
+  meaningEl.dataset.measured = '1';
+}
+function measureVisibleMeanings() {
+  document.querySelectorAll('.reel-meaning:not([data-measured="1"])').forEach(measureMeaningEl);
+}
+function setupMeaningObserver() {
+  const feed = document.getElementById('reelFeed');
+  if (!feed) return;
+  const observer = new MutationObserver(() => requestAnimationFrame(measureVisibleMeanings));
+  observer.observe(feed, { childList: true, subtree: true });
 }
 
 /* ══════════════════════════════
@@ -1601,6 +1646,7 @@ function goToChapter(link) {
   window.location.href = url;
 }
 
+setupMeaningObserver();
 loadReels();
 </script>
 </body>
