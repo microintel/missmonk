@@ -294,9 +294,11 @@ a { color:inherit; text-decoration:none; }
   flex-shrink:0;
 }
 .nav-icon-btn:hover { background:var(--surface2); color:var(--text); }
+.nav-icon-btn .nic-label { display:none; }
+.nav-icon-btn .nic-emoji { font-size:1.1rem; line-height:1; }
 
 /* Notification bell + badge */
-.notif-btn-wrap { position:relative; }
+.notif-btn-wrap { position:relative; display:inline-flex; align-items:center; justify-content:center; }
 .notif-badge {
   position:absolute; top:1px; right:1px;
   min-width:16px; height:16px; padding:0 4px;
@@ -1374,12 +1376,43 @@ a { color:inherit; text-decoration:none; }
 }
 /* Laptop optimizations */
 @media (min-width:1024px) {
-  .content { padding:2rem 2.5rem 4rem; }
-  .card-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+  .content { padding:2.2rem 3rem 4rem; max-width:1560px; margin:0 auto; width:100%; }
+  .card-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.15rem; }
+  .card { padding:1.4rem 1.3rem 1.15rem; border-radius:18px; }
+  .card-title { font-size:1rem; }
+
+  /* Sidebar — slightly roomier, clearer active state */
+  .sidebar-inner { padding:1.2rem .9rem; }
+  .course-item { padding:.7rem .8rem; font-size:.9rem; margin-bottom:.25rem; }
+  .course-emoji { width:36px; height:36px; font-size:1.02rem; }
+  .sidebar-section-label { padding:.5rem .8rem .7rem; }
+
+  /* Top nav — bigger, labeled icon buttons */
+  :root { --topnav-h: 68px; }
+  .topnav { padding:0 1.5rem; gap:1rem; }
+  .nav-icon-btn {
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-size:1.2rem; padding:.55rem .9rem .55rem .8rem;
+    border-radius:12px; border:1.5px solid transparent;
+    color:var(--text2);
+  }
+  .nav-icon-btn:hover { border-color:var(--border); background:var(--surface2); }
+  .nav-icon-btn .nic-label { display:inline-block; font-size:.85rem; font-weight:600; color:var(--text2); }
+  .nav-icon-btn:hover .nic-label { color:var(--text); }
+  .nav-icon-btn .nic-emoji { font-size:1.2rem; }
+
+  /* Books — bigger covers and breathing room on desktop */
+  .book-list { grid-template-columns:repeat(auto-fill,minmax(195px,1fr)); gap:2rem; }
+  .book-cover-wrap { width:96px; height:142px; }
 }
 @media (min-width:1280px) {
-  .sidebar { width:272px; }
-  .card-grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); }
+  .sidebar { width:280px; }
+  .card-grid { grid-template-columns:repeat(auto-fill,minmax(232px,1fr)); }
+  .book-list { grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:2.2rem; }
+}
+@media (min-width:1600px) {
+  .content { max-width:1720px; }
+  .book-list { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); }
 }
 /* ══════════════════════════════
    COMPLETION PROMPT (SweetAlert2 theming)
@@ -1499,15 +1532,18 @@ a { color:inherit; text-decoration:none; }
       <div class="search-results" id="searchResults"></div>
     </div>
 
-    <button class="nav-icon-btn nav-account-btn" id="navBooksBtn" title="Books" onclick="showBooksPage()"><i class="bi bi-collection-fill"></i></button>
-    <button class="nav-icon-btn nav-account-btn" id="navProgressBtn" title="Progress" onclick="showProgressPage()"><i class="bi bi-graph-up-arrow"></i></button>
-    <button class="nav-icon-btn" id="navNutsBtn" title="Nuts" onclick="location.href='reels.html'">🥜</button>
-    <button class="nav-icon-btn" id="navLangBtn" title="Content Language" onclick="toggleLangPanel()"><i class="bi bi-translate"></i></button>
-    <button class="nav-icon-btn notif-btn-wrap" id="notifBellBtn" title="Notifications" onclick="openNotifPanel()">
-      <i class="bi bi-bell-fill"></i>
-      <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+    <button class="nav-icon-btn nav-account-btn" id="navBooksBtn" title="Books" onclick="showBooksPage()"><i class="bi bi-collection-fill"></i><span class="nic-label">Books</span></button>
+    <button class="nav-icon-btn nav-account-btn" id="navProgressBtn" title="Progress" onclick="showProgressPage()"><i class="bi bi-graph-up-arrow"></i><span class="nic-label">Progress</span></button>
+    <button class="nav-icon-btn" id="navNutsBtn" title="Nuts" onclick="location.href='reels.html'"><span class="nic-emoji">🥜</span><span class="nic-label">Nuts</span></button>
+    <button class="nav-icon-btn" id="navLangBtn" title="Content Language" onclick="toggleLangPanel()"><i class="bi bi-translate"></i><span class="nic-label">Language</span></button>
+    <button class="nav-icon-btn" id="notifBellBtn" title="Notifications" onclick="openNotifPanel()">
+      <span class="notif-btn-wrap">
+        <i class="bi bi-bell-fill"></i>
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </span>
+      <span class="nic-label">Alerts</span>
     </button>
-    <button class="nav-icon-btn nav-account-btn" title="Account" onclick="showAccountPage()"><i class="bi bi-person-circle"></i></button>
+    <button class="nav-icon-btn nav-account-btn" title="Account" onclick="showAccountPage()"><i class="bi bi-person-circle"></i><span class="nic-label">Account</span></button>
   </nav>
 
   <!-- BODY -->
