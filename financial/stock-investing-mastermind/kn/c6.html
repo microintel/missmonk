@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Ideas ಹೇಗೆ Generate ಮಾಡುವುದು — ZebraLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8252A;
+    --red-dark: #8B1115;
+    --red-light: #F5E8E8;
+    --ink: #0F0F0F;
+    --paper: #F9F5F0;
+    --warm-grey: #E8E2DA;
+    --gold: #D4A83A;
+    --text-muted: #6B6560;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--red);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.04) 40px,
+      rgba(255,255,255,0.04) 42px
+    );
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    z-index: 1;
+  }
+  .chapter-tag {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 8vw, 110px);
+    line-height: 0.92;
+    color: #fff;
+    letter-spacing: 0.01em;
+    margin-bottom: 32px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    font-family: 'DM Serif Display', serif;
+    font-size: 0.9em;
+  }
+  .hero-desc {
+    color: rgba(255,255,255,0.75);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: 40px;
+  }
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 18px;
+    border-radius: 4px;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .source-badge span { color: var(--gold); font-weight: 600; }
+
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    z-index: 1;
+  }
+  .toc-card {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 36px;
+    width: 100%;
+    max-width: 360px;
+    backdrop-filter: blur(10px);
+  }
+  .toc-card h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 24px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item:hover .toc-num { background: var(--gold); color: var(--ink); }
+  .toc-item:hover .toc-label { color: #fff; }
+  .toc-num {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .toc-label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    transition: color 0.2s;
+  }
+
+  /* ── SCROLL INDICATOR ── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 1;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { width: 20px; opacity: 0.5; }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    padding: 100px 0 60px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: var(--warm-grey);
+    flex-shrink: 0;
+    margin-top: -8px;
+  }
+  .section-meta { flex: 1; }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .section-intro {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin-bottom: 40px;
+  }
+
+  /* ── GRID CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--warm-grey);
+    border-radius: 10px;
+    padding: 28px;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+  }
+  .card-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .card h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+  .card .example-tag {
+    display: inline-block;
+    background: var(--red-light);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-top: 14px;
+  }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight-box::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    right: 30px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 200px;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+  }
+  .highlight-box p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.85);
+    max-width: 660px;
+    position: relative;
+  }
+  .highlight-box strong { color: var(--gold); }
+
+  /* ── HORIZONTAL STEPS ── */
+  .steps {
+    display: flex;
+    gap: 0;
+    margin: 40px 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .step {
+    flex: 1;
+    min-width: 160px;
+    padding: 24px 20px;
+    border-top: 3px solid var(--warm-grey);
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .step:hover { border-color: var(--red); }
+  .step:hover .step-num { color: var(--red); }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--warm-grey);
+    display: block;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+  .step h5 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .step p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── EXAMPLE BLOCK ── */
+  .example-block {
+    border-left: 3px solid var(--red);
+    padding: 20px 24px;
+    background: var(--red-light);
+    border-radius: 0 8px 8px 0;
+    margin: 32px 0;
+  }
+  .example-block .ex-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .example-block p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .example-block p strong { color: var(--red-dark); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--warm-grey);
+    margin: 0 0 0;
+  }
+
+  /* ── DO / DON'T ── */
+  .dos-donts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 40px 0;
+  }
+  .do-box, .dont-box {
+    border-radius: 10px;
+    padding: 28px;
+  }
+  .do-box {
+    background: #EAF7EE;
+    border: 1px solid #B7DFC1;
+  }
+  .dont-box {
+    background: #FDF1F0;
+    border: 1px solid #F0C2BF;
+  }
+  .box-title {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .do-box .box-title { color: #2D7A46; }
+  .dont-box .box-title { color: #A32020; }
+  .box-item {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 10px;
+    padding-left: 16px;
+    position: relative;
+  }
+  .box-item::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: inherit;
+    opacity: 0.6;
+  }
+  .do-box .box-item::before { color: #2D7A46; }
+  .dont-box .box-item::before { color: #A32020; }
+
+  /* ── SCREENER SECTION ── */
+  .filter-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 24px 0;
+  }
+  .filter-pill {
+    background: var(--ink);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Sans', monospace;
+    padding: 7px 14px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .filter-result {
+    background: #fff;
+    border: 1px solid var(--warm-grey);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .result-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .result-text p { font-size: 14px; color: var(--text-muted); }
+  .result-text strong { font-size: 16px; color: var(--ink); display: block; }
+
+  /* ── SOURCE FOOTER ── */
+  .sources-section {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 60px 0;
+    margin-top: 80px;
+  }
+  .sources-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+  .sources-inner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .sources-inner .sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 40px;
+  }
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .source-card {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 22px 24px;
+    transition: border-color 0.2s;
+  }
+  .source-card:hover { border-color: var(--gold); }
+  .source-card .s-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .source-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .source-card p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+  }
+  .source-card a {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(212,168,58,0.3);
+  }
+  .source-card a:hover { border-color: var(--gold); }
+
+  /* ── FOOTER STRIP ── */
+  .footer-strip {
+    background: var(--red-dark);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+  }
+  .footer-strip strong { color: rgba(255,255,255,0.7); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 60px 32px 40px; }
+    .hero-right { padding: 0 32px 60px; }
+    main { padding: 0 24px; }
+    .dos-donts { grid-template-columns: 1fr; }
+    .section-header { flex-direction: column; gap: 8px; }
+    .section-num { font-size: 48px; }
+    .sources-inner { padding: 0 24px; }
+    .footer-strip { padding: 24px; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left > * {
+    animation: fadeInUp 0.7s ease both;
+  }
+  .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-left > *:nth-child(2) { animation-delay: 0.25s; }
+  .hero-left > *:nth-child(3) { animation-delay: 0.4s; }
+  .hero-left > *:nth-child(4) { animation-delay: 0.55s; }
+  .toc-card { animation: fadeInUp 0.7s ease 0.5s both; }
+
+/* ── SCREENER SECTION ── */
+.filter-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0;
+}
+.filter-pill {
+  background: var(--ink);
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Sans', monospace;
+  padding: 7px 14px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+.filter-result {
+  background: #fff;
+  border: 1px solid var(--warm-grey);
+  border-radius: 8px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+.result-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--red);
+  line-height: 1;
+}
+.result-text p { font-size: 14px; color: var(--text-muted); }
+.result-text strong { font-size: 16px; color: var(--ink); display: block; }
+
+/* ── SCREENER QUERY BOX ── */
+.screener-query-box {
+  border: 1px solid var(--warm-grey);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0 32px;
+  font-family: 'DM Sans', monospace;
+}
+.sq-header {
+  background: var(--ink);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sq-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.sq-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+.sq-body { background: #fff; }
+.sq-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--warm-grey);
+}
+.sq-row-last { border-bottom: none; }
+.sq-row:hover { background: var(--paper); }
+.sq-line {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  font-weight: 600;
+}
+.sq-code {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red-dark);
+  letter-spacing: 0.01em;
+}
+.sq-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+@media (max-width: 600px) {
+  .sq-row { grid-template-columns: 24px 1fr; }
+  .sq-note { display: none; }
+}
+
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="chapter-tag">Chapter 1 · Stock Investing Mastermind</p>
+    <h1>Investment<br><em>Ideas</em><br>ಹೇಗೆ<br>Generate ಮಾಡುವುದು</h1>
+    <p class="hero-desc">
+      Professional analysts ಗಿಂತ ಮೊದಲೇ ಒಳ್ಳೆಯ stocks ಕಂಡುಹಿಡಿಯಲು retail investors ಬಳಸಬಹುದಾದ
+      6 ಸಾಬೀತಾದ ವಿಧಾನಗಳ (methods) ಸ್ಪಷ್ಟ ವಿವರಣೆ — ZebraLearn ಪುಸ್ತಕದಿಂದ ನೇರವಾಗಿ.
+    </p>
+    <div class="source-badge">
+      <span>📚</span>
+      <span>Source:</span> Stock Investing Mastermind — ZebraLearn Pvt Ltd (2022)
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="toc-card">
+      <h3>Contents</h3>
+      <a class="toc-item" href="#s1">
+        <div class="toc-num">1</div>
+        <span class="toc-label">ನಿಮ್ಮ Profession ಒಂದು Edge</span>
+      </a>
+      <a class="toc-item" href="#s2">
+        <div class="toc-num">2</div>
+        <span class="toc-label">ನಿಮ್ಮ ಸುತ್ತಮುತ್ತಲಿನ Environment ಗಮನಿಸಿ</span>
+      </a>
+      <a class="toc-item" href="#s3">
+        <div class="toc-num">3</div>
+        <span class="toc-label">Leg Work (ನಡೆದಾಡುತ್ತಾ Investing)</span>
+      </a>
+      <a class="toc-item" href="#s4">
+        <div class="toc-num">4</div>
+        <span class="toc-label">ನೀವು ಓದುವುದನ್ನು Analyse ಮಾಡಿ</span>
+      </a>
+      <a class="toc-item" href="#s5">
+        <div class="toc-num">5</div>
+        <span class="toc-label">Stock Screener Tools ಬಳಸಿ</span>
+      </a>
+      <a class="toc-item" href="#s6">
+        <div class="toc-num">6</div>
+        <span class="toc-label">Friends & Brokerage Reports</span>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    ಕೆಳಗೆ Scroll ಮಾಡಿ
+  </div>
+</section>
+
+<main>
+
+<!-- ════════════════════════════════════════════════
+     INTRO
+════════════════════════════════════════════════ -->
+<section class="section" id="intro">
+  <div class="highlight-box">
+    <p>
+      Idea generation ಎನ್ನುವುದು <strong>ಒಂದು science ಅಲ್ಲ — ಇದು ಒಂದು art.</strong> ಇದಕ್ಕೆ ಒಂದು fixed
+      sequence ಅಂತ ಇಲ್ಲ. Ideas ಎಲ್ಲಿಂದಲಾದರೂ, ಯಾವುದೇ situation ನಿಂದಲಾದರೂ ಬರಬಹುದು. ಈ process ಅಂದರೆ
+      ನಿಮ್ಮ ಕಣ್ಣುಗಳನ್ನು ತೆರೆದಿಟ್ಟುಕೊಂಡು ಬದಲಾವಣೆಗಳನ್ನು (change) ಗಮನಿಸುವುದು. ಇದು <strong>ಎಂದೂ
+      ನಿಲ್ಲದ subconscious process</strong> — practice ಮಾಡಿದಷ್ಟೂ ಇನ್ನೂ ಚೆನ್ನಾಗಿ ಆಗುತ್ತಾ ಹೋಗುತ್ತದೆ.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     1. PROFESSION
+════════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 1 · Leverage Your Knowledge</p>
+      <h2 class="section-title">ನಿಮ್ಮ Profession ಏ<br>ನಿಮ್ಮ Competitive Edge</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    Retail investors, finance ಅಲ್ಲದೆ ಬೇರೆ ಬೇರೆ fields ನಲ್ಲಿ professionals ಆಗಿರುತ್ತಾರೆ. ಅವರ ನಿಜವಾದ
+    advantage ಇರುವುದೇ ಇಲ್ಲಿ. Professional analysts ಹೊರಗಿನಿಂದ ನೂರಾರು sectors ನೋಡುತ್ತಾರೆ; ಆದರೆ
+    <em>ನೀವು ಒಂದು sector ಒಳಗೇ ಇದ್ದೀರಿ</em>. ಆ insider perspective ಅನ್ನು ಮೊದಲು ಬಳಸಿಕೊಳ್ಳಿ.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🩺</span>
+      <h4>Doctor / Healthcare</h4>
+      <p>Hospitals ನಿಜವಾಗಿ ಯಾವ pharma brands ಮತ್ತು medical devices ಬಳಸುತ್ತವೆ, ಯಾವ ಹೊಸ treatments
+         ಜನಪ್ರಿಯವಾಗುತ್ತಿವೆ, ಮತ್ತು ಯಾವ companies ಗೆ demand ಹೆಚ್ಚಾಗುತ್ತಿದೆ ಎಂಬುದನ್ನು ಇವರು ಕಣ್ಣಾರೆ ನೋಡುತ್ತಾರೆ.</p>
+      <span class="example-tag">Example: hospital-supply companies ಬೆಳೆಯುವುದನ್ನು ಮೊದಲೇ ಗಮನಿಸುವುದು</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">🤖</span>
+      <h4>Data Scientist / IT</h4>
+      <p>Teams ನಿಜವಾಗಿ production ನಲ್ಲಿ ಯಾವ AI/ML platforms adopt ಮಾಡುತ್ತಾರೆ ಎಂಬುದು ಇವರಿಗೆ ನಿಖರವಾಗಿ
+         ಗೊತ್ತಿರುತ್ತದೆ — ಕೇವಲ LinkedIn ನಲ್ಲಿ trending ಆಗಿರುವುದಲ್ಲ, ಬದಲಿಗೆ ಯಾವುದು ನಿಜವಾದ enterprise
+         contracts ಗೆಲ್ಲುತ್ತಿದೆ ಎಂಬುದು.</p>
+      <span class="example-tag">Example: mass coverage ಬರುವ ಮೊದಲೇ B2B SaaS players ಗುರುತಿಸುವುದು</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧵</span>
+      <h4>Textile Business Owner</h4>
+      <p>Supply chains, logistics partners ಮತ್ತು retail buyers ಬಗ್ಗೆ ಇವರಿಗೆ ನೇರ ಮಾಹಿತಿ ಇರುತ್ತದೆ —
+         ಯಾವ companies ನಿಜವಾಗಿ deliver ಮಾಡುತ್ತವೆ vs. ಯಾವುದು ಬರೀ ಒಳ್ಳೆಯ marketing ಮಾಡುತ್ತವೆ ಎಂದು
+         ಇವರಿಗೆ ಗೊತ್ತಿರುತ್ತದೆ.</p>
+      <span class="example-tag">Example: analysts ಗಿಂತ ಮೊದಲೇ ಒಂದು logistics firm ನ reliability ಗಮನಿಸುವುದು</span>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="background: var(--red);">
+    <p>
+      Investment ideas ಹುಡುಕಲು ಅತ್ಯುತ್ತಮ ಜಾಗ ಎಂದರೆ <strong>ನಿಮ್ಮ ಸ್ವಂತ industry</strong>,
+      ಅಲ್ಲಿ ತಪ್ಪುಗಳಾಗುವ ಸಾಧ್ಯತೆ ತುಂಬಾ ಕಡಿಮೆ ಇರುತ್ತದೆ. Inspiration ಹುಡುಕಲು ಇದೇ ಮೊದಲ ಜಾಗ.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     2. ENVIRONMENT
+════════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 2 · Observe Daily Life</p>
+      <h2 class="section-title">ನಿಮ್ಮ ಸುತ್ತಮುತ್ತಲಿನ<br>Environment ಗಮನಿಸಿ</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    ಪ್ರತಿದಿನ ನೀವು ಬಳಸುವ products ಮತ್ತು brands ಗಳ ಹಿಂದೆ publicly traded companies ಇರುತ್ತವೆ.
+    ಸುಮ್ಮನೆ ಬಳಸುವ ಬದಲು, ಈ ಪ್ರಶ್ನೆ ಕೇಳಿಕೊಳ್ಳಿ: <em>"ಮುಂದಿನ 5 ವರ್ಷ ಕೂಡ ನಾನು ಈ product ಅನ್ನೇ
+    ಖರೀದಿಸುತ್ತೇನಾ?"</em> ಹೌದು ಎಂದಾದರೆ — ಆ company ಬಗ್ಗೆ research ಮಾಡಿ.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h5>Product ಗಮನಿಸಿ</h5>
+      <p>ನೀವು ಪ್ರತಿ ವಾರ Maggi ತಿನ್ನುತ್ತೀರಿ, Parachute oil ಬಳಸುತ್ತೀರಿ, ಅಥವಾ Lay's chips ಖರೀದಿಸುತ್ತೀರಿ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h5>5-year ಪ್ರಶ್ನೆ ಕೇಳಿ</h5>
+      <p>ಇನ್ನೂ 5 ವರ್ಷ ಇದನ್ನೇ ಖರೀದಿಸುತ್ತೇನಾ? Brand ಬೆಳೆಯುತ್ತಿದೆಯಾ?</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h5>Company ಗುರುತಿಸಿ</h5>
+      <p>Maggi → Nestle India. Parachute → Marico. Lay's → PepsiCo / Frito-Lay.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">04</span>
+      <h5>Evaluation ಗೆ ಹೋಗಿ</h5>
+      <p>ಇಷ್ಟು ಬರೀ idea ಅಷ್ಟೇ. ಹಣ ಹಾಕುವ ಮೊದಲು financials ಚೆಕ್ ಮಾಡಿ.</p>
+    </div>
+  </div>
+
+  <div class="example-block">
+    <p class="ex-label">Book Example — Nestle India</p>
+    <p>Maggi ಮತ್ತು KitKat ಅನ್ನು ನಾವು ಚಿಕ್ಕವರಿದ್ದಾಗಿನಿಂದ ತಿನ್ನುತ್ತಿದ್ದೇವೆ. ಮುಂದಿನ 5 ವರ್ಷವೂ
+       ಇವುಗಳನ್ನೇ ಖರೀದಿಸುತ್ತೇನೆ ಎಂಬ ಖಚಿತತೆ ಇದ್ದರೆ, <strong>Nestle India (NSE: NESTLEIND)</strong>
+       ಒಂದು ಒಳ್ಳೆಯ candidate ಆಗುತ್ತದೆ evaluate ಮಾಡಲು — ಇದೀಗ ಖರೀದಿಸಬೇಕು ಎಂದಲ್ಲ, ಆದರೆ
+       investment idea ಆಗಿ ಮತ್ತಷ್ಟು research ಮಾಡಬಹುದು.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     3. LEG WORK
+════════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 3 · Peter Lynch's Approach</p>
+      <h2 class="section-title">Leg Work — ನಡೆಯಿರಿ,<br>ಗಮನಿಸಿ, Invest ಮಾಡಿ</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    Legendary investor <strong>Peter Lynch</strong> ಈ ಪದ "leg work" ಅನ್ನು ಬಳಸಿದರು — ಇದರ ಅರ್ಥ
+    ವಾಸ್ತವವಾಗಿ ಬೇರೆ ಬೇರೆ environments ಗೆ — malls, construction sites, airports — ಹೋಗಿ ಜನ ನಿಜವಾಗಿ
+    ಯಾವ products, brands ಮತ್ತು services ಬಳಸುತ್ತಾರೆ ಮತ್ತು ಅದಕ್ಕೆ ಹಣ ಕೊಡುತ್ತಾರೆ ಎಂಬುದನ್ನು ಗಮನಿಸುವುದು.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🛍️</span>
+      <h4>Mall ನಲ್ಲಿ</h4>
+      <p>ಯಾವ stores ನಲ್ಲಿ ಉದ್ದದ ಸಾಲು ಇದೆ? ಜನ ಹೆಚ್ಚಾಗಿ ಯಾವ bags ಹಿಡಿದುಕೊಂಡಿದ್ದಾರೆ? ಯಾವ food courts
+         ಗೆ ಹೆಚ್ಚು ಜನ ಬರುತ್ತಾರೆ? ಇತ್ತೀಚೆಗೆ ಯಾವ stores ಮುಚ್ಚಿಹೋಗಿವೆ?</p>
+      <span class="example-tag">Signals: Brand health, retail momentum</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏗️</span>
+      <h4>Construction Site ನಲ್ಲಿ</h4>
+      <p>ಯಾವ cement brand ಬಳಸುತ್ತಿದ್ದಾರೆ? ಯಾವ machinery? ಯಾವ crane manufacturer?
+         Transport trucks — ಯಾವ brand?</p>
+      <span class="example-tag">Signals: Infrastructure supply chain ನಲ್ಲಿ ಗೆಲ್ಲುತ್ತಿರುವವರು</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">✈️</span>
+      <h4>Travel ಮಾಡುವಾಗ</h4>
+      <p>ಯಾವ hotel chains ಯಾವಾಗಲೂ full ಆಗಿರುತ್ತವೆ? ಜನ ಹೇಗೆ book ಮಾಡುತ್ತಾರೆ — app ಮೂಲಕವಾ ಅಥವಾ
+         call ಮಾಡಿಯಾ? ಬೇರೆ ಬೇರೆ cities ಗಳ airports ನಲ್ಲಿ ಯಾವ food brands ಕಾಣಿಸುತ್ತವೆ?</p>
+      <span class="example-tag">Signals: Hospitality & booking platform growth</span>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p>
+      Leg work ನಿಮ್ಮನ್ನು ಇನ್ನೂ active ಮತ್ತು observant ಆಗಿ ಮಾಡುತ್ತದೆ. ಇದು <strong>ground ಮೇಲೆ
+      ನಿಜವಾಗಿ ಯಾವ companies ಗೆಲ್ಲುತ್ತಿವೆ</strong> ಎಂಬುದನ್ನು ಯಾವಾಗಲೂ ತೋರಿಸುತ್ತದೆ — ಬರೀ press
+      releases ನಲ್ಲಿ ಗೆಲ್ಲುವ companies ಗಿಂತ ಭಿನ್ನವಾಗಿ. ಹೆಚ್ಚಿನ analysts ಎಂದಿಗೂ ಬೆಳೆಸಿಕೊಳ್ಳದ
+      competitive edge ಇದು.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     4. READING
+════════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 4 · Signal vs Noise</p>
+      <h2 class="section-title">ನೀವು ಓದುವುದನ್ನು<br>Analyse ಮಾಡಿ</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    Newspapers ಮತ್ತು magazines ಇಂದ investment ideas ಸಿಗಬಹುದು — ಆದರೆ selective ಆಗಿ ಓದಿದರೆ ಮಾತ್ರ.
+    ಇಲ್ಲಿ ಒಂದು filtering mindset ಬೇಕು: <em>companies ಮತ್ತು industries ಬಗೆಗಿನ facts</em> ಗಮನಿಸಬೇಕು,
+    opinions, politics, ಅಥವಾ short-term market noise ಅಲ್ಲ.
+  </p>
+
+  <div class="dos-donts">
+    <div class="do-box">
+      <div class="box-title">✅ Good Signal — ಇದರ ಮೇಲೆ ಗಮನ ಕೊಡಿ</div>
+      <p class="box-item">Industry merger news (ಉದಾ., Zee Entertainment + Sony India — ದೊಡ್ಡ OTT market-share ಪರಿಣಾಮ)</p>
+      <p class="box-item">6 ತಿಂಗಳಲ್ಲಿ Petrol price 25% ಏರಿಕೆ → EV tailwind → EV makers & charging station companies research ಮಾಡಿ</p>
+      <p class="box-item">ಒಂದು industry ಯನ್ನೇ structurally ಬದಲಾಯಿಸುವ govt policy</p>
+      <p class="box-item">Long-term impact ಇರುವ company-specific operational update</p>
+    </div>
+    <div class="dont-box">
+      <div class="box-title">🚫 Noise — ಇದನ್ನು ಬಿಟ್ಟುಬಿಡಿ</div>
+      <p class="box-item">TCS Q2 earnings 0.3% beat / miss — ಇದು short-term market noise ಅಷ್ಟೇ</p>
+      <p class="box-item">Political election outcome ಬಗ್ಗೆ commentary</p>
+      <p class="box-item">Broad macro economy opinion pieces</p>
+      <p class="box-item">Analyst "Buy / Sell" target price headlines</p>
+    </div>
+  </div>
+
+  <div class="example-block">
+    <p class="ex-label">Book Example — Air India Acquisition by Tata</p>
+    <p>Tata, Air India ಅನ್ನು ₹18,000 crore ಗೆ ಖರೀದಿಸಿದ್ದು ದೊಡ್ಡ ವಿಷಯ ಅಂತ ಕೇಳಲು ಅನಿಸಬಹುದು. ಆದರೆ
+       Tata Group ನ valuation <strong>$150 billion ಗಿಂತ ಹೆಚ್ಚು</strong>. ಈ acquisition proportionally
+       ತುಂಬಾ ಚಿಕ್ಕದು. ಈ ಒಂದೇ headline ಆಧಾರದ ಮೇಲೆ ನಿಮ್ಮ ಇಡೀ Tata investment thesis ಬದಲಾಯಿಸಬೇಡಿ —
+       news ಓದುವಾಗ <em>proportionality</em> ಅನ್ವಯಿಸುವುದನ್ನು ಈ ಪುಸ್ತಕ ಕಲಿಸುತ್ತದೆ.</p>
+  </div>
+
+  <p style="font-size:15px; color:var(--text-muted); line-height:1.7; margin-top: 24px;">
+    <strong style="color:var(--ink)">ಫಾಲೋ ಮಾಡಬೇಕಾದ ಒಳ್ಳೆಯ magazines:</strong>
+    Forbes, Fortune, Business Today, Bloomberg Businessweek, BW Businessworld, Entrepreneur.
+    Digital magazine subscriptions ಗಾಗಿ recommend ಮಾಡಿದ platform: <em>Magzter</em>.
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     5. SCREENER
+════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════
+     5. SCREENER
+════════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 5 · Data-Driven Discovery</p>
+      <h2 class="section-title">Stock Screener<br>Tools ಬಳಸಿ</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    <strong>Stock screener</strong> ಅಂದರೆ publicly traded ಆಗಿರುವ ಎಲ್ಲಾ companies ಗಳ ಒಂದು database.
+    ನೀವು criteria (filters) ಸೆಟ್ ಮಾಡಿದರೆ, ಆ criteria ಗೆ match ಆಗುವ companies ಅನ್ನು ಮಾತ್ರ screener
+    ತೋರಿಸುತ್ತದೆ — ಸಾವಿರಾರು stocks ಗಳನ್ನು ಒಂದು manageable shortlist ಗೆ ಬದಲಾಯಿಸುತ್ತದೆ.
+  </p>
+
+  <!-- STEPS -->
+  <p class="section-tag" style="margin-bottom:16px;">Screener.in ಬಳಸುವುದು ಹೇಗೆ — Step by Step</p>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h5>screener.in ಗೆ ಹೋಗಿ</h5>
+      <p>ನಿಮ್ಮ browser ನಲ್ಲಿ <strong>screener.in</strong> ಓಪನ್ ಮಾಡಿ. ಇನ್ನೂ account ಇಲ್ಲದಿದ್ದರೆ ಒಂದು free account ಮಾಡಿ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h5>"Screens" ಕ್ಲಿಕ್ ಮಾಡಿ</h5>
+      <p>Top navigation ನಲ್ಲಿ <strong>Screens</strong> ಕ್ಲಿಕ್ ಮಾಡಿ. ಈಗಾಗಲೇ ಇರುವ screens ಮತ್ತು ನಿಮ್ಮದೇ ಸ್ವಂತ ಮಾಡುವ option ಕಾಣುತ್ತದೆ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h5>New Screen Create ಮಾಡಿ</h5>
+      <p><strong>"Create new screen"</strong> ಕ್ಲಿಕ್ ಮಾಡಿ. ನಿಮ್ಮ filters ಟೈಪ್ ಮಾಡಲು ಒಂದು query editor box ಬರುತ್ತದೆ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">04</span>
+      <h5>ನಿಮ್ಮ Queries ಎಂಟರ್ ಮಾಡಿ</h5>
+      <p>ಕೆಳಗೆ ತೋರಿಸಿದಂತೆ ಪ್ರತಿ filter ಅನ್ನು query box ನಲ್ಲಿ ಒಂದೊಂದು ಹೊಸ line ನಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ. Screener field names ಅನ್ನು auto-suggest ಮಾಡುತ್ತದೆ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">05</span>
+      <h5>Screen Run ಮಾಡಿ</h5>
+      <p><strong>"Run this screen"</strong> ಕ್ಲಿಕ್ ಮಾಡಿ. Match ಆಗುವ companies ಒಂದು sortable table ಆಗಿ ಕೆಳಗೆ ಬರುತ್ತವೆ.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">06</span>
+      <h5>Results Analyse ಮಾಡಿ</h5>
+      <p>ಯಾವುದೇ column ಪ್ರಕಾರ sort ಮಾಡಿ. Full financial page ನೋಡಲು ಯಾವುದೇ company ಕ್ಲಿಕ್ ಮಾಡಿ. 2–3 outlier gems ಹುಡುಕಿ.</p>
+    </div>
+  </div>
+
+  <!-- QUERY BOX -->
+  <p class="section-tag" style="margin-bottom:16px;">Screener ನಲ್ಲಿ Paste ಮಾಡಬೇಕಾದ Exact Queries</p>
+  <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px; line-height:1.6;">
+    <strong style="color:var(--ink)">High dividend yield, quality companies</strong> ಹುಡುಕಲು ಪುಸ್ತಕ ಈ screen ಬಳಸುತ್ತದೆ.
+    ಪ್ರತಿ line ಅನ್ನು screener query box ನಲ್ಲಿ paste ಮಾಡಿ (ಒಂದು line ಗೆ ಒಂದು filter):
+  </p>
+
+  <div class="screener-query-box">
+    <div class="sq-header">
+      <span class="sq-label">screener.in · Query Editor</span>
+      <span class="sq-tag">Highest Dividend Yield — Quality Filter</span>
+    </div>
+    <div class="sq-body">
+      <div class="sq-row">
+        <span class="sq-line">1</span>
+        <span class="sq-code">Dividend yield &gt; 2</span>
+        <span class="sq-note">ಅರ್ಥಪೂರ್ಣವಾದ dividend ಕೊಡುವ companies ಮಾತ್ರ</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">2</span>
+        <span class="sq-code">Dividend payout ratio &lt; 100</span>
+        <span class="sq-note">Payout sustainable ಆಗಿದೆ — ಗಳಿಸುವುದಕ್ಕಿಂತ ಹೆಚ್ಚು ಕೊಡುತ್ತಿಲ್ಲ</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">3</span>
+        <span class="sq-code">Profit growth 3Years &gt; 10</span>
+        <span class="sq-note">ಕಡೆಪಕ್ಷ 10% consistent 3-year profit growth</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">4</span>
+        <span class="sq-code">Profit growth 5Years &gt; 10</span>
+        <span class="sq-note">ಕಡೆಪಕ್ಷ 10% consistent 5-year profit growth</span>
+      </div>
+      <div class="sq-row">
+        <span class="sq-line">5</span>
+        <span class="sq-code">Average return on capital employed 3Years &gt; 30</span>
+        <span class="sq-note">High-quality business — capital ಮೇಲೆ ಒಳ್ಳೆಯ returns ಗಳಿಸುತ್ತದೆ</span>
+      </div>
+      <div class="sq-row sq-row-last">
+        <span class="sq-line">6</span>
+        <span class="sq-code">Price to Earning &lt; 6</span>
+        <span class="sq-note">ಅಗ್ಗವಾಗಿ trade ಆಗುತ್ತಿದೆ — undiscovered opportunity ಆಗಿರಬಹುದು</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT EACH QUERY MEANS -->
+  <p class="section-tag" style="margin-top:40px; margin-bottom:16px;">ಪ್ರತಿ Filter ಏನನ್ನು ಪರೀಕ್ಷಿಸುತ್ತದೆ</p>
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">💰</span>
+      <h4>Dividend Yield &gt; 2%</h4>
+      <p>Company shareholders ಗೆ ಹಣವನ್ನು actively ಹಿಂತಿರುಗಿಸುತ್ತಿದೆ ಎಂದರ್ಥ. 2% ಗಿಂತ ಹೆಚ್ಚಿನ yield ಇದ್ದರೆ ಅದು ಬರೀ growth story ಅಲ್ಲ, ನಿಜವಾಗಿ ಹಣ ಗಳಿಸುತ್ತಿರುವ business ಎಂಬ signal.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">✅</span>
+      <h4>Dividend Payout &lt; 100%</h4>
+      <p>Company ಗಳಿಸುವುದಕ್ಕಿಂತ ಹೆಚ್ಚು ಪಾವತಿಸುತ್ತಿಲ್ಲ. Payout 100% ಗಿಂತ ಕಡಿಮೆ ಇದ್ದರೆ dividends safe ಆಗಿರುತ್ತವೆ ಮತ್ತು business ಬೆಳೆಯಲು ಸ್ವಲ್ಪ profit ಉಳಿಸಿಕೊಳ್ಳುತ್ತದೆ.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📈</span>
+      <h4>Profit Growth 3yr &amp; 5yr &gt; 10%</h4>
+      <p>Profits consistently ಬೆಳೆಯುತ್ತಿವೆ — ಒಂದೇ ವರ್ಷದ spike ಅಲ್ಲ. 3-year ಮತ್ತು 5-year ಎರಡೂ filters ಒಟ್ಟಿಗೆ ಇರುವುದರಿಂದ cyclical ಅಥವಾ one-time winners ಅನ್ನು ಹೊರಗಿಡುತ್ತದೆ.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏆</span>
+      <h4>Avg ROCE 3yr &gt; 30%</h4>
+      <p>Return on Capital Employed 30% ಗಿಂತ ಹೆಚ್ಚು ಇರುವುದು ಒಂದು high-quality, competitively advantaged business ನ ಗುರುತು. ಈ bar ಅನ್ನು ಬಹಳ ಕಡಿಮೆ companies ಮಾತ್ರ ದಾಟುತ್ತವೆ.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔍</span>
+      <h4>P/E &lt; 6</h4>
+      <p>Stock ಬಹಳ ಕಡಿಮೆ multiple ನಲ್ಲಿ trade ಆಗುತ್ತಿದೆ. Great fundamentals ಇದ್ದೂ P/E 6 ಗಿಂತ ಕಡಿಮೆ ಇರುವ company ಬಹುಶಃ <strong>undiscovered</strong> ಆಗಿರಬಹುದು — ಅದೇ ಅಲ್ಲಿನ opportunity.</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="filter-result">
+    <div class="result-num">131</div>
+    <div class="result-text">
+      <strong>5,000+ ಗಳಲ್ಲಿ Match ಆದ Companies</strong>
+      <p>ಎಲ್ಲಾ 6 filters ಒಟ್ಟಿಗೆ ಅಪ್ಲೈ ಮಾಡಿದಾಗ. ಈ shortlist ನಿಂದ, ಸ್ಪಷ್ಟವಾದ red flags ಇಲ್ಲದ 2–3 outlier companies ಹುಡುಕಿ.</p>
+    </div>
+  </div>
+
+  <div class="example-block" style="margin-top: 32px;">
+    <p class="ex-label">Key Insight from the Book</p>
+    <p>ಒಂದು company ಗೆ <strong>ಎಲ್ಲಾ green flags</strong> (strong returns + strong growth) ಇದ್ದರೆ,
+       ಅದು ಬಹಳ ಕಡಿಮೆ price ನಲ್ಲಿ trade ಆಗ<em>ಬಾರದು</em>. ಒಂದುವೇಳೆ ಆಗುತ್ತಿದ್ದರೆ, ಅದು ಬಹುಶಃ
+       <strong>undiscovered</strong> ಆಗಿದೆ ಎಂದರ್ಥ — ಮತ್ತು ನೀವು ಹುಡುಕುತ್ತಿರುವ investment
+       opportunity ಇದೇ. Screener results ನಿಂದ ಸಿಗುವ ಆ 2–3 outlier companies ಗಳೇ ನಿಜವಾದ prize.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     6. FRIENDS & REPORTS
+════════════════════════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-meta">
+      <p class="section-tag">Method 6 · Network Intelligence</p>
+      <h2 class="section-title">Friends &amp;<br>Brokerage Reports</h2>
+    </div>
+  </div>
+  <p class="section-intro">
+    ಕೊನೆಯ ಎರಡು sources: ನಂಬಿಕೆಗೆ ಅರ್ಹ peers ನ recommendations ಮತ್ತು brokerage analyst reports.
+    ಎರಡೂ valuable — ಆದರೆ ಸರಿಯಾಗಿ filter ಮಾಡಿದಾಗ ಮಾತ್ರ.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🤝</span>
+      <h4>Peer Recommendations</h4>
+      <p>ನೀವು ಯಾರ research process ಅನ್ನು ನಂಬುತ್ತೀರೋ ಅಂತಹ <strong>3–4 serious investors ಗಳ ಒಂದು
+         ಚಿಕ್ಕ, closed group</strong> ಇಟ್ಟುಕೊಳ್ಳಿ. ಯಾರಾದರೂ ಒಂದು stock recommend ಮಾಡಿದಾಗ, ಇವರನ್ನು
+         ಕೇಳಿ: Debt ಎಷ್ಟಿದೆ? Sales ಎಷ್ಟಿದೆ? Growth rate ಎಷ್ಟಿದೆ?</p>
+      <p style="margin-top:12px; font-size:13px; color:var(--red); font-weight:600;">
+        CNBC ನಲ್ಲಿ ಕೇಳಿದ್ದು ಅಥವಾ WhatsApp forward ಆದರೆ → ಅದನ್ನು Ignore ಮಾಡಿ.
+      </p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📊</span>
+      <h4>Brokerage Reports</h4>
+      <p>Motilal Oswal ನಂತಹ firms ನ analysts ಗೆ management meetings ಮತ್ತು proprietary data ಗೆ
+         access ಇರುತ್ತದೆ. ಅವರ <strong>data ಮತ್ತು insights</strong> ಬಳಸಿ — ಆದರೆ ಅವರ buy/sell
+         recommendations ಮತ್ತು target prices ಅನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ignore ಮಾಡಿ.</p>
+      <p style="margin-top:12px; font-size:13px; color:var(--red); font-weight:600;">
+        ಗಮನ ಕೊಡಿ: revenue trends, margin data, industry dynamics.
+      </p>
+    </div>
+  </div>
+
+  <div class="example-block">
+    <p class="ex-label">Book Example — Rain Industries / Motilal Oswal Report</p>
+    <p>ಪುಸ್ತಕದಲ್ಲಿ <strong>Rain Industries</strong> ಬಗ್ಗೆ ಒಂದು Motilal Oswal report ಉಲ್ಲೇಖಿಸಲಾಗಿದೆ —
+       ಅದರಲ್ಲಿ carbon margins ಸುಧಾರಿಸುತ್ತಿರುವುದು, chemical segment data, ಮತ್ತು debt refinancing
+       ನಿಂದ USD savings ತೋರಿಸಲಾಗಿದೆ. ಆ <em>operational data</em> ಅನ್ನು ತೆಗೆದುಕೊಂಡು ಮತ್ತಷ್ಟು
+       research ಮಾಡಬೇಕು — report ನಲ್ಲಿ ಪ್ರಿಂಟ್ ಆಗಿರುವ <strong>"Buy" rating ಅಥವಾ ₹480 target price
+       ಅನ್ನೇ ನೋಡಿ ನೇರವಾಗಿ ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಬಾರದು</strong>.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════════
+     WHAT TO AVOID
+════════════════════════════════════════════════ -->
+<section class="section" id="avoid">
+  <div class="section-header">
+    <div class="section-num" style="color: #e8c8c8;">✗</div>
+    <div class="section-meta">
+      <p class="section-tag">Critical Warning · From the Book</p>
+      <h2 class="section-title">Investment Ideas ಗಾಗಿ<br>ಎಲ್ಲಿ ಹುಡುಕಬಾರದು</h2>
+    </div>
+  </div>
+  <div class="dos-donts">
+    <div class="dont-box">
+      <div class="box-title">🚫 Incentivized News ಅನ್ನು ನಂಬಬೇಡಿ</div>
+      <p class="box-item">News channels ಗಳಿಗೆ agendas promote ಮಾಡಲು ಮತ್ತು clicks ಗಳಿಸಲು incentive ಇರುತ್ತದೆ.</p>
+      <p class="box-item">Market noise emotional decisions ಗೆ ಕಾರಣವಾಗುತ್ತದೆ, ಇದು long-term returns ಗೆ ಹಾನಿ ಮಾಡುತ್ತದೆ.</p>
+      <p class="box-item">News ಅನ್ನು primary source ಆಗಿ ಬಳಸಬೇಡಿ — ಬರೀ macro facts ಗಮನಿಸಲು ಮಾತ್ರ ಬಳಸಿ.</p>
+    </div>
+    <div class="dont-box">
+      <div class="box-title">🚫 Tips ಅನ್ನು ಕುರುಡಾಗಿ Follow ಮಾಡಬೇಡಿ</div>
+      <p class="box-item">Tips ಯಾವಾಗ ಖರೀದಿಸಬೇಕು ಎಂದು ಹೇಳುತ್ತವೆ, ಆದರೆ ಯಾವಾಗ ಮಾರಬೇಕು ಎಂದು ಎಂದಿಗೂ ಹೇಳುವುದಿಲ್ಲ — ಇದೇ ಅಪಾಯಕಾರಿ gap.</p>
+      <p class="box-item">Tip ಅಷ್ಟು ಒಳ್ಳೆಯದಿದ್ದರೆ, ಅದನ್ನು ಕೊಟ್ಟವರೇ ಸದ್ದಿಲ್ಲದೆ ಅದನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತಿದ್ದರು.</p>
+      <p class="box-item">ನಿಮ್ಮ ಸ್ವಂತ research ಇಲ್ಲದಿದ್ದರೆ, ನಿಮ್ಮ conviction ಕಡಿಮೆ ಇರುತ್ತದೆ → ಸ್ವಲ್ಪ dip ಬಂದರೂ panic-sell ಮಾಡುತ್ತೀರಿ.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════
+     SOURCES
+════════════════════════════════════════════════ -->
+<section class="sources-section">
+  <div class="sources-inner">
+    <h2>Sources Used</h2>
+    <p class="sub">ZebraLearn chapter ಮತ್ತು ಈ page ಒಳಗೆ ಉಲ್ಲೇಖಿಸಿದ ಎಲ್ಲಾ references</p>
+    <div class="sources-grid">
+      <div class="source-card">
+        <div class="s-type">Primary Source · Book</div>
+        <h4>Stock Investing Mastermind</h4>
+        <p>ZebraLearn Pvt Ltd, 2022. ISBN: 9788195895021. Chapter 1 — How to Generate Investment Ideas (Pages 111–120).</p>
+      </div>
+      <div class="source-card">
+        <div class="s-type">Tool · India Screener</div>
+        <h4>Screener.in</h4>
+        <p>Indian public companies ಗಾಗಿ free stock screener. Highest Dividend Yield Shares filter ಮಾಡುವುದನ್ನು ತೋರಿಸಲು Section 1.5 ನಲ್ಲಿ ಬಳಸಲಾಗಿದೆ.</p>
+        <a href="https://www.screener.in/screens/3/highest-dividend-yield-shares/" target="_blank">screener.in/screens/3/highest-dividend-yield-shares/</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">News Example · Merger</div>
+        <h4>Zee Entertainment – Sony India Merger</h4>
+        <p>Investment-worthy news ಗೆ ಉದಾಹರಣೆಯಾಗಿ Section 1.4 ನಲ್ಲಿ ಬಳಸಲಾಗಿದೆ — material market-share ಪರಿಣಾಮ ಇರುವ ದೊಡ್ಡ OTT merger.</p>
+        <a href="https://www.zeenews.in" target="_blank">zeenews.in</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">News Example · Macro</div>
+        <h4>Petrol / Diesel Price Hike</h4>
+        <p>India Today — EV tailwinds ಗೆ macro signal ಉದಾಹರಣೆಯಾಗಿ ಬಳಸಲಾಗಿದೆ. 6 ತಿಂಗಳಲ್ಲಿ Petrol ~25% ಏರಿಕೆ, EV ಮತ್ತು charging companies research ಮಾಡಲು ಕಾರಣವಾಗಿ ಉಲ್ಲೇಖಿಸಲಾಗಿದೆ.</p>
+        <a href="https://www.indiatoday.in" target="_blank">indiatoday.in</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">News Example · Acquisition</div>
+        <h4>Air India – Tata Group Acquisition</h4>
+        <p>India Today — news ಓದುವಾಗ proportionality ವಿವರಿಸಲು ಬಳಸಲಾಗಿದೆ. ₹18,000 crore deal, Tata ಯ $150B+ valuation ಗೆ ಹೋಲಿಸಿದರೆ Tata investment thesis ಗೆ immaterial.</p>
+        <a href="https://www.indiatoday.in" target="_blank">indiatoday.in</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">Brokerage Report Example</div>
+        <h4>Rain Industries — Motilal Oswal</h4>
+        <p>March 2018 results update ಅನ್ನು Section 1.6 ನಲ್ಲಿ ಬಳಸಲಾಗಿದೆ, ಒಂದು brokerage report ಹೇಗೆ ಓದಬೇಕು ಎಂದು ತೋರಿಸಲು: data ತೆಗೆದುಕೊಳ್ಳಿ, ₹480 ನ buy/sell rating ಮತ್ತು TP ಅನ್ನು ignore ಮಾಡಿ.</p>
+        <a href="https://www.motilaloswal.com" target="_blank">motilaloswal.com</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">Magazine Platform</div>
+        <h4>Magzter Digital Newsstand</h4>
+        <p>Forbes, Fortune India, Business Today, Bloomberg Businessweek, ಮತ್ತು Businessworld India access ಮಾಡಲು Section 1.4 ನಲ್ಲಿ recommend ಮಾಡಲಾಗಿದೆ.</p>
+        <a href="https://www.magzter.com" target="_blank">magzter.com</a>
+      </div>
+      <div class="source-card">
+        <div class="s-type">Investment Philosophy</div>
+        <h4>Peter Lynch — "Leg Work" Concept</h4>
+        <p>Investment ideas generate ಮಾಡಲು real-world consumer behavior ಅನ್ನು actively ಗಮನಿಸುವ "leg work" investing approach ನ originator ಎಂದು Section 1.3 ನಲ್ಲಿ credit ಕೊಡಲಾಗಿದೆ.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer-strip">
+  <strong>Stock Investing Mastermind, Chapter 1 — ZebraLearn Pvt Ltd (2022)</strong> ಆಧಾರಿತ Explainer page.
+  ಇದು ಕೇವಲ educational purposes ಗಾಗಿ ಮಾತ್ರ. ಇದು financial advice ಅಲ್ಲ.
+</div>
+
+<script>
+  // Intersection Observer for scroll animations
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
