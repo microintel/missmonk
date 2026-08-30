@@ -830,7 +830,7 @@ a { color:inherit; text-decoration:none; }
 .card:not(.empty):hover .card-arrow { color:var(--blue); transform:translate(2px,-2px); }
 
 /* Footer action group (reels shortcut + arrow) on book cards */
-.card-footer-actions { display:flex; align-items:center; gap:.55rem; }
+.card-footer-actions { display:flex; align-items:center; gap:.55rem; margin-left:auto; }
 .book-lang-badge {
   display:inline-flex; align-items:center; gap:.3rem;
   font-size:.66rem; font-weight:600; color:var(--text2);
@@ -2920,7 +2920,8 @@ function renderContent() {
   const obj      = cur.obj;
   const depth    = pathStack.length - 1;
   const depthLabels = ['', 'Semester', 'Subject', 'Chapter', 'Topic', 'Subtopic'];
-  const childLabel  = depthLabels[depth] || 'Item';
+  const curBookMeta = BOOK_META[cur.key] || BOOK_META[cleanKey(cur.key)];
+  const childLabel  = curBookMeta ? 'Book' : (depthLabels[depth] || 'Item');
   const meta        = COURSE_META[currentCourse] || { color:'blue' };
 
   // Breadcrumb
@@ -2934,15 +2935,20 @@ function renderContent() {
 
   const topicPath    = pathStack.map(p => p.key).join(' › ');
 
+  const pageTagIcon = curBookMeta ? '<i class="bi bi-book-fill"></i>' : (COURSE_META[currentCourse]?.icon||'<i class="bi bi-collection-fill"></i>');
+  const pageMetaLine = curBookMeta
+    ? `by ${curBookMeta.author || 'Unknown author'}`
+    : `${childCount} item${childCount!==1?'s':''} · ${countDeep(obj)} total · ${countLessons(obj)} lesson${countLessons(obj)!==1?'s':''}`;
+
   let html = `
     <div class="breadcrumb">${crumbs}</div>
     <div class="depth-prog"><div class="depth-fill" style="width:${pct}%"></div></div>
     <div class="page-header">
       <div class="page-header-row">
         <div>
-          <div class="page-tag ${meta.color}">${COURSE_META[currentCourse]?.icon||'<i class="bi bi-collection-fill"></i>'} ${childLabel||'Course'}</div>
+          <div class="page-tag ${meta.color}">${pageTagIcon} ${childLabel||'Course'}</div>
           <div class="page-title">${cur.key}</div>
-          <div class="page-meta">${childCount} item${childCount!==1?'s':''} · ${countDeep(obj)} total · ${countLessons(obj)} lesson${countLessons(obj)!==1?'s':''}</div>
+          <div class="page-meta">${pageMetaLine}</div>
         </div>
         <button class="share-btn" onclick="openSharePopup('${topicPath.replace(/'/g,"\\'")}', '${buildShareUrl().replace(/'/g,"\\'")}')"><i class="bi bi-share-fill"></i> <span>Share</span></button>
       </div>
@@ -3135,7 +3141,6 @@ function bookCardHTML(key, meta, lcount, pct) {
       <div class="book-card-author">by ${meta.author || 'Unknown author'}</div>
       ${bookLangBadgeHTML(meta)}
       <div class="card-footer">
-        <span class="card-count">${lcount} lesson${lcount!==1?'s':''}</span>
         <div class="card-footer-actions">
           <button class="book-reels-btn" title="Read as reels" data-book="${ck.replace(/"/g,'&quot;')}"><span aria-hidden="true">🥜</span></button>
           <span class="card-arrow">→</span>
@@ -3334,7 +3339,6 @@ async function showBooksPage() {
           <div class="book-card-author">by ${b.meta.author || 'Unknown author'}</div>
           ${bookLangBadgeHTML(b.meta)}
           <div class="card-footer">
-            <span class="card-count">${b.lcount} lesson${b.lcount!==1?'s':''}</span>
             <div class="card-footer-actions">
               <button class="book-reels-btn" title="Read as reels" data-book="${cleanKey(b.key).replace(/"/g,'&quot;')}"><span aria-hidden="true">🥜</span></button>
               <span class="card-arrow">→</span>
