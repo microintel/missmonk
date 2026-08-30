@@ -28,7 +28,8 @@
     },
     "Stock Investing Mastermind": {
       "author": "Zebra Learn",
-      "cover": "https://zebralearn-store.s3.ap-south-1.amazonaws.com/uploads/all/eIwqSuLObgLyYd67H9qZMEPNRxDLE6WLscTzdjGu.png"
+      "cover": "https://zebralearn-store.s3.ap-south-1.amazonaws.com/uploads/all/eIwqSuLObgLyYd67H9qZMEPNRxDLE6WLscTzdjGu.png",
+      "languages": ["kn"]
     },
     "Attached": {
       "author": "Amir Levine"
@@ -139,68 +140,32 @@
     "Stock Investing Mastermind": {
       "Stock Market": {
         "Basics of Stock Market": {
-          "Role of Stock Market": {},
-          "what is stock market & market cap": {},
-          "size of companies": {},
-          "what is sensex & nifty": {},
           "Chapter 1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c1.html"
         },
         "How Stock Prices Move?": {
-          "Understanding Earnings": {
-            "Indian Economy": "tourism industry, dairy industry ,film , aviation, textile, shippment, papar, agriculture industry "
-          },
-          "True Value and Market Value": {},
-          "How Fluctuations in Market Create \rOpportunities": {},
-          "Value creation": {},
           "Chapter 2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c2.html"
         },
         "Set-up yourTrading System": {
-          "Accounts Required to trade in stock market": "",
           "Chapter 3": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c3.html"
         }
       },
       "Stock Research": {
         "Investing vs Trading": {
-          "Difference between trading & investing": "",
-          "Differences in the mindsets of traders and investors": "",
           "Chapter 4": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c4.html"
         },
         "Institutional v/s Retail Investors": {
-          "Difference between Institutional & \rRetail Investors": "",
-          "Advantages to Institutional \rInvestors over Retail Investors": "",
-          "How Diversification Works?": "",
           "Chapter 5": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c5.html"
         }
       },
       "Evaluating Companies": {
         "How to generate income ideas": {
-          "How Your profession helps generate ideas": "",
-          "look around yourself i.e your environment": "",
-          "walking & investing": "",
-          "analyze what you read": "",
-          "use tools like screener": "",
-          "what friends and report says": "",
           "Chapter 6": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c6.html"
         },
         "Stock Market Report - Where to Find Information": {
-          "Primary Sources of Information": "",
-          "Secondary Sources of Information": "",
-          "Sources Which Shouldn’t be Used": "",
-          "How to Research Within 4-5 Hours a \rWeek": "",
           "Chapter 7": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c7.html"
         },
         "How to Read Annual Report": {
           "Sections of Annual Report": {
-            "Introduction and Highlights": "",
-            "Chairman’s Letter and CEO’s Letter": "",
-            "Responsibility Reports": "",
-            "Management Discussion & Analysis": "",
-            "Director’s Report": "",
-            "Corporate Governance Report": "",
-            "Board of Directors and Management Team": "",
-            "Financials - Consolidated and Standalone": "",
-            "Notes to Financials": "",
-            "Notice to AGM": "",
             "Chapter 8.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-1.html",
             "Chapter 8.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c8-2.html"
           },
@@ -209,31 +174,16 @@
           }
         },
         "Basics of Financial Statment": {
-          "Income Statement & Balance Sheet": "",
-          "Cash Flow Statement": "",
           "Chapter 9": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c9.html"
         },
         "Tools to use": {
-          "Screener.in": "",
-          "Ticker by Finology": "",
-          "Morning Star": "",
           "Chapter 10": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10.html"
         },
         "How To Analyze a Company": {
-          "Introduction": "",
-          "Product & Services of the Company": "",
-          "Industry Research": "",
-          "Business Research": "",
-          "Management Background": "",
           "Chapter 10.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-1.html",
           "Chapter 10.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c10-2.html"
         },
         "Financial Ratios": {
-          "Introduction": "",
-          "Understanding of Various Ratios": "",
-          "Common Sizing": "",
-          "Key Performance Indicators": "",
-          "Ownership Structure of Stocks": "",
           "Chapter 11.1": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-1.html",
           "Chapter 11.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-2.html"
         }
