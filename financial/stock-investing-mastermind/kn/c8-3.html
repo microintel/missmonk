@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annual Report ಓದುವುದು ಹೇಗೆ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1018;
+    --paper: #faf7f2;
+    --cream: #f0ebe0;
+    --plum: #6b2d5e;
+    --plum-light: #8b3d7e;
+    --plum-pale: #f5eaf3;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --sage: #4a7c59;
+    --sage-light: #e8f2ec;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --text-muted: #6b5f68;
+    --border: #d8cfd5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--plum);
+    color: #fff;
+    padding: 80px 40px 72px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,.03) 60px,
+      rgba(255,255,255,.03) 61px
+    );
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp .6s .1s ease forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    opacity: 0;
+    animation: fadeUp .6s .2s ease forwards;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold-light);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,.72);
+    max-width: 520px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp .6s .35s ease forwards;
+  }
+  .section-count {
+    display: inline-block;
+    margin-top: 36px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 100px;
+    padding: 8px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: .82rem;
+    letter-spacing: .08em;
+    color: var(--gold-light);
+    opacity: 0;
+    animation: fadeUp .6s .45s ease forwards;
+  }
+
+  /* ── MASTER RULE ── */
+  .master-rule {
+    background: var(--gold);
+    padding: 22px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .master-rule .icon { font-size: 1.4rem; }
+  .master-rule p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1018;
+    text-align: center;
+  }
+  .master-rule span {
+    font-style: italic;
+    font-weight: 400;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    color: #3a2a10;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-block {
+    border-bottom: 1px solid var(--border);
+    padding: 60px 0;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+  .section-block.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .section-num {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--plum);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-title-wrap {}
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--plum);
+  }
+
+  /* checklist items */
+  .checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .check-item {
+    background: var(--plum-pale);
+    border: 1px solid #dcc8d8;
+    border-radius: 10px;
+    padding: 14px 16px 14px 42px;
+    position: relative;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--plum);
+  }
+  .check-item::before {
+    content: '✓';
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    color: var(--sage);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* description block */
+  .desc {
+    font-size: .95rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+
+  /* ── FACT vs OPINION ── */
+  .fact-opinion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media(max-width: 560px) { .fact-opinion { grid-template-columns: 1fr; } }
+  .fo-card {
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .fo-card.fact {
+    background: var(--sage-light);
+    border: 1.5px solid #b5d9c3;
+  }
+  .fo-card.opinion {
+    background: var(--red-light);
+    border: 1.5px solid #f0c0bb;
+  }
+  .fo-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .fo-card.fact .fo-label { color: var(--sage); }
+  .fo-card.opinion .fo-label { color: var(--red); }
+  .fo-badge {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+  .fo-card.fact .fo-badge { background: var(--sage); color: #fff; }
+  .fo-card.opinion .fo-badge { background: var(--red); color: #fff; }
+  .fo-quote {
+    font-size: .88rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  /* ── TONE PILLS ── */
+  .tone-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .tone-pill {
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: .85rem;
+    font-weight: 500;
+    background: var(--plum-pale);
+    border: 1.5px solid #dcc8d8;
+    color: var(--plum);
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin: 20px 0;
+    font-size: .9rem;
+    color: var(--ink);
+  }
+  .info-box strong { color: var(--plum); }
+
+  /* ── PPE VISUAL ── */
+  .ppe-example {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    margin: 24px 0;
+  }
+  .ppe-example h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 18px;
+  }
+  .ppe-bar-wrap { margin-bottom: 14px; }
+  .ppe-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    margin-bottom: 5px;
+    color: rgba(255,255,255,.75);
+  }
+  .ppe-bar-track {
+    height: 10px;
+    background: rgba(255,255,255,.12);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .ppe-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s ease;
+  }
+
+  /* ── RESOLUTION TABLE ── */
+  .resolution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  @media(max-width: 560px){ .resolution-grid { grid-template-columns: 1fr; } }
+  .res-card {
+    border-radius: 12px;
+    padding: 20px;
+    border: 1.5px solid var(--border);
+  }
+  .res-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--plum);
+    margin-bottom: 8px;
+  }
+  .res-card p { font-size: .88rem; color: var(--text-muted); }
+  .res-card.special { background: #fff8ee; border-color: var(--gold); }
+  .res-card.special h4 { color: #8a5500; }
+  .res-card.special .res-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+  }
+
+  /* ── PROGRESS STEPS ── */
+  .steps-trail {
+    position: relative;
+    padding-left: 32px;
+    margin: 24px 0;
+  }
+  .steps-trail::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--plum), var(--gold));
+    border-radius: 2px;
+  }
+  .step-row {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .step-row::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--plum);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 2px var(--plum);
+  }
+  .step-row h4 {
+    font-size: .92rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .step-row p { font-size: .85rem; color: var(--text-muted); }
+
+  /* ── ALERT CALLOUT ── */
+  .alert {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #fff8ee;
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+  }
+  .alert-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+  .alert p { font-size: .9rem; color: #5a3800; }
+  .alert strong { display: block; font-size: .95rem; margin-bottom: 4px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 36px 24px;
+    font-size: .82rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: .06em;
+  }
+  .footer strong { color: var(--gold-light); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 40px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 10px 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-eyebrow">Investor ಗಳಿಗಾಗಿ ಮಾರ್ಗದರ್ಶಿ</p>
+  <h1>ಒಂದು <em>Annual Report</em> ಅನ್ನು ಹೇಗೆ ಓದುವುದು</h1>
+  <p class="hero-sub">ಒಂದು ಕಂಪನಿಯ Annual Report ಅನ್ನು ವಿಶ್ಲೇಷಿಸುವಾಗ ಪ್ರತಿ section ನಲ್ಲಿ ಏನನ್ನು ಗಮನಿಸಬೇಕು, ಏನನ್ನು ಬಿಡಬೇಕು ಎಂಬುದನ್ನು practical ಆಗಿ, section-by-section ವಿವರಿಸುವ ಗೈಡ್ ಇದು.</p>
+  <span class="section-count">ಒಟ್ಟು 10 sections ಇಲ್ಲಿ ಕವರ್ ಆಗಿವೆ</span>
+</header>
+
+<!-- MASTER RULE -->
+<div class="master-rule">
+  <span class="icon">⚖️</span>
+  <p>
+    ಗೋಲ್ಡನ್ ರೂಲ್: Opinion ಗಳಲ್ಲ, Facts ಮೇಲೆ ಗಮನ ಕೊಡಿ
+    <span>Management ಇಂತಹ report ಗಳನ್ನು investor ಗಳನ್ನು impress ಮಾಡಲು ಬರೆಯುತ್ತಾರೆ. ನೀವು ಮಾಡಬೇಕಾಗಿರುವ ಕೆಲಸ ಅಂದ್ರೆ data ಅನ್ನು extract ಮಾಡುವುದು, ಅವರ ಮಾತಿಗೆ ಒಪ್ಪಿಕೊಳ್ಳುವುದಲ್ಲ.</span>
+  </p>
+</div>
+
+<!-- MAIN -->
+<main class="container">
+
+  <!-- 1. INTRODUCTION -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಒಂದು</p>
+        <h2 class="section-title">Introduction &amp; Highlights</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Report ನ ಈ ಮೊದಲ section ಅಂದ್ರೆ management investor ಗಳಿಗೆ ಕೊಡುವ ಒಂದು sales pitch ಇದ್ದ ಹಾಗೆ. ಇಲ್ಲಿ verify ಮಾಡಬಹುದಾದ data ಮೇಲೆ ಮಾತ್ರ ಗಮನ ಕೊಡಿ, ಅದರ ಸುತ್ತ ಇರುವ ಸ್ಟೋರಿ ಮೇಲಲ್ಲ.</p>
+    <div class="checklist">
+      <div class="check-item">ಕಂಪನಿ ಕೊಡುವ Products &amp; Services</div>
+      <div class="check-item">ಸಂಖ್ಯೆಗಳ ಸಮೇತ ಆ ವರ್ಷದ Achievements</div>
+      <div class="check-item">Year-on-year Growth figures</div>
+      <div class="check-item">Management ತನ್ನನ್ನು ಹೇಗೆ ತೋರಿಸಿಕೊಳ್ಳಲು ಬಯಸುತ್ತದೆ</div>
+    </div>
+
+    <p style="font-size:.88rem;font-weight:600;color:var(--ink);margin-bottom:12px;">ವ್ಯತ್ಯಾಸ ಗುರುತಿಸಿ: Fact vs. Opinion</p>
+    <div class="fact-opinion">
+      <div class="fo-card fact">
+        <div class="fo-label">
+          <span class="fo-badge">✓</span> ಇದು Fact — ಇದನ್ನ ಬಳಸಿ
+        </div>
+        <p class="fo-quote">"ಈ fiscal year ನಲ್ಲಿ ನಮ್ಮ revenue ₹620 crores ಇದೆ, ಇದು ಹಿಂದಿನ fiscal year ಗಿಂತ 24% ಹೆಚ್ಚಳ ತೋರಿಸುತ್ತದೆ." — ಇಲ್ಲಿ specific ಸಂಖ್ಯೆಗಳಿವೆ, ಇದನ್ನ verify ಮಾಡಬಹುದು.</p>
+      </div>
+      <div class="fo-card opinion">
+        <div class="fo-label">
+          <span class="fo-badge">✗</span> ಇದು Opinion — ಇದನ್ನ ಸ್ಕಿಪ್ ಮಾಡಿ
+        </div>
+        <p class="fo-quote">"ನಮ್ಮ sales ಈಗ ಗಣನೀಯವಾಗಿ ಹೆಚ್ಚಾಗಿದೆ, ಇದನ್ನ ಇನ್ನೂ develop ಮಾಡುತ್ತೇವೆ ಎಂಬ ಬಗ್ಗೆ ನಮಗೆ confidence ಇದೆ." — ಇಲ್ಲಿ ಯಾವುದೇ concrete number ಇಲ್ಲ, ಇದು ಕೇವಲ ಮಾತು.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CHAIRMAN / CEO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಎರಡು</p>
+        <h2 class="section-title">Chairman's Speech &amp; CEO's Letter</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಇದನ್ನ investor-relations goal ಇಟ್ಟುಕೊಂಡು communications professional ಗಳು ಬರೆಯುತ್ತಾರೆ. ಇದನ್ನ leadership ನ ನೇರವಾದ ಅಭಿಪ್ರಾಯ ಅಂತ ತಿಳಿಯಬೇಡಿ — ಬರೀ direction ಮತ್ತು tone ಗೊತ್ತಾಗಲು ಓದಿ.</p>
+    <div class="checklist">
+      <div class="check-item">ಮುಂದಿನ 2–5 ವರ್ಷಗಳಿಗೆ Company ಯ goals</div>
+      <div class="check-item">Business ಯಾವ direction ಕಡೆಗೆ ಹೋಗುತ್ತಿದೆ</div>
+    </div>
+    <p style="font-size:.88rem;font-weight:600;color:var(--ink);margin:20px 0 12px;">Management ನ tone ಅನ್ನು ಗಮನಿಸಿ:</p>
+    <div class="tone-grid">
+      <div class="tone-pill">📈 Bullish ಇದೆಯಾ ಅಥವಾ Bearish ಇದೆಯಾ?</div>
+      <div class="tone-pill">😊 Positive ಇದೆಯಾ ಅಥವಾ Negative ಇದೆಯಾ?</div>
+      <div class="tone-pill">🔭 Overall outlook ಏನಿದೆ?</div>
+    </div>
+    <div class="info-box">
+      <strong>Pro tip:</strong> Practice ಮಾಡುತ್ತಾ ಹೋದಂತೆ, ಸಾಲುಗಳ ನಡುವೆ ಓದುವ instinct ನಿಮಗೆ ತಾನಾಗಿ ಬರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನೀವು ಕಟ್ಟಿಕೊಳ್ಳುವ ಪ್ರತಿಯೊಂದು impression ಅನ್ನೂ report ನಲ್ಲಿ ಬೇರೆಡೆ ಇರುವ concrete fact ಗೆ ಜೋಡಿಸಿ ನೋಡಿ.
+    </div>
+  </div>
+
+  <!-- 3. RESPONSIBILITY -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಮೂರು</p>
+        <h2 class="section-title">Responsibility Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಕಂಪನಿಯ social ಮತ್ತು environmental commitment ಗಳ ಬಗ್ಗೆ ಚಿಕ್ಕ overview ಇದು. ಒಬ್ಬ retail investor ಗೆ ಇದನ್ನ ಪೂರ್ತಿ ಓದಲೇಬೇಕು ಅಂತ ಇಲ್ಲ, ಆದ್ರೆ ಕಂಪನಿಯ values ಏನು ಅಂತ ಗೊತ್ತಾಗುತ್ತದೆ.</p>
+    <div class="checklist">
+      <div class="check-item">Corporate Social Responsibility (CSR)</div>
+      <div class="check-item">Environmental, Social &amp; Governance (ESG)</div>
+      <div class="check-item">Sustainability Report</div>
+      <div class="check-item">Business Responsibility Report</div>
+    </div>
+  </div>
+
+  <!-- 4. MD&A -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ನಾಲ್ಕು</p>
+        <h2 class="section-title">Management Discussion &amp; Analysis (MD&amp;A)</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಇದು information ಅತಿ ಹೆಚ್ಚಿರುವ section ಗಳಲ್ಲಿ ಒಂದು. ಪ್ರತಿ ಸಾಲನ್ನೂ ಓದಿ. Marketing language ಇಲ್ಲದೆ, ನಿಜವಾದ business story ಇರುವುದೇ ಇಲ್ಲಿ.</p>
+    <div class="steps-trail">
+      <div class="step-row">
+        <h4>Industry Status &amp; Updates</h4>
+        <p>Sector ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವ industry-specific data ಮತ್ತು macro trend ಗಳನ್ನು ಇಲ್ಲಿಂದ extract ಮಾಡಿ.</p>
+      </div>
+      <div class="step-row">
+        <h4>Performance of Each Business Segment</h4>
+        <p>ಪ್ರತಿಯೊಂದು division ಪ್ರತ್ಯೇಕವಾಗಿ ಹೇಗೆ perform ಮಾಡುತ್ತಿದೆ ಎಂಬುದನ್ನ ಅರ್ಥ ಮಾಡಿಕೊಳ್ಳಿ.</p>
+      </div>
+      <div class="step-row">
+        <h4>State of Competition</h4>
+        <p>ಮುಖ್ಯ competitor ಗಳು ಯಾರು, ಕಂಪನಿಯ positioning ಏನು ಎಂಬುದನ್ನ ಗುರುತಿಸಿ.</p>
+      </div>
+      <div class="step-row">
+        <h4>Future Goals &amp; Outlook</h4>
+        <p>ಕಂಪನಿ ಹೇಳಿಕೊಂಡ target ಗಳನ್ನ ಗಮನಿಸಿ — ಇವುಗಳನ್ನ ಮುಂದಿನ ವರ್ಷದ report ನೊಂದಿಗೆ ಹೋಲಿಸಿ verify ಮಾಡಬಹುದು.</p>
+      </div>
+      <div class="step-row">
+        <h4>Financial Highlights</h4>
+        <p>ಮುಖ್ಯ numbers ಇಲ್ಲಿ summarise ಆಗಿರುತ್ತವೆ — ಇವುಗಳನ್ನ ಪೂರ್ತಿ financial statements ನೊಂದಿಗೆ cross-check ಮಾಡಿ.</p>
+      </div>
+      <div class="step-row">
+        <h4>Risks Foreseen</h4>
+        <p>Management disclose ಮಾಡಿದ risk ಗಳಿಗೆ legal ಆಗಿ importance ಇರುತ್ತದೆ. ಇವುಗಳನ್ನ skip ಮಾಡಬೇಡಿ.</p>
+      </div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">⚠️</span>
+      <p><strong>Objective ಆಗಿ ಇರಿ.</strong> Positive ಅಥವಾ negative opinion ಕಟ್ಟಿಕೊಳ್ಳುವ ಬದಲು, business ಬಗ್ಗೆ ಹೇಳಿರುವ facts ಮೇಲೆ ಗಮನ ಕೊಡಿ — ಮುಖ್ಯವಾಗಿ risk disclosure ಗಳ ಮೇಲೆ.</p>
+    </div>
+  </div>
+
+  <!-- 5. DIRECTORS REPORT -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಐದು</p>
+        <h2 class="section-title">Directors' Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಈ section ನಲ್ಲಿ Annexures ಗಳೇ ಅತಿ ಮುಖ್ಯ ಭಾಗ. ಅಲ್ಲಿ legally required disclosure ಗಳಿರುತ್ತವೆ, ಅವುಗಳನ್ನ PR team ಗಳು ಬೇರೆಥರ ತೋರಿಸಿಕೊಳ್ಳಲು ಆಗಲ್ಲ.</p>
+    <div class="checklist">
+      <div class="check-item">Annexures — ಮುಖ್ಯ disclosures</div>
+      <div class="check-item">Management remuneration ಬಗ್ಗೆ details</div>
+    </div>
+    <div class="info-box">
+      <strong>Management ನ pay ಯಾಕೆ ಮುಖ್ಯ:</strong> Management ನ remuneration ಅನ್ನು ಕಂಪನಿಯ profitability ಮತ್ತು shareholder returns ಜೊತೆ ಹೋಲಿಸಿ ನೋಡಿದಾಗ, leadership investor ಗಳೊಂದಿಗೆ aligned ಆಗಿದೆಯಾ ಅಥವಾ ಬರೀ ತಮಗೇ reward ಕೊಟ್ಟುಕೊಳ್ಳುತ್ತಿದ್ದಾರಾ ಎಂಬುದು ಗೊತ್ತಾಗುತ್ತದೆ.
+    </div>
+  </div>
+
+  <!-- 6. CORP GOVERNANCE -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಆರು</p>
+        <h2 class="section-title">Corporate Governance Report</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಇಲ್ಲಿ governance ನ architecture ಗೊತ್ತಾಗುತ್ತದೆ — board ನಲ್ಲಿ ಯಾರಿದ್ದಾರೆ, ಯಾವ committee ಗಳಿವೆ, ಮತ್ತು ಕಂಪನಿಯ ownership ಕೊನೆಗೆ ಯಾರ ಬಳಿ ಇದೆ ಎಂಬುದು.</p>
+    <div class="checklist">
+      <div class="check-item">Board composition &amp; independence</div>
+      <div class="check-item">Committee structure</div>
+      <div class="check-item">Ownership structure</div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">🔍</span>
+      <p><strong>ಮುಖ್ಯ ಪ್ರಶ್ನೆ:</strong> Board ನಲ್ಲಿರುವ directors ಎಷ್ಟು independent ಆಗಿದ್ದಾರೆ? Promoter ನೇ appoint ಮಾಡಿದ insiders ಇಂದ board dominate ಆಗಿದ್ರೆ, ಅದು governance ನ red flag.</p>
+    </div>
+  </div>
+
+  <!-- 7. CORP INFO / MGMT TEAM -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಏಳು</p>
+        <h2 class="section-title">Corporate Information &amp; Management Team</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">ಇಲ್ಲಿ directors ಮತ್ತು key management personnel ಗಳ list ಇರುತ್ತದೆ. ಇದನ್ನ year-over-year ಹೋಲಿಸಿ ನೋಡಿದಾಗ ಹೆಚ್ಚು value ಸಿಗುತ್ತದೆ — ಇಲ್ಲಿ ಆಗುವ changes ಸಾಮಾನ್ಯವಾಗಿ internal ಆಗಿ ಏನೋ ಮುಖ್ಯ ಬೆಳವಣಿಗೆ ಆಗುತ್ತಿದೆ ಎಂದು signal ಕೊಡುತ್ತದೆ.</p>
+    <div class="steps-trail">
+      <div class="step-row">
+        <h4>Composition</h4>
+        <p>Directors ಮತ್ತು management team members ಯಾರೆಲ್ಲ ಇದ್ದಾರೆ?</p>
+      </div>
+      <div class="step-row">
+        <h4>Changes</h4>
+        <p>ಹೊಸ appointments ಏನಾದ್ರೂ ಆಗಿದೆಯಾ? ಯಾರಾದ್ರೂ ಹೊರಟುಹೋಗಿದ್ದಾರಾ? Shift ಗಳನ್ನ ಗುರುತಿಸಲು ಕಳೆದ ವರ್ಷದ report ನೊಂದಿಗೆ ಹೋಲಿಸಿ.</p>
+      </div>
+      <div class="step-row">
+        <h4>Reasons for Resignations</h4>
+        <p>Senior director ಒಬ್ಬರು resign ಮಾಡಿದ್ರೆ, ಯಾಕೆ ಅಂತ ಕಂಡುಹಿಡಿಯಿರಿ. ಬೇಗ exit ಆಗುವುದು ಸಾಮಾನ್ಯವಾಗಿ ಮುಂದೆ ಬರುವ bad news ಗೆ ಸೂಚನೆ ಆಗಿರುತ್ತದೆ.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. FINANCIAL STATEMENTS -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಎಂಟು</p>
+        <h2 class="section-title">Financial Statements</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Report ನ numerical core ಇದೇ. ಇಲ್ಲಿ apply ಮಾಡಬೇಕಾದ ಮೂರು analytical lens ಗಳು:</p>
+    <div class="checklist">
+      <div class="check-item">Auditors' Report &amp; Opinion</div>
+      <div class="check-item">Common-size analysis</div>
+      <div class="check-item">Key financial ratios</div>
+    </div>
+    <div class="info-box">
+      <strong>Common-sizing ಅಂದ್ರೆ ಏನು:</strong> ಪ್ರತಿ line item ಅನ್ನೂ revenue ಯ % (income statement ನಲ್ಲಿ) ಅಥವಾ total assets ನ % (balance sheet ನಲ್ಲಿ) ಆಗಿ ತೋರಿಸುವುದು. ಇದರಿಂದ ಕಂಪನಿ ದೊಡ್ಡದಾಗುತ್ತಿದ್ದರೂ, raw numbers ಮುಚ್ಚಿಡಬಹುದಾದ structural changes ಗಳು ಕಾಣಿಸುತ್ತವೆ.
+    </div>
+  </div>
+
+  <!-- 9. NOTES TO ACCOUNT -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಒಂಬತ್ತು</p>
+        <h2 class="section-title">Notes to Accounts</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Financial statements ನಲ್ಲಿರುವ ಪ್ರತಿಯೊಂದು major line item ಇಲ್ಲಿ forensic detail ನಲ್ಲಿ break ಆಗಿ ತೋರಿಸಿರುತ್ತದೆ. ಇದನ್ನ skip ಮಾಡಬೇಡಿ — details ನಲ್ಲೇ risk ಮತ್ತು opportunity ಎರಡೂ ಇರುತ್ತವೆ.</p>
+    <div class="checklist">
+      <div class="check-item">ಪ್ರತಿ line item ನ Breakup</div>
+      <div class="check-item">ಅತಿ ದೊಡ್ಡ line item ಗಳಿಗೆ extra focus</div>
+    </div>
+
+    <!-- PPE example -->
+    <div class="ppe-example">
+      <h4>Example — PPE ನ Breakdown (₹1,000 Cr total assets)</h4>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>Plant, Property &amp; Equipment</span><span>₹600 Cr — 60%</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:60%;background:var(--gold);"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Machinery</span><span>₹310 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:31%;background:#8b3d7e;"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Land</span><span>₹180 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:18%;background:#4a7c59;"></div></div>
+      </div>
+      <div class="ppe-bar-wrap">
+        <div class="ppe-bar-label"><span>↳ Plant / Buildings</span><span>₹110 Cr</span></div>
+        <div class="ppe-bar-track"><div class="ppe-bar-fill" style="width:11%;background:#c0392b;"></div></div>
+      </div>
+      <p style="margin-top:16px;font-size:.8rem;color:rgba(255,255,255,.5);">ಈ ರೀತಿಯ full breakdown Notes to Accounts ನಲ್ಲಿ ಸಿಗುತ್ತದೆ — capital-intensive business ಗಳಿಗೆ ಇದು ಬಹಳ ಮುಖ್ಯ.</p>
+    </div>
+  </div>
+
+  <!-- 10. NOTES TO AGM -->
+  <div class="section-block" style="border-bottom:none;">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-title-wrap">
+        <p class="section-label">Section ಹತ್ತು</p>
+        <h2 class="section-title">Notes to AGM</h2>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="desc">Annual General Meeting ನಲ್ಲಿ shareholder ಗಳ ಮುಂದೆ ಇಡುವ resolutions ಇಲ್ಲಿ ಕವರ್ ಆಗುತ್ತವೆ. New share issuance, ದೊಡ್ಡ acquisitions, related-party transactions ನಂತಹ significant corporate actions approve ಆಗುವುದು special business resolutions ಮೂಲಕ.</p>
+    <div class="resolution-grid">
+      <div class="res-card">
+        <h4>Ordinary Business Resolution</h4>
+        <p>Routine approvals: accounts adopt ಮಾಡುವುದು, dividend declare ಮಾಡುವುದು, directors ರೀ-appoint ಮಾಡುವುದು, auditor ratification.</p>
+      </div>
+      <div class="res-card special">
+        <span class="res-badge">⭐ Priority</span>
+        <h4>Special Business Resolution</h4>
+        <p>Material ಆಗಿರುವ ಎಲ್ಲಾ ವಿಷಯಗಳು — new equity issuance, buybacks, ದೊಡ್ಡ M&amp;A, related-party transactions, objects ನ change. ಇವುಗಳನ್ನ ಯಾವಾಗಲೂ ಚೆನ್ನಾಗಿ ಓದಿ.</p>
+      </div>
+    </div>
+    <div class="alert">
+      <span class="alert-icon">📌</span>
+      <p><strong>Rule of thumb:</strong> ಕಂಪನಿಯ capital structure ಅಥವಾ strategic direction ಬದಲಾಗುವಷ್ಟು ಮುಖ್ಯ ಇರುವ ಯಾವುದೇ ವಿಷಯ special business resolution ಮೂಲಕವೇ ಹೋಗಬೇಕು. ಇದೇ ನಿಮ್ಮ early warning system.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Source: <strong>Stock Investing Mastermind</strong> — ZebraLearn Pvt. Ltd. (2022) &nbsp;·&nbsp; Section 3.2: ಪ್ರತಿ Section ನಲ್ಲಿ ಏನನ್ನು ಗಮನಿಸಬೇಕು</p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll-reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.section-block').forEach(el => observer.observe(el));
+
+  // Animate PPE bars on scroll
+  const ppeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.ppe-bar-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => { bar.style.width = w; }, 100);
+        });
+        ppeObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.ppe-example').forEach(el => ppeObserver.observe(el));
+</script>
+</body>
+</html>
