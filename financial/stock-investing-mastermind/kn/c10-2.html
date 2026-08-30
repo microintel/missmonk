@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Investing — Company Research (Kannada)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --accent: #f5a623;
+    --accent2: #e8754a;
+    --text: #f0ece4;
+    --muted: #7a7570;
+    --green: #4ade80;
+    --red: #f87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem; height: 56px;
+  }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-right: auto;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 0; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 1rem;
+    height: 56px;
+    display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding: 88px 0 60px; }
+  .page.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 560px; font-size: 1rem; }
+
+  /* SECTION TITLES */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .section-intro { color: var(--muted); margin-bottom: 2rem; max-width: 600px; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-label {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .card-label .icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .card-label strong { font-size: 1rem; font-weight: 600; }
+  .card p { color: #b0ada8; font-size: 0.92rem; }
+
+  /* EXAMPLE BOX */
+  .example {
+    background: #1a1a1a;
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+    color: #c8c4bc;
+  }
+  .example strong { color: var(--accent2); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 0.3rem; }
+
+  /* QUOTE */
+  .quote {
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 1rem;
+    position: relative;
+  }
+  .quote::before { content: '"'; font-size: 3rem; line-height: 0; position: absolute; top: 1.6rem; left: 1rem; opacity: 0.2; font-family: 'Playfair Display', serif; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* COMPARE TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 1rem 0; }
+  .compare-table th {
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    color: #c0bdb8;
+    vertical-align: top;
+  }
+  .compare-table tr:hover td { background: var(--card); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(245,166,35,0.15); color: var(--accent); }
+
+  /* BAR CHART */
+  .bar-chart { margin: 1.5rem 0; }
+  .bar-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+  .bar-label { width: 110px; font-size: 0.8rem; color: var(--muted); flex-shrink: 0; text-align: right; }
+  .bar-track { flex: 1; height: 20px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+  .bar-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    animation: growBar 1s ease forwards;
+    transform-origin: left;
+  }
+  @keyframes growBar { from { width: 0 !important; } }
+  .bar-val { width: 50px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--accent); }
+
+  /* MOAT DIAGRAM */
+  .moat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+  .moat-cell {
+    background: var(--card);
+    padding: 1.2rem;
+    transition: background 0.2s;
+  }
+  .moat-cell:hover { background: #222; }
+  .moat-cell .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--accent);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .moat-cell strong { display: block; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moat-cell p { font-size: 0.8rem; color: var(--muted); }
+
+  /* OWNERSHIP METER */
+  .ownership-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .ownership-name { width: 130px; font-size: 0.85rem; flex-shrink: 0; }
+  .ownership-track { flex: 1; height: 28px; background: var(--surface); border-radius: 6px; overflow: hidden; position: relative; }
+  .ownership-fill { height: 100%; display: flex; align-items: center; padding-left: 0.6rem; font-size: 0.75rem; font-weight: 600; color: #000; border-radius: 6px; animation: growBar 1.2s ease forwards; }
+  .ownership-fill.high { background: linear-gradient(90deg, var(--green), #22c55e); }
+  .ownership-fill.med { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .ownership-fill.low { background: linear-gradient(90deg, #555, #666); }
+
+  /* TAG CHIP */
+  .chip {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 3px;
+  }
+
+  /* STEP LIST */
+  .steps { counter-reset: steps; margin: 1rem 0; }
+  .step { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .step-num {
+    counter-increment: steps;
+    content: counter(steps);
+    width: 28px; height: 28px; flex-shrink: 0;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .step-body strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .step-body p { font-size: 0.85rem; color: var(--muted); }
+
+  /* INFO ROW */
+  .info-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.6rem; }
+  .info-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+
+  /* VERDICT */
+  .verdict {
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(232,117,74,0.08));
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  .verdict h3 { color: var(--accent); margin-bottom: 0.5rem; }
+  .verdict p { color: #c0bdb8; font-size: 0.9rem; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+  .tab-btn {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--muted); cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.7rem 1.2rem;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  /* SUMMARY PILL */
+  .summary-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">StockIQ</div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('overview',this)">Overview</a>
+    <a href="#" onclick="showPage('moat',this)">Economic Moat</a>
+    <a href="#" onclick="showPage('cost',this)">Cost Advantages</a>
+    <a href="#" onclick="showPage('distribution',this)">Distribution</a>
+    <a href="#" onclick="showPage('innovation',this)">Innovation</a>
+    <a href="#" onclick="showPage('management',this)">Management</a>
+  </div>
+</nav>
+
+<!-- OVERVIEW PAGE -->
+<div id="page-overview" class="page active">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Chapter 6.4 — 6.5</span>
+    <h1>Company <span>Research</span><br>Framework</h1>
+    <p>ಯಾವುದೇ stock ನಲ್ಲಿ ಹೂಡಿಕೆ ಮಾಡುವ ಮೊದಲು, ಆ ಕಂಪನಿಯ competitive advantage ಮತ್ತು management ಗುಣಮಟ್ಟವನ್ನು ಹೇಗೆ ಪರಿಶೀಲಿಸಬೇಕು ಎಂಬುದನ್ನು ಈ ಗೈಡ್ ಸರಳವಾಗಿ ವಿವರಿಸುತ್ತದೆ.</p>
+  </div>
+
+  <h3>ಮುಖ್ಯ ಪ್ರಶ್ನೆ</h3>
+  <h2>ಒಂದು ಕಂಪನಿಗೆ ಅದರ ವಿಶೇಷತೆ (edge) ಎಲ್ಲಿಂದ ಬರುತ್ತದೆ?</h2>
+  <p class="section-intro">ಇದನ್ನು Warren Buffett ಅವರು <strong style="color:var(--accent)">Economic Moat</strong> ಎಂದು ಕರೆಯುತ್ತಾರೆ — ಒಂದು ಕೋಟೆಯನ್ನು ಸುತ್ತುವರಿದ ಕಂದಕ (moat) ಅದನ್ನು ರಕ್ಷಿಸುವ ಹಾಗೆಯೇ, ಇದು ಒಂದು ಕಂಪನಿಯನ್ನು ಪ್ರತಿಸ್ಪರ್ಧಿಗಳಿಂದ ರಕ್ಷಿಸುವ ರಚನಾತ್ಮಕ competitive advantage ಆಗಿದೆ.</p>
+
+  <div class="moat-grid">
+    <div class="moat-cell" onclick="showPage('moat', null)" style="cursor:pointer">
+      <div class="num">01</div>
+      <strong>🏷️ Brand</strong>
+      <p>ಗ್ರಾಹಕರ loyalty ಮತ್ತು ಪದೇ ಪದೇ ಖರೀದಿಗೆ ಕಾರಣವಾಗುವ ಬಲವಾದ ಗುರುತಿಸುವಿಕೆ.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('cost', null)" style="cursor:pointer">
+      <div class="num">02</div>
+      <strong>💰 Cost Advantages</strong>
+      <p>location, resources ಅಥವಾ scale ಮೂಲಕ ಪ್ರತಿಸ್ಪರ್ಧಿಗಳಿಗಿಂತ ಅಗ್ಗವಾಗಿ ಉತ್ಪಾದಿಸುವ ಸಾಮರ್ಥ್ಯ.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('distribution', null)" style="cursor:pointer">
+      <div class="num">03</div>
+      <strong>🚚 Distribution</strong>
+      <p>ತಯಾರಕರಿಂದ ಅಂತಿಮ ಗ್ರಾಹಕರವರೆಗೆ ವ್ಯಾಪಕವಾದ, ನಕಲು ಮಾಡಲು ಕಷ್ಟವಾದ reach.</p>
+    </div>
+    <div class="moat-cell" onclick="showPage('innovation', null)" style="cursor:pointer">
+      <div class="num">04</div>
+      <strong>💡 Product Innovation</strong>
+      <p>ಪ್ರತಿಸ್ಪರ್ಧಿಗಳು ಸುಲಭವಾಗಿ ನಕಲು ಮಾಡಲಾಗದ ವಿಶಿಷ್ಟ products ಅಥವಾ services.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>The One Rule</h3>
+    <p>ನೀವು ಹೂಡಿಕೆ ಮಾಡುವ ಕಂಪನಿಗೆ ಕನಿಷ್ಠ <strong>ಒಂದಾದರೂ edge</strong> ಇರಬೇಕು — Brand, Cost, Distribution, ಅಥವಾ Innovation. ಇದು ಇಲ್ಲದಿದ್ದರೆ, ಆ ಕಂಪನಿ ಕಾಲಕ್ರಮೇಣ ತನ್ನ market ನಲ್ಲಿ ಮುಂಚೂಣಿಯಲ್ಲಿ ಇರಲು ಯಾವುದೇ ಕಾರಣ ಇರುವುದಿಲ್ಲ.</p>
+  </div>
+
+  <hr class="divider">
+  <h3>ಈ ಗೈಡ್ ಅನ್ನು ಹೇಗೆ ಬಳಸುವುದು</h3>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>ಪ್ರತಿ concept ಅನ್ನು ಕಲಿಯಿರಿ</strong><p>ಪ್ರತಿ competitive advantage ಅನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಮೇಲಿನ tabs ಗಳ ಮೂಲಕ ಹೋಗಿ.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>ಉದಾಹರಣೆಗಳನ್ನು ಅಧ್ಯಯನ ಮಾಡಿ</strong><p>Parachute, Jio, Balaji Wafers ನಂತಹ ನಿಜವಾದ ಭಾರತೀಯ ಕಂಪನಿಗಳನ್ನು case studies ಆಗಿ ಬಳಸಲಾಗಿದೆ.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Management ಅನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ</strong><p>ownership alignment ಮತ್ತು compensation ಪರಿಶೀಲಿಸಲು Management tab ಬಳಸಿ.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><strong>ನಿಮ್ಮ ನಿರ್ಧಾರ ತೆಗೆದುಕೊಳ್ಳಿ</strong><p>ಆ ಕಂಪನಿಗೆ moat ಇದೆಯೇ? management ಕಾಳಜಿ ವಹಿಸುತ್ತದೆಯೇ? ಹಾಗಿದ್ದರೆ ಅದನ್ನು ಪರಿಗಣಿಸಬಹುದು.</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- MOAT PAGE -->
+<div id="page-moat" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Competitive Advantage</span>
+    <h1>The Economic <span>Moat</span></h1>
+    <p>ಕೆಲವು ಕಂಪನಿಗಳು ದಶಕಗಳ ಕಾಲ ತಮ್ಮ market ನಲ್ಲಿ ಪ್ರಾಬಲ್ಯ ಸಾಧಿಸುತ್ತವೆ, ಇನ್ನು ಕೆಲವು ಏಕೆ ಮಾಯವಾಗುತ್ತವೆ ಎಂಬುದನ್ನು ಇಲ್ಲಿ ತಿಳಿಯೋಣ.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('moat','brand',this)">Brand</button>
+    <button class="tab-btn" onclick="showTab('moat','why',this)">Why It Matters</button>
+    <button class="tab-btn" onclick="showTab('moat','identify',this)">How to Identify</button>
+  </div>
+
+  <div id="moat-tab-brand" class="tab-content active">
+    <h3>Brand ಎಂಬ Moat</h3>
+    <h2>Brand ಹೆಸರೇ product ಆಗಿ ಮಾರ್ಪಡುವಾಗ</h2>
+    <p class="section-intro">ಗ್ರಾಹಕರು ನಿಮ್ಮ product ಅನ್ನು ಅದರ category ಯಿಂದ ಅಲ್ಲ, ಬದಲಿಗೆ ಅದರ ಹೆಸರಿನಿಂದಲೇ (brand name) ಆಯ್ಕೆ ಮಾಡಿದಾಗ brand moat ಇದೆ ಎಂದು ಅರ್ಥ.</p>
+
+    <div class="example">
+      <strong>Parachute Example</strong>
+      ಗ್ರಾಹಕರು <em>"coconut hair oil ತನ್ನಿ"</em> ಎಂದು ಹೇಳುವ ಬದಲು <em>"Parachute oil ತನ್ನಿ"</em> ಎಂದೇ ಹೇಳುತ್ತಾರೆ. ಇದನ್ನೇ brand recall ಆಧಾರಿತ competitive moat ಎನ್ನುತ್ತಾರೆ. Marico ಕಂಪನಿಯ Parachute, ಗ್ರಾಹಕರ ಮನಸ್ಸಿನಲ್ಲಿ ತನ್ನ ಹೆಸರನ್ನೇ ಇಡೀ product category ಗೆ ಸಮಾನಾರ್ಥಕವಾಗಿಸಿದೆ.
+    </div>
+
+    <div class="card">
+      <div class="card-label"><div class="icon">🏷️</div><strong>ಬಲವಾದ brand ಆಗಲು ಏನು ಬೇಕು?</strong></div>
+      <p>brand ಒಂದಕ್ಕೆ mass-market ನಲ್ಲಿ ಪ್ರಸಿದ್ಧಿ ಇರಬೇಕೆಂದೇನಿಲ್ಲ. ಅದರ <em>target audience</em> ನಡುವೆ ಬಲವಾದ recognition ಇದ್ದರೆ ಸಾಕು. Apar Industries ಸಾರ್ವಜನಿಕರಿಗೆ ಅಷ್ಟಾಗಿ ಗೊತ್ತಿಲ್ಲ — ಆದರೆ power companies ಗಳ ನಡುವೆ ಅದೇ ಮೊದಲ ಆಯ್ಕೆಯ ಹೆಸರು. ಅದೇ ಒಂದು brand moat.</p>
+    </div>
+
+    <div class="quote">ಒಂದು brand mass market ಗೆ ಗೊತ್ತಿರಬೇಕೆಂದೇನಿಲ್ಲ, ಆದರೆ ಅದರ target audience ನಡುವೆ ಬಲವಾದ market recognition ಹೊಂದಿರಲೇಬೇಕು.</div>
+
+    <h3 style="margin-top:1.5rem">ಪ್ರಕಾರವಾರು ಉದಾಹರಣೆಗಳು</h3>
+    <table class="compare-table">
+      <tr><th>Company</th><th>Category</th><th>Brand Moat Type</th></tr>
+      <tr><td>Parachute (Marico)</td><td>Coconut hair oil</td><td><span class="badge badge-green">Consumer B2C</span></td></tr>
+      <tr><td>Apar Industries</td><td>Power cables</td><td><span class="badge badge-yellow">Industrial B2B</span></td></tr>
+      <tr><td>Google</td><td>Search engines</td><td><span class="badge badge-green">Tech Platform</span></td></tr>
+    </table>
+  </div>
+
+  <div id="moat-tab-why" class="tab-content">
+    <h3>ಸರಳ ಭಾಷೆಯ ವಿವರಣೆ</h3>
+    <h2>Moat ಗಳು profit ಅನ್ನು ಹೇಗೆ ರಕ್ಷಿಸುತ್ತವೆ</h2>
+    <p class="section-intro">ನೀವು ಒಂದು ನಿಂಬೆಹಣ್ಣಿನ ಪಾನೀಯದ (lemonade) ಅಂಗಡಿ ನಡೆಸುತ್ತಿದ್ದೀರಿ ಎಂದು ಭಾವಿಸಿ. ನಾಳೆ ಯಾರು ಬೇಕಾದರೂ ನಿಮ್ಮ ಪಕ್ಕದಲ್ಲೇ ಇನ್ನೊಂದು ಅಂಗಡಿ ತೆರೆಯಬಹುದಾದರೆ, ನಿಮಗೆ moat ಇಲ್ಲ. ಆದರೆ ಮೈಲುಗಟ್ಟಲೆ ದೂರದವರೆಗೆ ಇರುವ ಏಕೈಕ ನಿಂಬೆ ಮರ ನಿಮ್ಮದೇ ಆಗಿದ್ದರೆ — ಅದೇ moat.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label"><div class="icon" style="background:var(--red)">😟</div><strong>No Moat</strong></div>
+        <p>ನೀವು ಮಾಡುವುದನ್ನು ಯಾವುದೇ competitor ನಕಲು ಮಾಡಬಹುದು. ಗ್ರಾಹಕರು ಸುಲಭವಾಗಿ ಬೇರೆಡೆಗೆ ಹೋಗುತ್ತಾರೆ. ಬದುಕುಳಿಯಲು ನೀವು ಬೆಲೆ ಕಡಿಮೆ ಮಾಡಬೇಕಾಗುತ್ತದೆ. ಕಾಲಕ್ರಮೇಣ profit ಕಡಿಮೆಯಾಗುತ್ತದೆ.</p>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="icon">🏰</div><strong>Has a Moat</strong></div>
+        <p>competitor ಗಳಿಗೆ ನಿಮ್ಮ advantage ನಕಲು ಮಾಡುವುದು ಕಷ್ಟವಾಗುತ್ತದೆ. ಗ್ರಾಹಕರು ನಿಮ್ಮಲ್ಲೇ ಉಳಿಯುತ್ತಾರೆ. ನಿಮ್ಮ pricing power ಉಳಿಯುತ್ತದೆ. profit ಸ್ಥಿರವಾಗಿ ಇರುತ್ತದೆ.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <strong>Google's Moat — 90% Market Share</strong>
+      Google ಜಾಗತಿಕ search market ನ ಸುಮಾರು 90% ಅನ್ನು ನಿಯಂತ್ರಿಸುತ್ತದೆ. ಉಳಿದ 7–8% ಎಲ್ಲಾ competitors ಗಳ ನಡುವೆ ಹಂಚಿಹೋಗಿದೆ. ಇಂತಹ ಪ್ರಾಬಲ್ಯ ಸಾಧ್ಯವಾಗುವುದು brand trust, data network effects ಮತ್ತು distribution ನಂತಹ ಆಳವಾದ competitive advantages ಇದ್ದಾಗ ಮಾತ್ರ. ಇಂತಹ ಪರಿಸ್ಥಿತಿ ಕಂಡುಬಂದರೆ, ಅದರ ಮೂಲ ಕಾರಣವನ್ನು ಆಳವಾಗಿ ಹುಡುಕಿ.
+    </div>
+
+    <div class="bar-chart">
+      <h3>Search Engine Market Share</h3>
+      <div class="bar-row"><div class="bar-label">Google</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">90%</div></div>
+      <div class="bar-row"><div class="bar-label">Bing</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:linear-gradient(90deg,#4488ff,#66aaff)"></div></div><div class="bar-val">4%</div></div>
+      <div class="bar-row"><div class="bar-label">Others</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#555,#666)"></div></div><div class="bar-val">6%</div></div>
+    </div>
+
+    <div class="quote">market leader ಮತ್ತು ಅದನ್ನು ಹಿಂಬಾಲಿಸುವವರ ನಡುವೆ market share ನಲ್ಲಿ ಗಣನೀಯ ವ್ಯತ್ಯಾಸ ಇರಬೇಕು.</div>
+  </div>
+
+  <div id="moat-tab-identify" class="tab-content">
+    <h3>ಗುರುತಿಸುವ Checklist</h3>
+    <h2>Moat ಅನ್ನು ಹೇಗೆ ಗುರುತಿಸುವುದು</h2>
+    <p class="section-intro">ಕಂಪನಿಗಳು ತಮ್ಮ competitive advantages ಅನ್ನು ಜಾಹೀರಾತು ಮಾಡುವುದಿಲ್ಲ. Annual Report ಮತ್ತು industry data ಮೂಲಕ ನೀವೇ ಅವುಗಳನ್ನು ಕಂಡುಹಿಡಿಯಬೇಕು.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>market share ಅಂತರ ಪರಿಶೀಲಿಸಿ</strong><p>leader ಯ share, #2 ಕಂಪನಿಗಿಂತ ಗಣನೀಯವಾಗಿ ಹೆಚ್ಚಿದೆಯೇ? ಆ ಅಂತರವೇ moat.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Annual Report ಓದಿ</strong><p>management commentary, competitive positioning, ಮತ್ತು investor presentations ಗಳನ್ನು ಗಮನಿಸಿ.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Industry Report ಗಳನ್ನು ಅಧ್ಯಯನ ಮಾಡಿ</strong><p>Rating agencies ಮತ್ತು sector analysts ಆಗಾಗ competitive advantage ನ ಮೂಲಗಳನ್ನು ಗುರುತಿಸುತ್ತಾರೆ.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><strong>ಪ್ರಶ್ನಿಸಿ: ಒಂದು rival ಇದನ್ನು 2 ವರ್ಷಗಳಲ್ಲಿ ನಕಲು ಮಾಡಬಹುದೇ?</strong><p>ಹೌದು ಎಂದಾದರೆ, ಅದು ಬಾಳಿಕೆ ಬರುವ (durable) moat ಅಲ್ಲ. ನಿಜವಾದ moat ಕಟ್ಟಲು ದಶಕಗಳೇ ಬೇಕಾಗುತ್ತವೆ.</p></div></div>
+    </div>
+
+    <div class="verdict">
+      <h3>Retail Investor Approach</h3>
+      <p>Institutional analysts ಇದಕ್ಕಾಗಿ ತಿಂಗಳುಗಟ್ಟಲೆ ಸಮಯ ಕೊಡುತ್ತಾರೆ. ಒಬ್ಬ retail investor ಆಗಿ, ನೀವು 2 ವಾರ — ಪ್ರತಿ ವಾರ ಸುಮಾರು 4 ಗಂಟೆ ಕೊಟ್ಟರೆ ಸಾಕು. depth ನಲ್ಲಿ ಕೊರತೆ ಇದ್ದರೂ, portfolio diversification ಮೂಲಕ ಅದನ್ನು ಸರಿದೂಗಿಸಬಹುದು.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- COST PAGE -->
+<div id="page-cost" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 2</span>
+    <h1>Cost <span>Advantages</span></h1>
+    <p>ಒಂದು ಕಂಪನಿ ಅದೇ ವಸ್ತುವನ್ನು ಬೇರೆಯವರಿಗಿಂತ ಅಗ್ಗವಾಗಿ ತಯಾರಿಸಬಲ್ಲದಾದರೆ — ಅದೊಂದು ಶಕ್ತಿಶಾಲಿ ಮತ್ತು ಸಾಮಾನ್ಯವಾಗಿ ಕಣ್ಣಿಗೆ ಕಾಣದ moat.</p>
+  </div>
+
+  <h3>ಮುಖ್ಯ Concept</h3>
+  <div class="quote" style="margin-top:0">ಎಲ್ಲಾ products ಒಂದೇ ರೀತಿ ಇರುವ commodity market ನಲ್ಲಿ, ಬೆಲೆ (price) ಒಂದೇ ಮುಖ್ಯವಾಗುತ್ತದೆ. ಅಂತಹ ಪರಿಸ್ಥಿತಿಯಲ್ಲಿ cost advantage ಒಂದು ದೊಡ್ಡ factor ಆಗಬಹುದು.</div>
+
+  <div class="example">
+    <strong>Jio vs Airtel Example</strong>
+    Jio ಮತ್ತು Airtel ಎರಡೂ ಸಮಾನವಾದ telecom services ಮಾರುತ್ತವೆ. ಸಾಮಾನ್ಯವಾಗಿ ಇಬ್ಬರೂ ಒಂದೇ ಬೆಲೆ ಇಡಬೇಕಿತ್ತು. ಆದರೆ Jio ಯ service cost ರಚನಾತ್ಮಕವಾಗಿ (structurally) ಕಡಿಮೆ ಇರುವುದರಿಂದ, ಅದು Airtel ಗಿಂತ ಕಡಿಮೆ ಬೆಲೆ ಇಟ್ಟರೂ <em>ತನ್ನ profit margin ಉಳಿಸಿಕೊಳ್ಳಬಲ್ಲದು</em>. ಇದನ್ನೇ cost advantage ಎನ್ನುತ್ತಾರೆ.
+  </div>
+
+  <hr class="divider">
+  <h3>Cost Advantage ನ ನಾಲ್ಕು ಮೂಲಗಳು</h3>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">📍</div><strong>I. Location</strong></div>
+    <p>raw materials ಅಥವಾ ಗ್ರಾಹಕರಿಗೆ ಹತ್ತಿರ ಇರುವ factory logistics ವೆಚ್ಚ ಉಳಿಸುತ್ತದೆ. cement ಉದ್ಯಮದಲ್ಲಿ, product ಅನ್ನು ಒಂದು ಸ್ಥಳದಿಂದ ಇನ್ನೊಂದಕ್ಕೆ ಸಾಗಿಸುವುದೇ ದೊಡ್ಡ ವೆಚ್ಚ. <strong>Ambuja Cement</strong> ನಂತಹ ಕಂಪನಿಗಳು limestone ನಿಕ್ಷೇಪಗಳ ಹತ್ತಿರ ಇರುವುದರಿಂದ, ಪ್ರತಿಸ್ಪರ್ಧಿಗಳಿಗಿಂತ ಕಡಿಮೆ transport cost ಹೊಂದಿವೆ.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">⛏️</div><strong>II. Resources</strong></div>
+    <p>ಪ್ರತಿಸ್ಪರ್ಧಿಗಳ ಬಳಿ ಇಲ್ಲದ ವಿಶಿಷ್ಟ natural assets.</p>
+    <div class="example" style="margin-top:0.8rem">
+      <strong>Mining Example</strong>
+      Company A ಯ ಉತ್ತಮ ಗುಣಮಟ್ಟದ mines ಕೇವಲ 25% waste ಉತ್ಪಾದಿಸುತ್ತವೆ. ಪ್ರತಿಸ್ಪರ್ಧಿಗಳಲ್ಲಿ ಇದು 50%. ಅಂದರೆ Company A, ಪ್ರತಿ ಟನ್‌ಗೆ ಎರಡರಷ್ಟು value ಪಡೆಯುತ್ತದೆ — ಇದು ಎಷ್ಟೇ ಒಳ್ಳೆಯ management ಇದ್ದರೂ ಮೀರಲಾಗದ ರಚನಾತ್ಮಕ advantage.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">👷</div><strong>III. Labour</strong></div>
+    <p>ಕೆಲವು ಪ್ರದೇಶಗಳಲ್ಲಿ ಕಡಿಮೆ labour cost ಇರುವುದರಿಂದ production cost ಕೂಡ ಕಡಿಮೆ ಆಗುತ್ತದೆ. ಇದೇ ಕಾರಣಕ್ಕಾಗಿ ದಶಕಗಳಿಂದ ಜಾಗತಿಕ manufacturers ಚೀನಾದಲ್ಲಿ ಉತ್ಪಾದನೆ ಮಾಡುತ್ತಿದ್ದರು. ಕಡಿಮೆ ವೇತನ ಇರುವ ಪ್ರದೇಶದ ಕಂಪನಿಗೆ ಸಹಜವಾಗಿಯೇ ಒಂದು cost edge ಇರುತ್ತದೆ.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label"><div class="icon">📦</div><strong>IV. Economies of Scale</strong></div>
+    <p>ಹೆಚ್ಚಿನ production volume ಇದ್ದಷ್ಟು, ಪ್ರತಿ unit ಗೆ cost ಕಡಿಮೆ ಆಗುತ್ತದೆ. ದೊಡ್ಡ players raw material ಗಳಿಗೆ ಉತ್ತಮ ಬೆಲೆ negotiate ಮಾಡಬಲ್ಲರು ಮತ್ತು fixed costs ಅನ್ನು ಹೆಚ್ಚಿನ units ಗಳ ಮೇಲೆ ಹಂಚಬಲ್ಲರು.</p>
+    <div style="margin-top:1rem">
+      <div class="bar-chart">
+        <h3>Cost per Unit — Scale Effect</h3>
+        <div class="bar-row"><div class="bar-label">Balaji (1000 units)</div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><div class="bar-val">₹10</div></div>
+        <div class="bar-row"><div class="bar-label">DFM (100 units)</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,var(--red),#f87171)"></div></div><div class="bar-val">₹9</div></div>
+      </div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem">⚠️ ಗಮನಿಸಿ: DFM ನ high fixed costs ಮತ್ತು ಕಡಿಮೆ scale ನಲ್ಲಿ ದುರ್ಬಲ vendor negotiation ಕಾರಣ, ಪ್ರತಿ unit ಗೆ ಅದರ cost ನಿಜವಾಗಿಯೂ <em>ಹೆಚ್ಚು</em>. Balaji ಯ scale ಅದಕ್ಕೆ ಅಗ್ಗವಾಗಿ ಉತ್ಪಾದಿಸಲು ಮತ್ತು ಇನ್ನೂ ಹೆಚ್ಚು profit ಗಳಿಸಲು ಅನುವು ಮಾಡುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>The Investor Test</h3>
+    <p>ಕಂಪನಿಗೆ ಇತರರಿಗಿಂತ <strong>ಗಣನೀಯ cost advantage</strong> ಇರಬೇಕು, ಅಥವಾ ಇತರ ಕಂಪನಿಗಳು <strong>ಸುಲಭವಾಗಿ ನಕಲು ಮಾಡಲಾಗದ</strong> ಏನಾದರೂ ಮಾಡುತ್ತಿರಬೇಕು. ಎರಡೂ ಸರಿಯೇ; ಒಂದು ಇದ್ದರೂ ಸಾಕು.</p>
+  </div>
+</div>
+</div>
+
+<!-- DISTRIBUTION PAGE -->
+<div id="page-distribution" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 3</span>
+    <h1>Distribution <span>Networks</span></h1>
+    <p>ಕಣ್ಣಿಗೆ ಕಾಣದ moat. ನಿಮ್ಮ product ಅನ್ನು ಬೇರೆ ಯಾರಿಗಿಂತಲೂ ಹೆಚ್ಚಿನ ಸ್ಥಳಗಳಿಗೆ ತಲುಪಿಸುವುದು — ಮತ್ತು ಅದನ್ನು ನಕಲು ಮಾಡಲು ಕಷ್ಟವಾಗಿಸುವುದು.</p>
+  </div>
+
+  <h3>Distribution ಎಂದರೇನು?</h3>
+  <p class="section-intro">Distribution ಎಂದರೆ factory ಇಂದ ಗ್ರಾಹಕರವರೆಗಿನ ಇಡೀ ಪ್ರಯಾಣ — packaging, transport, warehousing, wholesalers, ಮತ್ತು retail shelf space. ಗ್ರಾಹಕರಿಗೆ ಇದು ಕಾಣುವುದಿಲ್ಲ, ಆದರೆ market share ನಿರ್ಧರಿಸುವಲ್ಲಿ ಇದೇ ನಿರ್ಣಾಯಕ.</p>
+
+  <div class="card" style="background: linear-gradient(135deg, #1c1c1c, #181818);">
+    <p style="font-size:0.85rem; color: var(--muted); margin-bottom:0.8rem">Supply Chain ನ ಹರಿವು</p>
+    <div style="display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; font-size:0.82rem;">
+      <span class="chip" style="color:var(--accent); border-color:var(--accent)">Manufacturer</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Packaging</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Transport</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Inventory</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Wholesaler</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip">Retailer</span>
+      <span style="color:var(--muted)">→</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">Customer</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3>Distribution = Visibility = Sales</h3>
+  <h2>ಹೆಚ್ಚು ಅಂಗಡಿಗಳು = ಹೆಚ್ಚು ಮಾರಾಟ</h2>
+
+  <div class="bar-chart">
+    <h3>Hair Oil — Store Presence Comparison</h3>
+    <div class="bar-row"><div class="bar-label">Marico</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-val">1,00,000</div></div>
+    <div class="bar-row"><div class="bar-label">Indulekha</div><div class="bar-track"><div class="bar-fill" style="width:35%; background:linear-gradient(90deg,#4488ff,#66aaff)"></div></div><div class="bar-val">35,000</div></div>
+    <div class="bar-row"><div class="bar-label">Trichup</div><div class="bar-track"><div class="bar-fill" style="width:2%; background:linear-gradient(90deg,#555,#666)"></div></div><div class="bar-val">2,000</div></div>
+  </div>
+
+  <div class="example">
+    <strong>Why This Matters</strong>
+    Marico ಯ Parachute 1,00,000 shelves ಗಳಲ್ಲಿ ಲಭ್ಯವಿದೆ. ಒಂದು ಸಣ್ಣ ಊರಿನ ಗ್ರಾಹಕ ಎಂದಿಗೂ ಜಾಹೀರಾತು (ad) ನೋಡದಿದ್ದರೂ, ಬೇರೆ ಆಯ್ಕೆ ಇಲ್ಲದ ಕಾರಣ Parachute ಅನ್ನೇ ಖರೀದಿಸುತ್ತಾನೆ. Visibility ಯೇ ಮಾರಾಟ ಸೃಷ್ಟಿಸುತ್ತದೆ — ಮತ್ತು ಆ visibility ಕಟ್ಟಲು ದಶಕಗಳ investment ಬೇಕಾಯಿತು.
+  </div>
+
+  <hr class="divider">
+  <h3>Distribution ಅನ್ನು ನಕಲು ಮಾಡುವುದು ಏಕೆ ಕಷ್ಟ</h3>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label"><div class="icon">⏳</div><strong>Time</strong></div>
+      <p>ಇಡೀ ದೇಶದಾದ್ಯಂತ ಒಂದು distribution network ಕಟ್ಟಲು, ಸಾವಿರಾರು ಪ್ರದೇಶಗಳ wholesalers ಮತ್ತು retailers ಜೊತೆ ಸಂಬಂಧ ಬೆಳೆಸಲು ವರ್ಷಗಳೇ ಬೇಕಾಗುತ್ತವೆ.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🤝</div><strong>Incentives</strong></div>
+      <p>Retailers ಮಾರಾಟವಾಗುವ ವಸ್ತುಗಳನ್ನು ಮಾತ್ರ ಇಟ್ಟುಕೊಳ್ಳುತ್ತಾರೆ. ಒಂದು brand ನ ಗ್ರಾಹಕ ಆಕರ್ಷಣೆ ಕಡಿಮೆಯಾದರೆ, retailers ತಕ್ಷಣ competitors ಗೆ ಬದಲಾಗುತ್ತಾರೆ. product ಚೆನ್ನಾಗಿ ಮಾರಾಟ ಆದರೆ ಮಾತ್ರ distribution ಉಳಿಯುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <h3>Distribution Risks</h3>
+    <div class="info-row"><div class="info-dot"></div><p>product ಗುಣಮಟ್ಟ ಕಡಿಮೆಯಾದರೆ, brand image ಹಾಳಾಗುತ್ತದೆ, ಮತ್ತು distribution ಬೇಗ ನಿರುಪಯುಕ್ತವಾಗುತ್ತದೆ</p></div>
+    <div class="info-row"><div class="info-dot"></div><p>retailer/wholesaler ಗೆ ಸಿಗುವ incentive ಸ್ಪರ್ಧಾತ್ಮಕವಾಗಿಲ್ಲದಿದ್ದರೆ, ಅವರು ಆ product ಇಟ್ಟುಕೊಳ್ಳುವುದನ್ನು ನಿಲ್ಲಿಸುತ್ತಾರೆ</p></div>
+    <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p style="color:var(--green)">ಮಾರಾಟ ಹೆಚ್ಚಾದರೆ, distribution channels ವೇಗವಾಗಿ ವಿಸ್ತರಿಸಬಹುದು — ಇದು ತಾನಾಗಿಯೇ ಬಲಗೊಳ್ಳುವ advantage</p></div>
+  </div>
+</div>
+</div>
+
+<!-- INNOVATION PAGE -->
+<div id="page-innovation" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Moat Type 4</span>
+    <h1>Product <span>Innovation</span></h1>
+    <p>ಎಷ್ಟು ವಿಶಿಷ್ಟ ಮತ್ತು ಮೌಲ್ಯಯುತವೆಂದರೆ, ಪ್ರತಿಸ್ಪರ್ಧಿಗಳಿಗೆ ಸರಿಗಟ್ಟಲಾಗದ, ಗ್ರಾಹಕರಿಗೆ ಬಿಟ್ಟುಹೋಗಲಾಗದ products.</p>
+  </div>
+
+  <h3>ವ್ಯಾಖ್ಯಾನ</h3>
+  <h2>ಒಂದು product ನಿಜವಾಗಿಯೂ innovative ಆಗಲು ಏನು ಬೇಕು?</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label"><div class="icon">✨</div><strong>Unique</strong></div>
+      <p>ನಿಮ್ಮ product ಮಾಡುವುದನ್ನು ಬೇರೆ ಯಾವುದೇ product ಮಾಡುವುದಿಲ್ಲ. ಗ್ರಾಹಕರಿಗೆ ಸಮಾನ alternative ಸಿಗುವುದಿಲ್ಲ.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🏆</div><strong>No Competition</strong></div>
+      <p>ಪ್ರತಿಸ್ಪರ್ಧಿಗಳು ಇನ್ನೂ ಇಲ್ಲ, ಅಥವಾ ಇದ್ದರೂ core offering ಅನ್ನು ನಕಲು ಮಾಡಲಾಗುವುದಿಲ್ಲ.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💎</div><strong>Customer Value</strong></div>
+      <p>ಒಂದು ನಿಜವಾದ ಸಮಸ್ಯೆಯನ್ನು ಎಷ್ಟು ಚೆನ್ನಾಗಿ ಪರಿಹರಿಸುತ್ತದೆ ಎಂದರೆ, ಬಳಕೆದಾರರಿಗೆ ಆ product ಬಳಸುವ ಬಲವಾದ ಅಭ್ಯಾಸ ಬೆಳೆಯುತ್ತದೆ.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🔄</div><strong>Continuous Innovation</strong></div>
+      <p>product ನಿರಂತರವಾಗಿ ಬೆಳೆಯುತ್ತಿರುತ್ತದೆ, ಇದರಿಂದ ಹೊಸ entrants ಗಳಿಗೆ ಪ್ರವೇಶಿಸುವುದು ಇನ್ನಷ್ಟು ಕಷ್ಟವಾಗುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3>ಆಳವಾದ ಉದಾಹರಣೆ</h3>
+  <h2>Facebook / Meta ಯ Case Study</h2>
+
+  <div class="example">
+    <strong>The Network Effect Moat</strong>
+    Facebook ಸ್ನೇಹಿತರೊಂದಿಗೆ online ಸಂಪರ್ಕ ಸಾಧಿಸಲು ಒಂದು ವಿಶಿಷ್ಟ platform ಆಗಿ ಪ್ರಾರಂಭವಾಯಿತು. WhatsApp ಗೆ Telegram ಎಂಬ competitor ಇದೆ — ಆದರೆ ಬಹುತೇಕ ಜನ ಮತ್ತೆ WhatsApp ಗೇ ಬರುತ್ತಾರೆ, ಏಕೆಂದರೆ ಅವರ ಸ್ನೇಹಿತರು Telegram ನಲ್ಲಿ ಇಲ್ಲ. ಪ್ರತಿ ಹೊಸ ಬಳಕೆದಾರ ಸೇರಿದಂತೆ product ನ value ಹೆಚ್ಚಾಗುತ್ತಾ ಹೋಗುತ್ತದೆ. ಇದನ್ನೇ product innovation ಮೇಲೆ ಕಟ್ಟಿದ network effect moat ಎನ್ನುತ್ತಾರೆ.
+  </div>
+
+  <table class="compare-table">
+    <tr><th>Platform</th><th>Moat Type</th><th>Can You Switch?</th><th>Verdict</th></tr>
+    <tr><td>Facebook/Instagram</td><td>Network Effect + Distribution</td><td>Technically yes</td><td><span class="badge badge-red">Hard to leave</span></td></tr>
+    <tr><td>WhatsApp</td><td>Network Effect</td><td>Yes — but friends aren't there</td><td><span class="badge badge-red">Hard to leave</span></td></tr>
+    <tr><td>Telegram</td><td>Features only</td><td>Easy</td><td><span class="badge badge-yellow">Competing</span></td></tr>
+    <tr><td>Generic App</td><td>None</td><td>Instantly</td><td><span class="badge badge-green">No moat</span></td></tr>
+  </table>
+
+  <div class="quote">Facebook ಪ್ರಾರಂಭವಾದಾಗ ಅದರ ರೀತಿಯದ್ದೇ ಬೇರೊಂದು ಇರಲಿಲ್ಲ. Innovative products ಮತ್ತು ಕಂಪನಿಗಳು ಯಾವಾಗಲೂ market ಗಿಂತ ಮುಂದೆ ಇರುತ್ತವೆ.</div>
+
+  <div class="verdict">
+    <h3>The Investor Takeaway</h3>
+    <p>ನಮಗೆ ಬೇಕಾದ ಕಂಪನಿಗೆ ಕನಿಷ್ಠ <strong>ಒಂದಾದರೂ edge</strong> ಇರಬೇಕು — Brand, Cost, Distribution, ಅಥವಾ Innovation. Innovation moats ಸಾಮಾನ್ಯವಾಗಿ ಕಾಲಕ್ರಮೇಣ ಇನ್ನಷ್ಟು ಬಲಗೊಳ್ಳುತ್ತವೆ, ಏಕೆಂದರೆ ನಿರಂತರ R&D ಪ್ರತಿ ವರ್ಷ entry barrier ಅನ್ನು ಇನ್ನಷ್ಟು ಎತ್ತರಕ್ಕೆ ಒಯ್ಯುತ್ತದೆ.</p>
+    <div class="summary-row">
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Unique product</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ No easy substitute</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Network effects</span>
+      <span class="chip" style="color:var(--green); border-color:var(--green)">✓ Continuous R&D</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MANAGEMENT PAGE -->
+<div id="page-management" class="page">
+<div class="container">
+  <div class="hero">
+    <span class="hero-tag">Section 6.5</span>
+    <h1>Management <span>Background</span></h1>
+    <p>ಎಷ್ಟೇ ಒಳ್ಳೆಯ business ಆದರೂ ಕೆಟ್ಟ management ಅದನ್ನು ಹಾಳುಮಾಡಬಹುದು. ಕಂಪನಿ ನಡೆಸುವ ಜನರನ್ನು ಹೇಗೆ ಮೌಲ್ಯಮಾಪನ ಮಾಡುವುದು ಎಂದು ಇಲ್ಲಿ ನೋಡೋಣ.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('mgmt','importance',this)">Why It Matters</button>
+    <button class="tab-btn" onclick="showTab('mgmt','ownership',this)">Ownership</button>
+    <button class="tab-btn" onclick="showTab('mgmt','compensation',this)">Compensation</button>
+    <button class="tab-btn" onclick="showTab('mgmt','checklist',this)">Checklist</button>
+  </div>
+
+  <div id="mgmt-tab-importance" class="tab-content active">
+    <h3>Management ಏಕೆ ಮುಖ್ಯ</h3>
+    <h2>ಕಂಪನಿಯ ಭೂತಕಾಲ ಮತ್ತು ಭವಿಷ್ಯ</h2>
+    <p class="section-intro">balance sheet ನಲ್ಲಿ ಕಾಣುವ ಪ್ರತಿಯೊಂದು result — ಪ್ರತಿಯೊಂದು decision, ಪ್ರತಿಯೊಂದು acquisition, ಪ್ರತಿಯೊಂದು capital allocation — ಇವೆಲ್ಲವನ್ನೂ management team (CEO, CFO, CTO, MD ಇತ್ಯಾದಿ) ತೆಗೆದುಕೊಂಡಿದ್ದೇ ಆಗಿದೆ.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label"><div class="icon">📜</div><strong>Past</strong></div>
+        <p>ಈ ಹಿಂದೆ ತೆಗೆದುಕೊಂಡ ಎಲ್ಲಾ decisions ಮತ್ತು ಮಾಡಿದ ಕೆಲಸಗಳೇ ಕಂಪನಿಯ ಇಂದಿನ ಸ್ಥಿತಿಯನ್ನು ನಿರ್ಧರಿಸುತ್ತವೆ. ಒತ್ತಡದ ಸಂದರ್ಭದಲ್ಲಿ management ಹೇಗೆ ವರ್ತಿಸುತ್ತದೆ ಎಂಬುದನ್ನು history ತೋರಿಸುತ್ತದೆ.</p>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="icon">🔭</div><strong>Future</strong></div>
+        <p>ಕಂಪನಿಯ ಭವಿಷ್ಯದ performance ಸಂಪೂರ್ಣವಾಗಿ ಇದೇ team ಅನ್ನು ಅವಲಂಬಿಸಿದೆ. ಒಳ್ಳೆಯ management value ಅನ್ನು ಬೆಳೆಸುತ್ತದೆ; ಕೆಟ್ಟ management ಅದನ್ನು ನಾಶ ಮಾಡುತ್ತದೆ.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <h3>Institutional Investors ಏನನ್ನು ಗಮನಿಸುತ್ತಾರೆ</h3>
+    <div class="card">
+      <div class="card-label"><div class="icon">🎯</div><strong>Ability</strong></div>
+      <p>ಅವರಿಗೆ ಸಾಮರ್ಥ್ಯ ಇದೆಯೇ? capital ಅನ್ನು ಹೇಗೆ allocate ಮಾಡುತ್ತಿದ್ದಾರೆ? ಹೇಳಿದ ಗುರಿಗಳನ್ನು ಸಾಧಿಸುತ್ತಿದ್ದಾರೆಯೇ? ಗಳಿಸಿದ cash ಅನ್ನು ಜಾಣ್ಮೆಯಿಂದ ಬಳಸುತ್ತಿದ್ದಾರೆಯೇ?</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">👁️</div><strong>Vision</strong></div>
+      <p>ಕಂಪನಿ ಏನನ್ನು ಸಾಧಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿದೆ? ಅವರಿಗೆ ಸ್ಪಷ್ಟವಾದ long-term ಮತ್ತು short-term ಗುರಿಗಳಿವೆಯೇ, ಮತ್ತು ಅವನ್ನು ಸಾಧಿಸುತ್ತಿದ್ದಾರೆಯೇ?</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">🤲</div><strong>Integrity</strong></div>
+      <p>management ಎಂದಾದರೂ shareholders ಅಥವಾ ಗ್ರಾಹಕರ ಹಿತಾಸಕ್ತಿಗೆ ವಿರುದ್ಧವಾಗಿ ವರ್ತಿಸಿದೆಯೇ? Integrity subjective ಆದರೂ ಬಹಳ ಮುಖ್ಯ — ಅವರ track record ನೋಡಿ.</p>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💵</div><strong>Motivation</strong></div>
+      <p>management ಗೆ compensation ಹೇಗೆ ಸಿಗುತ್ತದೆ? ಅವರ pay structure, ಒಬ್ಬ shareholder ಆಗಿ ನಿಮ್ಮ ಹಿತಾಸಕ್ತಿಯೊಂದಿಗೆ ಅವರ incentives align ಆಗುತ್ತಿದೆಯೇ ಎಂಬುದನ್ನು ತೋರಿಸುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <div id="mgmt-tab-ownership" class="tab-content">
+    <h3>Ownership ನ ರಚನೆ</h3>
+    <h2>Skin in the game ಇದೆಯೇ?</h2>
+    <p class="section-intro">management ಕಂಪನಿಯ ಎಷ್ಟು ಪಾಲನ್ನು ಹೊಂದಿದೆಯೋ, ಅಷ್ಟು ಹೆಚ್ಚು ಅವರ ಹಿತಾಸಕ್ತಿ ಒಬ್ಬ shareholder ಆಗಿ ನಿಮ್ಮ ಹಿತಾಸಕ್ತಿಯೊಂದಿಗೆ align ಆಗುತ್ತದೆ.</p>
+
+    <h3 style="margin-top:1.5rem">Owner-Operated vs Professionally Operated</h3>
+    <table class="compare-table">
+      <tr><th>Type</th><th>Ownership %</th><th>Interest Alignment</th><th>Our Preference</th></tr>
+      <tr><td>Owner Operated<br><small style="color:var(--muted)">CEO/CFO ಸ್ಥಾಪಕ (founder) ಅಥವಾ ಕುಟುಂಬದವರೇ ಆಗಿರುತ್ತಾರೆ</small></td><td>40–50%</td><td><span class="badge badge-green">High</span></td><td><span class="badge badge-green">✓ Preferred</span></td></tr>
+      <tr><td>Professionally Operated<br><small style="color:var(--muted)">ನೇಮಕ ಮಾಡಿಕೊಂಡ professionals ಇದನ್ನು ನಡೆಸುತ್ತಾರೆ</small></td><td>2–4%</td><td><span class="badge badge-red">Low</span></td><td><span class="badge badge-yellow">Exception only</span></td></tr>
+    </table>
+
+    <div class="example">
+      <strong>Godawari Power & Ispat</strong>
+      ಅವರ shareholding pattern ನೋಡಿದಾಗ, stock ನ ದೊಡ್ಡ ಪಾಲು promoters (ಸ್ಥಾಪಕ ಕುಟುಂಬ) ಬಳಿ ಇದೆ. ಇದರಿಂದ ಈ ಕಂಪನಿ owner-operated ಎಂದು ಗೊತ್ತಾಗುತ್ತದೆ — ಅವರ ಸಂಪತ್ತು ಕಂಪನಿಯ ಯಶಸ್ಸಿನ ಮೇಲೆಯೇ ಅವಲಂಬಿತವಾಗಿದೆ. ಹಿತಾಸಕ್ತಿಗಳು ಒಂದೇ ಆಗಿವೆ.
+    </div>
+
+    <hr class="divider">
+    <h3>ಈ ಕಂಪನಿ ಅವರ Net Worth ನ ಎಷ್ಟು %?</h3>
+    <p style="color:var(--muted); margin-bottom:1.2rem; font-size:0.9rem">ಒಂದು ಕಂಪನಿ management ನ ಒಟ್ಟು net worth ನಲ್ಲಿ ಎಷ್ಟು ಹೆಚ್ಚಿನ ಪಾಲು ಹೊಂದಿದೆಯೋ, ಅಷ್ಟು ಹೆಚ್ಚು ಅವರು ಅದರ long-term health ಬಗ್ಗೆ ಕಾಳಜಿ ವಹಿಸುತ್ತಾರೆ.</p>
+
+    <div class="ownership-row">
+      <div class="ownership-name">Raheja & Co.</div>
+      <div class="ownership-track"><div class="ownership-fill high" style="width:85%">85%</div></div>
+    </div>
+    <div class="ownership-row">
+      <div class="ownership-name">Sharma & Co.</div>
+      <div class="ownership-track"><div class="ownership-fill med" style="width:40%">40%</div></div>
+    </div>
+    <div class="ownership-row">
+      <div class="ownership-name">Hypothetical Co.</div>
+      <div class="ownership-track"><div class="ownership-fill low" style="width:10%">10%</div></div>
+    </div>
+
+    <p style="color:var(--muted); font-size:0.82rem; margin-top:0.5rem">Raheja ಯ promoter ತಮ್ಮ net worth ನ 85% ಈ ಕಂಪನಿಯಲ್ಲಿ ಇಟ್ಟಿದ್ದಾರೆ → Sharma ಯ promoter (40%) ಗಿಂತ ಒಳ್ಳೆಯ decisions ತೆಗೆದುಕೊಳ್ಳಲು ಇವರಿಗೆ ಹೆಚ್ಚು ಬಲವಾದ incentive ಇದೆ.</p>
+  </div>
+
+  <div id="mgmt-tab-compensation" class="tab-content">
+    <h3>Pay ಯ ರಚನೆ</h3>
+    <h2>Management ಗೆ ಸಂಬಳ ಹೇಗೆ ಸಿಗುತ್ತದೆ?</h2>
+    <p class="section-intro">Compensation structure ಯೇ, management short-term metrics ಗಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆಯೋ ಅಥವಾ long-term company health ಗಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆಯೋ ಎಂಬುದನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ.</p>
+
+    <div class="card">
+      <div class="card-label"><div class="icon">📈</div><strong>Shares / ESOPs</strong></div>
+      <p style="margin-bottom:0.5rem">ಅತ್ಯುತ್ತಮ alignment. management ಗೆ shares ಅಥವಾ employee stock options ಮೂಲಕ ಸಂಬಳ ಸಿಕ್ಕರೆ, shareholders ನ ಸಂಪತ್ತು ಬೆಳೆದಾಗ ಮಾತ್ರ ಅವರ ಸಂಪತ್ತೂ ಬೆಳೆಯುತ್ತದೆ.</p>
+      <span class="badge badge-green">✓ Ideal for long-term investors</span>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">📊</div><strong>Commission on Net Profit</strong></div>
+      <p style="margin-bottom:0.5rem">ಮಧ್ಯಮ alignment. ಈಗಿನ net profits ಗೆ ತಳಕುಹಾಕಿದ variable component. ಅಪಾಯ: short-term profit ಹೆಚ್ಚಿಸಲು management long-term health ಅನ್ನು ತ್ಯಾಗ ಮಾಡಬಹುದು.</p>
+      <span class="badge badge-yellow">⚠ Acceptable with oversight</span>
+    </div>
+    <div class="card">
+      <div class="card-label"><div class="icon">💰</div><strong>Fixed Salary</strong></div>
+      <p style="margin-bottom:0.5rem">ಅತ್ಯಂತ ಕಳಪೆ alignment. ಕಂಪನಿಯ performance ಏನೇ ಆಗಲಿ, fixed salary ಸಿಗುತ್ತಲೇ ಇರುತ್ತದೆ. ಕಂಪನಿ ಕಷ್ಟದಲ್ಲಿದ್ದರೂ management ತಮ್ಮ ಚೆಕ್ ಪಡೆಯುತ್ತಾರೆ.</p>
+      <span class="badge badge-red">✗ Red flag if too high</span>
+    </div>
+
+    <div class="example" style="border-left-color: var(--red)">
+      <strong>Red Flag Example</strong>
+      management ₹20 crore fixed salary ಪಡೆದರೆ, ಅದು ಒಂದು red flag. ಇದು ಅವರ ಮುಖ್ಯ ಆಸಕ್ತಿ ತಮ್ಮ ಸ್ವಂತ compensation ಆಗಿದೆ — shareholder value ಅಲ್ಲ ಎಂದು ಸೂಚಿಸುತ್ತದೆ. ಅವರ ಹಿತಾಸಕ್ತಿ ನಿಮ್ಮದರೊಂದಿಗೆ align ಆಗಿಲ್ಲ.
+    </div>
+
+    <div class="example">
+      <strong>Apar Industries — Good Example</strong>
+      Management 23–24% shares ಹೊಂದಿದೆ. ಅವರ commission ಒಂದು balance ಆಗಿ ಬಳಸಲಾಗುತ್ತದೆ — ಇದರಿಂದ short-term performance ಗೂ incentive ಸಿಗುತ್ತದೆ. ಈ combination, long-term ಮತ್ತು short-term ಎರಡೂ decisions ಕಂಪನಿಯ ಒಳಿತಿಗಾಗಿಯೇ ತೆಗೆದುಕೊಳ್ಳುವಂತೆ ಖಚಿತಪಡಿಸುತ್ತದೆ.
+    </div>
+  </div>
+
+  <div id="mgmt-tab-checklist" class="tab-content">
+    <h3>ಅಂತಿಮ Evaluation</h3>
+    <h2>The 3-Question Test</h2>
+    <p class="section-intro">ಒಬ್ಬ retail investor ಆಗಿ, ಇದನ್ನು ಸರಳವಾಗಿ ಇಟ್ಟುಕೊಳ್ಳಿ. ಯಾವುದೇ ಕಂಪನಿಯ management ಅನ್ನು ನಂಬುವ ಮೊದಲು ಈ ಮೂರು ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿಕೊಳ್ಳಿ.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Management ಎಷ್ಟು ಪಾಲು ಹೊಂದಿದೆ?</strong><p>owner-operated businesses (40–50% promoter holding) ಹುಡುಕಿ. professional companies ಗಳಲ್ಲಿ ESOP ಗಳು ಮುಂದಿನ ಉತ್ತಮ ಆಯ್ಕೆ.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>ಅವರ net worth ನ ಎಷ್ಟು % ಇಲ್ಲಿ ಇದೆ?</strong><p>ಈ ಕಂಪನಿಯೇ ಅವರ ಮುಖ್ಯ ಸಂಪತ್ತಿನ ಮೂಲ ಆಗಿದ್ದರೆ, ಅವರು ಅದನ್ನು ಜಾಗರೂಕತೆಯಿಂದ ರಕ್ಷಿಸಿ ಬೆಳೆಸುತ್ತಾರೆ.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>ಅವರಿಗೆ ಸಂಬಳ ಹೇಗೆ ಸಿಗುತ್ತದೆ?</strong><p>Share-based compensation = ಹಿತಾಸಕ್ತಿ aligned. Fixed salary ಪ್ರಧಾನವಾಗಿದ್ದರೆ = ಹಿತಾಸಕ್ತಿ misaligned.</p></div></div>
+    </div>
+
+    <div class="verdict">
+      <h3>✓ Green Light Criteria</h3>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>ನಿಮ್ಮ ಹಿತಾಸಕ್ತಿ management ನ ಹಿತಾಸಕ್ತಿಯೊಂದಿಗೆ align ಆಗುತ್ತದೆ</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>Management ಬೇರೆ ಅನೇಕ ಕಂಪನಿಗಳಲ್ಲಿ ಗಣನೀಯ stock ಹೊಂದಿಲ್ಲ</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>ಈ ಕಂಪನಿಯೇ management ಗೆ ಮುಖ್ಯ ಆದಾಯದ ಮೂಲ</p></div>
+      <div class="info-row"><div class="info-dot" style="background:var(--green)"></div><p>Compensation plan long-term stock performance ಗೆ ತಳಕುಹಾಕಲಾಗಿದೆ</p></div>
+      <p style="margin-top:1rem; font-style:italic; color: var(--accent)">ಈ ಎಲ್ಲಾ conditions ಪೂರೈಸಿದರೆ — ನೀವು ಮುಂದುವರೆಯಬಹುದು!</p>
+      <p style="font-size:0.82rem; color: var(--muted); margin-top:0.5rem">📄 ಈ ಮಾಹಿತಿ Annual Report ನ <strong>Corporate Governance Report</strong> ಮತ್ತು <strong>Directors Report</strong> ವಿಭಾಗಗಳಲ್ಲಿ ಸಿಗುತ್ತದೆ.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  function showPage(page, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showTab(page, tab, btn) {
+    const prefix = page + '-tab-';
+    document.querySelectorAll('[id^="' + prefix + '"]').forEach(t => t.classList.remove('active'));
+    document.getElementById(prefix + tab).classList.add('active');
+    if (btn) {
+      btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

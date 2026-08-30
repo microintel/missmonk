@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Investing ಕಲಿಯುವ ಮಾರ್ಗದರ್ಶಿ — Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --ink:#242424;
+    --ink-dim:#6B6B6B;
+    --ink-faint:#A6A6A6;
+    --ring:#EFEFEF;
+    --shadow: 0 10px 26px -12px rgba(30,30,30,0.18);
+    --heading: 'Poppins', 'Noto Sans Kannada', -apple-system, sans-serif;
+    --body: 'Inter', 'Noto Sans Kannada', -apple-system, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  header.hero{
+    text-align:center;
+    padding:4rem 1.5rem 2.5rem;
+  }
+  header.hero .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:0.6em;
+    font-family:var(--heading);
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:#D9A72E;
+    margin-bottom:0.9rem;
+  }
+  header.hero .eyebrow::before, header.hero .eyebrow::after{
+    content:""; width:20px; height:1px; background:#D9A72E; opacity:0.6;
+  }
+  header.hero h1{
+    font-family:var(--heading);
+    font-weight:600;
+    font-size:clamp(1.7rem, 6vw, 2.7rem);
+    margin:0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  header.hero p{
+    margin:0.7rem auto 0;
+    max-width:30rem;
+    color:var(--ink-faint);
+    font-size:0.95rem;
+    font-style:italic;
+  }
+
+  main.roadmap{
+    position:relative;
+    max-width:760px;
+    margin:0 auto;
+    padding:1rem 1.25rem 3rem;
+  }
+
+  svg.path-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:1; }
+
+  .stop{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:1.6rem;
+    padding:2.2rem 0;
+  }
+  .stop:nth-child(even){ flex-direction:row-reverse; }
+  .stop:nth-child(even) .text{ text-align:right; }
+  .stop:nth-child(even) .bullets li{ justify-content:flex-end; }
+  .stop:nth-child(even) .bullets li::before{ order:2; margin-left:0.5rem; margin-right:0; }
+
+  .node-wrap{
+    position:relative;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    z-index:2;
+  }
+  .node{
+    width:78px; height:78px;
+    border-radius:50%;
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow);
+    border:1px solid var(--ring);
+    opacity:0;
+    transform:scale(0.7);
+    transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.4,.64,1), box-shadow .4s ease;
+  }
+  .stop.in .node{ opacity:1; transform:scale(1); }
+  .node svg{ width:34px; height:34px; stroke:var(--accent); }
+  .num{
+    margin-top:0.5rem;
+    font-family:var(--heading);
+    font-size:0.8rem;
+    font-weight:600;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+  }
+
+  .text{
+    position:relative;
+    z-index:2;
+    flex:1;
+    background:var(--bg);
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease .1s, transform .6s ease .1s;
+  }
+  .stop.in .text{ opacity:1; transform:translateY(0); }
+  .text h2{
+    font-family:var(--heading);
+    font-weight:600;
+    font-size:1.15rem;
+    margin:0 0 0.55rem;
+    color:var(--ink);
+  }
+  .bullets{ list-style:none; margin:0; padding:0; }
+  .bullets li{
+    display:flex; align-items:flex-start;
+    font-size:0.9rem;
+    color:var(--ink-dim);
+    line-height:1.5;
+    margin-bottom:0.35rem;
+  }
+  .bullets li::before{
+    content:"";
+    width:5px; height:5px; border-radius:50%;
+    background:var(--accent);
+    margin-top:0.55em;
+    margin-right:0.55rem;
+    flex-shrink:0;
+  }
+
+  .stop.finale .node{ background:var(--accent); }
+  .stop.finale .node svg{ stroke:#fff; }
+
+  @media (max-width:620px){
+    main.roadmap{ padding:0.5rem 1rem 2rem; }
+    .stop, .stop:nth-child(even){
+      flex-direction:column;
+      text-align:center;
+      gap:0.9rem;
+      padding:1.8rem 0;
+    }
+    .stop .text, .stop:nth-child(even) .text{ text-align:center; }
+    .bullets li, .stop:nth-child(even) .bullets li{ justify-content:center; }
+    .bullets li::before, .stop:nth-child(even) .bullets li::before{ order:0; margin-right:0.55rem; margin-left:0; }
+    .node{ width:66px; height:66px; }
+    .node svg{ width:28px; height:28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .node, .text{ transition:none !important; }
+    .node{ opacity:1; transform:none; }
+    .text{ opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">Zebra Learn</span>
+  <h1>Stock Investing ಕಲಿಯುವ ಪೂರ್ಣ ಮಾರ್ಗದರ್ಶಿ</h1>
+  <p>ಪ್ರತಿಯೊಂದು Chapter ಮೂಲಕ ಸಾಗುವ ಒಂದು Roadmap</p>
+</header>
+
+<main class="roadmap" id="roadmap">
+  <svg class="path-svg" id="pathSvg"><defs></defs></svg>
+
+  <!-- 1 -->
+  <div class="stop" style="--accent:#F2A93B">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M6 20V10M12 20V4M18 20v-7"/></svg></div>
+      <span class="num">01</span>
+    </div>
+    <div class="text">
+      <h2>Stock Market ಪರಿಚಯ</h2>
+      <ul class="bullets">
+        <li>Stock Market ಅಂದರೆ ಏನು, ಅದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂಬ ಮೂಲಭೂತ ಅಂಶಗಳು</li>
+        <li>Stock ಬೆಲೆಗಳು ಏಕೆ ಮತ್ತು ಹೇಗೆ ಏರಿಳಿತ ಆಗುತ್ತವೆ ಎಂಬುದನ್ನು ಅರ್ಥ ಮಾಡಿಕೊಳ್ಳಿ</li>
+        <li>Trading ಮಾಡಲು ಬೇಕಾದ Account ಮತ್ತು System ಅನ್ನು ಹೇಗೆ Set-up ಮಾಡುವುದು</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="stop" style="--accent:#E8604C">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></div>
+      <span class="num">02</span>
+    </div>
+    <div class="text">
+      <h2>Stock ಬಗ್ಗೆ Research ಮಾಡುವುದು</h2>
+      <ul class="bullets">
+        <li>Investing ಮತ್ತು Trading ನಡುವಿನ ವ್ಯತ್ಯಾಸ ಏನು ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+        <li>Institutional Investors ಮತ್ತು Retail Investors ಇಬ್ಬರ ನಡುವಿನ ವ್ಯತ್ಯಾಸ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="stop" style="--accent:#2FA6A1">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+      <span class="num">03</span>
+    </div>
+    <div class="text">
+      <h2>ಕಂಪನಿಗಳನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡುವುದು</h2>
+      <ul class="bullets">
+        <li>Investment ಮಾಡಲು Ideas ಎಲ್ಲಿಂದ ಮತ್ತು ಹೇಗೆ ಸಿಗುತ್ತವೆ ಎಂಬುದನ್ನು ಕಲಿಯಿರಿ</li>
+        <li>Stock Market Report ಮತ್ತು Information ಎಲ್ಲಿ ಸಿಗುತ್ತದೆ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+        <li>ಕಂಪನಿಗಳ Annual Report ಅನ್ನು ಹೇಗೆ ಓದಬೇಕು ಎಂಬುದನ್ನು ಕಲಿಯಿರಿ</li>
+        <li>Financial Statements ನ ಮೂಲಭೂತ ಅಂಶಗಳು ಏನೆಲ್ಲ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+        <li>ಒಂದು ಕಂಪನಿಯನ್ನು Analyze ಮಾಡುವುದು ಹೇಗೆ ಎಂಬ ವಿಧಾನ</li>
+        <li>Financial Ratios ಗಳ ಬಗ್ಗೆ ಮತ್ತು ಅವು ಏನನ್ನು ತೋರಿಸುತ್ತವೆ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="stop" style="--accent:#4A90D9">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6zM19 7l-3 6a3 3 0 0 0 6 0l-3-6zM5 7h14M9 21h6"/></svg></div>
+      <span class="num">04</span>
+    </div>
+    <div class="text">
+      <h2>Stocks ನ Valuation</h2>
+      <ul class="bullets">
+        <li>Stocks ನ Value ಅನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕುವುದು ಎಂಬ ವಿಧಾನ</li>
+        <li>Relative Valuation ಎಂದರೆ ಏನು ಎಂಬುದನ್ನು ಕಲಿಯಿರಿ</li>
+        <li>Absolute Valuation ವಿಧಾನದ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ</li>
+        <li>Exit Multiple Approach ಎಂಬ ವಿಧಾನ ಏನು ಎಂಬುದನ್ನು ಅರ್ಥ ಮಾಡಿಕೊಳ್ಳಿ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="stop" style="--accent:#63B76C">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9m0 8l-3-3m3 3l3-3M17 7v8m0-8l3 3m-3-3l-3 3"/></svg></div>
+      <span class="num">05</span>
+    </div>
+    <div class="text">
+      <h2>Stock ಅನ್ನು ಯಾವಾಗ Buy &amp; Sell ಮಾಡಬೇಕು?</h2>
+      <ul class="bullets">
+        <li>Stock ಅನ್ನು Buy ಮಾಡಲು ಸರಿಯಾದ ಸಮಯ ಯಾವಾಗ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+        <li>Stock ಅನ್ನು Sell ಮಾಡಲು ಸರಿಯಾದ ಸಮಯ ಯಾವಾಗ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="stop" style="--accent:#9B6FD1">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg></div>
+      <span class="num">06</span>
+    </div>
+    <div class="text">
+      <h2>Market Cycles ಮತ್ತು Business Cycles</h2>
+      <ul class="bullets">
+        <li>Market Cycles ಮತ್ತು Business Cycles ಹೇಗೆ ಒಂದಕ್ಕೊಂದು ಸಂಬಂಧ ಹೊಂದಿವೆ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="stop" style="--accent:#E06BA8">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><path d="M8.2 10.7l7.6-4.4M8.2 13.3l7.6 4.4"/></svg></div>
+      <span class="num">07</span>
+    </div>
+    <div class="text">
+      <h2>Portfolio ನಿರ್ವಹಣೆ</h2>
+      <ul class="bullets">
+        <li>ನಿಮ್ಮ Portfolio ಅನ್ನು ಸರಿಯಾದ ರೀತಿಯಲ್ಲಿ ಹೇಗೆ ನಿರ್ವಹಿಸಬೇಕು ಎಂಬ ವಿಧಾನ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="stop" style="--accent:#D9A72E">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 3.5-1 3.5H9s-1-1.5-1-3.5c0-3.5 1.5-7 4-9z"/><path d="M9 15l-3 3 1.5 1.5M15 15l3 3-1.5 1.5M10.5 19h3"/></svg></div>
+      <span class="num">08</span>
+    </div>
+    <div class="text">
+      <h2>ನಿಮ್ಮ ಹಣವನ್ನು ಹೇಗೆ ಬೆಳೆಸುವುದು?</h2>
+      <ul class="bullets">
+        <li>10X ಮತ್ತು 100X Return ಕೊಡುವ Investment ನಲ್ಲಿ ಏನಿರುತ್ತದೆ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 9 : finale -->
+  <div class="stop finale" style="--accent:#3E7C93">
+    <div class="node-wrap">
+      <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <span class="num">09</span>
+    </div>
+    <div class="text">
+      <h2>ಮುಕ್ತಾಯ</h2>
+    </div>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const roadmap = document.getElementById('roadmap');
+  const svg = document.getElementById('pathSvg');
+  const defs = svg.querySelector('defs');
+  const stops = Array.from(document.querySelectorAll('.stop'));
+  const nodes = stops.map(s => s.querySelector('.node'));
+  const accents = stops.map(s => s.style.getPropertyValue('--accent').trim());
+
+  function ensureMarker(id, color){
+    if(defs.querySelector('#'+id)) return;
+    const marker = document.createElementNS('http://www.w3.org/2000/svg','marker');
+    marker.setAttribute('id', id);
+    marker.setAttribute('viewBox', '0 0 10 10');
+    marker.setAttribute('refX', '6');
+    marker.setAttribute('refY', '5');
+    marker.setAttribute('markerWidth', '6');
+    marker.setAttribute('markerHeight', '6');
+    marker.setAttribute('orient', 'auto-start-reverse');
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', 'M0 0 L10 5 L0 10 z');
+    path.setAttribute('fill', color);
+    marker.appendChild(path);
+    defs.appendChild(marker);
+  }
+
+  const segmentPaths = [];
+
+  function buildPaths(){
+    svg.querySelectorAll('path.segment').forEach(p=>p.remove());
+    segmentPaths.length = 0;
+    const rect = roadmap.getBoundingClientRect();
+    const w = roadmap.offsetWidth, h = roadmap.offsetHeight;
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    const rowRects = stops.map(s => s.getBoundingClientRect());
+    const nodeRects = nodes.map(n => n.getBoundingClientRect());
+
+    for(let i=0; i<stops.length-1; i++){
+      const color = accents[i+1] || accents[i];
+      const markerId = 'arrow-' + i;
+      ensureMarker(markerId, color);
+
+      const nA = nodeRects[i], nB = nodeRects[i+1];
+      const rowA = rowRects[i], rowB = rowRects[i+1];
+
+      const ax = nA.left + nA.width/2 - rect.left;
+      const bx = nB.left + nB.width/2 - rect.left;
+      const nodeBottomA = nA.bottom - rect.top;
+      const nodeTopB = nB.top - rect.top;
+      /* the curve is only ever drawn in the empty padding gap between
+         one full row (circle + its text) and the next — never through
+         either row's own content, no matter how tall the text is */
+      const gapTop = Math.max(nodeBottomA, rowA.bottom - rect.top);
+      const gapBottom = Math.min(nodeTopB, rowB.top - rect.top);
+      const midY = (gapTop + gapBottom) / 2;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('class','segment');
+      path.setAttribute('d',
+        `M ${ax} ${nodeBottomA} L ${ax} ${gapTop} ` +
+        `C ${ax} ${gapTop + (midY-gapTop)*0.7}, ${bx} ${midY - (midY-gapTop)*0.7}, ${bx} ${midY} ` +
+        `C ${bx} ${midY + (gapBottom-midY)*0.7}, ${ax} ${gapBottom - (gapBottom-midY)*0.2}, ${bx} ${gapBottom} ` +
+        `L ${bx} ${nodeTopB}`
+      );
+      path.setAttribute('fill','none');
+      path.setAttribute('stroke', color);
+      path.setAttribute('stroke-width','3');
+      path.setAttribute('stroke-linecap','round');
+      path.setAttribute('marker-end', `url(#${markerId})`);
+      path.style.filter = `drop-shadow(0 2px 3px ${color}55)`;
+      svg.insertBefore(path, svg.firstChild.nextSibling);
+
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = reduceMotion ? 0 : len;
+      path.style.transition = 'stroke-dashoffset 1s cubic-bezier(.4,.1,.2,1)';
+      segmentPaths[i] = path;
+    }
+  }
+
+  function revealSegment(i){
+    const p = segmentPaths[i];
+    if(p) p.style.strokeDashoffset = 0;
+  }
+
+  window.addEventListener('resize', buildPaths);
+  window.addEventListener('load', ()=>{ buildPaths(); });
+  setTimeout(buildPaths, 250);
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const idx = stops.indexOf(e.target);
+      e.target.classList.add('in');
+      if(idx > 0) revealSegment(idx - 1);
+    });
+  }, { threshold:0.35 });
+  stops.forEach(s => io.observe(s));
+})();
+</script>
+
+
+</body>
+</html>
