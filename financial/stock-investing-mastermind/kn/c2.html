@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Investing — Prices ಹೇಗೆ ಚಲಿಸುತ್ತವೆ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5C518;
+    --dark: #111108;
+    --charcoal: #1E1E18;
+    --card: #242420;
+    --card2: #2E2E28;
+    --text: #F0EDDA;
+    --muted: #9A9880;
+    --green: #4CAF7D;
+    --red: #E05A5A;
+    --blue: #5AABCC;
+    --accent: #F5C518;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(17,17,8,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,197,24,0.15);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 56px;
+    overflow-x: auto;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0 1rem;
+    height: 56px;
+    display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover, nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--gold);
+    margin-right: 1.5rem;
+    border-bottom: none !important;
+    padding-left: 0;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 2rem 4rem;
+    background: radial-gradient(ellipse at 50% 60%, rgba(245,197,24,0.06) 0%, transparent 70%);
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(245,197,24,0.03) 39px, rgba(245,197,24,0.03) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(245,197,24,0.03) 39px, rgba(245,197,24,0.03) 40px);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 720px; position: relative; }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(245,197,24,0.3);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero p {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+  }
+  .hero-pills {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .pill {
+    background: rgba(245,197,24,0.08);
+    border: 1px solid rgba(245,197,24,0.2);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .pill:hover { background: rgba(245,197,24,0.18); }
+
+  /* SECTIONS */
+  section {
+    padding: 5rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .lead { color: var(--muted); font-size: 16px; margin-bottom: 3rem; max-width: 640px; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.8rem;
+  }
+  .card-gold { border-color: rgba(245,197,24,0.2); }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .card p { color: var(--muted); font-size: 14px; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; }
+
+  /* CONCEPT TAG */
+  .ctag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 0.7rem;
+  }
+  .ctag-gold { background: rgba(245,197,24,0.15); color: var(--gold); }
+  .ctag-green { background: rgba(76,175,125,0.15); color: var(--green); }
+  .ctag-red { background: rgba(224,90,90,0.15); color: var(--red); }
+  .ctag-blue { background: rgba(90,171,204,0.15); color: var(--blue); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245,197,24,0.2), transparent);
+    margin: 4rem 0;
+  }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--charcoal);
+    border: 1px solid rgba(245,197,24,0.25);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    margin: 1.5rem 0;
+  }
+
+  /* CHART */
+  .chart-wrap {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  canvas { width: 100% !important; display: block; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .flow-node {
+    background: var(--card2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 100px;
+  }
+  .flow-arrow {
+    color: var(--gold);
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  /* CALCULATOR */
+  .calc-box {
+    background: var(--card);
+    border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 14px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .calc-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--gold);
+  }
+  .input-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .input-group label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .input-group input, .input-group select {
+    background: var(--charcoal);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .input-group input:focus, .input-group select:focus { border-color: var(--gold); }
+  .input-group select option { background: var(--charcoal); }
+  .btn {
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border: none; border-radius: 8px;
+    padding: 0.8rem 1.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn:hover { background: #e6b800; transform: translateY(-1px); }
+  .result-box {
+    background: var(--charcoal);
+    border: 1px solid rgba(245,197,24,0.15);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.2rem;
+    display: none;
+  }
+  .result-box.show { display: block; }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .result-row .val { font-weight: 600; font-family: 'DM Mono', monospace; }
+  .val-green { color: var(--green); }
+  .val-red { color: var(--red); }
+  .val-gold { color: var(--gold); }
+
+  /* QUOTE */
+  blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.5rem;
+    background: rgba(245,197,24,0.05);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--muted);
+    margin: 2rem 0;
+  }
+  blockquote cite {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+  }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+  .compare-table th {
+    background: rgba(245,197,24,0.1);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(245,197,24,0.2);
+  }
+  .compare-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* VERDICT BADGE */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+  .badge-buy { background: rgba(76,175,125,0.2); color: var(--green); }
+  .badge-sell { background: rgba(224,90,90,0.2); color: var(--red); }
+  .badge-hold { background: rgba(245,197,24,0.15); color: var(--gold); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; }
+  .tab {
+    padding: 0.7rem 1.4rem;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* RISK METER */
+  .risk-meter { margin: 1.5rem 0; }
+  .risk-label {
+    display: flex; justify-content: space-between;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    margin-bottom: 0.4rem;
+  }
+  .risk-bar {
+    height: 8px; background: var(--charcoal); border-radius: 4px; overflow: hidden;
+  }
+  .risk-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+
+  /* PROGRESS / SCENARIO */
+  .scenario-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .scenario-card .sc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .sc-title { font-weight: 600; font-size: 14px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    nav { gap: 0; padding: 0 1rem; }
+    section { padding: 3.5rem 1.2rem; }
+    .hero h1 { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">StockIQ</span>
+  <a href="#earnings">Earnings</a>
+  <a href="#truevalue">True Value</a>
+  <a href="#markets">Bull & Bear</a>
+  <a href="#opportunities">Opportunities</a>
+  <a href="#value-creation">Value Creation</a>
+  <a href="#calculators">Calculators</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">ಅಧ್ಯಾಯ 2 — Stock Investing Mastermind</div>
+    <h1>Stock Prices<br><em>ಹೇಗೆ ಚಲಿಸುತ್ತವೆ</em></h1>
+    <p>Earnings, True Value, Market Sentiment ಮತ್ತು Value Creation ಬಗ್ಗೆ ಸಂಪೂರ್ಣ ವಿವರಣೆ — Interactive Calculators ಸಮೇತ.</p>
+    <div class="hero-pills">
+      <a href="#earnings" class="pill">📊 Earnings</a>
+      <a href="#truevalue" class="pill">🎯 True Value</a>
+      <a href="#markets" class="pill">🐂 Bull &amp; Bear</a>
+      <a href="#opportunities" class="pill">💡 ಅವಕಾಶಗಳು</a>
+      <a href="#calculators" class="pill">🧮 Calculators</a>
+    </div>
+  </div>
+</div>
+
+<!-- EARNINGS -->
+<section id="earnings">
+  <div class="section-label">2.1 — Earnings ಎಂದರೇನು ಎಂದು ಅರ್ಥ ಮಾಡಿಕೊಳ್ಳೋಣ</div>
+  <h2><em style="color:var(--gold)">Earnings</em> ಎಂದರೇನು?</h2>
+  <p class="lead">ನೀವು ಒಂದು share ಖರೀದಿಸಿದಾಗ, ಆ ಕಂಪನಿಯ <strong>earnings</strong>ನಲ್ಲಿ ಒಂದು ಸಣ್ಣ ಪಾಲನ್ನು ಖರೀದಿಸುತ್ತಿದ್ದೀರಿ ಎಂದರ್ಥ. ಕಂಪನಿ ಬೆಳೆದು ಹೆಚ್ಚು ಗಳಿಸಿದಂತೆ, ಆ ಕಂಪನಿಯ share price ಕೂಡ ಏರುತ್ತದೆ.</p>
+
+  <div class="grid2 reveal">
+    <div class="card card-gold">
+      <div class="ctag ctag-blue">Size of Earnings</div>
+      <h3>ಎಷ್ಟು ಗಳಿಸುತ್ತಾರೆ</h3>
+      <p>ಒಂದು ಕಂಪನಿ ಒಂದು quarter ಅಥವಾ fiscal year ನಲ್ಲಿ ಗಳಿಸುವ ಒಟ್ಟು ಲಾಭ ಇದು. Infosys ₹200 cr ಗಳಿಸಿದರೆ, Wipro ₹100 cr ಗಳಿಸಿದ್ದಕ್ಕಿಂತ Infosys ನ Size of Earnings ದೊಡ್ಡದು.</p>
+      <div class="formula">Earnings Size = Revenue − Costs</div>
+    </div>
+    <div class="card card-gold">
+      <div class="ctag ctag-green">Quality of Earnings</div>
+      <h3>ಆ ಗಳಿಕೆ ಎಷ್ಟು ಒಳ್ಳೆಯದು</h3>
+      <p>ಒಂದೇ ₹50 cr ಗಳಿಸುವ ಎರಡು ಕಂಪನಿಗಳ Quality ಬೇರೆ ಬೇರೆ ಇರಬಹುದು. Government support ಇರುವ, ವರ್ಷಕ್ಕೆ 20% ಬೆಳೆಯುತ್ತಿರುವ EV ಕಂಪನಿಯ Quality, ಬೆಳವಣಿಗೆ ಇಲ್ಲದ, ಹೆಚ್ಚು competition ಇರುವ ಕಂಪನಿಗಿಂತ ತುಂಬಾ ಉತ್ತಮ.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Size of Earnings</div>
+  <h2>Earnings <em style="color:var(--gold)">ಬೆಳೆಸಲು</em> ಎರಡು ದಾರಿಗಳು</h2>
+
+  <div class="grid2 reveal" style="margin-top:1.5rem">
+    <div class="card">
+      <div class="ctag ctag-gold">Volume Increase</div>
+      <h3>ಹೆಚ್ಚು Units ಮಾರಾಟ ಮಾಡುವುದು</h3>
+      <p>Cadbury ಒಂದೇ ₹10 ಬೆಲೆಯಲ್ಲಿ 100 units ಬದಲಿಗೆ 150 units ಮಾರಾಟ ಮಾಡಿದರೆ ಏನಾಗುತ್ತದೆ ನೋಡಿ:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="background:var(--charcoal);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px">
+          <span style="color:var(--muted)">ಮೊದಲು:</span> 100 × ₹10 = <span style="color:var(--text)">₹1,000</span>
+        </div>
+        <div style="background:rgba(76,175,125,0.1);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px;border:1px solid rgba(76,175,125,0.2)">
+          <span style="color:var(--muted)">ನಂತರ:</span> 150 × ₹10 = <span style="color:var(--green)">₹1,500 ↑</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctag ctag-gold">Price Increase</div>
+      <h3>ಪ್ರತಿ Unit ಗೆ ಹೆಚ್ಚು ಬೆಲೆ ಪಡೆಯುವುದು</h3>
+      <p>Maggi ಪ್ರತಿ pack ಬೆಲೆಯನ್ನು ₹10 ರಿಂದ ₹11 ಗೆ ಹೆಚ್ಚಿಸಿದರೆ (ಇದಕ್ಕೆ <strong>Pricing Power</strong> ಬೇಕು):</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="background:var(--charcoal);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px">
+          <span style="color:var(--muted)">ಮೊದಲು:</span> 1000 × ₹10 = <span style="color:var(--text)">₹10,000</span>
+        </div>
+        <div style="background:rgba(76,175,125,0.1);border-radius:6px;padding:10px;font-family:'DM Mono',monospace;font-size:13px;border:1px solid rgba(76,175,125,0.2)">
+          <span style="color:var(--muted)">ನಂತರ:</span> 1000 × ₹11 = <span style="color:var(--green)">₹11,000 ↑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Pricing Power</div>
+  <h2>ಗುಪ್ತ <em style="color:var(--gold)">ಅಸ್ತ್ರ</em></h2>
+  <p class="lead">ಗ್ರಾಹಕರನ್ನು ಕಳೆದುಕೊಳ್ಳದೆ ಬೆಲೆ ಹೆಚ್ಚಿಸುವ ಸಾಮರ್ಥ್ಯವೇ Pricing Power. ವಿಶಿಷ್ಟ ಅಥವಾ ಜನಪ್ರಿಯ ಉತ್ಪನ್ನ ಹೊಂದಿರುವ ಕಂಪನಿಗಳಿಗೆ ಇದು ಇರುತ್ತದೆ. Commodity ಬಿಸಿನೆಸ್‌ಗಳಿಗೆ ಇದು ಇರುವುದಿಲ್ಲ.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">High Pricing Power</div>
+      <h3>ಅಪರೂಪದ / ವಿಶಿಷ್ಟ ಉತ್ಪನ್ನ</h3>
+      <p style="margin-bottom:1rem">Pricing Power ಸೃಷ್ಟಿಸುವ ಗುಣಲಕ್ಷಣಗಳು:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:13px;color:var(--muted)">✅ ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ಕಡಿಮೆ ಪ್ರತಿಸ್ಪರ್ಧಿಗಳು</li>
+        <li style="font-size:13px;color:var(--muted)">✅ ಅಗ್ಗದ ಪರ್ಯಾಯಗಳು ಇಲ್ಲ</li>
+        <li style="font-size:13px;color:var(--muted)">✅ ಸಂಪನ್ಮೂಲಗಳ ಕೊರತೆ</li>
+        <li style="font-size:13px;color:var(--muted)">✅ ಬಲವಾದ Brand (Maggi, Parle-G)</li>
+      </ul>
+      <div style="margin-top:1rem;padding:10px;background:rgba(76,175,125,0.08);border-radius:6px;font-size:13px">
+        <strong style="color:var(--green)">Parle-G:</strong> <span style="color:var(--muted)">ಬೆಲೆ ₹2 ರಿಂದ ₹5 ಗೆ (2.5x) inflation ಗಿಂತ ವೇಗವಾಗಿ ಏರಿತು. ಆದರೂ ಜನ ಇನ್ನೂ ಖರೀದಿಸುತ್ತಾರೆ.</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Low Pricing Power</div>
+      <h3>ಎಲ್ಲೆಡೆ ಸಿಗುವ ಉತ್ಪನ್ನ</h3>
+      <p style="margin-bottom:1rem">ದುರ್ಬಲ Pricing Power ನ ಲಕ್ಷಣಗಳು:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:13px;color:var(--muted)">❌ ಅನೇಕ ಪ್ರತಿಸ್ಪರ್ಧಿಗಳು</li>
+        <li style="font-size:13px;color:var(--muted)">❌ ಅಗ್ಗದ ಪರ್ಯಾಯಗಳು ಇವೆ</li>
+        <li style="font-size:13px;color:var(--muted)">❌ Brand ಶಕ್ತಿ ಇಲ್ಲ</li>
+        <li style="font-size:13px;color:var(--muted)">❌ ಸರಬರಾಜು ಹೇರಳವಾಗಿದೆ</li>
+      </ul>
+      <div style="margin-top:1rem;padding:10px;background:rgba(224,90,90,0.08);border-radius:6px;font-size:13px">
+        <strong style="color:var(--red)">Aviation:</strong> <span style="color:var(--muted)">SpiceJet ದರವನ್ನು 10% ಹೆಚ್ಚಿಸಿದ ತಕ್ಷಣ ಗ್ರಾಹಕರು IndiGo ಗೆ ಬದಲಾಗುತ್ತಾರೆ.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Quality of Earnings</div>
+  <h2>ಒಂದೇ ಲಾಭ, <em style="color:var(--gold)">ಬೇರೆ Quality</em></h2>
+  <p class="lead">ಎರಡು ಕಂಪನಿಗಳು ₹50 cr ಲಾಭ ಗಳಿಸಿದರೂ, ಅವುಗಳ industry ಮತ್ತು business outlook ಆಧಾರದ ಮೇಲೆ ಹೂಡಿಕೆಯ Quality ತುಂಬಾ ಭಿನ್ನವಾಗಿರಬಹುದು.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">Company A — High Quality</div>
+      <h3>EV Power Sector</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> Government subsidy ಇದೆ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> ವರ್ಷಕ್ಕೆ 20% ಬೆಳೆಯುತ್ತಿದೆ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> Competition ಕಡಿಮೆ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">▲</span> ಪರ್ಯಾಯಗಳು ಇಲ್ಲ</div>
+      </div>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">→ ಭವಿಷ್ಯ ಉಜ್ವಲವಾಗಿ ಕಾಣುತ್ತದೆ. Quality HIGH.</div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Company B — Low Quality</div>
+      <h3>Petrol Power Sector</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> ಹೇರಳವಾಗಿದೆ, ಕುಸಿಯುತ್ತಿದೆ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> 3 ವರ್ಷದಿಂದ ಬೆಳವಣಿಗೆ ಇಲ್ಲ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> Competition ಹೆಚ್ಚಿದೆ</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)"><span style="color:var(--red)">▼</span> EV threat ಸಮೀಪಿಸುತ್ತಿದೆ</div>
+      </div>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--red)">→ Outlook ಕುಸಿಯುತ್ತಿದೆ. Quality LOW.</div>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Quality ಪರಿಶೀಲಿಸುವಾಗ — ಈ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'ind')">Industry</div>
+      <div class="tab" onclick="switchTab(this,'biz')">Business</div>
+      <div class="tab" onclick="switchTab(this,'fin')">Financials</div>
+    </div>
+    <div id="tab-ind" class="tab-content active">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">📦 ಈ industry ಬೆಳೆಯಲು ಸಾಕಷ್ಟು ದೊಡ್ಡದಾಗಿದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">📈 ಈ industry ಬೆಳೆಯುತ್ತಿದೆಯೇ ಅಥವಾ ಕುಗ್ಗುತ್ತಿದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">⚔️ ಈ industry ನಲ್ಲಿ ಅತಿಯಾದ competition ಇದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">⚠️ ಈ industry ಗೆ ಯಾವುದಾದರೂ existential risk ಇದೆಯೇ?</li>
+      </ul>
+    </div>
+    <div id="tab-biz" class="tab-content">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">🏆 ಈ ಕಂಪನಿ competition ಎದುರಿಸಲು ಬಲಿಷ್ಠವಾಗಿ, ಒಳ್ಳೆಯ ಸ್ಥಾನದಲ್ಲಿ ಇದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">🔄 ಈ ಕಂಪನಿಯ ಮಾರಾಟ ಮುಂದುವರಿಯುವಂತಹದ್ದೇ (sustainable)?</li>
+        <li style="font-size:14px;color:var(--muted)">🚨 ಈ ಕಂಪನಿಗೆ ಯಾವುದಾದರೂ ದೊಡ್ಡ survival risk ಇದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">👨‍💼 ಈ business ಅನ್ನು ಸಮರ್ಥ managers ನಡೆಸುತ್ತಿದ್ದಾರೆಯೇ?</li>
+      </ul>
+    </div>
+    <div id="tab-fin" class="tab-content">
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+        <li style="font-size:14px;color:var(--muted)">💰 ಈ ಕಂಪನಿ ಬಲವಾದ ಲಾಭದಾಯಕತೆ (profitability) ತೋರಿಸುತ್ತಿದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">📊 ಮಾರಾಟ ವರ್ಷದಿಂದ ವರ್ಷಕ್ಕೆ ಬೆಳೆಯುತ್ತಿದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">💳 ಕಂಪನಿಗೆ ಹೆಚ್ಚು debt (ಸಾಲ) ಇದೆಯೇ?</li>
+        <li style="font-size:14px;color:var(--muted)">⚖️ ಮುಂದೆ ಯಾವುದಾದರೂ ದೊಡ್ಡ liability ಬರಲಿದೆಯೇ?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRUE VALUE -->
+<section id="truevalue" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.2 — True Value & Market Value</div>
+  <h2>ಒಂದು Stock ನ <em style="color:var(--gold)">ನಿಜವಾದ ಬೆಲೆ ಎಷ್ಟು?</em></h2>
+  <p class="lead">ಪ್ರತಿ stock ಗೆ ಎರಡು ಬೆಲೆಗಳಿವೆ. ಒಂದು ಬೆಲೆಯನ್ನು ಪರದೆಯ ಮೇಲೆ ನೋಡಬಹುದು. ಇನ್ನೊಂದನ್ನು ನೀವೇ ಲೆಕ್ಕ ಹಾಕಿ ಕಂಡುಹಿಡಿಯಬೇಕು.</p>
+
+  <div class="grid2 reveal">
+    <div class="card card-gold">
+      <div class="ctag ctag-gold">True Value (Intrinsic)</div>
+      <h3>ಅದರ ನಿಜವಾದ ಬೆಲೆ ಎಷ್ಟು</h3>
+      <p>ಇದು ಕಂಪನಿಯ fundamentals ಆಧಾರದ ಮೇಲೆ ನಿರ್ಧಾರವಾಗುತ್ತದೆ — strengths, growth potential, earnings quality ಇತ್ಯಾದಿ. ಈ ಸಂಖ್ಯೆ <strong>ಎಲ್ಲಿಯೂ quote ಆಗುವುದಿಲ್ಲ</strong>, ಮತ್ತು ಇದು subjective. ಒಂದೇ stock ಗೆ ಬೇರೆ ಬೇರೆ analysts ಬೇರೆ ಬೇರೆ estimate ಕೊಡುತ್ತಾರೆ.</p>
+    </div>
+    <div class="card">
+      <div class="ctag ctag-blue">Market Value</div>
+      <h3>ಈಗ ಯಾವ ಬೆಲೆಗೆ Trade ಆಗುತ್ತಿದೆ</h3>
+      <p>BSE/NSE ಮತ್ತು Zerodha, Groww ನಂತಹ apps ನಲ್ಲಿ ತೋರಿಸುವ current price ಇದು. ಇದು supply, demand ಮತ್ತು ಎಲ್ಲಕ್ಕಿಂತ ಮುಖ್ಯವಾಗಿ — <strong>sentiment</strong> ಆಧಾರದ ಮೇಲೆ ಸತತವಾಗಿ ಬದಲಾಗುತ್ತಿರುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <div class="formula reveal" style="margin-top:2rem">
+    Market Value = True Value + Sentimental Value
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">ಉದಾಹರಣೆ — TATA Company</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+      <div style="background:var(--charcoal);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:6px">TRUE VALUE</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--text);font-family:'Playfair Display',serif">₹100</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Fundamentals ಆಧಾರಿತ ಅಂದಾಜು</div>
+      </div>
+      <div style="background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green);margin-bottom:6px">SENTIMENTAL VALUE (+)</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--green);font-family:'Playfair Display',serif">+₹50</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Market ನಲ್ಲಿ ಧನಾತ್ಮಕ ಸುದ್ದಿ (buzz)</div>
+      </div>
+      <div style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:6px">MARKET VALUE</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">₹150</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">ಪರದೆಯ ಮೇಲೆ ಕಾಣುವ ಬೆಲೆ</div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;padding:1rem;background:rgba(224,90,90,0.08);border:1px solid rgba(224,90,90,0.15);border-radius:8px;font-size:13px;color:var(--muted)">
+      <strong style="color:var(--red)">Bearish scenario:</strong> TATA ಬಗ್ಗೆ market ಗೆ ಭಯ ಇದ್ದರೆ, ₹100 true value ಇರುವ ಅದೇ stock ₹50 ಗೆ trade ಆಗಬಹುದು. ಆಗ Sentimental value <strong style="color:var(--red)">−₹50</strong> ಆಗುತ್ತದೆ. ಇದೇ ಒಂದು ಒಳ್ಳೆಯ ಖರೀದಿ ಅವಕಾಶ!
+    </div>
+  </div>
+
+  <div class="chart-wrap reveal" style="margin-top:2rem">
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:1rem">MARKET PRICE vs INTRINSIC VALUE — ಕಾಲಾಂತರದಲ್ಲಿ</div>
+    <canvas id="priceChart" height="260"></canvas>
+    <div style="display:flex;gap:1.5rem;margin-top:1rem;font-family:'DM Mono',monospace;font-size:12px">
+      <span><span style="display:inline-block;width:24px;height:3px;background:var(--green);margin-right:6px;vertical-align:middle;border-radius:2px"></span>Market Price</span>
+      <span><span style="display:inline-block;width:24px;height:3px;background:var(--red);margin-right:6px;vertical-align:middle;border-radius:2px;border-top:2px dashed var(--red)"></span>Intrinsic Value</span>
+    </div>
+  </div>
+
+  <div class="grid3 reveal" style="margin-top:1.5rem">
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 1 — Fair Value</div>
+        <span class="badge badge-hold">HOLD</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Market price ≈ intrinsic value. ದೊಡ್ಡ ವ್ಯತ್ಯಾಸ ಇಲ್ಲ. Stock ಗೆ ಸರಿಯಾದ ಬೆಲೆ ಇದೆ.</p>
+    </div>
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 2 — Overvalued</div>
+        <span class="badge badge-sell">SELL</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">ಧನಾತ್ಮಕ sentiment ಕಾರಣ Market price, intrinsic value ಗಿಂತ ತುಂಬಾ ಮೇಲಿದೆ. Bubble ಆಗುವ risk ಇದೆ.</p>
+    </div>
+    <div class="scenario-card">
+      <div class="sc-head">
+        <div class="sc-title">Point 3 — Undervalued</div>
+        <span class="badge badge-buy">BUY</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Market price, intrinsic value ಗಿಂತ ಕೆಳಗಿದೆ. Negative sentiment. ಇದೇ ಅತ್ಯುತ್ತಮ ಅವಕಾಶ!</p>
+    </div>
+  </div>
+
+  <blockquote class="reveal">
+    Intrinsic value ಮತ್ತು market price ಗಳನ್ನು ಹೋಲಿಸಿ ನೋಡಿದಾಗ, intrinsic value ಯು market price ಗಿಂತ ಹೆಚ್ಚು stable ಆಗಿರುತ್ತದೆ ಎಂದು ಗೊತ್ತಾಗುತ್ತದೆ. ಆದರೆ ದೀರ್ಘಾವಧಿಯಲ್ಲಿ (long run), market price ಯಾವಾಗಲೂ intrinsic value ಅನ್ನು ಹಿಂಬಾಲಿಸುತ್ತದೆ.
+  </blockquote>
+</section>
+
+<!-- BULL & BEAR -->
+<section id="markets" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.3 — Market Sentiments</div>
+  <h2><em style="color:var(--green)">Bull</em> vs <em style="color:var(--red)">Bear</em> Markets</h2>
+  <p class="lead">Bull ಮತ್ತು Bear ಎರಡೂ markets sentiment ಮತ್ತು price ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುತ್ತವೆ — ಆದರೆ intrinsic value ಮೇಲೆ ಅಲ್ಲ. ಇದೇ ಇಲ್ಲಿನ ಮುಖ್ಯ ಅಂಶ.</p>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">🐂 Bull Market</div>
+      <h3 style="color:var(--green)">ಬೆಲೆಗಳು ಏರುತ್ತಿರುತ್ತವೆ</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="font-size:13px;color:var(--muted)">✅ Investors ಗೆ ಹೆಚ್ಚು ಆತ್ಮವಿಶ್ವಾಸ</div>
+        <div style="font-size:13px;color:var(--muted)">✅ Economy ಬಗ್ಗೆ ಧನಾತ್ಮಕ sentiment</div>
+        <div style="font-size:13px;color:var(--muted)">✅ ಅವಕಾಶ ತಪ್ಪುತ್ತದೆ ಎಂಬ ಭಯ (FOMO) ಖರೀದಿಗೆ ಪ್ರೇರೇಪಿಸುತ್ತದೆ</div>
+        <div style="font-size:13px;color:var(--muted)">✅ ಬೆಲೆಗಳು true value ಗಿಂತ ಮೇಲೆ ಏರುತ್ತಲೇ ಇರುತ್ತವೆ</div>
+      </div>
+      <div style="margin-top:1rem;padding:10px;background:rgba(76,175,125,0.08);border-radius:6px;font-size:13px;font-family:'DM Mono',monospace">
+        <span style="color:var(--green)">⚠️ TIP:</span> <span style="color:var(--muted)">ಖರೀದಿಸುವಾಗ ಅತಿ ಹೆಚ್ಚಿನ valuation ಇರುವ stocks ಅನ್ನು ತಪ್ಪಿಸಿ</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">🐻 Bear Market</div>
+      <h3 style="color:var(--red)">ಬೆಲೆಗಳು ಇಳಿಯುತ್ತಿರುತ್ತವೆ</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="font-size:13px;color:var(--muted)">❌ Investors ಗೆ ಆತ್ಮವಿಶ್ವಾಸ ಕಡಿಮೆ</div>
+        <div style="font-size:13px;color:var(--muted)">❌ ನಿರ್ಧಾರಗಳಲ್ಲಿ ಭಯವೇ ಮೇಲುಗೈ</div>
+        <div style="font-size:13px;color:var(--muted)">❌ ಮತ್ತಷ್ಟು ನಷ್ಟ ತಪ್ಪಿಸಲು ಜನ ಮಾರಾಟ ಮಾಡುತ್ತಾರೆ</div>
+        <div style="font-size:13px;color:var(--muted)">❌ ಬೆಲೆಗಳು true value ಗಿಂತ ಕೆಳಗೆ ಇಳಿಯುತ್ತವೆ</div>
+      </div>
+      <div style="margin-top:1rem;padding:10px;background:rgba(224,90,90,0.08);border-radius:6px;font-size:13px;font-family:'DM Mono',monospace">
+        <span style="color:var(--green)">⭐ TIP:</span> <span style="color:var(--muted)">ಖರೀದಿ ಅವಕಾಶಗಳು ಸೃಷ್ಟಿಯಾಗುವುದೇ ಇಲ್ಲಿ!</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem;background:rgba(245,197,24,0.04);border-color:rgba(245,197,24,0.2)">
+    <div style="display:flex;align-items:flex-start;gap:1rem">
+      <div style="font-size:2.5rem;line-height:1">💡</div>
+      <div>
+        <h3 style="margin-bottom:0.5rem">ಸಾಮಾನ್ಯ Retail Investor ಮಾಡುವ ತಪ್ಪು</h3>
+        <p style="color:var(--muted);font-size:14px">ನಾವು bear market ನಲ್ಲಿ (negative sentiment, ಕಡಿಮೆ ಬೆಲೆ) ಖರೀದಿಸಿ, bull market ನಲ್ಲಿ (high sentiment, ಹೆಚ್ಚಿದ ಬೆಲೆ) ಮಾರಬೇಕು. ಆದರೆ ಹೆಚ್ಚಿನ retail investors <strong style="color:var(--red)">ಇದಕ್ಕೆ ವಿರುದ್ಧವಾಗಿ</strong> ಮಾಡುತ್ತಾರೆ — media hype ಇಂದ ಬೆಲೆ ಈಗಾಗಲೇ ಹೆಚ್ಚಿದ್ದಾಗ ಖರೀದಿಸಿ, ಬೆಲೆ ಇಳಿದಾಗ ಭಯದಿಂದ ಮಾರಾಟ ಮಾಡುತ್ತಾರೆ.</p>
+      </div>
+    </div>
+  </div>
+
+  <blockquote class="reveal">
+    "ಬೇರೆಯವರು bearish market ಕಾರಣ ಭಯಗೊಂಡು, ಹಿಂಜರಿಯುತ್ತಿರುವಾಗ, ನಾವು ಭಯಪಡುವ ಬದಲು ಎಚ್ಚರಿಕೆಯಿಂದ stocks ನಲ್ಲಿ ಹೂಡಿಕೆ ಮಾಡಬೇಕು. ಬೇರೆಯವರು ಲೋಭಿಗಳಾಗಿರುವಾಗ ನಾವು ಎಚ್ಚರಿಕೆ ಮತ್ತು ಭಯದಿಂದ ಇರಬೇಕು."
+    <cite>— Warren Buffett</cite>
+  </blockquote>
+</section>
+
+<!-- OPPORTUNITIES -->
+<section id="opportunities" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.3 — ಏರಿಳಿತಗಳು ಅವಕಾಶಗಳನ್ನು ಹೇಗೆ ಸೃಷ್ಟಿಸುತ್ತವೆ</div>
+  <h2><em style="color:var(--gold)">Undervalued</em> ಇರುವಾಗ ಖರೀದಿ, <em style="color:var(--gold)">Overvalued</em> ಇರುವಾಗ ಮಾರಾಟ</h2>
+  <p class="lead">Market price ಮತ್ತು true value ನಡುವಿನ ಅಂತರದಲ್ಲೇ ಎಲ್ಲಾ ಲಾಭದ ಸಾಧ್ಯತೆ ಅಡಗಿದೆ. ಬೇರೆಯವರಿಗಿಂತ ಮೊದಲು ಈ ಅಂತರವನ್ನು ಗುರುತಿಸುವುದೇ ನಿಮ್ಮ ಕೆಲಸ.</p>
+
+  <div class="card reveal" style="margin-bottom:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Company A ಉದಾಹರಣೆ — ಅವಕಾಶವನ್ನು ಗುರುತಿಸುವುದು</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.2rem">
+      <div style="text-align:center;padding:1rem;background:var(--charcoal);border-radius:8px">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">TRUE VALUE</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif">₹100</div>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(76,175,125,0.08);border-radius:8px;border:1px solid rgba(76,175,125,0.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green)">MARKET VALUE (Bear)</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif;color:var(--green)">₹60</div>
+        <div style="font-size:11px;color:var(--green);margin-top:4px">BUY → ಲಾಭ +₹40</div>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(224,90,90,0.08);border-radius:8px;border:1px solid rgba(224,90,90,0.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--red)">MARKET VALUE (Bull)</div>
+        <div style="font-size:1.8rem;font-weight:700;font-family:'Playfair Display',serif;color:var(--red)">₹140</div>
+        <div style="font-size:11px;color:var(--red);margin-top:4px">SELL → ಲಾಭ ಸಿಕ್ಕಿತು</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2 reveal">
+    <div class="card" style="border-left:3px solid var(--green)">
+      <h3>✅ ಮಾಡಬೇಕಾದದ್ದು</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <li style="font-size:13px;color:var(--muted)">→ Intrinsic value ಕಂಡುಹಿಡಿಯುವುದರ ಮೇಲೆ ಗಮನ ಕೊಡಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ Negative sentiment = discount ಇರುವಾಗ ಖರೀದಿಸಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ ಅಲ್ಪಾವಧಿ ಏರಿಳಿತದಲ್ಲಿ (volatility) ಸ್ಥಿರವಾಗಿ hold ಮಾಡಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ ಬೆಲೆ true value ಗಿಂತ ತುಂಬಾ ಹೆಚ್ಚಾದಾಗ ಮಾರಾಟ ಮಾಡಿ</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <h3>❌ ಮಾಡಬಾರದ್ದು</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <li style="font-size:13px;color:var(--muted)">→ Bull market hype ಉತ್ತುಂಗದಲ್ಲಿ ಇರುವಾಗ ಖರೀದಿಸಬೇಡಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ ಭಯ/panic ಉತ್ತುಂಗದಲ್ಲಿ ಇರುವಾಗ ಮಾರಾಟ ಮಾಡಬೇಡಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ ಸ್ನೇಹಿತರ ಸಲಹೆಗಳನ್ನು ಕುರುಡಾಗಿ ಅನುಸರಿಸಬೇಡಿ</li>
+        <li style="font-size:13px;color:var(--muted)">→ Sentiment ಅನ್ನು value ಎಂದು ತಪ್ಪಾಗಿ ಭಾವಿಸಬೇಡಿ</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE CREATION -->
+<section id="value-creation" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">2.4 — Value Creation</div>
+  <h2>ಸಂಪತ್ತು ನಿಜವಾಗಿ <em style="color:var(--gold)">ಹೇಗೆ ನಿರ್ಮಾಣ</em>ವಾಗುತ್ತದೆ</h2>
+  <p class="lead">ಉತ್ತಮ ಕಂಪನಿಗಳು ಕಾಲಕ್ರಮೇಣ ತಮ್ಮ earnings ನ quality ಮತ್ತು quantity ಎರಡನ್ನೂ ಹೆಚ್ಚಿಸುತ್ತವೆ. Intrinsic value ಏರಿದಂತೆ, market price ಕೂಡ ಅದನ್ನು ಹಿಂಬಾಲಿಸುತ್ತದೆ — ಇಲ್ಲಿಂದಲೇ ನಿಮಗೆ returns ಬರುತ್ತದೆ.</p>
+
+  <div class="flow reveal" style="justify-content:center;flex-wrap:wrap">
+    <div class="flow-node">Quality Earnings ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Quantity Earnings ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Intrinsic Value ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node" style="border-color:rgba(245,197,24,0.3);color:var(--gold)">Market Price ↑</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node" style="background:rgba(76,175,125,0.1);border-color:rgba(76,175,125,0.3)">💰 Returns</div>
+  </div>
+
+  <div class="grid2 reveal" style="margin-top:1.5rem">
+    <div class="card" style="border-color:rgba(76,175,125,0.25)">
+      <div class="ctag ctag-green">Value Creation</div>
+      <h3>Size ಮತ್ತು Quality ಎರಡೂ ಏರಿದಾಗ</h3>
+      <p>ಸ್ಥಿರವಾಗಿ ಉತ್ತಮ ಸಾಧನೆ ಮಾಡುವ ಕಂಪನಿ ಪ್ರತಿ ವರ್ಷ earnings ಬೆಳೆಸುತ್ತದೆ. ಅದರ true value ಹೆಚ್ಚಾಗುತ್ತದೆ, ಕೊನೆಗೆ market price ಕೂಡ ಅದನ್ನು ಹಿಂಬಾಲಿಸುತ್ತದೆ. Time + Patience = Wealth.</p>
+    </div>
+    <div class="card" style="border-color:rgba(224,90,90,0.25)">
+      <div class="ctag ctag-red">Value Destruction</div>
+      <h3>Size ಮತ್ತು Quality ಎರಡೂ ಕುಸಿದಾಗ</h3>
+      <p>ಊಹಿಸಲಾಗದ ಘಟನೆಗಳು (ಹೊಸ competitors, COVID, litigation) earnings quality ಅನ್ನು ಹಾಳುಮಾಡಬಹುದು. ನಿಜವಾದ value ಕುಸಿಯುತ್ತದೆ, market price ಕೂಡ ಕೆಳಗಿಳಿಯುತ್ತದೆ. ಇದರಿಂದ ಹೂಡಿಕೆಯಲ್ಲಿ ನಷ್ಟ ಆಗುತ್ತದೆ.</p>
+    </div>
+  </div>
+
+  <div class="card reveal" style="margin-top:1.5rem">
+    <div class="section-label" style="margin-bottom:1rem">Value ಅನ್ನು ನಾಶ ಮಾಡಬಹುದಾದ Risks</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="risk-meter">
+        <div class="risk-label"><span>Wrong Assumptions</span><span style="color:var(--muted)">High Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:80%;background:var(--red)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Nestle ವರ್ಷಕ್ಕೆ 15% ಬೆಳೆಯುತ್ತದೆ ಎಂದು ನಿರೀಕ್ಷಿಸಲಾಗಿತ್ತು; ಆದರೆ ಕೇವಲ 5% ಬೆಳೆಯಿತು. True value ಅಂದಾಜಿಸಿದ್ದಕ್ಕಿಂತ ಕಡಿಮೆ ಇತ್ತು.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Misunderstood Facts</span><span style="color:var(--muted)">High Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:75%;background:var(--red)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Petrol car ಕಂಪನಿಯಲ್ಲಿ ಹೂಡಿಕೆ ಮಾಡಿ, EV adoption ಅನ್ನು ಕಡಿಮೆ ಅಂದಾಜಿಸಲಾಗಿತ್ತು (ಈಗ 20% market share).</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Over-optimism</span><span style="color:var(--muted)">Medium Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:60%;background:var(--gold)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">ಸ್ನೇಹಿತ "Cello ಚೆನ್ನಾಗಿದೆ!" ಎಂದ — research ಮಾಡದೆ, ಸರಿಯಾದ ₹1000 ಬದಲಿಗೆ ₹1500 ಗೆ ಖರೀದಿಸಲಾಯಿತು.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>New Competition</span><span style="color:var(--muted)">Medium Risk</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:65%;background:var(--gold)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Jio ಬಂದ ತಕ್ಷಣ Tata Docomo / Aircel ನ earnings ಹಾಳಾಯಿತು. Quality ಒಂದೇ ರಾತ್ರಿಯಲ್ಲಿ ಕುಸಿಯಿತು.</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-label"><span>Business Events (COVID, Litigation)</span><span style="color:var(--muted)">Unpredictable</span></div>
+        <div class="risk-bar"><div class="risk-fill" style="width:50%;background:var(--blue)"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Restaurants, cinemas ಗೆ ಭಾರೀ ಹೊಡೆತ ಬಿತ್ತು. Debt ಹೆಚ್ಚಾಯಿತು, ವರ್ಷಗಟ್ಟಲೆ ನಿಜವಾದ value ನಾಶವಾಯಿತು.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATORS -->
+<section id="calculators" style="border-top:1px solid rgba(255,255,255,0.04)">
+  <div class="section-label">Interactive Tools</div>
+  <h2>Smart <em style="color:var(--gold)">Calculators</em></h2>
+  <p class="lead">ಈ concepts ಗಳನ್ನು ಪ್ರಯೋಗಿಸಿ ನೋಡಿ — earnings growth ಲೆಕ್ಕ ಹಾಕಿ, ಒಂದು stock under/overvalued ಆಗಿದೆಯೇ ಪರಿಶೀಲಿಸಿ, ಮತ್ತು investment returns ಅಂದಾಜಿಸಿ.</p>
+
+  <!-- CALC 1: Earnings Growth -->
+  <div class="calc-box reveal">
+    <h3>📊 Earnings Growth Calculator</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">Volume ಅಥವಾ price ಹೆಚ್ಚಳ total earnings ಮೇಲೆ ಹೇಗೆ ಪರಿಣಾಮ ಬೀರುತ್ತದೆ ಎಂದು ನೋಡಿ</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>ಈಗಿನ Units Sold</label>
+        <input type="number" id="eg-units" value="1000" min="1">
+      </div>
+      <div class="input-group">
+        <label>Price Per Unit (₹)</label>
+        <input type="number" id="eg-price" value="10" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಹೊಸ Units (Volume Change)</label>
+        <input type="number" id="eg-newunits" value="1200" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಹೊಸ Price Per Unit (₹)</label>
+        <input type="number" id="eg-newprice" value="11" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="calcEarnings()">Growth ಲೆಕ್ಕ ಹಾಕಿ</button>
+    <div class="result-box" id="eg-result">
+      <div class="result-row"><span class="label">ಹಳೆ Revenue</span><span class="val" id="eg-old"></span></div>
+      <div class="result-row"><span class="label">ಹೊಸ Revenue (Volume ಮಾತ್ರ)</span><span class="val val-green" id="eg-vol"></span></div>
+      <div class="result-row"><span class="label">ಹೊಸ Revenue (Price ಮಾತ್ರ)</span><span class="val val-green" id="eg-pri"></span></div>
+      <div class="result-row"><span class="label">ಹೊಸ Revenue (ಎರಡೂ Changes)</span><span class="val val-gold" id="eg-both"></span></div>
+      <div class="result-row"><span class="label">Total Growth %</span><span class="val val-gold" id="eg-pct"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 2: True vs Market Value -->
+  <div class="calc-box reveal">
+    <h3>🎯 Valuation Checker</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">ಒಂದು stock overvalued ಆಗಿದೆಯೇ, undervalued ಆಗಿದೆಯೇ, ಅಥವಾ ಸರಿಯಾದ ಬೆಲೆಯಲ್ಲಿ ಇದೆಯೇ?</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>ನಿಮ್ಮ True Value ಅಂದಾಜು (₹)</label>
+        <input type="number" id="vc-true" value="100" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಈಗಿನ Market Price (₹)</label>
+        <input type="number" id="vc-market" value="75" min="1">
+      </div>
+      <div class="input-group">
+        <label>Margin of Safety (%)</label>
+        <input type="number" id="vc-safety" value="20" min="1" max="50">
+      </div>
+    </div>
+    <button class="btn" onclick="calcValuation()">Valuation ಪರಿಶೀಲಿಸಿ</button>
+    <div class="result-box" id="vc-result">
+      <div class="result-row"><span class="label">Sentimental Value</span><span class="val" id="vc-sent"></span></div>
+      <div class="result-row"><span class="label">Discount / Premium</span><span class="val" id="vc-disc"></span></div>
+      <div class="result-row"><span class="label">Margin of Safety ಸಮೇತ Buy Price</span><span class="val val-gold" id="vc-buy"></span></div>
+      <div class="result-row"><span class="label">Verdict</span><span class="val" id="vc-verdict"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 3: Investment Return Simulator -->
+  <div class="calc-box reveal">
+    <h3>💰 Investment Return Simulator</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">ನೀವು ಒಂದು ನಿರ್ದಿಷ್ಟ ಬೆಲೆಗೆ ಹೂಡಿಕೆ ಮಾಡಿದರೆ, true value ಬೆಳೆದಂತೆ ಏನಾಗುತ್ತದೆ?</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Investment Amount (₹)</label>
+        <input type="number" id="ir-amount" value="100000" min="1000">
+      </div>
+      <div class="input-group">
+        <label>Buy Price Per Share (₹)</label>
+        <input type="number" id="ir-buy" value="60" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಈಗಿನ True Value (₹)</label>
+        <input type="number" id="ir-tv" value="100" min="1">
+      </div>
+      <div class="input-group">
+        <label>ನಿರೀಕ್ಷಿತ True Value Growth (%/yr)</label>
+        <input type="number" id="ir-growth" value="15" min="1" max="100">
+      </div>
+      <div class="input-group">
+        <label>Holding Period (ವರ್ಷಗಳು)</label>
+        <input type="number" id="ir-years" value="5" min="1" max="30">
+      </div>
+    </div>
+    <button class="btn" onclick="calcReturn()">Returns Simulate ಮಾಡಿ</button>
+    <div class="result-box" id="ir-result">
+      <div class="result-row"><span class="label">ಖರೀದಿಸಿದ Shares</span><span class="val" id="ir-shares"></span></div>
+      <div class="result-row"><span class="label">Total Investment</span><span class="val" id="ir-inv"></span></div>
+      <div class="result-row"><span class="label">Period ನಂತರದ Projected True Value</span><span class="val val-gold" id="ir-projv"></span></div>
+      <div class="result-row"><span class="label">Projected Portfolio Value</span><span class="val val-green" id="ir-portv"></span></div>
+      <div class="result-row"><span class="label">Absolute Gain</span><span class="val val-green" id="ir-gain"></span></div>
+      <div class="result-row"><span class="label">CAGR</span><span class="val val-gold" id="ir-cagr"></span></div>
+    </div>
+  </div>
+
+  <!-- CALC 4: Pricing Power Test -->
+  <div class="calc-box reveal">
+    <h3>💪 Pricing Power Analyzer</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:1.5rem">Price ಮತ್ತು volume data ಆಧಾರದ ಮೇಲೆ ಕಂಪನಿಯ Pricing Power ಅಂದಾಜಿಸಿ</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label>ಹಳೆ Price (₹)</label>
+        <input type="number" id="pp-op" value="10" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಹೊಸ Price (₹)</label>
+        <input type="number" id="pp-np" value="12" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಹಳೆ Volume (units)</label>
+        <input type="number" id="pp-ov" value="1000" min="1">
+      </div>
+      <div class="input-group">
+        <label>ಹೊಸ Volume (units)</label>
+        <input type="number" id="pp-nv" value="950" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="calcPricingPower()">Analyze ಮಾಡಿ</button>
+    <div class="result-box" id="pp-result">
+      <div class="result-row"><span class="label">Price Change</span><span class="val" id="pp-pc"></span></div>
+      <div class="result-row"><span class="label">Volume Change</span><span class="val" id="pp-vc"></span></div>
+      <div class="result-row"><span class="label">Price Elasticity</span><span class="val" id="pp-el"></span></div>
+      <div class="result-row"><span class="label">Revenue Impact</span><span class="val" id="pp-rev"></span></div>
+      <div class="result-row"><span class="label">Pricing Power</span><span class="val" id="pp-verdict"></span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);margin-bottom:0.5rem">StockIQ</div>
+  "Stock Investing Mastermind" ಆಧಾರಿತ — ZebraLearn Pvt. Ltd. · Chapter 2
+  <div style="margin-top:0.5rem;color:rgba(154,152,128,0.5)">ಇದು ಕೇವಲ ಶೈಕ್ಷಣಿಕ ಉದ್ದೇಶಕ್ಕಾಗಿ ಮಾತ್ರ. Financial advice ಅಲ್ಲ.</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// CHART
+const ctx = document.getElementById('priceChart').getContext('2d');
+const labels = ['Y1','Y2','Y3','Y4','Y5','Y6','Y7','Y8','Y9','Y10'];
+const intrinsic = [20,24,28,33,38,44,50,57,65,74];
+const market = [18,26,32,25,30,52,58,48,55,80];
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Market Price',
+        data: market,
+        borderColor: '#4CAF7D',
+        backgroundColor: 'rgba(76,175,125,0.08)',
+        tension: 0.4,
+        borderWidth: 2,
+        pointBackgroundColor: '#4CAF7D',
+        pointRadius: 4,
+        fill: false
+      },
+      {
+        label: 'Intrinsic Value',
+        data: intrinsic,
+        borderColor: '#E05A5A',
+        borderDash: [6,3],
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        borderWidth: 2,
+        pointBackgroundColor: '#E05A5A',
+        pointRadius: 3,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1E1E18',
+        titleColor: '#F5C518',
+        bodyColor: '#9A9880',
+        borderColor: 'rgba(245,197,24,0.2)',
+        borderWidth: 1,
+        callbacks: {
+          label: ctx => ' ₹' + ctx.parsed.y
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { color: '#9A9880', font: { family: 'DM Mono', size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { color: '#9A9880', font: { family: 'DM Mono', size: 11 }, callback: v => '₹'+v }
+      }
+    }
+  }
+});
+
+// TABS
+function switchTab(el, id) {
+  el.closest('.card').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.closest('.card').querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// REVEAL ON SCROLL
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// CALCULATOR HELPERS
+function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+function pct(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+
+// CALC 1: Earnings
+function calcEarnings() {
+  const u = +document.getElementById('eg-units').value;
+  const p = +document.getElementById('eg-price').value;
+  const nu = +document.getElementById('eg-newunits').value;
+  const np = +document.getElementById('eg-newprice').value;
+  const old = u * p;
+  const vol = nu * p;
+  const pri = u * np;
+  const both = nu * np;
+  const growth = ((both - old) / old) * 100;
+  document.getElementById('eg-old').textContent = fmt(old);
+  document.getElementById('eg-vol').textContent = fmt(vol) + ' (' + pct((vol-old)/old*100) + ')';
+  document.getElementById('eg-pri').textContent = fmt(pri) + ' (' + pct((pri-old)/old*100) + ')';
+  document.getElementById('eg-both').textContent = fmt(both) + ' (' + pct(growth) + ')';
+  document.getElementById('eg-pct').textContent = pct(growth);
+  document.getElementById('eg-pct').className = 'val ' + (growth >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('eg-result').classList.add('show');
+}
+
+// CALC 2: Valuation
+function calcValuation() {
+  const tv = +document.getElementById('vc-true').value;
+  const mv = +document.getElementById('vc-market').value;
+  const safety = +document.getElementById('vc-safety').value;
+  const sent = mv - tv;
+  const disc = ((mv - tv) / tv) * 100;
+  const buyPrice = tv * (1 - safety / 100);
+  let verdict, vclass;
+  if (mv < buyPrice) { verdict = '🟢 STRONG BUY — Intrinsic value ಗಿಂತ ತುಂಬಾ ಕೆಳಗೆ Trade ಆಗುತ್ತಿದೆ'; vclass = 'val-green'; }
+  else if (mv < tv) { verdict = '🟡 BUY — Undervalued, ಒಳ್ಳೆಯ entry point'; vclass = 'val-gold'; }
+  else if (mv < tv * 1.1) { verdict = '⚪ HOLD — ಸರಿಯಾದ ಬೆಲೆಯಲ್ಲಿ ಇದೆ'; vclass = 'val'; }
+  else if (mv < tv * 1.3) { verdict = '🟠 CAUTION — ಸ್ವಲ್ಪ overvalued'; vclass = 'val-gold'; }
+  else { verdict = '🔴 AVOID — ಗಣನೀಯವಾಗಿ overvalued'; vclass = 'val-red'; }
+  document.getElementById('vc-sent').textContent = fmt(sent) + (sent > 0 ? ' (positive sentiment)' : ' (negative sentiment — discount!)');
+  document.getElementById('vc-sent').className = 'val ' + (sent > 0 ? 'val-red' : 'val-green');
+  document.getElementById('vc-disc').textContent = pct(disc);
+  document.getElementById('vc-disc').className = 'val ' + (disc <= 0 ? 'val-green' : 'val-red');
+  document.getElementById('vc-buy').textContent = fmt(buyPrice);
+  document.getElementById('vc-verdict').textContent = verdict;
+  document.getElementById('vc-verdict').className = 'val ' + vclass;
+  document.getElementById('vc-result').classList.add('show');
+}
+
+// CALC 3: Return
+function calcReturn() {
+  const amt = +document.getElementById('ir-amount').value;
+  const buy = +document.getElementById('ir-buy').value;
+  const tv = +document.getElementById('ir-tv').value;
+  const g = +document.getElementById('ir-growth').value / 100;
+  const yr = +document.getElementById('ir-years').value;
+  const shares = Math.floor(amt / buy);
+  const invested = shares * buy;
+  const projTV = tv * Math.pow(1 + g, yr);
+  const portV = shares * projTV;
+  const gain = portV - invested;
+  const cagr = (Math.pow(portV / invested, 1 / yr) - 1) * 100;
+  document.getElementById('ir-shares').textContent = shares.toLocaleString('en-IN') + ' shares';
+  document.getElementById('ir-inv').textContent = fmt(invested);
+  document.getElementById('ir-projv').textContent = fmt(projTV) + ' per share';
+  document.getElementById('ir-portv').textContent = fmt(portV);
+  document.getElementById('ir-gain').textContent = fmt(gain) + ' (' + pct((gain/invested)*100) + ' total)';
+  document.getElementById('ir-cagr').textContent = cagr.toFixed(1) + '% per year';
+  document.getElementById('ir-result').classList.add('show');
+}
+
+// CALC 4: Pricing Power
+function calcPricingPower() {
+  const op = +document.getElementById('pp-op').value;
+  const np = +document.getElementById('pp-np').value;
+  const ov = +document.getElementById('pp-ov').value;
+  const nv = +document.getElementById('pp-nv').value;
+  const priceChg = ((np - op) / op) * 100;
+  const volChg = ((nv - ov) / ov) * 100;
+  const elasticity = volChg / priceChg;
+  const oldRev = op * ov;
+  const newRev = np * nv;
+  const revChg = ((newRev - oldRev) / oldRev) * 100;
+  let verdict, vclass;
+  if (Math.abs(elasticity) < 0.5) { verdict = '💪 STRONG — Demand ಬಹಳ inelastic ಆಗಿದೆ'; vclass = 'val-green'; }
+  else if (Math.abs(elasticity) < 1) { verdict = '✅ MODERATE — ಸ್ವಲ್ಪ pricing power ಇದೆ'; vclass = 'val-gold'; }
+  else if (Math.abs(elasticity) < 2) { verdict = '⚠️ WEAK — Customers price-sensitive ಆಗಿದ್ದಾರೆ'; vclass = 'val-gold'; }
+  else { verdict = '❌ VERY WEAK — Price sensitivity ಹೆಚ್ಚಿದೆ'; vclass = 'val-red'; }
+  document.getElementById('pp-pc').textContent = pct(priceChg);
+  document.getElementById('pp-pc').className = 'val val-gold';
+  document.getElementById('pp-vc').textContent = pct(volChg);
+  document.getElementById('pp-vc').className = 'val ' + (volChg >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('pp-el').textContent = Math.abs(elasticity).toFixed(2) + ' (|PED|)';
+  document.getElementById('pp-rev').textContent = fmt(newRev) + ' (' + pct(revChg) + ')';
+  document.getElementById('pp-rev').className = 'val ' + (revChg >= 0 ? 'val-green' : 'val-red');
+  document.getElementById('pp-verdict').textContent = verdict;
+  document.getElementById('pp-verdict').className = 'val ' + vclass;
+  document.getElementById('pp-result').classList.add('show');
+}
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+  document.querySelectorAll('nav a').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
