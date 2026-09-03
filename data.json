@@ -189,10 +189,21 @@
           "Chapter 11.2": "https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c11-2.html"
         }
       },
-      "Valuation of Stocks": {},
-      "When to Buy & When to Sell?": {},
-      "Managing a Portfolio": {},
-      "How to Grow your Money?": {}
+      "Valuation of Stocks": {
+      "How to Value Stocks?":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c12.html",
+      "Relative Valuation":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c13.html",
+      "Absolute Valuation":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c14.html",
+      "Exit Multiple Approach":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c15.html"
+      },
+      "When to Buy & When to Sell?": {
+      "When to Buy?":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c16.html",
+      "When to Sell?":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c17.html"
+      },
+      "Market Cycles & Business Cycles":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c18.html",
+      "Managing a Portfolio":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c19.html",
+      "How to Grow your Money?": {
+      "What makes a 10X & 100X Investment":"https://microintel.github.io/missmonk/financial/stock-investing-mastermind/c20.html"
+      }
     },
     "The Intelligent Investor": {}
   },
