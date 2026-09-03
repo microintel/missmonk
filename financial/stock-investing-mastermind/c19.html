@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Right Approach towards a Portfolio — Stock Investing Mastermind</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1a7c2f;
+    --green-light:#2ecc52;
+    --gold:#f2a71b;
+    --red:#c0392b;
+    --red-light:#e5766a;
+    --blue:#2c3e8c;
+    --purple:#5b3f8c;
+    --purple-light:#7d5bb5;
+    --dark:#161022;
+    --cream:#f1ecdf;
+    --card:#faf7ef;
+    --border:#ddd6c3;
+    --ink:#221a30;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Syne',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+    font-size:16px;
+    line-height:1.6;
+  }
+  img,svg{display:block;}
+
+  /* ── HERO ── */
+  .hero{
+    background:linear-gradient(135deg,var(--purple) 0%, #2c1f4a 60%, var(--dark) 100%);
+    color:#fbf8f2;
+    min-height:92vh;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:70px 24px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(-45deg,transparent,transparent 18px,rgba(255,255,255,0.045) 18px,rgba(255,255,255,0.045) 20px);
+  }
+  .hero-emoji{font-size:76px;margin-bottom:18px;animation:fadeDown .6s ease both;filter:drop-shadow(0 0 0 transparent);}
+  .hero-badge{
+    font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    background:var(--gold);color:var(--dark);padding:7px 20px;border-radius:3px;margin-bottom:30px;
+    animation:fadeDown .6s ease .05s both;
+  }
+  .hero h1{
+    font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,9vw,104px);line-height:0.98;letter-spacing:1.5px;
+    animation:fadeDown .8s ease .1s both;
+  }
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{margin-top:26px;font-size:19px;font-weight:600;opacity:.88;max-width:600px;animation:fadeDown .8s ease .2s both;}
+  .hero-dots{display:flex;gap:14px;margin-top:44px;animation:fadeDown .8s ease .35s both;}
+  .hero-dots span{width:44px;height:6px;border-radius:3px;background:rgba(255,255,255,0.22);}
+  .hero-dots span.on{background:var(--gold);}
+  .scroll-hint{position:absolute;bottom:30px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;opacity:.65;animation:bounce 2s infinite;}
+
+  /* ── SECTION WRAPPER ── */
+  .section{padding:88px 24px;max-width:1120px;margin:0 auto;}
+  .section-label{
+    font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--purple);border-left:4px solid var(--purple);padding-left:13px;margin-bottom:18px;
+  }
+  .section-title{
+    font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,6vw,68px);line-height:1;margin-bottom:20px;color:var(--dark);
+  }
+  .section-title span{color:var(--purple);}
+  .lede{font-size:18px;max-width:720px;color:#4a4256;margin-bottom:48px;line-height:1.75;}
+  .lede strong{color:var(--ink);}
+
+  /* ── INTRO CARD ── */
+  .intro-card{
+    background:var(--dark);color:#f3efe3;border-radius:20px;padding:52px;
+    display:grid;grid-template-columns:110px 1fr;gap:36px;align-items:center;
+  }
+  .intro-card .big-emoji{font-size:86px;text-align:center;}
+  .intro-card h3{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);margin-bottom:12px;letter-spacing:1px;}
+  .intro-card p{font-size:16px;line-height:1.8;opacity:.9;}
+  @media(max-width:640px){.intro-card{grid-template-columns:1fr;text-align:center;}}
+
+  /* ── DO / DONT GRID ── */
+  .dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px;}
+  @media(max-width:680px){.dd-grid{grid-template-columns:1fr;}}
+  .dd-card{border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--border);}
+  .dd-head{padding:26px 30px;display:flex;align-items:center;gap:16px;color:#fff;}
+  .dd-do{background:var(--green);}
+  .dd-dont{background:var(--red);}
+  .dd-head .emoji{font-size:46px;}
+  .dd-head h4{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;}
+  .dd-body{padding:8px 30px 28px;}
+  .dd-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+  .dd-item:last-child{border-bottom:none;}
+  .dd-item .mark{font-size:22px;flex-shrink:0;line-height:1.4;}
+  .dd-item p{font-size:15px;color:#3d3550;line-height:1.6;}
+
+  /* ── PORTFOLIO TABLE ── */
+  .ptable-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px 36px 30px;margin-top:44px;}
+  .ptable-card h4{font-family:'Bebas Neue',sans-serif;font-size:26px;margin-bottom:6px;display:flex;align-items:center;gap:12px;}
+  .ptable-card h4 .emoji{font-size:32px;}
+  .ptable-card .cap{font-size:14px;color:#665c78;margin-bottom:22px;}
+  table.ptable{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.ptable th{
+    font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    text-align:left;padding:12px 14px;background:var(--purple);color:#fff;
+  }
+  table.ptable th:first-child{border-radius:8px 0 0 8px;}
+  table.ptable th:last-child{border-radius:0 8px 8px 0;text-align:right;}
+  table.ptable td{padding:13px 14px;border-bottom:1px solid var(--border);color:#3d3550;font-weight:600;}
+  table.ptable td:last-child{text-align:right;font-family:'DM Mono',monospace;}
+  table.ptable tr:last-child td{border-bottom:none;}
+  .industry-pill{
+    font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:20px;
+    background:#efe8f7;color:var(--purple);display:inline-block;
+  }
+  .monitor-box{
+    margin-top:24px;background:#efe8f7;border-left:4px solid var(--purple);border-radius:0 12px 12px 0;
+    padding:20px 26px;
+  }
+  .monitor-box p{font-size:14px;color:#4a3f60;margin-bottom:6px;font-weight:600;}
+  .monitor-box .q{font-style:italic;font-weight:700;color:var(--purple);}
+
+  /* ── CAP RULE VISUAL ── */
+  .cap-section{background:var(--dark);padding:80px 24px;margin-top:0;}
+  .cap-inner{max-width:1120px;margin:0 auto;}
+  .cap-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,52px);color:#fff;margin-bottom:10px;}
+  .cap-title span{color:var(--gold);}
+  .cap-sub{color:rgba(255,255,255,.62);margin-bottom:44px;font-size:15px;max-width:640px;}
+  .cap-visual{display:flex;align-items:flex-end;gap:6px;height:220px;margin-bottom:30px;padding:0 4px;}
+  .cap-bar{border-radius:8px 8px 0 0;width:0%;transition:width 1.3s cubic-bezier(.16,1,.3,1);height:100%;
+    display:flex;align-items:flex-start;justify-content:center;padding-top:14px;
+    font-family:'DM Mono',monospace;color:#fff;font-size:15px;font-weight:600;}
+  .cap-bar-wrap{flex:1;height:220px;background:#231a35;border-radius:8px 8px 0 0;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
+  .cap-industry .cap-bar{background:linear-gradient(180deg,var(--red-light),var(--red));}
+  .cap-other .cap-bar{background:linear-gradient(180deg,#7d5bb5,var(--purple));}
+  .cap-legend{display:flex;gap:40px;justify-content:center;margin-bottom:36px;flex-wrap:wrap;}
+  .cap-legend div{display:flex;align-items:center;gap:10px;color:#fff;font-family:'DM Mono',monospace;font-size:13px;}
+  .cap-legend .sw{width:16px;height:16px;border-radius:4px;}
+  .cap-notes{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:680px){.cap-notes{grid-template-columns:1fr;}}
+  .cap-note{background:#231a35;border-radius:12px;padding:22px 24px;color:#e9e3f5;font-size:14.5px;line-height:1.7;border:1px solid #382a54;}
+  .cap-note .tag{display:block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;}
+
+  /* ── STATEMENT BANNER ── */
+  .statement{
+    background:linear-gradient(120deg,var(--green) 0%,#0f5a20 100%);color:#fff;text-align:center;
+    padding:56px 24px;border-radius:20px;margin:64px auto;max-width:1000px;position:relative;overflow:hidden;
+  }
+  .statement::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 18px,rgba(255,255,255,.045) 18px,rgba(255,255,255,.045) 20px);}
+  .statement p{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,4.4vw,42px);position:relative;letter-spacing:.5px;}
+
+  /* ── EXPECTATIONS (20 companies) ── */
+  .expect-wrap{display:grid;grid-template-columns:260px 1fr;gap:44px;align-items:center;margin-top:16px;}
+  @media(max-width:760px){.expect-wrap{grid-template-columns:1fr;}}
+  .expect-visual{text-align:center;}
+  .expect-visual .num{font-family:'Bebas Neue',sans-serif;font-size:96px;color:var(--purple);line-height:.85;}
+  .expect-visual .lbl{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;color:#665c78;margin-top:6px;}
+  .expect-visual .stocks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:22px;max-width:230px;margin-left:auto;margin-right:auto;}
+  .expect-visual .stocks span{font-size:22px;}
+  .expect-rows{display:flex;flex-direction:column;gap:20px;}
+  .er-row{display:flex;align-items:center;gap:18px;}
+  .er-icon{font-size:38px;width:52px;text-align:center;flex-shrink:0;}
+  .er-body{flex:1;}
+  .er-top{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:13px;margin-bottom:6px;color:#4a3f60;}
+  .er-top strong{color:var(--ink);font-size:15px;font-family:'Syne',sans-serif;}
+  .er-bar-wrap{height:20px;background:#e7dfcd;border-radius:10px;overflow:hidden;}
+  .er-bar{height:100%;width:0%;border-radius:10px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+  .er-profit .er-bar{background:linear-gradient(90deg,var(--green-light),var(--green));}
+  .er-flat .er-bar{background:linear-gradient(90deg,#f2c96b,var(--gold));}
+  .er-loss .er-bar{background:linear-gradient(90deg,var(--red-light),var(--red));}
+  .er-note{font-size:13.5px;color:#665c78;margin-top:6px;}
+
+  /* ── RETURN EXPECTATION CARDS ── */
+  .rc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:8px;}
+  @media(max-width:800px){.rc-grid{grid-template-columns:1fr;}}
+  .rc-card{border-radius:16px;padding:28px 26px;color:#fff;position:relative;overflow:hidden;}
+  .rc-profit{background:linear-gradient(140deg,var(--green),#0e4c1c);}
+  .rc-flat{background:linear-gradient(140deg,var(--gold),#b9770e);}
+  .rc-loss{background:linear-gradient(140deg,var(--red),#7a2015);}
+  .rc-card .emoji{font-size:44px;margin-bottom:10px;}
+  .rc-card h5{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.5px;margin-bottom:4px;}
+  .rc-card .pct{font-family:'Bebas Neue',sans-serif;font-size:44px;}
+  .rc-card p{font-size:13px;opacity:.9;margin-top:8px;line-height:1.5;}
+
+  .winners-note{
+    margin-top:36px;background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:24px 28px;font-size:15px;color:#3d3550;line-height:1.75;display:flex;gap:16px;align-items:flex-start;
+  }
+  .winners-note .emoji{font-size:34px;flex-shrink:0;}
+
+  /* ── ALLOCATION COMPARISON ── */
+  .alloc-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px;}
+  @media(max-width:680px){.alloc-grid{grid-template-columns:1fr;}}
+  .alloc-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px 28px;}
+  .alloc-card .head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .alloc-card .head .emoji{font-size:32px;}
+  .alloc-card .head h5{font-family:'Bebas Neue',sans-serif;font-size:20px;}
+  .alloc-good{border-top:5px solid var(--green);}
+  .alloc-bad{border-top:5px solid var(--red);}
+  .alloc-bar-wrap{height:26px;background:#e7dfcd;border-radius:13px;overflow:hidden;margin-bottom:10px;}
+  .alloc-bar{height:100%;width:0%;border-radius:13px;transition:width 1.2s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:'DM Mono',monospace;font-size:12px;color:#fff;}
+  .alloc-good .alloc-bar{background:linear-gradient(90deg,var(--green-light),var(--green));}
+  .alloc-bad .alloc-bar{background:linear-gradient(90deg,var(--red-light),var(--red));}
+  .alloc-card p{font-size:14px;color:#4a3f60;line-height:1.6;}
+
+  /* ── REALITY CHECK GRID ── */
+  .reality-wrap{margin-top:44px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:34px 36px;}
+  .reality-wrap h5{font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:6px;}
+  .reality-wrap .cap{font-size:14px;color:#665c78;margin-bottom:22px;}
+  .reality-icons{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
+  .reality-icons .ri{
+    width:58px;height:58px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:26px;background:#e7dfcd;border:2px solid var(--border);transition:transform .5s ease, background .5s ease, border-color .5s ease;
+  }
+  .reality-icons .ri.win{background:linear-gradient(140deg,var(--green-light),var(--green));border-color:var(--green);transform:scale(1.06);}
+  .reality-wrap p{font-size:14.5px;color:#4a3f60;line-height:1.7;}
+
+  /* ── NIFTY BOX ── */
+  .nifty-box{
+    display:grid;grid-template-columns:180px 1fr;gap:36px;align-items:center;margin-top:44px;
+    background:linear-gradient(135deg,#efe8f7,var(--card));border:1px solid var(--border);border-radius:18px;padding:36px;
+  }
+  @media(max-width:680px){.nifty-box{grid-template-columns:1fr;text-align:center;}}
+  .nifty-badge{
+    font-family:'Bebas Neue',sans-serif;background:var(--purple);color:#fff;border-radius:14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 10px;
+  }
+  .nifty-badge .tick{font-size:40px;}
+  .nifty-badge .name{font-size:20px;letter-spacing:1px;margin-top:6px;}
+  .nifty-box .stat{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--purple);}
+  .nifty-box p{font-size:15px;color:#3d3550;margin:10px 0;line-height:1.7;}
+  .nifty-box .warn{background:#fbe9e6;color:#8a2f22;border-left:4px solid var(--red);padding:12px 16px;border-radius:0 10px 10px 0;font-size:14px;margin-top:10px;}
+
+  /* ── ATTRIBUTION TABLE ── */
+  .attrib-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px;margin-top:16px;}
+  table.attrib{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.attrib th{
+    font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    text-align:left;padding:12px 12px;background:var(--dark);color:#fbf8f2;
+  }
+  table.attrib th:last-child, table.attrib td:last-child{text-align:right;}
+  table.attrib td{padding:14px 12px;border-bottom:1px solid var(--border);font-weight:600;color:#3d3550;}
+  table.attrib .stock-name{display:flex;align-items:center;gap:10px;}
+  table.attrib .stock-name .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .gl-pos{color:var(--green);}
+  .gl-neg{color:var(--red);}
+  .contrib-bar-wrap{width:120px;height:14px;background:#e7dfcd;border-radius:7px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:10px;position:relative;}
+  .contrib-bar{position:absolute;top:0;bottom:0;width:0%;border-radius:7px;transition:width 1s ease;}
+  .contrib-bar.pos{background:var(--green);left:50%;}
+  .contrib-bar.neg{background:var(--red);right:50%;}
+  .contrib-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:#b8ae95;}
+  tr.total-row td{border-top:2px solid var(--dark);border-bottom:none;font-weight:800;padding-top:18px;}
+
+  .attrib-insight{margin-top:22px;background:#efe8f7;border-left:4px solid var(--purple);border-radius:0 12px 12px 0;padding:20px 26px;font-size:14.5px;color:#3d3550;line-height:1.75;}
+
+  .simulator{margin-top:30px;background:var(--dark);border-radius:16px;padding:28px 30px;color:#fbf8f2;}
+  .simulator h5{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);margin-bottom:6px;}
+  .simulator .cap{font-size:13px;opacity:.65;margin-bottom:20px;}
+  .sim-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+  .sim-row label{font-family:'DM Mono',monospace;font-size:12px;width:150px;flex-shrink:0;opacity:.85;}
+  .sim-row input[type=range]{flex:1;min-width:160px;accent-color:var(--gold);}
+  .sim-row .val{font-family:'DM Mono',monospace;font-size:14px;width:60px;text-align:right;color:var(--gold);}
+  .sim-result{margin-top:12px;background:#231a35;border-radius:10px;padding:18px 22px;font-family:'DM Mono',monospace;font-size:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .sim-result .big{font-family:'Bebas Neue',sans-serif;font-size:28px;}
+
+  /* ── FACTOR CARDS ── */
+  .factor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px;}
+  @media(max-width:840px){.factor-grid{grid-template-columns:1fr;}}
+  .factor-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 26px;border-top:5px solid var(--purple);}
+  .factor-card .emoji{font-size:40px;margin-bottom:12px;}
+  .factor-card h5{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:10px;letter-spacing:.5px;}
+  .factor-card p{font-size:14.5px;color:#4a3f60;line-height:1.7;}
+  .factor-card .eg{margin-top:12px;font-size:13px;background:#efe8f7;color:var(--purple);padding:10px 14px;border-radius:8px;font-family:'DM Mono',monospace;line-height:1.6;}
+
+  /* ── CLOSING QUOTE ── */
+  .closing-quote{
+    background:linear-gradient(120deg,var(--purple),#2c1f4a);color:#fff;text-align:center;
+    padding:56px 24px;border-radius:20px;margin:56px auto 0;max-width:1000px;
+  }
+  .closing-quote p{font-size:19px;line-height:1.8;max-width:680px;margin:0 auto;opacity:.95;}
+  .closing-quote strong{color:var(--gold);}
+
+  /* ── TAKEAWAY ── */
+  .takeaway{background:var(--dark);color:#fbf8f2;padding:72px 24px;text-align:center;position:relative;overflow:hidden;}
+  .takeaway::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 18px,rgba(255,255,255,.035) 18px,rgba(255,255,255,.035) 20px);}
+  .takeaway h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,58px);margin-bottom:20px;position:relative;}
+  .takeaway .pts{position:relative;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:900px;margin:0 auto;}
+  .takeaway .pt{background:#231a35;border-radius:12px;padding:20px 22px;flex:1;min-width:220px;text-align:left;}
+  .takeaway .pt .emoji{font-size:30px;margin-bottom:8px;}
+  .takeaway .pt p{font-size:14px;opacity:.85;line-height:1.6;}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.4);padding:30px 24px;text-align:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;}
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-emoji">🧺📊</div>
+  <div class="hero-badge">Stock Investing Mastermind · Zebra Learn · Chapter 1</div>
+  <h1>Right Approach<br>towards a<br><span>Portfolio</span></h1>
+  <p class="hero-sub">Stop grading single stocks. Learn to diversify, set realistic return expectations, and audit where your gains and losses actually come from.</p>
+  <div class="hero-dots"><span class="on"></span><span></span><span></span></div>
+  <div class="scroll-hint">↓ SCROLL TO EXPLORE</div>
+</section>
+
+<!-- ══════════ INTRO ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Introduction</div>
+  <div class="section-title">Think <span>Portfolio</span>,<br>Not Stock</div>
+  <div class="intro-card">
+    <div class="big-emoji">🧠</div>
+    <div>
+      <h3>Judge the Whole, Not the Parts</h3>
+      <p>Let's get started on how to look at the <strong>entire portfolio</strong> rather than individual stocks. Every buy and sell decision should be taken keeping the portfolio as a whole in mind — not just how that one position performs on its own.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 1.1 DIVERSIFICATION ══════════ -->
+<div class="section reveal">
+  <div class="section-label">1.1 · Diversification</div>
+  <div class="section-title">Spread the <span>Risk</span></div>
+  <p class="lede">We must adopt this mindset to consider the impact on the <strong>entire portfolio</strong> rather than an individual stock while taking decisions. We diversify to overcome the challenges and short-comings we may face as retail investors.</p>
+
+  <div class="dd-grid">
+    <div class="dd-card">
+      <div class="dd-head dd-do"><div class="emoji">✅</div><h4>Do's</h4></div>
+      <div class="dd-body">
+        <div class="dd-item"><span class="mark">🏭</span><p>Make sure that our portfolio has an <strong>industry-level</strong> diversification.</p></div>
+        <div class="dd-item"><span class="mark">📈</span><p>Make sure that our portfolio has a <strong>stock-level</strong> diversification.</p></div>
+        <div class="dd-item"><span class="mark">⚖️</span><p>Diversify on the basis of <strong>market capitalization</strong> too — small cap, mid cap and large-cap stocks.</p></div>
+      </div>
+    </div>
+    <div class="dd-card">
+      <div class="dd-head dd-dont"><div class="emoji">🚫</div><h4>Don'ts</h4></div>
+      <div class="dd-body">
+        <div class="dd-item"><span class="mark">💣</span><p>We will refrain from heavily investing in a <strong>single stock</strong>.</p></div>
+        <div class="dd-item"><span class="mark">🎯</span><p>Do not allocate, say, <strong>40% of our portfolio</strong> to a single sector.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ptable-card">
+    <h4><span class="emoji">📋</span>Always Have a Detailed Portfolio</h4>
+    <p class="cap">Track every position with three columns — Stock, Industry, % of Portfolio.</p>
+    <table class="ptable">
+      <thead><tr><th>Stock</th><th>Industry</th><th>% of Portfolio</th></tr></thead>
+      <tbody>
+        <tr><td>Reliance Ltd</td><td><span class="industry-pill">Energy / Retail</span></td><td>5%</td></tr>
+        <tr><td>HDFC Bank Ltd.</td><td><span class="industry-pill">Private Bank</span></td><td>7%</td></tr>
+        <tr><td>Dr. Reddy's</td><td><span class="industry-pill">Pharma</span></td><td>8%</td></tr>
+        <tr><td>BHEL Ltd.</td><td><span class="industry-pill">Capital Goods</span></td><td>3%</td></tr>
+        <tr><td>…</td><td><span class="industry-pill">…</span></td><td>…</td></tr>
+      </tbody>
+    </table>
+    <div class="monitor-box">
+      <p>🔍 Monitor the amount of exposure we have to each stock.</p>
+      <p class="q">"What should be our exposure in each industry?"</p>
+      <p class="q">"What are the market caps of those industries or companies?"</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CAP RULE VISUAL ══════════ -->
+<section class="cap-section reveal">
+  <div class="cap-inner">
+    <div class="cap-title">The <span>40% Cap</span> Rule</div>
+    <div class="cap-sub">We'll always make sure our portfolio is properly diversified. Consider it whenever you buy or sell something.</div>
+
+    <div class="cap-legend">
+      <div><span class="sw" style="background:var(--red);"></span> Specific Industry — never above 40%</div>
+      <div><span class="sw" style="background:var(--purple);"></span> Everything Else — the remaining 60%+</div>
+    </div>
+    <div class="cap-visual">
+      <div class="cap-bar-wrap cap-industry"><div class="cap-bar" data-target="40" style="max-width:40%;">≯ 40%</div></div>
+      <div class="cap-bar-wrap cap-other"><div class="cap-bar" data-target="60" style="max-width:60%;">60%</div></div>
+    </div>
+
+    <div class="cap-notes">
+      <div class="cap-note"><span class="tag">⚠️ Even the best company</span>Even though a company and its performance is excellent, we will not add it to our portfolio if 40% of our investments are already allocated in that sector.</div>
+      <div class="cap-note"><span class="tag">🔁 The workaround</span>If we still want to add that particular company, we must essentially sell some companies from the same industry first.</div>
+    </div>
+  </div>
+</section>
+
+<div class="statement reveal">
+  <p>💡 The total returns from the portfolio matter — not individual stock returns.</p>
+</div>
+
+<!-- ══════════ IDEAL EXPECTATIONS ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Ideal Expectations</div>
+  <div class="section-title">Assume <span>20 Companies</span> in the Portfolio</div>
+  <p class="lede">In order to manage our portfolio we must act with <strong>discipline, consistency and patience</strong>. Here's what actually happens across those 20 positions.</p>
+
+  <div class="expect-wrap">
+    <div class="expect-visual">
+      <div class="num">20</div>
+      <div class="lbl">COMPANIES IN THE PORTFOLIO</div>
+      <div class="stocks" id="stockGrid"></div>
+    </div>
+    <div class="expect-rows">
+      <div class="er-row">
+        <div class="er-icon">📈</div>
+        <div class="er-body">
+          <div class="er-top"><strong>~5 Companies · Profit Generators</strong><span>25–30%</span></div>
+          <div class="er-bar-wrap er-profit"><div class="er-bar" data-target="28"></div></div>
+          <div class="er-note">Approximately 5 companies will generate the majority of returns — so we can expect that 25–30% of the portfolio will be profitable.</div>
+        </div>
+      </div>
+      <div class="er-row">
+        <div class="er-icon">➖</div>
+        <div class="er-body">
+          <div class="er-top"><strong>6–8 Companies · Return Capital As-Is</strong><span>30–35%</span></div>
+          <div class="er-bar-wrap er-flat"><div class="er-bar" data-target="32"></div></div>
+          <div class="er-note">30–35% of the portfolio will simply return the amount initially invested. Buy 6–8 companies at ₹100 → sell them 2 years later for ₹100 itself.</div>
+        </div>
+      </div>
+      <div class="er-row">
+        <div class="er-icon">📉</div>
+        <div class="er-body">
+          <div class="er-top"><strong>6–7 Companies · Losses</strong><span>30–35%</span></div>
+          <div class="er-bar-wrap er-loss"><div class="er-bar" data-target="32"></div></div>
+          <div class="er-note">The remaining 6–7 companies, comprising 30–35% of the portfolio, will incur losses.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 1.2 RETURN EXPECTATIONS ══════════ -->
+<div class="section reveal">
+  <div class="section-label">1.2 · Return Expectations</div>
+  <div class="section-title">Set <span>Realistic</span> Targets</div>
+  <p class="lede">Out of 20 companies in a portfolio, the top 4–5 will be profit generators. Allow the winners to grow consistently — they'll offset the losses and boost overall returns.</p>
+
+  <div class="rc-grid">
+    <div class="rc-card rc-profit"><div class="emoji">🏆</div><h5>Profit Making</h5><div class="pct">25–30%</div><p>of Portfolio — driven by roughly 4–5 standout winners.</p></div>
+    <div class="rc-card rc-flat"><div class="emoji">🔄</div><h5>Return Capital as It Is</h5><div class="pct">30–35%</div><p>of Portfolio — money back, no gain no loss after ~2 years.</p></div>
+    <div class="rc-card rc-loss"><div class="emoji">🩹</div><h5>Loss Making</h5><div class="pct">30–35%</div><p>of Portfolio — normal, expected, and part of the process.</p></div>
+  </div>
+
+  <div class="winners-note"><span class="emoji">🌱</span><p>Always think about the portfolio's allocation to different stocks and sectors. If the performing companies receive <strong>30–40% of portfolio allocation</strong>, it will generate healthy returns for us. However, if the same companies have an allocation of only <strong>10–15%</strong>, they won't generate meaningful results — so allocation matters as much as picking the right stock.</p></div>
+
+  <div class="alloc-grid">
+    <div class="alloc-card alloc-good">
+      <div class="head"><span class="emoji">✅</span><h5>Healthy Allocation</h5></div>
+      <div class="alloc-bar-wrap"><div class="alloc-bar" data-target="35">30–40%</div></div>
+      <p>Winning companies get a meaningful slice of the portfolio — their gains actually move the needle.</p>
+    </div>
+    <div class="alloc-card alloc-bad">
+      <div class="head"><span class="emoji">❌</span><h5>Too Thin to Matter</h5></div>
+      <div class="alloc-bar-wrap"><div class="alloc-bar" data-target="12">10–15%</div></div>
+      <p>Even a great performer barely dents your overall return when it's allocated this small.</p>
+    </div>
+  </div>
+
+  <div class="reality-wrap">
+    <h5>😅 The Beginner's Trap</h5>
+    <p class="cap">As beginners, retail investors expect that all their investments should generate profits — but this is unrealistic, even for the most sophisticated investors.</p>
+    <div class="reality-icons" id="realityIcons"></div>
+    <p>We will have a <strong>successful investment journey even if just 4 out of 10 investments perform well</strong> with time.</p>
+  </div>
+
+  <div class="nifty-box">
+    <div class="nifty-badge"><div class="tick">📊</div><div class="name">NSE<br>NIFTY 50</div></div>
+    <div>
+      <div class="stat">17%</div>
+      <p>NIFTY has given a return of <strong>17% over the last 10 years</strong>.</p>
+      <p>With a well-diversified portfolio, at best we can hope to beat it by <strong>1–2%</strong>.</p>
+      <div class="warn">🚫 Anyone who expects to double their money in a year will not survive in the stock market long — economics doesn't support it. Real, meaningful returns depend on <strong>compounding</strong>, and compounding takes time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 1.3 PORTFOLIO ATTRIBUTION ══════════ -->
+<div class="section reveal">
+  <div class="section-label">1.3 · Portfolio Attribution</div>
+  <div class="section-title">Audit Your <span>Gains & Losses</span></div>
+  <p class="lede"><strong>Portfolio attribution</strong> means identifying the sources of our gains and losses. Institutional investors do this regularly, and retail investors should too — in a simple way. The process takes around <strong>30 minutes</strong> and should be done <strong>once every six months</strong>.</p>
+
+  <div class="attrib-card">
+    <h4 style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:4px;">📐 Worked Example</h4>
+    <p style="font-size:14px;color:#665c78;margin-bottom:20px;">What is the net gain/loss on each position so far, and how much does it contribute to the whole portfolio?</p>
+    <table class="attrib" id="attribTable">
+      <thead><tr><th>Stock</th><th>Net Gain / Loss</th><th>% of Portfolio</th><th>Gain / Loss in Portfolio</th></tr></thead>
+      <tbody>
+        <tr data-netgl="14" data-pct="5">
+          <td class="stock-name"><span class="dot" style="background:var(--green);"></span>Reliance Ltd</td>
+          <td class="gl-pos">+14%</td><td>5%</td>
+          <td><span class="contrib-wrap"><span class="contrib-bar-wrap"><span class="contrib-mid"></span><span class="contrib-bar pos" data-target="0.7"></span></span><span class="contrib-val gl-pos">+0.70%</span></span></td>
+        </tr>
+        <tr data-netgl="-8" data-pct="7">
+          <td class="stock-name"><span class="dot" style="background:var(--red);"></span>HDFC Bank Ltd.</td>
+          <td class="gl-neg">-8%</td><td>7%</td>
+          <td><span class="contrib-wrap"><span class="contrib-bar-wrap"><span class="contrib-mid"></span><span class="contrib-bar neg" data-target="0.56"></span></span><span class="contrib-val gl-neg">-0.56%</span></span></td>
+        </tr>
+        <tr data-netgl="-20" data-pct="8">
+          <td class="stock-name"><span class="dot" style="background:var(--red);"></span>Dr. Reddy's</td>
+          <td class="gl-neg">-20%</td><td>8%</td>
+          <td><span class="contrib-wrap"><span class="contrib-bar-wrap"><span class="contrib-mid"></span><span class="contrib-bar neg" data-target="1.6"></span></span><span class="contrib-val gl-neg">-1.60%</span></span></td>
+        </tr>
+        <tr data-netgl="16" data-pct="3">
+          <td class="stock-name"><span class="dot" style="background:var(--green);"></span>BHEL Ltd.</td>
+          <td class="gl-pos">+16%</td><td>3%</td>
+          <td><span class="contrib-wrap"><span class="contrib-bar-wrap"><span class="contrib-mid"></span><span class="contrib-bar pos" data-target="0.48"></span></span><span class="contrib-val gl-pos">+0.48%</span></span></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3">Net Portfolio Contribution</td>
+          <td id="totalContrib" class="gl-neg">-0.98%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="attrib-insight">📌 Reliance accounts for <strong>+0.7%</strong> of the portfolio return and BHEL accounts for <strong>+0.48%</strong>. Due to net losses, Dr. Reddy's and HDFC Bank reduced overall profits by <strong>1.60%</strong> and <strong>0.56%</strong> respectively. Examine the net gain/loss for each company and repeat this for every stock — portfolio attribution gives us a lot of insight into where our profits and losses actually come from. We can do this at industry level too.</div>
+
+    <div class="simulator">
+      <h5>🎛️ Try It Yourself</h5>
+      <p class="cap">Drag the sliders — see how a stock's contribution to your <em>whole</em> portfolio changes.</p>
+      <div class="sim-row">
+        <label>Net Gain/Loss %</label>
+        <input type="range" id="simGL" min="-40" max="40" value="20">
+        <span class="val" id="simGLVal">+20%</span>
+      </div>
+      <div class="sim-row">
+        <label>% of Portfolio</label>
+        <input type="range" id="simPct" min="1" max="30" value="6">
+        <span class="val" id="simPctVal">6%</span>
+      </div>
+      <div class="sim-result">
+        <span>Contribution to overall portfolio return:</span>
+        <span class="big" id="simResult">+1.20%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="factor-grid">
+    <div class="factor-card">
+      <div class="emoji">🧩</div>
+      <h5>Diversification</h5>
+      <p>At the time of buying or selling stocks, think about the other stocks already in your portfolio too.</p>
+    </div>
+    <div class="factor-card">
+      <div class="emoji">🔗</div>
+      <h5>Relation to Other Companies</h5>
+      <p>Make sure you avoid related companies operating in the same industry. If a company is related to others already held...</p>
+      <div class="eg">e.g. HDFC Bank + Kotak Bank — avoid holding both.</div>
+    </div>
+    <div class="factor-card">
+      <div class="emoji">🛡️</div>
+      <h5>Hedging</h5>
+      <p>Hedge risk by buying small quantities of both sides when you're unsure which will win — private &amp; public banks, EV &amp; traditional automakers.</p>
+      <div class="eg">e.g. Motilal Oswal (traditional broker) vs. a discount broker.</div>
+    </div>
+  </div>
+
+  <div class="closing-quote">
+    <p>Depending on how each stock performs, we will <strong>balance our portfolio</strong> in the future. But it's very important to think of the <strong>entire portfolio</strong> — and not just one stock.</p>
+  </div>
+</div>
+
+<!-- ══════════ TAKEAWAY ══════════ -->
+<section class="takeaway reveal">
+  <h2>Chapter 1 in Three Ideas</h2>
+  <div class="pts">
+    <div class="pt"><div class="emoji">🧺</div><p><strong>Diversify</strong> across industries, stocks and market cap — cap any single sector at 40%.</p></div>
+    <div class="pt"><div class="emoji">🎯</div><p><strong>Expect a mix:</strong> roughly a quarter profits, a third breaks even, a third loses — that's normal, not failure.</p></div>
+    <div class="pt"><div class="emoji">🔍</div><p><strong>Audit every 6 months</strong> — attribution shows exactly which stocks help or hurt your total return.</p></div>
+  </div>
+</section>
+
+<footer>
+  Based on <em>Stock Investing Mastermind</em> — Zebra Learn Pvt Ltd (2022) · ISBN 9788195895021 · Chapter 1.1–1.3: Right Approach towards a Portfolio
+</footer>
+
+<script>
+  // ── Scroll reveal (single orchestrated fade per section)
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // ── Generic bar/width animator (fires once when its container enters view)
+  function animateBars(containerSelector, barSelector, widthAttr = 'data-target', unit = '%') {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    const bars = container.querySelectorAll(barSelector);
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        bars.forEach(b => {
+          const t = b.getAttribute(widthAttr);
+          setTimeout(() => { b.style.width = t + unit; }, 150);
+        });
+        io.disconnect();
+      }
+    }, { threshold: 0.35 });
+    io.observe(container);
+  }
+  animateBars('.cap-visual', '.cap-bar');
+  animateBars('.expect-rows', '.er-bar');
+  animateBars('.alloc-grid', '.alloc-bar');
+
+  // Contribution bars (attribution table) — scale relative to widest |value|
+  (function () {
+    const table = document.getElementById('attribTable');
+    if (!table) return;
+    const bars = table.querySelectorAll('.contrib-bar');
+    const maxAbs = 1.6; // matches Dr. Reddy's -1.6% as visual scale reference
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        bars.forEach(b => {
+          const t = parseFloat(b.getAttribute('data-target'));
+          const pct = Math.min(100, (t / maxAbs) * 50); // half-width max since bar splits at center
+          setTimeout(() => { b.style.width = pct + '%'; }, 200);
+        });
+        io.disconnect();
+      }
+    }, { threshold: 0.3 });
+    io.observe(table);
+  })();
+
+  // ── Stock emoji grid (20 companies) for the "ideal expectations" visual
+  (function () {
+    const grid = document.getElementById('stockGrid');
+    if (!grid) return;
+    const winIcons = ['📈','📈','📈','📈','📈'];      // 5 profit generators
+    const flatIcons = ['➖','➖','➖','➖','➖','➖','➖']; // 7 return-capital
+    const lossIcons = ['📉','📉','📉','📉','📉','📉','📉','📉']; // 8 loss makers
+    [...winIcons, ...flatIcons, ...lossIcons].forEach(ic => {
+      const span = document.createElement('span');
+      span.textContent = ic;
+      grid.appendChild(span);
+    });
+  })();
+
+  // ── Reality-check icon grid (4 of 10 highlighted as "successful")
+  (function () {
+    const grid = document.getElementById('realityIcons');
+    if (!grid) return;
+    for (let i = 0; i < 10; i++) {
+      const d = document.createElement('div');
+      d.className = 'ri';
+      d.textContent = i < 4 ? '📈' : '📊';
+      grid.appendChild(d);
+    }
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        [...grid.children].forEach((el, i) => {
+          if (i < 4) setTimeout(() => el.classList.add('win'), 250 + i * 150);
+        });
+        io.disconnect();
+      }
+    }, { threshold: 0.4 });
+    io.observe(grid);
+  })();
+
+  // ── Live contribution simulator
+  (function () {
+    const gl = document.getElementById('simGL');
+    const pct = document.getElementById('simPct');
+    const glVal = document.getElementById('simGLVal');
+    const pctVal = document.getElementById('simPctVal');
+    const result = document.getElementById('simResult');
+    if (!gl) return;
+    function update() {
+      const glNum = parseFloat(gl.value);
+      const pctNum = parseFloat(pct.value);
+      glVal.textContent = (glNum >= 0 ? '+' : '') + glNum + '%';
+      pctVal.textContent = pctNum + '%';
+      const contribution = (glNum * pctNum) / 100;
+      result.textContent = (contribution >= 0 ? '+' : '') + contribution.toFixed(2) + '%';
+      result.style.color = contribution >= 0 ? '#2ecc52' : '#e5766a';
+    }
+    gl.addEventListener('input', update);
+    pct.addEventListener('input', update);
+    update();
+  })();
+</script>
+</body>
+</html>

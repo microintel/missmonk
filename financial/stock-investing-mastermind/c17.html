@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When to Sell? — Stock Investing Mastermind</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a7c2f;
+    --green-light: #2ecc52;
+    --gold: #f5a623;
+    --dark: #0d1a10;
+    --cream: #f2ede2;
+    --red: #d9483a;
+    --blue: #2c3e8c;
+    --orange: #e07b28;
+    --gray: #8a8378;
+    --border: #ddd6c8;
+    --panel: #fbf9f4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+    font-size: 16px;
+  }
+
+  img, svg { max-width: 100%; display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--green);
+    color: white;
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 18px,
+      rgba(255,255,255,0.04) 18px, rgba(255,255,255,0.04) 20px
+    );
+  }
+  .hero-emoji { font-size: clamp(48px, 9vw, 84px); margin-bottom: 8px; animation: fadeDown 0.6s ease both; }
+  .hero-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: var(--dark);
+    padding: 7px 20px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease 0.05s both;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 11vw, 130px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    animation: fadeDown 0.8s ease 0.1s both;
+    position: relative;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    margin-top: 24px;
+    font-size: clamp(16px, 2.4vw, 19px);
+    font-weight: 600;
+    opacity: 0.9;
+    max-width: 560px;
+    animation: fadeDown 0.8s ease 0.2s both;
+  }
+  .hero-dots {
+    display: flex; gap: 12px; margin-top: 48px;
+    animation: fadeDown 0.8s ease 0.4s both;
+  }
+  .hero-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+  }
+  .hero-dots span:first-child { background: var(--gold); }
+  .scroll-hint {
+    position: absolute; bottom: 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; letter-spacing: 2px;
+    opacity: 0.65; animation: bounce 2s infinite;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section { padding: 76px 24px; max-width: 1080px; margin: 0 auto; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--green);
+    border-left: 3px solid var(--green);
+    padding-left: 12px; margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 6vw, 68px);
+    line-height: 1; margin-bottom: 20px; color: var(--dark);
+  }
+  .section-title span { color: var(--green); }
+  .section-lede {
+    font-size: clamp(16px, 2vw, 18px);
+    line-height: 1.7; color: #3a362f; max-width: 720px; margin-bottom: 40px;
+  }
+  .section-lede strong { color: var(--dark); }
+  .big-emoji-row { font-size: clamp(38px, 7vw, 60px); margin-bottom: 18px; line-height: 1; }
+
+  /* ── INTRO CARD ── */
+  .intro-card {
+    background: var(--dark);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 44px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .intro-card .ic-emoji { font-size: 64px; flex-shrink: 0; }
+  .intro-card p { font-size: clamp(16px,2vw,18px); line-height: 1.8; opacity: 0.92; }
+  .intro-card strong { color: var(--gold); }
+  @media(max-width:640px){ .intro-card { flex-direction: column; text-align: center; } }
+
+  /* ── PANEL / CARD BASE (no shadows, border instead) ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+  }
+
+  /* ── KPI TABLE ── */
+  .kpi-table-wrap { overflow-x: auto; margin-bottom: 32px; }
+  table.kpi-table {
+    width: 100%; border-collapse: collapse; min-width: 480px;
+    background: white; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  table.kpi-table th, table.kpi-table td {
+    padding: 14px 18px; text-align: center; font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.kpi-table th {
+    font-family: 'DM Mono', monospace; letter-spacing: 1px;
+    background: var(--dark); color: var(--gold); font-size: 12px;
+  }
+  table.kpi-table td:first-child, table.kpi-table th:first-child {
+    text-align: left; font-weight: 700; color: var(--green);
+  }
+  table.kpi-table tr:last-child td { border-bottom: none; }
+  table.kpi-table tr.warn td { color: var(--red); font-weight: 700; }
+
+  .kpi-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 32px; }
+  @media(max-width:700px){ .kpi-charts { grid-template-columns: 1fr; } }
+  .kchart-box { background: var(--dark); border-radius: 14px; padding: 26px 24px 18px; }
+  .kchart-box h4 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: white;
+    letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  .kchart-box small { font-family:'DM Mono',monospace; color: rgba(255,255,255,0.5); font-size: 11px; }
+  .bars-row { display: flex; align-items: flex-end; gap: 14px; height: 150px; margin-top: 20px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar-el {
+    width: 100%; border-radius: 5px 5px 0 0; height: 0%;
+    transition: height 1.3s cubic-bezier(0.16,1,0.3,1);
+    display: flex; align-items: flex-start; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: white; padding-top: 5px;
+  }
+  .bar-col .yr { font-family:'DM Mono',monospace; font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 8px; }
+
+  /* balance sheet mini diagram */
+  .balance-sheet { display: flex; gap: 16px; margin-top: 8px; }
+  .bs-col { flex: 1; border: 2px dashed var(--gold); border-radius: 10px; padding: 16px 12px; text-align: center; }
+  .bs-col h5 { font-family:'Bebas Neue',sans-serif; letter-spacing: 1px; color: var(--gold); font-size: 18px; margin-bottom: 8px; }
+  .bs-col .wig { font-size: 20px; opacity: 0.5; color: white; line-height: 1.6; }
+
+  .callout {
+    background: #fff7e6; border: 1px solid #f0d999; border-radius: 12px;
+    padding: 20px 24px; font-size: 15px; line-height: 1.7; color: #5c4a12; margin-top: 8px;
+  }
+  .callout b { color: #8a5c00; }
+
+  /* ── FLOW DIAGRAM (COVID) ── */
+  .flow-section { padding: 12px 0 8px; }
+  .flow-diagram {
+    display: flex; flex-direction: column; gap: 0; max-width: 480px; margin: 0 auto 8px;
+  }
+  .flow-step {
+    background: var(--orange); color: white; border-radius: 12px;
+    padding: 20px 26px; text-align: center; font-weight: 700; font-size: 15px;
+    position: relative;
+  }
+  .flow-step .fs-icon { font-size: 34px; display:block; margin-bottom: 6px; }
+  .flow-step.final { background: var(--red); }
+  .flow-connector { text-align: center; font-size: 26px; color: var(--gray); padding: 6px 0; }
+
+  .covid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; margin-top: 32px; }
+  @media(max-width:700px){ .covid-grid { grid-template-columns: 1fr; } }
+  .covid-text { font-size: 15px; line-height: 1.8; color: #3a362f; }
+  .covid-text p { margin-bottom: 14px; }
+  .covid-text strong { color: var(--dark); }
+
+  /* ── LINE CHARTS (SVG) ── */
+  .chart-panel { background: var(--dark); border-radius: 16px; padding: 30px 26px 20px; margin-bottom: 8px; }
+  .chart-panel h4 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: white; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .chart-panel .cp-sub { font-family:'DM Mono',monospace; font-size: 12px; color: rgba(255,255,255,0.55); margin-bottom: 18px; }
+  .chart-panel svg { width: 100%; height: auto; }
+  .chart-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; }
+  .chart-legend span { font-family:'DM Mono',monospace; font-size: 11px; color: rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  .path-line { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .path-dashed { fill: none; stroke-width: 3; stroke-dasharray: 8 7; stroke-linecap: round; }
+  .chart-dot { r: 6; }
+  .chart-label-text { font-family: 'DM Mono', monospace; font-size: 12px; fill: white; }
+  .chart-axis-label { font-family: 'DM Mono', monospace; font-size: 11px; fill: rgba(255,255,255,0.45); }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    background: linear-gradient(135deg, #1a4a2a 0%, #0d2a5a 100%);
+    border-radius: 18px; padding: clamp(36px,7vw,64px); color: white; text-align: center;
+    position: relative; overflow: hidden; margin-bottom: 40px;
+  }
+  .quote-block .qb-emoji { font-size: 52px; margin-bottom: 12px; }
+  .quote-block h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(34px, 6vw, 64px);
+    line-height: 1.05; margin-bottom: 14px;
+  }
+  .quote-block .qb-author { font-family:'DM Mono',monospace; font-size: 13px; color: var(--gold); letter-spacing: 1px; }
+  .quote-block p.qb-body { font-size: 16px; opacity: 0.85; max-width: 620px; margin: 20px auto 0; line-height: 1.8; }
+
+  /* weeds/flowers grid */
+  .wf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  @media(max-width:640px){ .wf-grid { grid-template-columns: 1fr; } }
+  .wf-card { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+  .wf-head { padding: 22px 24px; color: white; display: flex; align-items: center; gap: 14px; }
+  .wf-head .wf-emoji { font-size: 40px; }
+  .wf-head h4 { font-family:'Bebas Neue',sans-serif; font-size: 26px; letter-spacing: 0.5px; }
+  .wf-weeds .wf-head { background: var(--red); }
+  .wf-flowers .wf-head { background: var(--green); }
+  .wf-body { background: white; padding: 4px 0; }
+  .wf-item { padding: 14px 24px; border-bottom: 1px solid var(--border); font-size: 14.5px; line-height: 1.6; color: #333; }
+  .wf-item:last-child { border-bottom: none; }
+  .wf-item b { display: block; color: var(--dark); margin-bottom: 2px; }
+
+  /* portfolio donut */
+  .portfolio-wrap { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: center; }
+  @media(max-width:680px){ .portfolio-wrap { grid-template-columns: 1fr; justify-items: center; } }
+  .donut {
+    width: 220px; height: 220px; border-radius: 50%;
+    background: conic-gradient(var(--green) 0deg, var(--green) 0deg, var(--border) 0deg);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; transition: background 1.4s ease;
+  }
+  .donut-inner {
+    width: 138px; height: 138px; border-radius: 50%; background: var(--cream);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .donut-inner .di-num { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--dark); line-height: 1; }
+  .donut-inner .di-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gray); letter-spacing: 1px; margin-top: 4px; }
+  .portfolio-legend { display: flex; flex-direction: column; gap: 16px; }
+  .pl-row { display: flex; align-items: center; gap: 14px; }
+  .pl-swatch { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; }
+  .pl-text b { display: block; font-size: 16px; color: var(--dark); }
+  .pl-text span { font-size: 13.5px; color: #55503f; }
+
+  /* ── EXAMPLE / MANAGEMENT CARDS ── */
+  .mgmt-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 36px; }
+  @media(max-width:640px){ .mgmt-cards { grid-template-columns: 1fr; } }
+  .mgmt-card {
+    border-radius: 16px; padding: 32px; color: white; position: relative; overflow: hidden;
+  }
+  .mgmt-card.satyam { background: linear-gradient(135deg,#8c1e1e,#4a0d0d); }
+  .mgmt-card.yesbank { background: linear-gradient(135deg,#1e3f8c,#0d1f4a); }
+  .mgmt-card .mc-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+  }
+  .mgmt-card .mc-logo .em { font-size: 40px; }
+  .mgmt-card .mc-badge {
+    font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px;
+    background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 3px;
+    display: inline-block; margin-bottom: 18px;
+  }
+  .mgmt-card p { font-size: 15px; line-height: 1.7; opacity: 0.92; }
+
+  .reasons-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; }
+  .reason-row {
+    display: flex; align-items: flex-start; gap: 16px; background: white;
+    border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+  }
+  .reason-row .rn { font-family:'Bebas Neue',sans-serif; font-size: 26px; color: var(--green); width: 34px; flex-shrink:0; }
+  .reason-row p { font-size: 14.5px; line-height: 1.6; color: #333; }
+
+  /* ── VALUATION SECTION ── */
+  .val-problems { display: flex; flex-direction: column; gap: 10px; margin: 22px 0 34px; }
+  .val-problem { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; color: #3a362f; line-height: 1.6; }
+  .val-problem .vp-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* ── GOAL REALIZED ── */
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  @media(max-width:640px){ .choice-grid { grid-template-columns: 1fr; } }
+  .choice-card { border-radius: 14px; padding: 28px; border: 2px solid var(--border); background: white; }
+  .choice-card.keep { border-color: var(--green); }
+  .choice-card.sell { border-color: var(--red); }
+  .choice-card .cc-emoji { font-size: 42px; margin-bottom: 10px; }
+  .choice-card h4 { font-family:'Bebas Neue',sans-serif; font-size: 24px; margin-bottom: 10px; }
+  .choice-card.keep h4 { color: var(--green); }
+  .choice-card.sell h4 { color: var(--red); }
+  .choice-card p { font-size: 14.5px; line-height: 1.7; color: #3a362f; }
+
+  .process-steps { display: flex; flex-direction: column; gap: 12px; }
+  .process-step { display: flex; align-items: center; gap: 16px; }
+  .process-step .ps-num {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--dark); color: var(--gold);
+    display: flex; align-items: center; justify-content: center; font-family:'Bebas Neue',sans-serif;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .process-step p { font-size: 15px; font-weight: 600; color: var(--dark); }
+
+  /* ── FINAL 5 REASONS (matches book's closing page) ── */
+  .final-reasons {
+    background: var(--blue); color: white; padding: 76px 24px; position: relative; overflow: hidden;
+  }
+  .final-reasons::before {
+    content:''; position:absolute; inset:0;
+    background: repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(255,255,255,0.04) 18px, rgba(255,255,255,0.04) 20px);
+  }
+  .fr-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .fr-inner .section-label { color: var(--gold); border-color: var(--gold); }
+  .fr-inner .section-title { color: white; }
+  .fr-inner .section-title span { color: var(--gold); }
+  .fr-list { display: flex; flex-direction: column; gap: 26px; margin-top: 40px; }
+  .fr-item { display: flex; gap: 22px; align-items: flex-start; }
+  .fr-item .fr-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: var(--gold); line-height: 1; width: 56px; flex-shrink: 0;
+  }
+  .fr-item p { font-size: clamp(16px,2vw,19px); line-height: 1.6; font-weight: 600; }
+
+  /* ── TAKEAWAY STRIP ── */
+  .takeaway {
+    background: var(--green); color: white; padding: 64px 24px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .takeaway::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(255,255,255,0.04) 18px, rgba(255,255,255,0.04) 20px);
+  }
+  .takeaway .tw-emoji { font-size: 46px; margin-bottom: 14px; position: relative; }
+  .takeaway h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 5vw, 54px);
+    margin-bottom: 16px; position: relative;
+  }
+  .takeaway p {
+    font-size: clamp(16px,2vw,18px); max-width: 700px; margin: 0 auto;
+    opacity: 0.92; line-height: 1.8; position: relative;
+  }
+  .takeaway .gold { color: var(--gold); font-weight: 700; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.45); padding: 30px 24px;
+    text-align: center; font-family: 'DM Mono', monospace; font-size: 12.5px; letter-spacing: 1px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-emoji">📉📤</div>
+  <div class="hero-badge">Stock Investing Mastermind · Zebra Learn · Ch. 2.1</div>
+  <h1>When to<br><span>Sell?</span></h1>
+  <p class="hero-sub">Buying the right stock is only half the job. Knowing exactly when to let it go — for profit or for loss — is what actually protects your wealth.</p>
+  <div class="hero-dots"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="scroll-hint">↓ SCROLL TO EXPLORE</div>
+</section>
+
+<!-- ══════════ INTRODUCTION ══════════ -->
+<div class="section reveal">
+  <div class="section-label">2.1 · Introduction</div>
+  <div class="section-title">Why Selling Is<br><span>Just as Important</span></div>
+  <div class="intro-card">
+    <div class="ic-emoji">⚖️</div>
+    <p>Market fluctuations happen the moment we buy a stock — they're what lead to <strong>profits and losses</strong> when we eventually sell. So while buying the correct stock at the correct time is the key first step, it is <strong>equally important to sell it at the right time</strong>, at a profit. This chapter walks through five clear situations that should trigger a sell decision.</p>
+  </div>
+</div>
+
+<!-- ══════════ 1. KPIs DETERIORATE ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 1 · Business Deterioration</div>
+  <div class="section-title">We Book a Loss When<br><span>KPIs Deteriorate</span></div>
+  <div class="big-emoji-row">📊📉🚚</div>
+  <p class="section-lede">A <strong>stagnant or decreasing KPI</strong> (Key Performance Indicator) is the very first sign that a business is deteriorating — and the impact shows up here <strong>before</strong> it ever reflects in the income statement or balance sheet.</p>
+
+  <p class="section-lede" style="margin-bottom:20px;">For instance, when the number of trucks in a logistics firm goes flat and then starts declining, we should start asking questions:</p>
+
+  <div class="kpi-table-wrap">
+    <table class="kpi-table">
+      <tr><th>Metric</th><th>2018</th><th>2019</th><th>2020</th><th>2021</th></tr>
+      <tr><td>🚚 No. of Trucks</td><td>12,000</td><td>13,000</td><td>14,500</td><td>14,200</td></tr>
+      <tr><td>🏭 Warehouse Area</td><td>2,20,000</td><td>2,50,000</td><td>2,60,000</td><td>3,00,000</td></tr>
+      <tr class="warn"><td>📐 Occupancy Rate</td><td>64%</td><td>72%</td><td>68%</td><td>55%</td></tr>
+    </table>
+  </div>
+
+  <div class="kpi-charts">
+    <div class="kchart-box">
+      <h4>🚚 Truck Fleet Growth</h4>
+      <small>Flattens out after 2020 — a warning sign</small>
+      <div class="bars-row" id="trucksChart">
+        <div class="bar-col"><div class="bar-el" data-h="80" style="background:var(--green-light);">12k</div><div class="yr">2018</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="87" style="background:var(--green-light);">13k</div><div class="yr">2019</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="97" style="background:var(--gold);">14.5k</div><div class="yr">2020</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="95" style="background:var(--red);">14.2k</div><div class="yr">2021</div></div>
+      </div>
+    </div>
+    <div class="kchart-box">
+      <h4>📐 Occupancy Rate %</h4>
+      <small>The sharp 2021 drop is the real red flag</small>
+      <div class="bars-row" id="occChart">
+        <div class="bar-col"><div class="bar-el" data-h="64" style="background:var(--green-light);">64%</div><div class="yr">2018</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="72" style="background:var(--green-light);">72%</div><div class="yr">2019</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="68" style="background:var(--gold);">68%</div><div class="yr">2020</div></div>
+        <div class="bar-col"><div class="bar-el" data-h="55" style="background:var(--red);">55%</div><div class="yr">2021</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>⚠️ Impact hits KPIs first, financials second.</b> Combine this KPI trend with the annual report and other filings — together they explain <em>why</em> the KPIs are behaving the way they are. If a company's performance is deteriorating, we must determine whether it's a <b>temporary hiccup from external factors</b>, or a <b>fundamental shift</b> in the business.
+  </div>
+</div>
+
+<!-- ══════════ COVID EXAMPLE ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Case Study · Fundamental Shift vs. Hiccup</div>
+  <div class="section-title">Effects of COVID-19<br><span>on the Travel Industry</span></div>
+  <p class="section-lede">Assume COVID-19, demonetization, or a GST announcement causes KPIs to stagnate for a while — that alone might not require action. But if KPIs deteriorate because of a <strong>fundamental shift</strong>, we can consider selling the stock, irrespective of profit or loss.</p>
+
+  <div class="covid-grid">
+    <div class="flow-diagram">
+      <div class="flow-step"><span class="fs-icon">🦠</span>Experienced a massive lockdown due to COVID-19</div>
+      <div class="flow-connector">⬇</div>
+      <div class="flow-step"><span class="fs-icon">💳</span>The debt in their books becomes very high</div>
+      <div class="flow-connector">⬇</div>
+      <div class="flow-step"><span class="fs-icon">📉</span>Interest coverage ratio goes down</div>
+      <div class="flow-connector">⬇</div>
+      <div class="flow-step final"><span class="fs-icon">🏚️</span>Business suffers — real value goes down too</div>
+    </div>
+    <div class="covid-text">
+      <p>🧭 <strong>Our initial investing theory of the travel industry goes wrong.</strong></p>
+      <p>We may decide to sell our stocks due to fundamental shifts, a decline in KPIs, and deteriorating business conditions — travel companies take a long time to recover from heavy debt.</p>
+      <p>🔍 <strong>The rule:</strong> analyze whether it's a fundamental change or a small hiccup. If it's fundamental, sell the stock immediately — our investment thesis has gone wrong. It is very common for an investment thesis to go wrong; that's normal, not a failure.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WHY TAKING A LOSS IS GOOD ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 1 (contd.) · Mindset</div>
+  <div class="section-title">Why Taking a<br><span>Loss Is Good</span></div>
+  <div class="big-emoji-row">😰➡️😌</div>
+  <p class="section-lede">What if you purchased a stock for <strong>₹100</strong>, and because of the company's subpar performance, its value decreased to <strong>₹70</strong>? We often keep holding, hoping the price recovers to ₹100 so we "don't take a loss" — but during that wait, it's entirely possible the price falls further, to <strong>₹50</strong>.</p>
+
+  <div class="chart-panel">
+    <h4>📉 The Cost of Waiting</h4>
+    <div class="cp-sub">Holding a fundamentally broken stock, hoping to break even</div>
+    <svg viewBox="0 0 600 240" id="lossChart">
+      <line x1="40" y1="210" x2="580" y2="210" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <path class="path-line" id="lossPath" stroke="var(--red)" d="M60,40 L220,120 L400,168 L560,150" />
+      <path class="path-dashed" id="reboundPath" stroke="var(--green-light)" d="M400,168 L560,60" />
+      <circle class="chart-dot" cx="60" cy="40" fill="var(--gold)"/>
+      <circle class="chart-dot" cx="220" cy="120" fill="var(--red)"/>
+      <circle class="chart-dot" cx="400" cy="168" fill="var(--red)"/>
+      <text x="60" y="26" class="chart-label-text" text-anchor="middle">₹100 Bought</text>
+      <text x="220" y="106" class="chart-label-text" text-anchor="middle">₹70</text>
+      <text x="400" y="192" class="chart-label-text" text-anchor="middle">₹50 (kept falling)</text>
+      <text x="555" y="48" class="chart-label-text" text-anchor="end" fill="var(--green-light)">reinvested → ₹200</text>
+      <text x="60" y="230" class="chart-axis-label">Buy</text>
+      <text x="220" y="230" class="chart-axis-label" text-anchor="middle">Hoping to recover</text>
+      <text x="400" y="230" class="chart-axis-label" text-anchor="middle">Kept holding</text>
+      <text x="560" y="230" class="chart-axis-label" text-anchor="end">Time →</text>
+    </svg>
+    <div class="chart-legend">
+      <span><i class="leg-dot" style="background:var(--red);"></i>Holding & hoping</span>
+      <span><i class="leg-dot" style="background:var(--green-light);"></i>Sell at ₹70 &amp; reinvest instead</span>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:28px;">
+    🎯 <b>The best option is to sell at ₹70</b> — book it as a loss, and invest that money in another stock which might rise to ₹200. Most retail investors avoid selling at a loss, but <b>selling at a loss is actually a sign of a good investor</b>. In this business you're likely to be wrong more often than right — so admit the mistake and move your money to a better place, rather than trying to recover it the same way you lost it.
+  </div>
+</div>
+
+<!-- ══════════ CUT YOUR WEEDS, WATER YOUR FLOWERS ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 2 · The Peter Lynch Principle</div>
+  <div class="section-title">When Why You Bought<br><span>Is No Longer True</span></div>
+
+  <div class="quote-block">
+    <div class="qb-emoji">🌾🌻</div>
+    <h2>"Cut your weeds<br>and water your flowers"</h2>
+    <div class="qb-author">— PETER LYNCH</div>
+    <p class="qb-body">If the reason you bought a stock is no longer true — sell the stock immediately, irrespective of the price. Even if it's at a loss. We'll only make money on 30–40% of our investments, lose money on 30%, and just get our capital back on the remaining 30%. That's normal, even for the most sophisticated investors — so there's no harm in booking losses.</p>
+  </div>
+
+  <div class="wf-grid">
+    <div class="wf-card wf-weeds">
+      <div class="wf-head"><span class="wf-emoji">🌾</span><h4>Cut the Weeds</h4></div>
+      <div class="wf-body">
+        <div class="wf-item"><b>Remove constant losers</b>They're weeds in your portfolio — companies constantly making losses.</div>
+        <div class="wf-item"><b>Likely poor quality</b>Persistent losses usually signal a structurally weak business, not bad luck.</div>
+      </div>
+    </div>
+    <div class="wf-card wf-flowers">
+      <div class="wf-head"><span class="wf-emoji">🌻</span><h4>Water the Flowers</h4></div>
+      <div class="wf-body">
+        <div class="wf-item"><b>Keep the growers</b>Hold companies that are growing constantly — don't sell where you're making profit.</div>
+        <div class="wf-item"><b>Let winners run</b>Let winners become really big winners. That's how you grow wealth — don't cut your winners short.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-lede">As retail investors, we tend to make quick profits and sell shares immediately once the price rises — say from ₹100 to ₹250. <strong>That's cutting the flower rather than watering it — a huge mistake.</strong> Instead, we should wait: for any good company, a stock should climb from ₹250 to ₹500, and then to ₹1,000. We don't want to miss the entire upside by selling too quickly.</p>
+
+  <div class="chart-panel">
+    <h4>🌻 Patience vs. 🌾 Impatience</h4>
+    <div class="cp-sub">Two ₹100 stocks, two very different outcomes</div>
+    <svg viewBox="0 0 600 260" id="growChart">
+      <line x1="40" y1="230" x2="580" y2="230" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <path class="path-line" id="growPath" stroke="var(--green-light)" d="M60,190 L180,150 L330,90 L500,30" />
+      <path class="path-dashed" id="cutPath" stroke="rgba(255,255,255,0.4)" d="M60,190 L180,150" />
+      <circle class="chart-dot" cx="60" cy="190" fill="var(--gold)"/>
+      <circle class="chart-dot" cx="180" cy="150" fill="var(--gold)"/>
+      <circle class="chart-dot" cx="330" cy="90" fill="var(--green-light)"/>
+      <circle class="chart-dot" cx="500" cy="30" fill="var(--green-light)"/>
+      <text x="60" y="206" class="chart-label-text" text-anchor="middle">₹100</text>
+      <text x="180" y="140" class="chart-label-text" text-anchor="middle">₹250</text>
+      <text x="330" y="80" class="chart-label-text" text-anchor="middle">₹500</text>
+      <text x="500" y="20" class="chart-label-text" text-anchor="middle">₹1,000</text>
+
+      <path class="path-line" id="weedPath" stroke="var(--red)" d="M60,190 L330,225" />
+      <circle class="chart-dot" cx="330" cy="225" fill="var(--red)"/>
+      <text x="330" y="245" class="chart-label-text" text-anchor="middle" fill="var(--red)">₹70 — sell, it's a weed</text>
+    </svg>
+    <div class="chart-legend">
+      <span><i class="leg-dot" style="background:var(--green-light);"></i>The Flower — held with patience</span>
+      <span><i class="leg-dot" style="background:rgba(255,255,255,0.4);"></i>Sold too early at ₹250</span>
+      <span><i class="leg-dot" style="background:var(--red);"></i>The Weed — cut at ₹70</span>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:28px;">
+    ⏳ Due to a <b>lack of patience</b>, a lot of retail investors do the opposite of what they should: they cut their flowers and water their weeds. We need to do the reverse — <b>sell loss-making companies</b> once we're proved wrong, and <b>never sell profit-making companies</b> just because they've moved a little.
+  </div>
+</div>
+
+<!-- ══════════ RETAIL INVESTOR PORTFOLIO ══════════ -->
+<div class="section reveal">
+  <div class="section-label">The Bigger Picture · Portfolio Math</div>
+  <div class="section-title">What Should We Do<br><span>as Retail Investors?</span></div>
+  <p class="section-lede"><strong>Retail investors should let their winners become real big winners, and sell the loss-making companies</strong> — sell wherever the original hypothesis is no longer true.</p>
+
+  <div class="panel portfolio-wrap">
+    <div class="donut" id="portfolioDonut">
+      <div class="donut-inner">
+        <div class="di-num">10</div>
+        <div class="di-label">Investments</div>
+      </div>
+    </div>
+    <div class="portfolio-legend">
+      <div class="pl-row"><span class="pl-swatch" style="background:var(--green);"></span><div class="pl-text"><b>📈 Profits in 3–4 investments</b><span>These are the winners — hold and let them keep growing.</span></div></div>
+      <div class="pl-row"><span class="pl-swatch" style="background:var(--red);"></span><div class="pl-text"><b>📉 Losses in 3–4 investments</b><span>Book the loss, exit, and redirect the money to a better idea.</span></div></div>
+      <div class="pl-row"><span class="pl-swatch" style="background:var(--gray);"></span><div class="pl-text"><b>➖ No change in 3–4 investments</b><span>Flat performers — re-evaluate the thesis before deciding.</span></div></div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:28px;">
+    🧠 When we're correct, we make profits — and when we're wrong, we sell and redirect the proceeds into more profitable ideas. Even the most sophisticated investors are often wrong; admit it, and move your money to a better place. Make sure your <b>correct assumptions earn you 10–20x</b>. If you're right just <b>5 out of 10 times</b>, you'll become a great investor.
+  </div>
+</div>
+
+<!-- ══════════ MANAGEMENT WRONGDOING ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 3 · Trust &amp; Governance</div>
+  <div class="section-title">Did Management Do<br><span>Something Wrong?</span></div>
+  <div class="big-emoji-row">🚨🕵️‍♂️</div>
+  <p class="section-lede">We must <strong>immediately sell</strong> our stocks if there's critical news about the management:</p>
+
+  <div class="reasons-list" style="margin-bottom:36px;">
+    <div class="reason-row"><span class="rn">①</span><p>The management admitting to a mistake.</p></div>
+    <div class="reason-row"><span class="rn">②</span><p>Management implicated in some sort of fraud in the business.</p></div>
+    <div class="reason-row"><span class="rn">③</span><p>Management not acting fairly toward the interests of shareholders.</p></div>
+  </div>
+
+  <p class="section-lede">Although selling such stocks may result in either profit or loss, we should still sell immediately if the management does something wrong. Two real instances were brought to light:</p>
+
+  <div class="mgmt-cards">
+    <div class="mgmt-card satyam">
+      <div class="mc-logo"><span class="em">🏢</span>Satyam</div>
+      <div class="mc-badge">FINANCIAL DATA MANIPULATED</div>
+      <p>The management had been deceiving shareholders for a considerable amount of time by communicating incorrect financials. Any fraud by management — sell immediately. But it should be <strong>material</strong>; you shouldn't exit over every small thing.</p>
+    </div>
+    <div class="mgmt-card yesbank">
+      <div class="mc-logo"><span class="em">🏦</span>Yes Bank</div>
+      <div class="mc-badge">GOVERNANCE BREAKDOWN</div>
+      <p>They might correct the issue later on, but it's too complicated for a retail investor to fully understand or track. It's best to sell at this point rather than wait and hope.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    🤝 Trust breaks, and markets lose confidence in the management of a company. Any major misconduct against shareholders or the market has a significant effect on the enterprise — so sell the stocks immediately. Management can fix mistakes in the future, but tracking that recovery is far too complex for the average investor. It's best to sell now.
+  </div>
+</div>
+
+<!-- ══════════ TOO EXPENSIVE / VALUATION ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 4 · Valuation Discipline</div>
+  <div class="section-title">Too Expensive!<br><span>Outside the Valuation Band</span></div>
+  <div class="big-emoji-row">💰📈🚩</div>
+  <p class="section-lede">We have countless companies and opportunities among listed stocks — we don't need to spend time on companies with a poor management track record, no matter how attractive the opportunity looks. When it comes to price, the rule is: <strong>sell when the valuation goes too far outside the valuation bands.</strong></p>
+
+  <div class="val-problems">
+    <div class="val-problem"><span class="vp-icon">⚠️</span>Problem 1: we may end up selling mid-way through a P/E re-rating.</div>
+    <div class="val-problem"><span class="vp-icon">⚠️</span>Problem 2: we may sell on small movements and miss out on the long-term story.</div>
+  </div>
+
+  <p class="section-lede">If we expect the business to have long-term potential over the next 3–4 years, we should avoid selling — even if the valuation increases substantially. But if the market price becomes astronomically expensive and moves way outside the valuation range, we may end up selling. If the business has genuinely improved fundamentally, we might hold on even further.</p>
+
+  <div class="chart-panel">
+    <h4>📊 Stock A — The P/E Escalation</h4>
+    <div class="cp-sub">Trading at a P/E of 15–20 for 6–7 years, then suddenly escalating to 40–45</div>
+    <svg viewBox="0 0 600 220" id="peChart">
+      <line x1="40" y1="190" x2="580" y2="190" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <path class="path-line" id="pePath" stroke="var(--orange)" stroke-width="3.5"
+        d="M50,155 L110,148 L170,158 L230,145 L290,152 L350,140 L410,150 L470,40 L540,25" />
+      <circle class="chart-dot" cx="170" cy="158" fill="var(--gold)"/>
+      <circle class="chart-dot" cx="410" cy="150" fill="var(--gold)"/>
+      <circle class="chart-dot" cx="540" cy="25" fill="var(--red)"/>
+      <text x="170" y="176" class="chart-label-text" text-anchor="middle">P/E ≈ 15</text>
+      <text x="410" y="168" class="chart-label-text" text-anchor="middle">P/E ≈ 20</text>
+      <text x="540" y="14" class="chart-label-text" text-anchor="end" fill="var(--red)">P/E 40–45 — quite expensive</text>
+      <text x="50" y="205" class="chart-axis-label">Year 1</text>
+      <text x="540" y="205" class="chart-axis-label" text-anchor="end">Year 7 →</text>
+    </svg>
+    <div class="chart-legend"><span><i class="leg-dot" style="background:var(--orange);"></i>Price-to-Earnings ratio over time</span></div>
+  </div>
+
+  <div class="callout" style="margin-top:28px;">
+    🔎 Here, we try to determine what fundamental changes in the business led to the P/E re-rating. If we have solid reasons, we hold on. If we don't, we sell. In summary: don't sell on small movements or slight changes — you'll miss the long-term success. Do sell when the price escalates and the valuation goes way beyond your valuation bands.
+  </div>
+</div>
+
+<!-- ══════════ GOAL REALIZED ══════════ -->
+<div class="section reveal">
+  <div class="section-label">Reason 5 · Mission Accomplished</div>
+  <div class="section-title">When the Goal<br><span>Has Been Realized</span></div>
+  <div class="big-emoji-row">🎯🏁</div>
+  <p class="section-lede">The most compelling reason to sell is when our goal is achieved. Once our hypothesis has played out and we've received the profits, we can either sell — because the story has played out — or participate in the next leg of the company's growth. We have two choices:</p>
+
+  <div class="choice-grid">
+    <div class="choice-card keep">
+      <div class="cc-emoji">🌱</div>
+      <h4>Retain the Stock</h4>
+      <p>If we agree with the company's new goals and objectives, we may decide to retain the stock. If we want to be part of the company's future plans, we should <strong>update our investment thesis</strong> and hold on — then identify the correct KPIs to keep tracking.</p>
+    </div>
+    <div class="choice-card sell">
+      <div class="cc-emoji">🚪</div>
+      <h4>Sell the Stock</h4>
+      <p>If we believe the investment story has played out and there's limited room for growth, we can sell. For example, if the company introduces a new product very different from what it offered before, and it carries high risk, we may decide to sell.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h4 style="font-family:'Bebas Neue',sans-serif; font-size:22px; margin-bottom:18px; color:var(--dark);">🔁 If You Choose to Retain — Repeat the Process</h4>
+    <div class="process-steps">
+      <div class="process-step"><span class="ps-num">1</span><p>Write down your assumptions again.</p></div>
+      <div class="process-step"><span class="ps-num">2</span><p>Write down the hypothesis and KPIs again.</p></div>
+      <div class="process-step"><span class="ps-num">3</span><p>Keep on tracking again.</p></div>
+      <div class="process-step"><span class="ps-num">4</span><p>Repeat the entire process.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FINAL 5 REASONS ══════════ -->
+<section class="final-reasons reveal">
+  <div class="fr-inner">
+    <div class="section-label">Chapter Summary</div>
+    <div class="section-title">Reasons Why We Should<br><span>Sell Our Stocks</span></div>
+    <div class="fr-list">
+      <div class="fr-item"><span class="fr-num">1</span><p>📉 KPIs turn negative and the business declines significantly.</p></div>
+      <div class="fr-item"><span class="fr-num">2</span><p>🧭 If the thesis behind our investment is no longer valid, it's a good reason to exit.</p></div>
+      <div class="fr-item"><span class="fr-num">3</span><p>🚨 If management is involved in significant misconduct.</p></div>
+      <div class="fr-item"><span class="fr-num">4</span><p>💰 If the stock price has skyrocketed and we can't comprehend why — ignore small movements, but sell when it's genuinely outside the valuation band.</p></div>
+      <div class="fr-item"><span class="fr-num">5</span><p>🎯 When the goal has been achieved and management's new goals no longer align with ours.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TAKEAWAY ══════════ -->
+<section class="takeaway">
+  <div class="tw-emoji">🌻🌾⚖️</div>
+  <h2>The Bottom Line</h2>
+  <p>
+    <span class="gold">Selling at a loss is not failure</span> — holding a broken thesis out of hope is.<br>
+    <span class="gold">Selling a winner too early</span> costs you far more than any single loss ever will.<br><br>
+    Water your flowers, cut your weeds, and always sell when the reason you bought is no longer true.
+  </p>
+</section>
+
+<footer>
+  Based on <em>Stock Investing Mastermind</em> — Zebra Learn Pvt Ltd (2022) · ISBN 9788195895021 · Chapter 2.1: When to Sell?
+</footer>
+
+<script>
+  // ── Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  reveals.forEach(r => revealObserver.observe(r));
+
+  // ── Animate bar charts (height-based) on scroll
+  function animateBars(id) {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    const bars = wrap.querySelectorAll('.bar-el');
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        bars.forEach(b => { b.style.height = b.dataset.h + '%'; });
+        obs.disconnect();
+      }
+    }, { threshold: 0.4 });
+    obs.observe(wrap);
+  }
+  animateBars('trucksChart');
+  animateBars('occChart');
+
+  // ── Animate SVG line paths (draw-in effect)
+  function animatePath(id, delay) {
+    const path = document.getElementById(id);
+    if (!path) return;
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setTimeout(() => {
+          path.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)';
+          path.style.strokeDashoffset = 0;
+        }, delay || 0);
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(path.closest('svg'));
+  }
+  animatePath('lossPath', 0);
+  animatePath('reboundPath', 900);
+  animatePath('growPath', 0);
+  animatePath('cutPath', 300);
+  animatePath('weedPath', 300);
+  animatePath('pePath', 0);
+
+  // ── Animate portfolio donut (conic-gradient)
+  const donut = document.getElementById('portfolioDonut');
+  if (donut) {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setTimeout(() => {
+          // 3.5/10 profit, 3.5/10 loss, 3/10 no change (approx 4-3-3 split for visual clarity)
+          donut.style.background = `conic-gradient(
+            var(--green) 0deg 144deg,
+            var(--red) 144deg 252deg,
+            var(--gray) 252deg 360deg
+          )`;
+        }, 200);
+        obs.disconnect();
+      }
+    }, { threshold: 0.4 });
+    obs.observe(donut);
+  }
+</script>
+</body>
+</html>
