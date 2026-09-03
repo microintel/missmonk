@@ -154,6 +154,8 @@ a { color:inherit; text-decoration:none; }
 .brand-mark.sm .brand-mark-word { font-size:1.5rem; letter-spacing:.13em; }
 .brand-mark.sm .brand-mark-tagline { font-size:.52rem; gap:.6rem; letter-spacing:.26em; }
 .brand-mark.sm .brand-mark-tagline::before, .brand-mark.sm .brand-mark-tagline::after { width:20px; }
+/* Home page (welcome hero) brand mark: static, no float animation */
+.welcome-hero .brand-mark { animation:none; }
 @keyframes logoFloat {
   0%,100% { transform:translateY(0) scale(1); }
   50%     { transform:translateY(-7px) scale(1.03); }
@@ -1319,7 +1321,7 @@ a { color:inherit; text-decoration:none; }
   .sidebar-overlay.open { display:block; }
   .nav-burger { display:flex; }
   .nav-account-btn { display:none; }
-  .content { padding:1.1rem .85rem calc(2rem + 64px); }
+  .content { padding:1.1rem .85rem calc(2rem + 74px); }
   .card-grid { grid-template-columns:repeat(2,1fr); gap:.65rem; }
   .page-title { font-size:1.3rem; }
   .hero-title { font-size:1.55rem; }
@@ -1331,7 +1333,7 @@ a { color:inherit; text-decoration:none; }
     max-height:82vh;
     border-radius:18px;
   }
-  .toast { bottom:calc(64px + .8rem); right:.8rem; left:.8rem; max-width:none; }
+  .toast { bottom:calc(74px + .8rem); right:.8rem; left:.8rem; max-width:none; }
   .share-btn span { display:none; }
   .theme-panel { width:92vw; max-width:340px; }
 
@@ -1340,16 +1342,16 @@ a { color:inherit; text-decoration:none; }
     display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
     background:var(--nav-bg); backdrop-filter:blur(16px);
     border-top:1px solid var(--border);
-    padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom));
-    height:64px;
+    padding:.55rem .5rem calc(.55rem + env(safe-area-inset-bottom));
+    height:74px;
   }
   .bn-item {
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:.15rem; background:none; border:none; color:var(--text3);
-    font-size:.65rem; font-weight:600; border-radius:10px; padding:.2rem;
+    gap:.22rem; background:none; border:none; color:var(--text3);
+    font-size:.72rem; font-weight:600; border-radius:10px; padding:.3rem;
     transition:color .15s, background .15s;
   }
-  .bn-icon { font-size:1.15rem; line-height:1; }
+  .bn-icon { font-size:1.35rem; line-height:1; }
   .bn-item.active { color:var(--blue); }
   .bn-item:active { background:var(--surface2); }
   /* Book cards inside mixed topic grids stay compact on phones */
@@ -1535,6 +1537,13 @@ body {
   box-shadow: var(--sk-inset) !important;
   transform: translateY(1px);
 }
+/* Account-page CTA buttons combine .btn-sm (solid blue) with .nav-icon-btn
+   (icon-button layout). The skeuomorphic .nav-icon-btn background above was
+   winning the cascade and washing these out to white-on-white in light mode —
+   force them back to a solid, always-legible blue pill. */
+.btn-sm.nav-icon-btn { background:var(--blue); color:#fff; box-shadow:var(--sk-raised); }
+.btn-sm.nav-icon-btn:hover { background:var(--blue); color:#fff; opacity:.88; }
+.btn-sm.nav-icon-btn:active { box-shadow:var(--sk-inset) !important; transform:translateY(1px); }
 .lesson-lang-btn.active {
   background: var(--sk-btn-grad), var(--blue);
   box-shadow: var(--sk-inset), 0 0 10px var(--blue-glow) !important;
@@ -1711,6 +1720,7 @@ body {
       </span>
       <span class="nic-label">Alerts</span>
     </button>
+    <button class="nav-icon-btn" id="installAppBtn" title="Install App" onclick="installApp()" style="display:none;"><i class="bi bi-box-arrow-in-down"></i><span class="nic-label">Install</span></button>
     <button class="nav-icon-btn nav-account-btn" title="Account" onclick="showAccountPage()"><i class="bi bi-person-circle"></i><span class="nic-label">Account</span></button>
   </nav>
 
@@ -2241,6 +2251,53 @@ if ('serviceWorker' in navigator) {
     keys.forEach(key => caches.delete(key));
   });
 }
+
+/* ══════════════════════════════
+   PWA INSTALL
+   Shows an "Install" icon in the top nav only when running in a regular
+   browser tab and the app is installable. The icon is hidden entirely
+   once the app is already running as an installed PWA (standalone mode),
+   and on iOS Safari (which never fires beforeinstallprompt).
+══════════════════════════════ */
+let deferredInstallPrompt = null;
+
+function isRunningStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true; // iOS installed PWA
+}
+
+function showInstallBtn() {
+  if (isRunningStandalone()) return;
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'flex';
+}
+function hideInstallBtn() {
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'none';
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBtn();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  hideInstallBtn();
+});
+
+async function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  hideInstallBtn();
+}
+
+// Belt-and-suspenders: if already installed/standalone at load time
+// (e.g. iOS PWA, or relaunching an installed Chrome PWA), keep it hidden.
+if (isRunningStandalone()) hideInstallBtn();
 
 /* ══════════════════════════════
    FIREBASE — AUTH + FIRESTORE
