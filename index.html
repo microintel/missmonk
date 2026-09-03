@@ -50,6 +50,17 @@
   --topnav-h:  60px;
   --skel-base: var(--surface3);
   --skel-shine: rgba(255,255,255,0.06);
+  /* Skeuomorphic surface tokens (dark) */
+  --sk-hi:       rgba(255,255,255,0.055);
+  --sk-hi2:      rgba(255,255,255,0.10);
+  --sk-lo:       rgba(0,0,0,0.6);
+  --sk-lo2:      rgba(0,0,0,0.4);
+  --sk-card-grad:  linear-gradient(155deg, #191919 0%, #0e0e0e 55%, #080808 100%);
+  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.07), rgba(0,0,0,.28));
+  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.22));
+  --sk-nav-grad:   linear-gradient(180deg, #161616, #060606);
+  --sk-inset:  inset 0 1px 2px var(--sk-lo), inset 0 -1px 0 var(--sk-hi);
+  --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 22px rgba(0,0,0,.55), 0 2px 5px rgba(0,0,0,.45);
 }
 [data-theme="light"] {
   --bg:        #faf9f6;
@@ -72,6 +83,17 @@
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
   --nav-bg:    rgba(250,249,246,0.92);
   --skel-shine: rgba(0,0,0,0.045);
+  /* Skeuomorphic surface tokens (light) */
+  --sk-hi:       rgba(255,255,255,0.9);
+  --sk-hi2:      rgba(255,255,255,0.85);
+  --sk-lo:       rgba(0,0,0,0.16);
+  --sk-lo2:      rgba(0,0,0,0.07);
+  --sk-card-grad:  linear-gradient(155deg, #ffffff 0%, #f4f3ec 62%, #ebe9e0 100%);
+  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.95), rgba(0,0,0,.045));
+  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.95), rgba(0,0,0,.035));
+  --sk-nav-grad:   linear-gradient(180deg, #fcfbf8, #eeece4);
+  --sk-inset:  inset 0 1px 3px var(--sk-lo), inset 0 -1px 0 var(--sk-hi);
+  --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 20px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.07);
 }
 
 /* ════════════════════════════════════════════
@@ -1466,6 +1488,158 @@ a { color:inherit; text-decoration:none; }
 .swal2-styled.lp-cp-confirm { background:var(--green) !important; color:#fff !important; box-shadow:none !important; }
 .swal2-styled.lp-cp-deny    { background:var(--surface3) !important; color:var(--text) !important; box-shadow:none !important; }
 .swal2-styled.lp-cp-cancel  { background:transparent !important; color:var(--text2) !important; box-shadow:none !important; border:1px solid var(--border2) !important; }
+
+/* ════════════════════════════════════════════════════════════
+   SKEUOMORPHIC RESKIN
+   Purely visual layer added on top of the existing design —
+   no markup, class names, or JS behaviour are changed. Every
+   surface gets a physical, tactile finish: raised bevels for
+   things you tap, recessed grooves for things that hold a
+   value/input, and a pressed-in state on :active so taps feel
+   like real buttons.
+════════════════════════════════════════════════════════════ */
+
+/* subtle brushed-material texture on the page background */
+body {
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -8%, var(--sk-hi), transparent 55%),
+    repeating-linear-gradient(115deg, var(--sk-hi) 0 1px, transparent 1px 4px);
+  background-attachment: fixed, fixed;
+}
+
+/* top bar — bezel bar */
+.topnav {
+  background: var(--sk-nav-grad) !important;
+  box-shadow: inset 0 1px 0 var(--sk-hi2), 0 4px 16px rgba(0,0,0,.22);
+}
+[data-theme="light"] .topnav { box-shadow: inset 0 1px 0 var(--sk-hi2), 0 4px 14px rgba(0,0,0,.06); }
+
+/* search field — engraved / recessed groove */
+.nav-search-input {
+  background: var(--bg) !important;
+  border-color: transparent !important;
+  box-shadow: var(--sk-inset), 0 0 0 1px var(--border);
+}
+.nav-search-input:focus {
+  box-shadow: var(--sk-inset), 0 0 0 1.5px var(--blue);
+}
+
+/* icon buttons / pill buttons — raised dial caps, press to sink in */
+.nav-icon-btn, .book-reels-btn, .lesson-lang-btn, .share-btn {
+  background: var(--sk-btn-grad);
+  box-shadow: var(--sk-raised);
+  transition: box-shadow .12s, transform .12s, background .15s, color .15s, border-color .15s;
+}
+.nav-icon-btn:hover, .share-btn:hover { background: var(--sk-btn-grad), var(--surface2); }
+.nav-icon-btn:active, .share-btn:active, .book-reels-btn:active, .lesson-lang-btn:active {
+  box-shadow: var(--sk-inset) !important;
+  transform: translateY(1px);
+}
+.lesson-lang-btn.active {
+  background: var(--sk-btn-grad), var(--blue);
+  box-shadow: var(--sk-inset), 0 0 10px var(--blue-glow) !important;
+}
+
+/* ── CARDS: raised tiles, light falling from top-left ── */
+.card,
+.card.link-card, .card.info-card, .card.book-card, .card.empty {
+  background: var(--sk-card-grad) !important;
+  box-shadow: var(--sk-raised);
+  position: relative;
+  isolation: isolate;
+  transition: transform .16s cubic-bezier(.4,0,.2,1), box-shadow .16s;
+}
+.card::before {
+  content:''; position:absolute; inset:0; z-index:-1;
+  border-radius:inherit;
+  box-shadow: inset 0 1px 0 var(--sk-hi2), inset 0 -10px 16px -12px var(--sk-lo2);
+  pointer-events:none;
+}
+.card:hover {
+  transform:translateY(-3px);
+  box-shadow: 0 1px 0 var(--sk-hi2), 0 16px 34px rgba(0,0,0,.16), 0 3px 9px rgba(0,0,0,.12);
+}
+[data-theme="light"] .card:hover {
+  box-shadow: 0 1px 0 var(--sk-hi2), 0 16px 30px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.06);
+}
+.card:active { box-shadow: var(--sk-inset) !important; transform:translateY(1px) scale(.995); }
+.card.empty, .card.empty:hover { box-shadow: var(--sk-inset); transform:none; }
+.card.info-card:hover { box-shadow: var(--sk-inset); transform:none; }
+.card.link-card { border-color:rgba(91,141,239,.3); }
+.card.link-card.done { border-color:rgba(76,175,125,.4); }
+
+/* badges — stamped / engraved plates */
+.card-type-badge {
+  background: var(--sk-badge-grad), var(--surface2);
+  box-shadow: var(--sk-inset), 0 1px 0 var(--sk-hi2);
+  text-shadow: 0 1px 0 var(--sk-hi2);
+}
+[data-theme="light"] .card-type-badge { text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+
+/* arrow — small raised button-cap */
+.card-arrow {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:24px; height:24px; border-radius:50%;
+  background: var(--sk-btn-grad);
+  box-shadow: var(--sk-raised);
+  transition: box-shadow .15s, color .2s, transform .2s;
+}
+.card:not(.empty):hover .card-arrow { box-shadow: var(--sk-inset); }
+
+/* progress rail — inset groove with a glossy, glowing fill */
+.depth-prog { height:5px; border-radius:4px; background:var(--bg); box-shadow: var(--sk-inset); }
+.depth-fill { border-radius:4px; background: linear-gradient(180deg, #8fb2f7, var(--blue)); box-shadow: 0 0 8px var(--blue-glow); }
+
+/* book covers — sit in a little frame like a book on a shelf */
+.book-cover-wrap {
+  box-shadow: var(--sk-raised), 0 0 0 3px var(--surface), 0 0 0 4px var(--border2);
+}
+
+/* bottom nav — physical button bar */
+@media (max-width:768px) {
+  .bottom-nav {
+    background: var(--sk-nav-grad) !important;
+    box-shadow: inset 0 1px 0 var(--sk-hi2), 0 -6px 18px rgba(0,0,0,.22);
+  }
+  .bn-item { border-radius:12px; transition: box-shadow .12s, color .15s, background .15s; }
+  .bn-item.active { background: var(--sk-btn-grad); box-shadow: var(--sk-inset), 0 0 8px var(--blue-glow); }
+  .bn-item:active { box-shadow: var(--sk-inset); }
+}
+
+/* raised buttons across the app */
+.google-btn, .account-logout-btn, .logout-confirm-btn,
+.share-method-btn, .share-close-btn, .lesson-lang-select {
+  box-shadow: var(--sk-raised) !important;
+}
+.google-btn:active, .account-logout-btn:active, .logout-confirm-btn:active, .share-method-btn:active {
+  box-shadow: var(--sk-inset) !important;
+  transform: translateY(1px);
+}
+
+/* sidebar items — raised chips, pressed groove when active */
+.course-item { transition: box-shadow .15s, transform .1s, background .15s; }
+.course-item:hover { box-shadow: var(--sk-raised); }
+.course-item:active { box-shadow: var(--sk-inset); transform:translateY(1px); }
+.course-item.active { background: var(--sk-btn-grad), var(--surface2); box-shadow: var(--sk-inset), 0 0 10px var(--blue-glow); }
+.course-emoji { box-shadow: var(--sk-raised); }
+
+/* panels / modals — embossed edge so they read as raised sheets */
+.modal-box, .share-box, .theme-panel, .notif-panel, .search-results {
+  box-shadow: var(--sk-raised), var(--shadow-lg) !important;
+}
+
+/* hero stat pills */
+.hero-stat { box-shadow: var(--sk-raised); }
+
+/* Consistency fix: a lone lesson row on phones now carries the same
+   raised-card finish as the subject tiles above it (previously it was
+   a flat outline, which made it look like a stray/broken element in
+   the middle of an otherwise "raised" grid). No layout/markup change —
+   same full-width row, just matching material. */
+@media (max-width:768px) {
+  .card-grid .card.link-card { box-shadow: var(--sk-raised); }
+  .card-grid .card.link-card:active { box-shadow: var(--sk-inset); }
+}
 </style>
 </head>
 <body>
