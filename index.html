@@ -13,7 +13,7 @@
   }
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-<title>Missmonk</title>
+<title>Megha</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -110,36 +110,31 @@ a { color:inherit; text-decoration:none; }
   gap:1.6rem; text-align:center; padding:2rem;
   background:var(--bg);
 }
-.login-gate-logo {
-  position:relative;
-  width:96px; height:96px; border-radius:30px;
-  background:var(--blue);
-  display:grid; place-items:center; font-size:2.4rem;
-  box-shadow:0 0 70px var(--blue-glow);
-  color:#fff;
+/* ── Brand wordmark (replaces the old icon-based logo everywhere) ── */
+.brand-mark {
+  display:flex; flex-direction:column; align-items:center; gap:.85rem;
   animation:logoFloat 3.2s ease-in-out infinite;
 }
-.login-gate-logo::before {
-  content:'';
-  position:absolute; inset:-9px;
-  border-radius:36px;
-  padding:2px;
-  background:conic-gradient(from 0deg, var(--blue), transparent 30%, transparent 70%, var(--blue));
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
-  opacity:.65;
-  animation:ringSpin 2.2s linear infinite;
+.brand-mark-word {
+  font-family:'Clash Display',sans-serif;
+  font-size:2.6rem; font-weight:800; letter-spacing:.16em;
+  color:var(--text); text-transform:uppercase; line-height:1;
+  text-shadow:0 0 46px var(--blue-glow);
 }
-.login-gate-logo i { position:relative; z-index:1; }
+.brand-mark-tagline {
+  display:flex; align-items:center; gap:.85rem;
+  font-size:.66rem; font-weight:600; letter-spacing:.32em;
+  text-transform:uppercase; color:var(--text3);
+}
+.brand-mark-tagline::before, .brand-mark-tagline::after {
+  content:''; width:32px; height:1px; background:var(--blue);
+}
+.brand-mark.sm .brand-mark-word { font-size:1.5rem; letter-spacing:.13em; }
+.brand-mark.sm .brand-mark-tagline { font-size:.52rem; gap:.6rem; letter-spacing:.26em; }
+.brand-mark.sm .brand-mark-tagline::before, .brand-mark.sm .brand-mark-tagline::after { width:20px; }
 @keyframes logoFloat {
   0%,100% { transform:translateY(0) scale(1); }
   50%     { transform:translateY(-7px) scale(1.03); }
-}
-@keyframes ringSpin { to { transform:rotate(360deg); } }
-.login-gate-title {
-  font-family:'Clash Display',sans-serif;
-  font-size:2rem; font-weight:700; color:var(--text);
 }
 .login-gate-sub { color:var(--text2); font-size:.95rem; max-width:420px; line-height:1.7; }
 .google-btn {
@@ -235,16 +230,10 @@ a { color:inherit; text-decoration:none; }
 .nav-logo {
   display:flex; align-items:center; gap:.55rem;
   font-family:'Clash Display',sans-serif;
-  font-size:1.1rem; font-weight:700;
+  font-size:1.1rem; font-weight:800;
+  letter-spacing:.1em;
   flex-shrink:0;
   color:var(--text);
-}
-.nav-logo-icon {
-  width:30px; height:30px;
-  background:var(--blue);
-  border-radius:9px;
-  display:grid; place-items:center;
-  font-size:.9rem; flex-shrink:0;
 }
 .nav-spacer { flex:1; }
 
@@ -1485,16 +1474,22 @@ a { color:inherit; text-decoration:none; }
      LOGIN GATE
 ══════════════════════════════════ -->
 <div class="login-gate" id="loginGate">
-  <div class="login-gate-logo"><i class="bi bi-patch-question-fill"></i></div>
 
   <!-- Shown instantly on load while Firebase restores the session (usually <1s) -->
   <div class="auth-checking" id="authChecking">
+    <div class="brand-mark">
+      <div class="brand-mark-word">Megha</div>
+      <div class="brand-mark-tagline">Know what you missed</div>
+    </div>
     <div class="loader-dots"><span></span><span></span><span></span></div>
   </div>
 
   <!-- Shown only once we're sure there's no active session -->
   <div class="auth-prompt" id="authPrompt">
-    <div class="login-gate-title">Missmonk</div>
+    <div class="brand-mark">
+      <div class="brand-mark-word">Megha</div>
+      <div class="brand-mark-tagline">Know what you missed</div>
+    </div>
     <p class="login-gate-sub">Sign in with Google to access your courses, books, and lessons.</p>
     <button class="google-btn" id="googleLoginBtn" onclick="startGoogleLogin()">
       <span class="google-icon"><i class="bi bi-google"></i></span>
@@ -1517,8 +1512,7 @@ a { color:inherit; text-decoration:none; }
     <button class="nav-burger" id="burgerBtn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
 
     <div class="nav-logo">
-      <div class="nav-logo-icon"><i class="bi bi-patch-question-fill"></i></div>
-      <span>Missmonk</span>
+      <span>MEGHA</span>
     </div>
 
     <div class="nav-spacer"></div>
@@ -1677,7 +1671,7 @@ a { color:inherit; text-decoration:none; }
       <div class="notif-compose-badge"><i class="bi bi-megaphone-fill"></i></div>
       <div class="notif-compose-lbl-text">
         <span class="notif-compose-lbl-title">Send an update</span>
-        <span class="notif-compose-lbl-sub">Broadcasts as "From MissMonk" to everyone</span>
+        <span class="notif-compose-lbl-sub">Broadcasts as "From Megha" to everyone</span>
       </div>
     </div>
     <textarea id="notifComposeText" placeholder="Write a message for everyone…"></textarea>
@@ -1717,7 +1711,7 @@ a { color:inherit; text-decoration:none; }
 <div class="share-popup" id="logoutPopup" onclick="handleLogoutOverlayClick(event)">
   <div class="share-box">
     <div class="share-box-title"><i class="bi bi-box-arrow-right"></i> Log Out</div>
-    <div class="share-box-sub">Are you sure you want to log out of Missmonk?</div>
+    <div class="share-box-sub">Are you sure you want to log out of Megha?</div>
     <div class="logout-confirm-row">
       <button class="share-close-btn" onclick="closeLogoutConfirm()">Cancel</button>
       <button class="logout-confirm-btn" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i> Log Out</button>
@@ -2289,7 +2283,7 @@ function renderNotifList() {
     return `<div class="notif-item${unread ? ' unread' : ''}">
       <div class="notif-item-top">
         ${unread ? '<span class="notif-item-dot"></span>' : ''}
-        <span class="notif-item-sender">${escapeNotifHtml(item.sender || 'From MissMonk')}</span>
+        <span class="notif-item-sender">${escapeNotifHtml(item.sender || 'From Megha')}</span>
         <span class="notif-item-time">${notifTimeAgo(item.createdAt)}</span>
         ${founder ? `<button class="notif-item-del" title="Delete message" data-id="${item.id}"><i class="bi bi-trash3-fill"></i></button>` : ''}
       </div>
@@ -2365,7 +2359,7 @@ async function sendFounderNotification() {
   try {
     await db.collection('notifications').add({
       text,
-      sender: 'From MissMonk',
+      sender: 'From Megha',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     textarea.value = '';
@@ -3092,19 +3086,22 @@ function showWelcome() {
   const courses = courseKeys.length;
   document.getElementById('content').innerHTML = `
     <div class="welcome-hero">
-      <div class="hero-glow"><i class="bi bi-patch-question-fill"></i></div>
-      <h1 class="hero-title">Welcome to Missmonk</h1>
+      <div class="brand-mark sm">
+        <div class="brand-mark-word">Megha</div>
+        <div class="brand-mark-tagline">Know what you missed</div>
+      </div>
+      <h1 class="hero-title">Welcome to Megha</h1>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-val">${courses}</div><div class="hero-stat-key">Courses</div></div>
         <div class="hero-stat"><div class="hero-stat-val">${total}</div><div class="hero-stat-key">Lessons</div></div>
       </div>
       <button class="hero-toggle-btn" id="heroToggleBtn" onclick="toggleWelcomeInfo()">
-        <span>About Missmonk</span>
+        <span>About Megha</span>
         <i class="bi bi-chevron-down"></i>
       </button>
       <div class="hero-collapse" id="heroCollapse">
         <div class="hero-collapse-inner">
-          <p class="hero-sub">Social media and the internet have made almost everything <strong>instantly accessible</strong> — except books, which still demand <strong>time, patience, and sustained focus</strong> most of us have quietly lost. Reading needs a hook, a small dose of <strong>interest to pull you back in</strong>, and that doesn't come naturally to everyone. Missmonk breaks every chapter into <strong>small, scrollable lessons</strong>, so learning feels as easy and instinctive to reach for as your feed — <strong>minus the mindless scrolling</strong>.</p>
+          <p class="hero-sub">Social media and the internet have made almost everything <strong>instantly accessible</strong> — except books, which still demand <strong>time, patience, and sustained focus</strong> most of us have quietly lost. Reading needs a hook, a small dose of <strong>interest to pull you back in</strong>, and that doesn't come naturally to everyone. Megha breaks every chapter into <strong>small, scrollable lessons</strong>, so learning feels as easy and instinctive to reach for as your feed — <strong>minus the mindless scrolling</strong>.</p>
           <p class="hero-about">Pick a course from the sidebar to start exploring chapters, topics, and lessons. <a href="javascript:void(0)" onclick="showAccountPage()">Read more →</a></p>
           <p class="hero-terms">
             Curriculum content is community-sourced and may occasionally contain errors, outdated info, or broken links — please verify anything important independently.
@@ -3385,7 +3382,7 @@ function showAccountPage() {
       <div class="account-field-lbl">Email</div>
       <div class="account-field-val">${currentUser?.email || '—'}</div>
       <div class="account-field-lbl">Password</div>
-      <div class="account-field-val">•••••••• <span style="color:var(--text3);font-size:.75rem;">(managed by Google — never shared with Missmonk)</span></div>
+      <div class="account-field-val">•••••••• <span style="color:var(--text3);font-size:.75rem;">(managed by Google — never shared with Megha)</span></div>
       <button class="account-logout-btn" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Log Out</button>
     </div>
     <div class="account-card">
@@ -3428,7 +3425,7 @@ function showAccountPage() {
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-stars"></i> Our Vision</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.7;">
-        Why Missmonk exists, and the life skills it's built to teach alongside the standard curriculum.
+        Why Megha exists, and the life skills it's built to teach alongside the standard curriculum.
       </p>
       <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;" onclick="window.open('missmonk.html','_blank','noopener')">
         <i class="bi bi-box-arrow-up-right"></i> Read Our Vision
@@ -3437,10 +3434,10 @@ function showAccountPage() {
     <div class="account-card">
       <div class="account-card-title"><i class="bi bi-info-circle-fill"></i> About This Project</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.7;">
-        Missmonk started as a simple idea: course material — PDFs, slide decks, scattered links — is usually spread across drives, chats, and folders with no single place to actually sit down and learn. This app pulls all of it into one clean, structured library organized by course, chapter, and topic.
+        Megha started as a simple idea: course material — PDFs, slide decks, scattered links — is usually spread across drives, chats, and folders with no single place to actually sit down and learn. This app pulls all of it into one clean, structured library organized by course, chapter, and topic.
       </p>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.7;margin-top:.7rem;">
-        It's useful today because most students juggle several apps just to study — a PDF viewer here, a bookmark folder there, a group chat for links. Missmonk replaces that with one searchable, always-up-to-date curriculum that works on any device, loads fast, and stays free and open — no accounts or paywalls required to start learning.
+        It's useful today because most students juggle several apps just to study — a PDF viewer here, a bookmark folder there, a group chat for links. Megha replaces that with one searchable, always-up-to-date curriculum that works on any device, loads fast, and stays free and open — no accounts or paywalls required to start learning.
       </p>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.7;margin-top:.7rem;">
         The curriculum itself is just data — a JSON file — so it can be updated, extended, or swapped out (see the URL loader above) without ever touching the app's code.
@@ -4138,8 +4135,8 @@ function copyShareUrl() {
 }
 function shareVia(method) {
   const url   = encodeURIComponent(shareContext.url);
-  const title = encodeURIComponent('Missmonk — ' + shareContext.title);
-  const text  = encodeURIComponent('Check this out on Missmonk: ' + shareContext.title);
+  const title = encodeURIComponent('Megha — ' + shareContext.title);
+  const text  = encodeURIComponent('Check this out on Megha: ' + shareContext.title);
   const links = {
     whatsapp: `https://wa.me/?text=${text}%20${url}`,
     telegram: `https://t.me/share/url?url=${url}&text=${text}`,
