@@ -26,11 +26,11 @@
    THEME TOKENS
 ════════════════════════════════════════════ */
 :root {
-  --bg:        #000000;
-  --bg2:       #050505;
-  --surface:   #0d0d0d;
-  --surface2:  #141414;
-  --surface3:  #1c1c1c;
+  --bg:        #121212;
+  --bg2:       #161616;
+  --surface:   #1a1a1a;
+  --surface2:  #202020;
+  --surface3:  #282828;
   --border:    rgba(255,255,255,0.08);
   --border2:   rgba(255,255,255,0.14);
   --blue:      #5b8def;
@@ -39,35 +39,35 @@
   --amber:     #e0b34a;
   --rose:      #e0645f;
   --green:     #4caf7d;
-  --text:      #f2f2f2;
+  --text:      #ededed;
   --text2:     #a1a1a1;
-  --text3:     #5c5c5c;
+  --text3:     #676767;
   --radius:    14px;
   --radius-lg: 20px;
   --shadow:    0 8px 32px rgba(0,0,0,0.5);
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
-  --nav-bg:    rgba(0,0,0,0.9);
+  --nav-bg:    rgba(18,18,18,0.9);
   --topnav-h:  60px;
   --skel-base: var(--surface3);
   --skel-shine: rgba(255,255,255,0.06);
   /* Skeuomorphic surface tokens (dark) */
   --sk-hi:       rgba(255,255,255,0.055);
   --sk-hi2:      rgba(255,255,255,0.10);
-  --sk-lo:       rgba(0,0,0,0.6);
-  --sk-lo2:      rgba(0,0,0,0.4);
-  --sk-card-grad:  linear-gradient(155deg, #191919 0%, #0e0e0e 55%, #080808 100%);
-  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.07), rgba(0,0,0,.28));
-  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.22));
-  --sk-nav-grad:   linear-gradient(180deg, #161616, #060606);
+  --sk-lo:       rgba(0,0,0,0.55);
+  --sk-lo2:      rgba(0,0,0,0.38);
+  --sk-card-grad:  linear-gradient(155deg, #212121 0%, #191919 55%, #141414 100%);
+  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.07), rgba(0,0,0,.24));
+  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.20));
+  --sk-nav-grad:   linear-gradient(180deg, #1e1e1e, #131313);
   --sk-inset:  inset 0 1px 2px var(--sk-lo), inset 0 -1px 0 var(--sk-hi);
-  --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 22px rgba(0,0,0,.55), 0 2px 5px rgba(0,0,0,.45);
+  --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 22px rgba(0,0,0,.5), 0 2px 5px rgba(0,0,0,.4);
 }
 [data-theme="light"] {
-  --bg:        #faf9f6;
-  --bg2:       #f2f1ed;
-  --surface:   #ffffff;
-  --surface2:  #f5f4f0;
-  --surface3:  #eae8e2;
+  --bg:        #f5f3ee;
+  --bg2:       #efede6;
+  --surface:   #fbfaf6;
+  --surface2:  #f2f0e9;
+  --surface3:  #e7e4db;
   --border:    rgba(0,0,0,0.08);
   --border2:   rgba(0,0,0,0.13);
   --blue:      #3563c9;
@@ -76,24 +76,59 @@
   --amber:     #b5790c;
   --rose:      #c23b36;
   --green:     #227a52;
-  --text:      #1a1a1a;
+  --text:      #262521;
   --text2:     #5c5c5c;
   --text3:     #8a8a8a;
   --shadow:    0 4px 20px rgba(0,0,0,0.08);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
-  --nav-bg:    rgba(250,249,246,0.92);
+  --nav-bg:    rgba(245,243,238,0.92);
   --skel-shine: rgba(0,0,0,0.045);
   /* Skeuomorphic surface tokens (light) */
-  --sk-hi:       rgba(255,255,255,0.9);
-  --sk-hi2:      rgba(255,255,255,0.85);
-  --sk-lo:       rgba(0,0,0,0.16);
+  --sk-hi:       rgba(255,255,255,0.85);
+  --sk-hi2:      rgba(255,255,255,0.8);
+  --sk-lo:       rgba(0,0,0,0.15);
   --sk-lo2:      rgba(0,0,0,0.07);
-  --sk-card-grad:  linear-gradient(155deg, #ffffff 0%, #f4f3ec 62%, #ebe9e0 100%);
-  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.95), rgba(0,0,0,.045));
-  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.95), rgba(0,0,0,.035));
-  --sk-nav-grad:   linear-gradient(180deg, #fcfbf8, #eeece4);
+  --sk-card-grad:  linear-gradient(155deg, #fbfaf6 0%, #f2f0e7 62%, #e9e6dc 100%);
+  --sk-badge-grad: linear-gradient(160deg, rgba(255,255,255,.9), rgba(0,0,0,.045));
+  --sk-btn-grad:   linear-gradient(180deg, rgba(255,255,255,.9), rgba(0,0,0,.035));
+  --sk-nav-grad:   linear-gradient(180deg, #f9f8f3, #ece9e0);
   --sk-inset:  inset 0 1px 3px var(--sk-lo), inset 0 -1px 0 var(--sk-hi);
   --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 20px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.07);
+}
+[data-theme="comfort"] {
+  /* Warm, low-contrast "paper" palette: no pure white/black, muted low-blue
+     accent — eases eye strain for long reading sessions, day or night. */
+  --bg:        #ece2ce;
+  --bg2:       #e4d8bf;
+  --surface:   #f4ecdb;
+  --surface2:  #ece0c7;
+  --surface3:  #e0d2b2;
+  --border:    rgba(63,49,26,0.12);
+  --border2:   rgba(63,49,26,0.18);
+  --blue:      #7a8f5c;
+  --blue-glow: rgba(122,143,92,0.18);
+  --teal:      #7a8f5c;
+  --amber:     #a97a2f;
+  --rose:      #b1584c;
+  --green:     #557a4f;
+  --text:      #3c3222;
+  --text2:     #6c5f45;
+  --text3:     #9c8f6f;
+  --shadow:    0 4px 20px rgba(60,45,20,0.08);
+  --shadow-lg: 0 12px 40px rgba(60,45,20,0.12);
+  --nav-bg:    rgba(236,226,206,0.92);
+  --skel-shine: rgba(60,45,20,0.05);
+  /* Skeuomorphic surface tokens (comfort) */
+  --sk-hi:       rgba(255,250,235,0.85);
+  --sk-hi2:      rgba(255,250,235,0.75);
+  --sk-lo:       rgba(63,49,26,0.15);
+  --sk-lo2:      rgba(63,49,26,0.07);
+  --sk-card-grad:  linear-gradient(155deg, #f4ecdb 0%, #ece0c4 62%, #e2d4b4 100%);
+  --sk-badge-grad: linear-gradient(160deg, rgba(255,250,235,.88), rgba(63,49,26,.05));
+  --sk-btn-grad:   linear-gradient(180deg, rgba(255,250,235,.88), rgba(63,49,26,.04));
+  --sk-nav-grad:   linear-gradient(180deg, #f2e9d5, #e2d3ae);
+  --sk-inset:  inset 0 1px 3px var(--sk-lo), inset 0 -1px 0 var(--sk-hi);
+  --sk-raised: 0 1px 0 var(--sk-hi2), 0 10px 20px rgba(60,45,20,.09), 0 2px 6px rgba(60,45,20,.07);
 }
 
 /* ════════════════════════════════════════════
@@ -447,7 +482,7 @@ a { color:inherit; text-decoration:none; }
   font-size:1.1rem; cursor:pointer; padding:.2rem; border-radius:6px;
 }
 .theme-close:hover { color:var(--text); background:var(--surface2); }
-.theme-options { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-bottom:1.4rem; }
+.theme-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:.7rem; margin-bottom:1.4rem; }
 .theme-opt {
   border:2px solid var(--border);
   border-radius:var(--radius);
@@ -958,6 +993,24 @@ a { color:inherit; text-decoration:none; }
   font-size:.95rem; font-weight:700; margin-bottom:.8rem; color:var(--text);
 }
 .account-form { display:flex; flex-direction:column; gap:.6rem; max-width:340px; }
+/* Minimal variant — used on every Account-page card except "About This
+   Project", which keeps the fuller boxed treatment. Flat, borderless,
+   divided by a hairline instead of a card shell; CTA becomes a plain
+   text link instead of a raised button. */
+.account-card.minimal {
+  background:none; border:none; border-radius:0;
+  padding:1.1rem 0; margin-bottom:0;
+  border-bottom:1px solid var(--border);
+}
+.account-card.minimal:last-of-type { border-bottom:none; }
+.account-link-btn {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:none; border:none; box-shadow:none; padding:0;
+  color:var(--blue); font-size:.85rem; font-weight:700;
+  cursor:pointer;
+}
+.account-link-btn:hover { text-decoration:underline; opacity:.85; }
+.account-link-btn:active { opacity:.7; }
 .about-roadmap-lbl {
   font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
   color:var(--text3); margin-top:1.1rem; margin-bottom:.6rem;
@@ -1107,7 +1160,7 @@ a { color:inherit; text-decoration:none; }
   .progress-grid { grid-template-columns:1fr; }
   .progress-donut-wrap { width:170px; height:170px; }
 }
-.modal-iframe { flex:1; border:none; background:#fff; }
+.modal-iframe { flex:1; border:none; background:var(--surface); }
 
 /* ── Lesson language selector ── */
 .lesson-lang-controls {
@@ -1515,6 +1568,7 @@ body {
   box-shadow: inset 0 1px 0 var(--sk-hi2), 0 4px 16px rgba(0,0,0,.22);
 }
 [data-theme="light"] .topnav { box-shadow: inset 0 1px 0 var(--sk-hi2), 0 4px 14px rgba(0,0,0,.06); }
+[data-theme="comfort"] .topnav { box-shadow: inset 0 1px 0 var(--sk-hi2), 0 4px 14px rgba(60,45,20,.06); }
 
 /* search field — engraved / recessed groove */
 .nav-search-input {
@@ -1571,6 +1625,9 @@ body {
 [data-theme="light"] .card:hover {
   box-shadow: 0 1px 0 var(--sk-hi2), 0 16px 30px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.06);
 }
+[data-theme="comfort"] .card:hover {
+  box-shadow: 0 1px 0 var(--sk-hi2), 0 16px 30px rgba(60,45,20,.12), 0 3px 8px rgba(60,45,20,.06);
+}
 .card:active { box-shadow: var(--sk-inset) !important; transform:translateY(1px) scale(.995); }
 .card.empty, .card.empty:hover { box-shadow: var(--sk-inset); transform:none; }
 .card.info-card:hover { box-shadow: var(--sk-inset); transform:none; }
@@ -1584,6 +1641,7 @@ body {
   text-shadow: 0 1px 0 var(--sk-hi2);
 }
 [data-theme="light"] .card-type-badge { text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+[data-theme="comfort"] .card-type-badge { text-shadow: 0 1px 0 rgba(255,250,235,.7); }
 
 /* arrow — small raised button-cap */
 .card-arrow {
@@ -1791,17 +1849,24 @@ body {
   <div class="theme-options" id="themeOptions">
     <div class="theme-opt active" data-theme="dark" onclick="applyTheme('dark')">
       <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#000000;border:1px solid #333"></div>
+        <div class="swatch-dot" style="background:#121212;border:1px solid #333"></div>
         <div class="swatch-dot" style="background:#5b8def"></div>
       </div>
       <div class="theme-opt-name">Dark</div>
     </div>
     <div class="theme-opt" data-theme="light" onclick="applyTheme('light')">
       <div class="theme-opt-swatch">
-        <div class="swatch-dot" style="background:#faf9f6;border:1px solid #ccc"></div>
+        <div class="swatch-dot" style="background:#f5f3ee;border:1px solid #ccc"></div>
         <div class="swatch-dot" style="background:#3563c9"></div>
       </div>
       <div class="theme-opt-name">Light</div>
+    </div>
+    <div class="theme-opt" data-theme="comfort" onclick="applyTheme('comfort')">
+      <div class="theme-opt-swatch">
+        <div class="swatch-dot" style="background:#ece2ce;border:1px solid #cbb98f"></div>
+        <div class="swatch-dot" style="background:#7a8f5c"></div>
+      </div>
+      <div class="theme-opt-name">Comfort</div>
     </div>
   </div>
 
@@ -2122,7 +2187,7 @@ function applyAccentColor(hex, save = true) {
   const theme = root.getAttribute('data-theme'); // null = dark, 'light' = light
   root.style.setProperty('--blue', hex);
   root.style.setProperty('--teal', hex);
-  root.style.setProperty('--blue-glow', hexToRgba(hex, theme === 'light' ? 0.18 : 0.25));
+  root.style.setProperty('--blue-glow', hexToRgba(hex, (!theme || theme === 'dark') ? 0.25 : 0.18));
   if (save) localStorage.setItem('lp_accent', hex);
   if (!document.getElementById('accentSwatches')?.children.length) renderAccentSwatches();
   updateAccentUI(hex);
@@ -2300,6 +2365,23 @@ async function installApp() {
 if (isRunningStandalone()) hideInstallBtn();
 
 /* ══════════════════════════════
+   SCROLL RESET ON NAVIGATION
+   #content is a single persistent element whose innerHTML is swapped out
+   for every tab (Home/Books/Progress/Account) and every chapter/lesson
+   folder navigation. Without this, the browser keeps whatever scrollTop
+   the previous view was at, so switching tabs/chapters lands you mid-page
+   instead of at the top. Observing childList catches every full-content
+   swap (any `content.innerHTML = ...`) while leaving small in-place
+   updates within an already-rendered page untouched.
+══════════════════════════════ */
+(function () {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  const resetScroll = () => { contentEl.scrollTop = 0; };
+  new MutationObserver(resetScroll).observe(contentEl, { childList: true });
+})();
+
+/* ══════════════════════════════
    FIREBASE — AUTH + FIRESTORE
 ══════════════════════════════ */
 // TODO: replace with your own Firebase project config from
@@ -2408,7 +2490,7 @@ async function initAppData() {
   document.addEventListener('click', e => {
     if (!document.getElementById('searchWrapper')?.contains(e.target))
       document.getElementById('searchResults').classList.remove('open');
-    if (!document.getElementById('themePanel')?.contains(e.target) && !e.target.closest('.nav-icon-btn'))
+    if (!document.getElementById('themePanel')?.contains(e.target) && !e.target.closest('.nav-icon-btn') && !e.target.closest('.account-link-btn'))
       document.getElementById('themePanel')?.classList.remove('open');
     if (!document.getElementById('notifPanel')?.contains(e.target) && !e.target.closest('#notifBellBtn'))
       document.getElementById('notifPanel')?.classList.remove('open');
@@ -3599,7 +3681,7 @@ function showAccountPage() {
       <div class="page-title">Account</div>
       <div class="page-meta">Signed in with Google</div>
     </div>
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-shield-lock-fill"></i> Profile</div>
       <div class="profile-row">
         <img class="profile-avatar" src="${currentUser?.picture || ''}" alt="">
@@ -3616,49 +3698,49 @@ function showAccountPage() {
       <div class="account-field-val">•••••••• <span style="color:var(--text3);font-size:.75rem;">(managed by Google — never shared with Megha)</span></div>
       <button class="account-logout-btn" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Log Out</button>
     </div>
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-graph-up-arrow"></i> Progress</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
         ${(() => { const all = collectAllLessonLids(); const d = all.filter(l=>completedLessons.has(l)).length; const t = all.length; const p = t?Math.round(d/t*100):0; return `${d} of ${t} lesson${t!==1?'s':''} completed (${p}%). Tap below for the full breakdown, including per-book completion.`; })()}
       </p>
-      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="showProgressPage()">
+      <button class="account-link-btn" onclick="showProgressPage()">
         <i class="bi bi-graph-up-arrow"></i> View Progress
       </button>
     </div>
     ${isFounder() ? `
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-people-fill"></i> Members</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
         Founder-only: see everyone who has signed in and how much of the curriculum each person has completed.
       </p>
-      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="showMembersPage()">
+      <button class="account-link-btn" onclick="showMembersPage()">
         <i class="bi bi-people-fill"></i> View Members
       </button>
     </div>` : ''}
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-translate"></i> Content Language</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
         Currently showing books available in <strong>${getLanguageLabel()}</strong>. Diploma subjects and chapters aren't affected — only books.
       </p>
-      <button class="btn-sm nav-icon-btn account-lang-open-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="toggleLangPanel()">
+      <button class="account-link-btn account-lang-open-btn" onclick="toggleLangPanel()">
         <i class="bi bi-translate"></i> Change Content Language
       </button>
     </div>
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-palette2"></i> Themes &amp; Settings</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;">
         Switch between light and dark mode, or load a curriculum from a URL.
       </p>
-      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;" onclick="toggleThemePanel()">
+      <button class="account-link-btn" onclick="toggleThemePanel()">
         <i class="bi bi-palette2"></i> Open Themes &amp; Settings
       </button>
     </div>
-    <div class="account-card">
+    <div class="account-card minimal">
       <div class="account-card-title"><i class="bi bi-stars"></i> Our Vision</div>
       <p style="font-size:.82rem;color:var(--text2);line-height:1.7;">
         Why Megha exists, and the life skills it's built to teach alongside the standard curriculum.
       </p>
-      <button class="btn-sm nav-icon-btn" style="width:auto;height:auto;padding:.55rem 1rem;border-radius:10px;display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;" onclick="window.open('missmonk.html','_blank','noopener')">
+      <button class="account-link-btn" style="margin-top:.6rem;" onclick="window.open('missmonk.html','_blank','noopener')">
         <i class="bi bi-box-arrow-up-right"></i> Read Our Vision
       </button>
     </div>
